@@ -131,10 +131,20 @@ public class GameManager : Singleton<GameManager>
     IEnumerator LoadAsyncScene(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen"); //affichage de l'écran de chargement
-        Instantiate(loadingScreen);
+        asyncLoad.allowSceneActivation = false; //permet de ne pas charger la scene directos quand elle est prête
+
+        GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen"); //load le prefab de l'écran de chargement
+        loadingScreen = Instantiate(loadingScreen, gameObject.transform); //l'affiche
+
         while (!asyncLoad.isDone)
         {
+            Debug.Log(loadingScreen.GetComponent<LoadingScreen>().finished);
+            Debug.Log(asyncLoad.progress);
+            if (loadingScreen.GetComponent<LoadingScreen>().finished && asyncLoad.progress == 0.9f)
+            {
+                asyncLoad.allowSceneActivation = true;
+                loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true);
+            }
             yield return null;
         }
     }
