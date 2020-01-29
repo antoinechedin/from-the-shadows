@@ -5,22 +5,26 @@ using UnityEngine;
 [RequireComponent(typeof(ActorController))]
 public class PlayerController : MonoBehaviour
 {
-    public float groundSpeed = 8f;
+    public float moveSpeed = 7f;
     public float gravity = 40f;
-    public float jumpImpulse = 17f;
+    public float jumpHeight = 4f;
+    public float groundAccelerationTime = 0.07f;
+    public float groundDecelerationTime = 0.07f;
+    public float airAccelerationTime = 0.14f;
+    public float airDecelerationTime = 0.14f;
 
     [HideInInspector] public PlayerState state;
-    [HideInInspector] public Vector2 input;
+    [HideInInspector] public Vector2 targetVelocity;
     [HideInInspector] public bool jumpInput;
     [HideInInspector] public Vector2 velocity;
     private ActorController controller;
 
     private bool canStopJump = false;
+    private Vector2 velocitySmoothing;
 
     private void Awake()
     {
-        input = new Vector2();
-        velocity = new Vector2();
+        velocity = targetVelocity = velocitySmoothing = new Vector2();
         controller = GetComponent<ActorController>();
     }
 
@@ -29,21 +33,34 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.Standing:
-                velocity.x = Input.GetAxisRaw("Horizontal") * groundSpeed;
+                targetVelocity.x = Input.GetAxisRaw("Horizontal") * moveSpeed;
+
+                velocity.x = Mathf.SmoothDamp(
+                    velocity.x,
+                    targetVelocity.x,
+                    ref velocitySmoothing.x,
+                    targetVelocity.x != 0 ? groundAccelerationTime : groundDecelerationTime
+                );
                 velocity.y = 0;
 
                 if (Input.GetButtonDown("Jump"))
                 {
-                    state = PlayerState.Jumping;
-                    velocity.y = jumpImpulse;
+                    state = PlayerState.Airborne;
+                    velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
                     canStopJump = true;
 
                     // TODO: Add jump metadata
                 }
                 break;
 
-            case PlayerState.Jumping:
-                velocity.x = Input.GetAxisRaw("Horizontal") * groundSpeed;
+            case PlayerState.Airborne:
+                targetVelocity.x = Input.GetAxisRaw("Horizontal") * moveSpeed;
+                velocity.x = Mathf.SmoothDamp(
+                    velocity.x,
+                    targetVelocity.x,
+                    ref velocitySmoothing.x,
+                    targetVelocity.x != 0 ? airAccelerationTime : airDecelerationTime
+                );
 
                 float stopJumpSpeed = gravity / 6f;
 
@@ -64,22 +81,26 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleInput();
-    }
-
-    private void FixedUpdate()
-    {
         controller.Move(velocity * Time.fixedDeltaTime);
 
         switch (state)
         {
             case PlayerState.Standing:
+                if (controller.collisions.left || controller.collisions.right)
+                {
+                    velocity.x = 0;
+                }
                 if (!controller.collisions.below)
                 {
-                    state = PlayerState.Jumping;
+                    state = PlayerState.Airborne;
                 }
                 break;
 
-            case PlayerState.Jumping:
+            case PlayerState.Airborne:
+                if (controller.collisions.left || controller.collisions.right)
+                {
+                    velocity.x = 0;
+                }
                 if (controller.collisions.below || controller.collisions.above)
                 {
                     if (controller.collisions.below) state = PlayerState.Standing;
@@ -88,10 +109,15 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+
+    private void FixedUpdate()
+    {
+
+    }
 }
 
 public enum PlayerState
 {
     Standing,
-    Jumping
+    Airborne
 }
