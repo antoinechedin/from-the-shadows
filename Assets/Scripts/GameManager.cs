@@ -138,12 +138,12 @@ public class GameManager : Singleton<GameManager>
 
         while (!asyncLoad.isDone)
         {
-            Debug.Log(loadingScreen.GetComponent<LoadingScreen>().finished);
-            Debug.Log(asyncLoad.progress);
-            if (loadingScreen.GetComponent<LoadingScreen>().finished && asyncLoad.progress == 0.9f)
+            //on attend que le loading soit completement noir ET que le scene soit prête à être affichée
+            if (loadingScreen.GetComponent<LoadingScreen>().finishedFadingIn && asyncLoad.progress == 0.9f)
             {
+                //affichage de la scene
                 asyncLoad.allowSceneActivation = true;
-                loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true);
+                loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true); //on fade out le loading screen
             }
             yield return null;
         }
