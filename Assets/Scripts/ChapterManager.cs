@@ -64,8 +64,7 @@ public class ChapterManager : MonoBehaviour
         if (currentLevel == levels.Count) //il faut faire revenir le joueur au choix des level.
         {
             Debug.Log("Dernier level terminé, direction le menu de selection de niveau");
-            //fondu au noir
-            //loadScene
+            GameManager.Instance.LoadScene("ChapterMenu");
         }
         else //on transfert le joueur dans le tableau suivant
         {
