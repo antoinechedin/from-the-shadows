@@ -146,10 +146,30 @@ public class GameManager : Singleton<GameManager>
 
     /// <summary>
     ///Metadata : PlayerDeath++
+    ///You have to specifiy the player id (1 or 2) in the first parameter
     /// </summary>
-    public void MetaAddPlayerDeath()
+    public void MetaAddPlayerDeath(int playerId)
     {
-        PlayerPrefs.SetInt("playerDeath", PlayerPrefs.GetInt("playerDeath", 0) + 1);
+        PlayerPrefs.SetInt("playerDeath"+playerId, PlayerPrefs.GetInt("playerDeath"+playerId, 0) + 1);
+    }
+
+
+    /// <summary>
+    /// Metadata : totalDistance + addedDistance;
+    /// You have to specifiy the player id (1 or 2) in the first parameter
+    /// </summary>
+    public void MetaAddDistance(int playerId, float addedDistance)
+    {
+        PlayerPrefs.SetFloat("totalDistance" + playerId, PlayerPrefs.GetFloat("totalDistance" + playerId, 0) + addedDistance);
+    }
+
+    /// <summary>
+    /// Metadata : jumpNumber + 1;
+    /// You have to specifiy the player id (1 or 2) in the first parameter
+    /// </summary>
+    public void MetaAddJump(int playerId)
+    {
+        PlayerPrefs.SetInt("jumpNumber" + playerId, PlayerPrefs.GetInt("jumpNumber" + playerId, 0) + 1);
     }
 
     /// <summary>
@@ -167,21 +187,5 @@ public class GameManager : Singleton<GameManager>
     public void MetaAddTimeToLevel(string levelID, float timeAdded)
     {
         PlayerPrefs.SetFloat(levelID, PlayerPrefs.GetFloat(levelID, 0) + timeAdded);
-    }
-
-    /// <summary>
-    /// Metadata : jumpNumber + 1;
-    /// </summary>
-    public void MetaAddJump()
-    {
-        PlayerPrefs.SetInt("jumpNumber", PlayerPrefs.GetInt("jumpNumber", 0) + 1);
-    }
-
-    /// <summary>
-    /// Metadata : totalDistance + addedDistance;
-    /// </summary>
-    public void MetaAddDistance(float addedDistance)
-    {
-        PlayerPrefs.SetFloat("totalDistance", PlayerPrefs.GetFloat("totalDistance", 0) + addedDistance);
     }
 }
