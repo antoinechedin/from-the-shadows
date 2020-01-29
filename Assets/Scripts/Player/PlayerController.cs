@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
                     state = PlayerState.Jumping;
                     velocity.y = jumpImpulse;
                     canStopJump = true;
+
+                    // TODO: Add jump metadata
                 }
                 break;
 
