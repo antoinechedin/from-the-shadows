@@ -131,6 +131,8 @@ public class GameManager : Singleton<GameManager>
     IEnumerator LoadAsyncScene(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen"); //affichage de l'écran de chargement
+        Instantiate(loadingScreen);
         while (!asyncLoad.isDone)
         {
             yield return null;
