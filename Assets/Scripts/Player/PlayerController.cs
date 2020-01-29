@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Standing:
                 if (controller.collisions.left || controller.collisions.right)
                 {
-                    velocity.x = 0;
+                    //velocity.x = 0;
                 }
                 if (!controller.collisions.below)
                 {
@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Airborne:
                 if (controller.collisions.left || controller.collisions.right)
                 {
-                    velocity.x = 0;
+                    //velocity.x = 0;
                 }
                 if (controller.collisions.below || controller.collisions.above)
                 {
