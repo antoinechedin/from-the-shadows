@@ -80,7 +80,8 @@ public class ActorController : MonoBehaviour
                     moveVec.x = (hit.distance - skinWidth) * directionX;
                     rayLength = hit.distance;
 
-                    if (collisions.climbingSlope) {
+                    if (collisions.climbingSlope)
+                    {
                         moveVec.y = Mathf.Tan(collisions.slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(moveVec.x);
                     }
 
@@ -116,6 +117,26 @@ public class ActorController : MonoBehaviour
 
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
+            }
+        }
+
+        if (collisions.climbingSlope)
+        {
+            float directionX = Mathf.Sign(moveVec.x);
+            rayLength = Mathf.Abs(moveVec.x) + skinWidth;
+            Vector2 rayOrigin =
+                ((directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight)
+                + Vector2.up * moveVec.y;
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+            
+            if (hit)
+            {
+                float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+                if (slopeAngle != collisions.slopeAngle)
+                {
+                    moveVec.x = (hit.distance - skinWidth) * directionX;
+                    collisions.slopeAngle = slopeAngle;
+                }
             }
         }
     }
