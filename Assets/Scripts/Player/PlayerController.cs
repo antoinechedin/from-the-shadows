@@ -45,14 +45,14 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Jumping:
                 velocity.x = Input.GetAxisRaw("Horizontal") * groundSpeed;
 
-                float stopJumpSpeed = gravity / 10f;
+                float stopJumpSpeed = gravity / 6f;
 
                 if (velocity.y < stopJumpSpeed) canStopJump = false;
                 else
                 {
                     if (canStopJump && Input.GetButtonUp("Jump"))
                     {
-                        velocity.y = gravity / 10f;
+                        velocity.y = stopJumpSpeed;
                     }
                 }
                 break;
