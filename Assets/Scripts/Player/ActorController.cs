@@ -10,6 +10,7 @@ public class ActorController : MonoBehaviour
 
     public float skinWidth = 0.005f;
     public float maxClimbAngle = 60f;
+    public float maxDescendSlope = 60f;
     public LayerMask collisionMask = 1 << 9; // 9 is the Obstacle layer id
 
     #endregion
@@ -38,11 +39,22 @@ public class ActorController : MonoBehaviour
 
     public void Move(Vector2 moveVec)
     {
-        collisions.Reset();
         UpdateRaycastOrigins();
+        collisions.Reset();
+        collisions.previousMoveVec = moveVec;
 
-        HorizontalCollision(ref moveVec);
-        VerticalCollision(ref moveVec);
+        if (moveVec.y < 0)
+        {
+            DescendSlope(ref moveVec);
+        }
+        if (moveVec.x != 0)
+        {
+            HorizontalCollision(ref moveVec);
+        }
+        if (moveVec.y != 0)
+        {
+            VerticalCollision(ref moveVec);
+        }
         rb.MovePosition((Vector2)transform.position + moveVec);
     }
 
@@ -65,6 +77,12 @@ public class ActorController : MonoBehaviour
 
                 if (i == 0 && slopeAngle <= maxClimbAngle)
                 {
+                    if (collisions.descendingSlope)
+                    {
+                        collisions.descendingSlope = false;
+                        moveVec = collisions.previousMoveVec;
+                    }
+                    
                     float distanceToSlope = 0;
                     if (slopeAngle != collisions.previousSlopeAngle)
                     {
@@ -128,7 +146,7 @@ public class ActorController : MonoBehaviour
                 ((directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight)
                 + Vector2.up * moveVec.y;
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
-            
+
             if (hit)
             {
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
@@ -153,6 +171,35 @@ public class ActorController : MonoBehaviour
             collisions.below = true;
             collisions.climbingSlope = true;
             collisions.slopeAngle = slopeAngle;
+        }
+    }
+
+    private void DescendSlope(ref Vector2 moveVec)
+    {
+        float directionX = Mathf.Sign(moveVec.x);
+        Vector2 rayOrigin = directionX == -1 ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
+        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+
+        if (hit)
+        {
+            float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+            if (slopeAngle != 0 && slopeAngle <= maxDescendSlope)
+            {
+                if (Mathf.Sign(hit.normal.x) == directionX)
+                {
+                    if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(moveVec.y))
+                    {
+                        float moveDistance = Mathf.Abs(moveVec.x);
+                        float descendMoveVecY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
+                        moveVec.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Math.Sign(moveVec.x);
+                        moveVec.y -= descendMoveVecY;
+
+                        collisions.slopeAngle = slopeAngle;
+                        collisions.descendingSlope = true;
+                        collisions.below = true;
+                    }
+                }
+            }
         }
     }
 
@@ -197,13 +244,14 @@ public class ActorController : MonoBehaviour
     public struct CollisionInfos
     {
         public bool above, below, left, right;
-        public bool climbingSlope;
+        public bool climbingSlope, descendingSlope;
         public float slopeAngle, previousSlopeAngle;
+        public Vector2 previousMoveVec;
 
         public void Reset()
         {
             above = below = left = right = false;
-            climbingSlope = false;
+            climbingSlope = descendingSlope = false;
             previousSlopeAngle = slopeAngle;
             slopeAngle = 0;
         }
