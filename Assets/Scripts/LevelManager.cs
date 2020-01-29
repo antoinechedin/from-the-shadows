@@ -14,7 +14,7 @@ public class LevelManager : MonoBehaviour
     {
         foreach (GameObject go in objectsToDisable)
         {
-            go.active = false;
+            go.SetActive(false);
         }
     }
 
@@ -25,7 +25,7 @@ public class LevelManager : MonoBehaviour
     {
         foreach (GameObject go in objectsToDisable)
         {
-            go.active = true;
+            go.SetActive(true);
         }
     }
 }
