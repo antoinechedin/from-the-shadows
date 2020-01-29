@@ -20,10 +20,6 @@ public class ChapterManager : MonoBehaviour
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            GameManager.Instance.LoadScene("Leo 1");
-        }
     }
 
     /// <summary>
