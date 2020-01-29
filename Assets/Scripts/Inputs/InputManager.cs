@@ -2,49 +2,36 @@
 using UnityEngine;
 using UnityEngine.Experimental.Input;
 
-public class InputManager : MonoBehaviour, IPlayerActions
+public class InputManager : MonoBehaviour
 {
-    public InputMaster inputs;
-
-    private void Awake()
+    private void OnJump()
     {
-        inputs.Player.Enable();
-        inputs.Player.SetCallbacks(this);
+        Debug.Log("Jump");
     }
 
-    public void OnJump(InputAction.CallbackContext ctx)
+    private void OnInteract()
     {
-        throw new NotImplementedException();
+        Debug.Log("Interact");
     }
 
-    public void OnInteract(InputAction.CallbackContext context)
+    private void OnMove()
     {
-        throw new NotImplementedException();
+        Debug.Log("Move");
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    private void OnOpenMenu()
     {
-        throw new NotImplementedException();
+        Debug.Log("OpenMenu");
     }
 
-    public void OnOpenMenu(InputAction.CallbackContext context)
+    private void OnAccept()
     {
-        throw new NotImplementedException();
+        Debug.Log("Accept");
     }
 
-    public void OnAccept(InputAction.CallbackContext context)
+    private void OnRefuse()
     {
-        throw new NotImplementedException();
-    }
-
-    public void OnRefuse(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void OnDisable()
-    {
-        inputs.Player.Disable();
+        Debug.Log("Refuse");
     }
 
 }
