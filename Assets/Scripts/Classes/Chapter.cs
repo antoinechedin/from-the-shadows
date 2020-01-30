@@ -24,5 +24,9 @@ public class Chapter
     public void PrintChapter()
     {
         Debug.Log("Chapter avec " +levels.Count +" level");
+        foreach (Level l in levels)
+        {
+            l.PrintLevel();
+        }
     }
 }

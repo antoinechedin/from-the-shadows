@@ -10,18 +10,24 @@ using System;
 public class Level
 {
     public bool completed = false; //indicates wether the level as been completed or not
-    public int nbCollectibleTaken; //The number of collectible the player took
-    public int totalNbCollectible; //The total number of collectible there are in the level
+    public int nbCollectible;
+    public int[] collectibles;
 
-    public Level(bool completed, int nbCollectibleTaken, int totalNbCollectible)
+    public Level(bool completed, int nbCollect, int[] collect)
     {
         this.completed = completed;
-        this.nbCollectibleTaken = nbCollectibleTaken;
-        this.totalNbCollectible = totalNbCollectible;
+        nbCollectible = nbCollect;
+        collectibles = collect;
     }
 
     public void PrintLevel()
     {
-        Debug.Log("level : " + completed +", "+nbCollectibleTaken +"/ " +totalNbCollectible);
+        string res = "level: " + completed +" nbCollectible : " +nbCollectible +", collectibles ";
+        foreach (int i in collectibles)
+        {
+            res += i + " ";
+        }
+
+        Debug.Log(res);
     }
 }

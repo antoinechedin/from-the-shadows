@@ -55,22 +55,22 @@ public class MenuChapter : MonoBehaviour
                 chapterButtonsPanel.SetActive(false);
                 if (menuChapterAnimator != null)
                 {
-                    int nbCollectibleTaken = 0;
-                    int totalNbCollectible = 0;
+                    //int nbCollectibleTaken = 0; TODO : correction pour correspondre au int[]
+                    //int totalNbCollectible = 0; TODO : correction pour correspondre au int[]
                     int nbCompleted = 0;
                     int totalLevel = 0;
 
                     List<Level> levels = chapters[currentChapter].GetLevels();
                     foreach (Level l in levels)
                     {
-                        nbCollectibleTaken += l.nbCollectibleTaken;
-                        totalNbCollectible += l.totalNbCollectible;
+                        //nbCollectibleTaken += l.nbCollectibleTaken;  TODO : correction pour correspondre au int[]
+                        //totalNbCollectible += l.totalNbCollectible;  TODO : correction pour correspondre au int[]
                         if (l.completed) nbCompleted++;
                         totalLevel++;
                     }
 
                     levelLabel.text = chaptersName[currentChapter];
-                    collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;
+                    //collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;  TODO : correction pour correspondre au int[]
                     completedNumber.text = nbCompleted + "/" + totalLevel;
                     menuChapterAnimator.SetBool("open", true);
                 }
