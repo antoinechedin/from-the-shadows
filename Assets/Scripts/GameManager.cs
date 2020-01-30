@@ -10,10 +10,14 @@ public class GameManager : Singleton<GameManager>
     public enum GameStates {MainMenu, ChoosingLevel, Playing, Paused};
 
     public GameStates gameState;
-    private List<Chapter> chapters;
-    private int currentChapter = 0;
-    private int currentLevel = 0;
+    private List<Chapter> chapters; //structure qui stock toutes les infos sur les chapitres (et par parentée, sur tous les level)
     private bool debuging = false;
+    private int nbPlayer; //stock si c'est une partie en solo ou en duo
+
+    //METADATA
+    private Dictionary<string, int> metaInt;
+    private Dictionary<string, float> metaFloat;
+
 
 
     //-------------------------------------------------------------
@@ -45,18 +49,6 @@ public class GameManager : Singleton<GameManager>
         return chapters;
     }
 
-    private int CurrentChapter
-    {
-        get { return currentChapter; }
-        set { currentChapter = value; }
-    }
-
-    private int CurrentLevel
-    {
-        get { return currentLevel; }
-        set { currentLevel = value; }
-    }
-
     public bool Debuging
     {
         get { return debuging; }
@@ -68,8 +60,28 @@ public class GameManager : Singleton<GameManager>
     public void LoadSaveFile()
     {
         chapters = new List<Chapter>();
+        metaFloat = new Dictionary<string, float>();
+        metaInt = new Dictionary<string, int>();
 
         JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/SaveFile.json"));
+
+        //chargement des metadonnées
+        nbPlayer = (int)json["nbPlayer"];
+
+        metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
+        metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
+        metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
+        metaFloat.Add("distance1", (float)json["distance1"]);
+
+        if (nbPlayer == 2)
+        {
+            metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
+            metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
+            metaFloat.Add("distance2", (float)json["distance2"]);
+        }     
+
+
+        //chargement des chapitres
         JArray allChapters = (JArray)json["chapters"];
         foreach (JObject chap in allChapters)
         {
@@ -78,11 +90,20 @@ public class GameManager : Singleton<GameManager>
             List<Level> levels = new List<Level>();
             foreach (JObject level in chapLevels)
             {
-                Level lvl = new Level((bool) level["completed"], (int) level["nbCollectibleTaken"], (int) level["totalNbCollectible"]);
+                int nbCollectible = (int)level["nbCollectible"];
+                int[] collectibles = new int[nbCollectible];
+
+                for (int i = 0; i < nbCollectible; i++)
+                {
+                    collectibles[i] = (int) level["collectibles"][i];
+                }
+               
+                Level lvl = new Level((bool) level["completed"], nbCollectible, collectibles);
                 levels.Add(lvl);
             }
 
             Chapter chapter = new Chapter(levels);
+            chapter.PrintChapter();
             chapters.Add(chapter);
         }
     }
@@ -93,7 +114,22 @@ public class GameManager : Singleton<GameManager>
     public void WriteSaveFile()
     {
         StreamWriter stream = new StreamWriter("Assets/Resources/SaveFile.json");
-        string jsonString = "{\n\t\"chapters\":[";
+        //Save des Metadonnées
+        string jsonString = "{\n\t\"nbPlayer\": "+nbPlayer+",\n\t";
+        foreach (string key in metaInt.Keys)
+        {
+            jsonString += "\""+key+"\": "+metaInt[key]+",\n\t";
+        }
+
+        foreach (string key in metaFloat.Keys)
+        {
+            string value = metaFloat[key].ToString().Replace(",", ".");
+            jsonString += "\"" + key + "\": " +value + ",\n\t";
+        }
+
+
+        //Save des chapitres
+        jsonString += "\"chapters\":[";
         int i = 1;
         foreach (Chapter chap in chapters)
         {
@@ -154,50 +190,66 @@ public class GameManager : Singleton<GameManager>
 
 
 
-    //---------METADATA COLLECT-----------------
+    //---------METADATA MANIPULATION-----------------
 
     /// <summary>
-    ///Metadata : PlayerDeath++
-    ///You have to specifiy the player id (1 or 2) in the first parameter
+    /// returns the value of the metadata of name n
     /// </summary>
-    public void MetaAddPlayerDeath(int playerId)
+    /// <param name="n"></param>
+    /// <returns></returns>
+    public int GetMetaInt(string n)
     {
-        PlayerPrefs.SetInt("playerDeath"+playerId, PlayerPrefs.GetInt("playerDeath"+playerId, 0) + 1);
+        return metaInt[n];
+    }
+
+    /// <summary>
+    /// sets the value of the metadata of name n with the value val
+    /// </summary>
+    /// <param name="n"></param>
+    /// <param name="val"></param>
+    public void SetMetaInt(string n, int val)
+    {
+         metaInt[n] = val;
     }
 
 
     /// <summary>
-    /// Metadata : totalDistance + addedDistance;
-    /// You have to specifiy the player id (1 or 2) in the first parameter
+    /// returns the value of the metadata of name n
     /// </summary>
-    public void MetaAddDistance(int playerId, float addedDistance)
+    /// <param name="n"></param>
+    /// <returns></returns>
+    public float GetMetaFloat(string n)
     {
-        PlayerPrefs.SetFloat("totalDistance" + playerId, PlayerPrefs.GetFloat("totalDistance" + playerId, 0) + addedDistance);
+         return metaFloat[n];
     }
 
     /// <summary>
-    /// Metadata : jumpNumber + 1;
-    /// You have to specifiy the player id (1 or 2) in the first parameter
+    /// sets the value of the metadata of name n with the value val
     /// </summary>
-    public void MetaAddJump(int playerId)
+    /// <param name="n"></param>
+    /// <param name="val"></param>
+    public void SetMetaFloat(string n, float val)
     {
-        PlayerPrefs.SetInt("jumpNumber" + playerId, PlayerPrefs.GetInt("jumpNumber" + playerId, 0) + 1);
+         metaFloat[n] = val;
     }
 
     /// <summary>
-    /// Metadata : totalTimePlayed + timeAdded;
+    /// Adds val the the metadata of name n
     /// </summary>
-    /// <param name="timeAdded"></param>
-    public void MetaTotalTimePlayed(float timeAdded)
+    /// <param name="n"></param>
+    /// <param name="val"></param>
+    public void AddMetaInt(string n, int val)
     {
-        PlayerPrefs.SetFloat("totalTimePlayed", PlayerPrefs.GetFloat("totalTimePlayed", 0) + timeAdded);
+        metaInt[n] += val;
     }
 
     /// <summary>
-    /// Metadata : timeInsideALevel + timeAdded;
+    /// Adds val the the metadata of name n
     /// </summary>
-    public void MetaAddTimeToLevel(string levelID, float timeAdded)
+    /// <param name="n"></param>
+    /// <param name="val"></param>
+    public void AddMetaFloat(string n, float val)
     {
-        PlayerPrefs.SetFloat(levelID, PlayerPrefs.GetFloat(levelID, 0) + timeAdded);
+        metaFloat[n] = metaFloat[n] + val;
     }
 }

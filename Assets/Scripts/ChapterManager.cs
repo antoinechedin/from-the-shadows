@@ -11,7 +11,8 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
+        GameManager.Instance.LoadSaveFile();
         //Initialisation of the first level
         UpdateEnabledLevels();
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
@@ -91,8 +92,9 @@ public class ChapterManager : MonoBehaviour
 
     private void CollectLevelMetaData()
     {
-        GameManager.Instance.MetaTotalTimePlayed(timeSinceBegin); //temps de jeu total
-        GameManager.Instance.MetaAddTimeToLevel(string.Concat(chapterIndex.ToString()+"_", currentLevel.ToString()), timeSinceBegin); //temps de jeu du level
+        GameManager.Instance.AddMetaFloat("totalTimePlayed", timeSinceBegin); //collecte du temps de jeu
+        //Debug.Log(GameManager.Instance.GetMetaFloat("totalTimePlayed"));
+        GameManager.Instance.WriteSaveFile();
         timeSinceBegin = 0;
     }
 }

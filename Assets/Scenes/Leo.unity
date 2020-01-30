@@ -254,8 +254,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  playerInputText: {fileID: 595763248}
   playerStateText: {fileID: 0}
+  playerInputText: {fileID: 595763248}
   playerVelocityText: {fileID: 67359149}
 --- !u!114 &186173874
 MonoBehaviour:
@@ -800,11 +800,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b25aeafb36f78d42a427482849e6a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundSpeed: 8
+  moveSpeed: 7
   gravity: 40
-  jumpImpulse: 17
+  jumpHeight: 4
+  groundAccelerationTime: 0.07
+  groundDecelerationTime: 0.07
+  airAccelerationTime: 0.14
+  airDecelerationTime: 0.14
   state: 0
-  input: {x: 0, y: 0}
+  targetVelocity: {x: 0, y: 0}
   jumpInput: 0
   velocity: {x: 0, y: 0}
 --- !u!114 &690975022
@@ -820,6 +824,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skinWidth: 0.015
+  maxClimbAngle: 60
+  maxDescendSlope: 60
   collisionMask:
     serializedVersion: 2
     m_Bits: 512
