@@ -8,6 +8,6 @@ public class ChapterCursor : MonoBehaviour
 
     public void setPositionNumber(int number)
     {
-        GetComponent<RectTransform>().anchoredPosition = positions[number];
+        // GetComponent<RectTransform>().anchoredPosition = positions[number];
     }
 }
