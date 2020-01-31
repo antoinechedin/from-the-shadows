@@ -15,8 +15,6 @@ public class MenuMetaManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameManager.Instance.LoadSaveFile(0);
-
         lightGuyToPopulate = new List<TextMeshProUGUI>();
         shadowGuyToPopulate = new List<TextMeshProUGUI>();
         totalToPopulate = new List<TextMeshProUGUI>();
@@ -42,8 +40,18 @@ public class MenuMetaManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            Populate();
+            GameManager.Instance.LoadSaveFile(0);
+            StartCoroutine(WaitForLoadAndPopulate());
         }
+    }
+
+    public IEnumerator WaitForLoadAndPopulate()
+    {
+        while (GameManager.Instance.Loading)
+        {
+            yield return null;
+        }
+        Populate();
     }
 
     public void Populate()

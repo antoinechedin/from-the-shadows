@@ -12,6 +12,7 @@ public class GameManager : Singleton<GameManager>
     public GameStates gameState;
     private List<Chapter> chapters; //structure qui stock toutes les infos sur les chapitres (et par parentée, sur tous les level)
     private bool debuging = false;
+    private bool loading = false;
     private int nbPlayer; //stock si c'est une partie en solo ou en duo
 
     private int currentSave; //l'indice de la save courante
@@ -56,6 +57,11 @@ public class GameManager : Singleton<GameManager>
         get { return debuging; }
     }
 
+    public bool Loading
+    {
+        get { return loading; }
+    }
+
     /// <summary>
     /// sets the completions of the level "lvl" of the chapter "chap" to true
     /// </summary>
@@ -73,11 +79,11 @@ public class GameManager : Singleton<GameManager>
     public void LoadSaveFile(int save)
     {
         StartCoroutine(LoadSaveFileAsync(save));
-    }
-        
+    }  
 
     private IEnumerator LoadSaveFileAsync(int save)
     {
+        loading = true;
         bool finished = false;
         while (!finished)
         {
@@ -134,6 +140,7 @@ public class GameManager : Singleton<GameManager>
             finished = true;
             yield return null;
         }
+        loading = false;
         Debug.Log("Finished Loading");
     }
 
