@@ -1,9 +1,18 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Experimental.Input;
+﻿using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    private void OnDeviceLost()
+    {
+        Debug.Log("Device Lost");
+    }
+
+    private void OnDeviceRegained()
+    {
+        Debug.Log("Device Regained");
+        
+    }
+
     private void OnJump()
     {
         Debug.Log("Jump");
