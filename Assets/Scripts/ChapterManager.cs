@@ -11,8 +11,6 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        PlayerPrefs.DeleteAll();
-        //GameManager.Instance.LoadSaveFile();
         //Initialisation of the first level
         UpdateEnabledLevels();
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);

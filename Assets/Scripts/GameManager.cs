@@ -67,7 +67,7 @@ public class GameManager : Singleton<GameManager>
 
         currentSave = save;
 
-        JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/SaveFile.json"));
+        JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/Saves/SaveFile" + save + ".json"));
 
         //chargement des metadonnées
         nbPlayer = (int)json["nbPlayer"];
@@ -113,11 +113,11 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// Write the SaveFile based on the new data in GameManager.Chapters
+    /// Write the SaveFile based on the new data in GameManager and writes it on the save file of index "currentSave"
     /// </summary>
     public void WriteSaveFile()
     {
-        StreamWriter stream = new StreamWriter("Assets/Resources/SaveFile.json");
+        StreamWriter stream = new StreamWriter("Assets/Resources/Saves/SaveFile" + currentSave + ".json");
         //Save des Metadonnées
         string jsonString = "{\n\t\"nbPlayer\": "+nbPlayer+",\n\t";
         foreach (string key in metaInt.Keys)
@@ -151,6 +151,33 @@ public class GameManager : Singleton<GameManager>
         jsonString += "\n\t]\n}";
         stream.Write(jsonString);
         stream.Close();
+    }
+
+    /// <summary>
+    /// Creates a Json file representing the empty save at the index "save"
+    /// </summary>
+    /// <param name="save"></param>
+    public void CreateSaveFile(int save, int nbPlayer)
+    {
+        //création du file
+        StreamWriter streamWriter = File.CreateText("Assets/Resources/Saves/SaveFile" + save + ".json");
+
+        //On lit le fichier de création de base duo ou solo
+        string saveFileContent = "";
+        if (nbPlayer == 1)
+        {
+            saveFileContent = File.ReadAllText("Assets/Resources/SaveFileSolo.json");
+        }
+        else if (nbPlayer == 2)
+        {
+            saveFileContent = File.ReadAllText("Assets/Resources/SaveFileDuo.json");
+        }
+
+        Debug.Log(saveFileContent);
+
+        //On rempli le nouveau SaveFile
+        streamWriter.Write(saveFileContent);
+        streamWriter.Close();
     }
 
 
