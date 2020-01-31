@@ -7,16 +7,21 @@ using UnityEngine;
 public class SaveChooser : MonoBehaviour
 {
     public string directoryPath;
+    public Button button0;
     public Button button1;
     public Button button2;
-    public Button button3;
+    FileInfo save0;
     FileInfo save1;
     FileInfo save2;
-    FileInfo save3;
 
 
     // Start is called before the first frame update
     void Start()
+    {
+        UpdateButtons();
+    }
+
+    void UpdateButtons()
     {
         var directoryInfo = new DirectoryInfo(directoryPath);
         var filesInfo = directoryInfo.GetFiles();
@@ -24,18 +29,17 @@ public class SaveChooser : MonoBehaviour
         {
             switch (f.Name)
             {
-                case "1.json":
+                case "SaveFile0.json":
+                    save0 = f;
+                    GetInfos(button0, save0);
+                    break;
+                case "SaveFile1.json":
                     save1 = f;
                     GetInfos(button1, save1);
                     break;
-                case "2.json":
-                    Debug.Log("allo");
+                case "SaveFile2.json":
                     save2 = f;
                     GetInfos(button2, save2);
-                    break;
-                case "3.json":
-                    save3 = f;
-                    GetInfos(button3, save3);
                     break;
             }
         }
@@ -43,16 +47,10 @@ public class SaveChooser : MonoBehaviour
 
     void GetInfos(Button button, FileInfo file)
     {
-        //Text text = button.GetComponentInChildren(typeof(Text)) as Text;
-        Text empty = gameObject.transform.Find("Empty").GetComponent<Text>();
+        Text empty = button.transform.Find("Text").GetComponent<Text>();
         empty.text = "";
-        Text name = gameObject.transform.Find("SaveName").GetComponent<Text>();
-        empty.text = file.Name;
+        Text name = button.transform.Find("SaveInfo").transform.Find("SaveName").GetComponent<Text>();
+        name.text = file.Name;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
