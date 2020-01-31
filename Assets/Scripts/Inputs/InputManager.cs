@@ -2,45 +2,12 @@
 
 public class InputManager : MonoBehaviour
 {
-    private void OnDeviceLost()
-    {
-        Debug.Log("Device Lost");
-    }
+    public KeyCode goLeft = KeyCode.Q;
+    public KeyCode goRight = KeyCode.D;
 
-    private void OnDeviceRegained()
+    private void Update()
     {
-        Debug.Log("Device Regained");
-        
+        var hor = Input.GetAxis("Horizontal");
+        transform.Translate(hor * new Vector3(1, 0, 0));
     }
-
-    private void OnJump()
-    {
-        Debug.Log("Jump");
-    }
-
-    private void OnInteract()
-    {
-        Debug.Log("Interact");
-    }
-
-    private void OnMove()
-    {
-        Debug.Log("Move");
-    }
-
-    private void OnOpenMenu()
-    {
-        Debug.Log("OpenMenu");
-    }
-
-    private void OnAccept()
-    {
-        Debug.Log("Accept");
-    }
-
-    private void OnRefuse()
-    {
-        Debug.Log("Refuse");
-    }
-
 }
