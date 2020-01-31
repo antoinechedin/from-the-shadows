@@ -59,6 +59,7 @@ public class GameManager : Singleton<GameManager>
     /// <summary>
     /// Read the SaveFile and store levels data in memory (GameManager.chapters)
     /// </summary>
+    /// <param name="save"></param>
     public void LoadSaveFile(int save)
     {
         chapters = new List<Chapter>();
@@ -157,6 +158,7 @@ public class GameManager : Singleton<GameManager>
     /// Creates a Json file representing the empty save at the index "save"
     /// </summary>
     /// <param name="save"></param>
+    /// <param name="nbPlayer"></param>
     public void CreateSaveFile(int save, int nbPlayer)
     {
         //création du file
