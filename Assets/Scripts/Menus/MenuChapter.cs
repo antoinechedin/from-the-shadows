@@ -36,9 +36,9 @@ public class MenuChapter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //GameManager.Instance.LoadSaveFile(); TODO : il faut passer un int au load file pour lui dire quel file il prend
+        GameManager.Instance.LoadSaveFile(0); // TODO: Charger la bonne sauvegarde
         chapters = GameManager.Instance.GetChapters();
-        currentChapter = 0; // GameManager.Instance.GetCurrentChapter();
+        currentChapter = 0; // TODO: Recuperer le bon chapitre à la fin d'un chapitre par exemple
         EventSystem.current.SetSelectedGameObject(chapterButtons[0].gameObject);
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
