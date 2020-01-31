@@ -155,6 +155,15 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
+    /// Deletes the json file at the index "save"
+    /// </summary>
+    /// <param name="save"></param>
+    public void DeleteSaveFile(int save)
+    {
+        File.Delete("Assets/Resources/Saves/SaveFile" + save + ".json");
+    }
+
+    /// <summary>
     /// Creates a Json file representing the empty save at the index "save"
     /// </summary>
     /// <param name="save"></param>
