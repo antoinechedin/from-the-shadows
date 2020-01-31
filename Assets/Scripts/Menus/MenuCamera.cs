@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuCamera : MonoBehaviour
 {
     public List<GameObject> cameraPositions;
     public List<GameObject> cameraPositionsZoom;
-    public ChapterCursor cursor;
+    public Image cursor;
     public List<GameObject> cursorPositions;
     public float cameraSpeed;
 
@@ -38,8 +39,8 @@ public class MenuCamera : MonoBehaviour
             Transform targetRotation = cameraPositions[chapterSelected].transform;
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation.rotation, Time.deltaTime * cameraSpeed);
 
-            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, cursorPositions[chapterSelected].transform.position);
-            cursor.GetComponent<RectTransform>().anchoredPosition = screenPoint - canvas.GetComponent<RectTransform>().sizeDelta / 2f;
+            Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
+            cursor.GetComponent<RectTransform>().anchoredPosition = screenPoint / canvas.scaleFactor - canvas.GetComponent<RectTransform>().sizeDelta / 2f;
 
             isMoving = !(velocity.magnitude == 0); // Doesn't actualise the camera position while not moving
         }
@@ -58,7 +59,6 @@ public class MenuCamera : MonoBehaviour
     public void SetChapterSelected(int number)
     {
         chapterSelected = number;
-        cursor.setPositionNumber(number);
         isMoving = true;
     }
 }
