@@ -57,60 +57,84 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
+    /// sets the completions of the level "lvl" of the chapter "chap" to true
+    /// </summary>
+    /// <param name="chap"></param>
+    /// <param name="lvl"></param>
+    public void SetLevelCompleted(int chap, int lvl)
+    {
+        chapters[chap].GetLevels()[lvl].completed = true;
+    }
+
+    /// <summary>
     /// Read the SaveFile and store levels data in memory (GameManager.chapters)
     /// </summary>
     /// <param name="save"></param>
     public void LoadSaveFile(int save)
     {
-        chapters = new List<Chapter>();
-        metaFloat = new Dictionary<string, float>();
-        metaInt = new Dictionary<string, int>();
+        StartCoroutine(LoadSaveFileAsync(save));
+    }
+        
 
-        currentSave = save;
-
-        JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/Saves/SaveFile" + save + ".json"));
-
-        //chargement des metadonnées
-        nbPlayer = (int)json["nbPlayer"];
-
-        metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
-        metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
-        metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
-        metaFloat.Add("distance1", (float)json["distance1"]);
-
-        if (nbPlayer == 2)
+    private IEnumerator LoadSaveFileAsync(int save)
+    {
+        bool finished = false;
+        while (!finished)
         {
-            metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
-            metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
-            metaFloat.Add("distance2", (float)json["distance2"]);
-        }     
+            chapters = new List<Chapter>();
+            metaFloat = new Dictionary<string, float>();
+            metaInt = new Dictionary<string, int>();
 
+            currentSave = save;
 
-        //chargement des chapitres
-        JArray allChapters = (JArray)json["chapters"];
-        foreach (JObject chap in allChapters)
-        {
-            JArray chapLevels = (JArray) chap["chapter"]["levels"];
+            JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/Saves/SaveFile" + save + ".json"));
 
-            List<Level> levels = new List<Level>();
-            foreach (JObject level in chapLevels)
+            //chargement des metadonnées
+            nbPlayer = (int)json["nbPlayer"];
+
+            metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
+            metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
+            metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
+            metaFloat.Add("distance1", (float)json["distance1"]);
+
+            if (nbPlayer == 2)
             {
-                int nbCollectible = (int)level["nbCollectible"];
-                int[] collectibles = new int[nbCollectible];
-
-                for (int i = 0; i < nbCollectible; i++)
-                {
-                    collectibles[i] = (int) level["collectibles"][i];
-                }
-               
-                Level lvl = new Level((bool) level["completed"], nbCollectible, collectibles);
-                levels.Add(lvl);
+                metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
+                metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
+                metaFloat.Add("distance2", (float)json["distance2"]);
             }
 
-            Chapter chapter = new Chapter(levels);
-            chapter.PrintChapter();
-            chapters.Add(chapter);
+
+            //chargement des chapitres
+            JArray allChapters = (JArray)json["chapters"];
+            foreach (JObject chap in allChapters)
+            {
+                JArray chapLevels = (JArray)chap["chapter"]["levels"];
+
+                List<Level> levels = new List<Level>();
+                foreach (JObject level in chapLevels)
+                {
+                    int nbCollectible = (int)level["nbCollectible"];
+                    int[] collectibles = new int[nbCollectible];
+
+                    for (int i = 0; i < nbCollectible; i++)
+                    {
+                        collectibles[i] = (int)level["collectibles"][i];
+                    }
+
+                    Level lvl = new Level((bool)level["completed"], nbCollectible, collectibles);
+                    levels.Add(lvl);
+                }
+
+                Chapter chapter = new Chapter(levels);
+                chapter.PrintChapter();
+                chapters.Add(chapter);
+            }
+
+            finished = true;
+            yield return null;
         }
+        Debug.Log("Finished Loading");
     }
 
     /// <summary>
@@ -118,40 +142,53 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public void WriteSaveFile()
     {
-        StreamWriter stream = new StreamWriter("Assets/Resources/Saves/SaveFile" + currentSave + ".json");
-        //Save des Metadonnées
-        string jsonString = "{\n\t\"nbPlayer\": "+nbPlayer+",\n\t";
-        foreach (string key in metaInt.Keys)
-        {
-            jsonString += "\""+key+"\": "+metaInt[key]+",\n\t";
-        }
+        StartCoroutine(WriteSaveFileAsync());
+    }
 
-        foreach (string key in metaFloat.Keys)
-        {
-            string value = metaFloat[key].ToString().Replace(",", ".");
-            jsonString += "\"" + key + "\": " +value + ",\n\t";
-        }
+    private IEnumerator WriteSaveFileAsync()
+    {
+        bool finished = false;
 
-
-        //Save des chapitres
-        jsonString += "\"chapters\":[";
-        int i = 1;
-        foreach (Chapter chap in chapters)
+        while (!finished)
         {
-            jsonString += "\n\t\t{\n\t\t\t\"chapter\": {\"levels\" :\n\t\t\t[";
-            foreach (Level lvl in chap.GetLevels())
+            StreamWriter stream = new StreamWriter("Assets/Resources/Saves/SaveFile" + currentSave + ".json");
+            //Save des Metadonnées
+            string jsonString = "{\n\t\"nbPlayer\": " + nbPlayer + ",\n\t";
+            foreach (string key in metaInt.Keys)
             {
-                jsonString += "\n\t\t\t\t" +JsonUtility.ToJson(lvl)+",";
+                jsonString += "\"" + key + "\": " + metaInt[key] + ",\n\t";
+            }
+
+            foreach (string key in metaFloat.Keys)
+            {
+                string value = metaFloat[key].ToString().Replace(",", ".");
+                jsonString += "\"" + key + "\": " + value + ",\n\t";
+            }
+
+
+            //Save des chapitres
+            jsonString += "\"chapters\":[";
+            int i = 1;
+            foreach (Chapter chap in chapters)
+            {
+                jsonString += "\n\t\t{\n\t\t\t\"chapter\": {\"levels\" :\n\t\t\t[";
+                foreach (Level lvl in chap.GetLevels())
+                {
+                    jsonString += "\n\t\t\t\t" + JsonUtility.ToJson(lvl) + ",";
+                }
+                jsonString = jsonString.Substring(0, jsonString.Length - 1);
+                i++;
+
+                jsonString += "\n\t\t\t]}\n\n\t\t},";
             }
             jsonString = jsonString.Substring(0, jsonString.Length - 1);
-            i++;
+            jsonString += "\n\t]\n}";
+            stream.Write(jsonString);
+            stream.Close();
 
-            jsonString += "\n\t\t\t]}\n\n\t\t},";
-    }
-        jsonString = jsonString.Substring(0, jsonString.Length - 1);
-        jsonString += "\n\t]\n}";
-        stream.Write(jsonString);
-        stream.Close();
+            finished = true;
+            yield return null;
+        }
     }
 
     /// <summary>
