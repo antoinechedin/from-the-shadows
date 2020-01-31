@@ -13,7 +13,7 @@ public class MenuLevels : MonoBehaviour
 
     private Chapter currentChapter;
 
-    public void SetMenuLevels(Chapter chapter)
+    public void SetMenuLevels(int chapterNumber, Chapter chapter)
     {
         currentChapter = chapter;
 
@@ -30,20 +30,20 @@ public class MenuLevels : MonoBehaviour
 
         SetMenuLevelInfo(0);
 
-        foreach (Transform child in buttonsGroup.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
+        DestroyPreviousButtons();
 
         for (int i = 0; i < totalLevels; i++)
         {
             int levelNumber = i;
             GameObject button = Instantiate(levelButtonPrefab.gameObject, buttonsGroup.transform);
             button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
-            button.GetComponent<Button>().onClick.AddListener(delegate { LevelButtonClicked(levelNumber); });
+            button.GetComponent<Button>().onClick.AddListener(delegate { LevelButtonClicked(chapterNumber, levelNumber); });
             button.GetComponent<LevelButton>().menuLevels = this;
             button.GetComponent<LevelButton>().levelNumber = levelNumber;
-
+            if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].completed)
+            {
+                button.GetComponent<Button>().interactable = false;
+            }
             if (i == 0) EventSystem.current.SetSelectedGameObject(button.gameObject);
         }
     }
@@ -67,16 +67,18 @@ public class MenuLevels : MonoBehaviour
         }
     }
 
-    private static void LevelButtonClicked(int number)
+    public void DestroyPreviousButtons()
     {
-        // TODO: Launch the selected level
-        Debug.Log("You have clicked on level " + number);
+        foreach (Transform child in buttonsGroup.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
     }
 
-    private static void LevelButtonSelected(int number)
+    private static void LevelButtonClicked(int chapterNumber, int levelNumber)
     {
-        // TODO: Launch the selected level
-        Debug.Log("You have select the level " + number);
+        string sceneName = "Chapter" + chapterNumber + "Level" + levelNumber;
+        GameManager.Instance.LoadScene("Leo"); // TODO: Load the scene "sceneName"
     }
 
 }
