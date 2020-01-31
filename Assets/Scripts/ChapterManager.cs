@@ -12,6 +12,7 @@ public class ChapterManager : MonoBehaviour
     void Start()
     {
         //Initialisation of the first level
+        GameManager.Instance.LoadSaveFile(0);
         UpdateEnabledLevels();
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
     }
@@ -19,6 +20,11 @@ public class ChapterManager : MonoBehaviour
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            GameManager.Instance.LoadSaveFile(0);
+        }
     }
 
     /// <summary>
@@ -26,9 +32,6 @@ public class ChapterManager : MonoBehaviour
     /// </summary>
     public void PreviousLevel()
     {
-        //collecte des metadonnées du niveau courant avant de changer
-        CollectLevelMetaData();
-
         currentLevel--;
 
         //Activation du niveau courant et désactivation des autres
@@ -51,18 +54,20 @@ public class ChapterManager : MonoBehaviour
     /// </summary>
     public void NextLevel()
     {
-        //collecte des metadonnées du niveau courant avant de changer
-        CollectLevelMetaData();
-
+        //Mise àjour des infos concernant le niveau courant
+        GameManager.Instance.SetLevelCompleted(chapterIndex, currentLevel);
+        GameManager.Instance.WriteSaveFile();
+        
         currentLevel++;
 
         //Activation du niveau courant et désactivation des autres
         UpdateEnabledLevels();
 
 
-        if (currentLevel == levels.Count) //il faut faire revenir le joueur au choix des level.
+        if (currentLevel == levels.Count) //Le chapitre est terminé
         {
             Debug.Log("Dernier level terminé, direction le menu de selection de niveau");
+            CollectMetaData();
             GameManager.Instance.LoadScene("ChapterMenu");
         }
         else //on transfert le joueur dans le tableau suivant
@@ -88,7 +93,7 @@ public class ChapterManager : MonoBehaviour
         }
     }
 
-    private void CollectLevelMetaData()
+    private void CollectMetaData()
     {
         GameManager.Instance.AddMetaFloat("totalTimePlayed", timeSinceBegin); //collecte du temps de jeu
         //Debug.Log(GameManager.Instance.GetMetaFloat("totalTimePlayed"));
