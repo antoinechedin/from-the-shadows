@@ -2,26 +2,26 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
 public class SaveChooser : MonoBehaviour
 {
+    public enum State { Loading, Saving };
+    public State currentState;
     public string directoryPath;
-    public Button button0;
-    public Button button1;
-    public Button button2;
-    FileInfo save0;
-    FileInfo save1;
-    FileInfo save2;
+    public Button[] buttons;
+    public FileInfo[] saves = new FileInfo[3];
 
 
     // Start is called before the first frame update
     void Start()
     {
-        UpdateButtons();
+        GetExistingSaves();
+        DisplayInfoOnButtons();
     }
 
-    void UpdateButtons()
+    void GetExistingSaves()
     {
         var directoryInfo = new DirectoryInfo(directoryPath);
         var filesInfo = directoryInfo.GetFiles();
@@ -30,27 +30,73 @@ public class SaveChooser : MonoBehaviour
             switch (f.Name)
             {
                 case "SaveFile0.json":
-                    save0 = f;
-                    GetInfos(button0, save0);
+                    saves[0] = f;
                     break;
                 case "SaveFile1.json":
-                    save1 = f;
-                    GetInfos(button1, save1);
+                    saves[1] = f;
                     break;
                 case "SaveFile2.json":
-                    save2 = f;
-                    GetInfos(button2, save2);
+                    saves[2] = f;
                     break;
             }
         }
     }
 
-    void GetInfos(Button button, FileInfo file)
+    void DisplayInfoOnButtons()
     {
-        Text empty = button.transform.Find("Text").GetComponent<Text>();
-        empty.text = "";
-        Text name = button.transform.Find("SaveInfo").transform.Find("SaveName").GetComponent<Text>();
-        name.text = file.Name;
+        for(int i=0; i < buttons.Length; i++)
+        {
+            if (saves[i] != null)
+            {
+                Text empty = buttons[i].transform.Find("Text").GetComponent<Text>();
+                empty.text = "";
+                Text name = buttons[i].transform.Find("SaveInfo").transform.Find("SaveName").GetComponent<Text>();
+                name.text = saves[i].Name;
+            }
+            else
+            {
+                ResetButton(i);
+            }
+        }              
+    }
+    
+    public void ResetButton(int index)
+    {
+        Text empty = buttons[index].transform.Find("Text").GetComponent<Text>();
+        empty.text = "(vide)";
+        Text name = buttons[index].transform.Find("SaveInfo").transform.Find("SaveName").GetComponent<Text>();
+        name.text = "";
     }
 
+    public void ChooseAction(int index)
+    {
+        if (currentState == State.Loading && saves[index] != null)
+        {
+            Canvas actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
+            Button playButton = actionChoiceCanvas.transform.Find("PlayButton").GetComponent<Button>();
+            Button deleteButton = actionChoiceCanvas.transform.Find("DeleteButton").GetComponent<Button>();
+
+            actionChoiceCanvas.gameObject.SetActive(true);
+            EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(playButton.gameObject);
+
+            playButton.onClick.AddListener(delegate { Launch(index); });
+            deleteButton.onClick.AddListener(delegate { Delete(index); });
+
+        }
+        else if (currentState == State.Saving)
+        {
+
+        }
+    }
+
+    public void Launch(int indexSave)
+    {
+        Debug.Log("Load save number "+indexSave);
+    }
+
+    public void Delete(int indexSave)
+    {
+        Debug.Log("Delete save number " + indexSave);
+    }        
+ 
 }
