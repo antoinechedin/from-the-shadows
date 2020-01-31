@@ -13,6 +13,7 @@ public class GameManager : Singleton<GameManager>
     private List<Chapter> chapters; //structure qui stock toutes les infos sur les chapitres (et par parentée, sur tous les level)
     private bool debuging = false;
     private int nbPlayer; //stock si c'est une partie en solo ou en duo
+    private int currentSave; //l'indice de la save courante
 
     //METADATA
     private Dictionary<string, int> metaInt;
@@ -57,11 +58,13 @@ public class GameManager : Singleton<GameManager>
     /// <summary>
     /// Read the SaveFile and store levels data in memory (GameManager.chapters)
     /// </summary>
-    public void LoadSaveFile()
+    public void LoadSaveFile(int save)
     {
         chapters = new List<Chapter>();
         metaFloat = new Dictionary<string, float>();
         metaInt = new Dictionary<string, int>();
+
+        currentSave = save;
 
         JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/SaveFile.json"));
 
