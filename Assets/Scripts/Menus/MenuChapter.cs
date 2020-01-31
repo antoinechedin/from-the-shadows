@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class MenuChapter : MonoBehaviour
 {
     public MenuLevels menuLevels;
     public List<UnityEngine.UI.Button> chapterButtons;
-    public UnityEngine.UI.Text levelLabel;
-    public UnityEngine.UI.Text collectiblesNumber;
-    public UnityEngine.UI.Text completedNumber;
+    public Text levelLabel;
+    public Text collectiblesNumber;
+    public Text completedNumber;
     public GameObject chapterButtonsPanel;
 
     private List<Chapter> chapters;
@@ -55,22 +56,25 @@ public class MenuChapter : MonoBehaviour
                 chapterButtonsPanel.SetActive(false);
                 if (menuChapterAnimator != null)
                 {
-                    //int nbCollectibleTaken = 0; TODO : correction pour correspondre au int[]
-                    //int totalNbCollectible = 0; TODO : correction pour correspondre au int[]
+                    int nbCollectibleTaken = 0;
+                    int totalNbCollectible = 0;
                     int nbCompleted = 0;
                     int totalLevel = 0;
 
                     List<Level> levels = chapters[currentChapter].GetLevels();
                     foreach (Level l in levels)
                     {
-                        //nbCollectibleTaken += l.nbCollectibleTaken;  TODO : correction pour correspondre au int[]
-                        //totalNbCollectible += l.totalNbCollectible;  TODO : correction pour correspondre au int[]
+                        foreach (int collectible in l.collectibles)
+                        {
+                            if (collectible == 1) nbCollectibleTaken++;
+                        }
+                        totalNbCollectible = l.nbCollectible;
                         if (l.completed) nbCompleted++;
                         totalLevel++;
                     }
 
                     levelLabel.text = chaptersName[currentChapter];
-                    //collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;  TODO : correction pour correspondre au int[]
+                    collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;
                     completedNumber.text = nbCompleted + "/" + totalLevel;
                     menuChapterAnimator.SetBool("open", true);
                 }
@@ -83,17 +87,7 @@ public class MenuChapter : MonoBehaviour
                 levelMenuIsOpen = true;
                 if (menuChapterAnimator != null)
                 {
-                    int nbCompleted = 0;
-                    int totalLevel = 0;
-
-                    List<Level> levels = chapters[currentChapter].GetLevels();
-                    foreach (Level l in levels)
-                    {
-                        if (l.completed) nbCompleted++;
-                        totalLevel++;
-                    }
-
-                    menuLevels.SetMenuLevels(nbCompleted, totalLevel);
+                    menuLevels.SetMenuLevels(chapters[currentChapter]);
                     menuLevelAnimator.SetBool("open", true);
                 }
             }
