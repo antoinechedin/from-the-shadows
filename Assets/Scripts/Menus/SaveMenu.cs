@@ -146,7 +146,7 @@ public class SaveMenu : MonoBehaviour
     /// <param name="indexSave"> Index of the file to load</param>
     public void Launch(int indexSave)
     {
-        GameManager.Instance.LoadSaveFile(indexSave);
+        //GameManager.Instance.LoadSaveFile(indexSave); TODO: OBSOLETE. Use LoadAllSaveFiles();
         Debug.Log("Load save number " + indexSave);
         actionChoiceCanvas.gameObject.SetActive(false);
         newGameChoiceCanvas.gameObject.SetActive(false);
