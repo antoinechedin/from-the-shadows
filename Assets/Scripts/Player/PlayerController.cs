@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -81,10 +81,20 @@ public class PlayerController : MonoBehaviour
         velocity.y -= gravity * Time.deltaTime;
     }
 
+    private void AnimControllerUpdate()
+    {
+        if (velocity.x > 0 && GetComponent<SpriteRenderer>().flipX) GetComponent<SpriteRenderer>().flipX = false;
+        if (velocity.x < 0 && !GetComponent<SpriteRenderer>().flipX) GetComponent<SpriteRenderer>().flipX = true;
+        GetComponent<Animator>().SetBool("Running", (int)velocity.x != 0);
+        GetComponent<Animator>().SetBool("Airborne", state == PlayerState.Airborne);
+    }
+
     private void Update()
     {
         HandleInput();
         controller.Move(velocity * Time.fixedDeltaTime);
+
+        AnimControllerUpdate();
 
         switch (state)
         {
