@@ -51,7 +51,7 @@ public class MenuChapter : MonoBehaviour
     void Update()
     {
         // Open the chapter
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Interact"))
         {
             if (!chapterMenuIsOpen && !levelMenuIsOpen)
             {
