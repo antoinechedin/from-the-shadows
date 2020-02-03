@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 public class GameManager : Singleton<GameManager>
 {
-    public enum GameStates {MainMenu, ChoosingLevel, Playing, Paused};
+    public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
 
     public GameStates gameState;
     private Save[] saves; //store all saves of the game
@@ -48,6 +48,11 @@ public class GameManager : Singleton<GameManager>
         {
             return saves[currentSave].Chapters;
         }
+    }
+
+    public Save[] Saves
+    {
+        get { return saves; }
     }
 
     public bool Debuging
@@ -218,6 +223,7 @@ public class GameManager : Singleton<GameManager>
     public void DeleteSaveFile(int save)
     {
         File.Delete("Assets/Resources/Saves/SaveFile" + save + ".json");
+        saves[save] = null;
     }
 
     /// <summary>
