@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Vector2 targetVelocity;
     [HideInInspector] public bool jumpInput;
     [HideInInspector] public Vector2 velocity;
+    private Vector2 oldPosition;
     private ActorController controller;
     private PlayerSoundPlayer soundPlayer;
 
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        oldPosition = transform.position;
         velocity = targetVelocity = velocitySmoothing = new Vector2();
         controller = GetComponent<ActorController>();
         soundPlayer = GetComponent<PlayerSoundPlayer>();
@@ -51,7 +53,9 @@ public class PlayerController : MonoBehaviour
                     velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
                     canStopJump = true;
 
-                    // TODO: Add jump metadata
+                    GameManager.Instance.AddMetaInt("jumpNumber1", 1); // saves number of jumps inside GM
+                    //TODO : save for each player, using player index
+
                     soundPlayer.PlaySoundAtLocation(soundPlayer.jump, 1);
                 }
                 break;
@@ -84,7 +88,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        controller.Move(velocity * Time.fixedDeltaTime);
+        controller.Move(velocity * Time.deltaTime);
+        float distance = ((Vector2)transform.position - oldPosition).magnitude;
+        oldPosition = transform.position;
+        GameManager.Instance.AddMetaFloat("distance1", distance);
+        //TODO : save for each player, using player index
 
         switch (state)
         {
