@@ -10,18 +10,25 @@ public class Save
     //METADATA
     private Dictionary<string, int> metaInt;
     private Dictionary<string, float> metaFloat;
+    private System.DateTime lastOpenDate;
 
-    public Save(List<Chapter> chaps, int nb, Dictionary<string, int> mInt, Dictionary<string, float> mFloat)
+    public Save(List<Chapter> chaps, int nb, Dictionary<string, int> mInt, Dictionary<string, float> mFloat, System.DateTime dt)
     {
         chapters = chaps;
         nbPlayer = nb;
         metaInt = mInt;
         metaFloat = mFloat;
+        lastOpenDate = dt;
     }
 
     public List<Chapter> Chapters
     {
         get { return chapters; }
+    }
+
+    public System.DateTime LastOpenDate
+    {
+        get { return lastOpenDate; }
     }
 
     public int NbPlayer
