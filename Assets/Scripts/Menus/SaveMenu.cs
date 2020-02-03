@@ -124,6 +124,7 @@ public class SaveMenu : MonoBehaviour
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(playButton.gameObject);
 
             playButton.onClick.AddListener(delegate { Launch(index); });
+            deleteButton.onClick.RemoveAllListeners();
             deleteButton.onClick.AddListener(delegate { Delete(index); });
         }
         else if (saves[index] == null)

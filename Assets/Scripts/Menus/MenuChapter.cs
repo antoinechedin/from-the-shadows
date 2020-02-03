@@ -51,7 +51,7 @@ public class MenuChapter : MonoBehaviour
     void Update()
     {
         // Open the chapter
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Accept"))
         {
             if (!chapterMenuIsOpen && !levelMenuIsOpen)
             {
@@ -130,6 +130,8 @@ public class MenuChapter : MonoBehaviour
             else if (!chapterMenuIsOpen && !levelMenuIsOpen)
             {
                 menuCamera.SetReturnToMainMenu(true);
+                gameObject.transform.position += new Vector3(455, 0, 0);
+                menuLevels.gameObject.transform.position += new Vector3(455, 0, 0);
                 menuManager.OpenSaveMenu();
             }
         }

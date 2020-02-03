@@ -1,50 +1,22 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Experimental.Input;
+﻿using UnityEngine;
 
-public class InputManager : MonoBehaviour, IPlayerActions
+public class InputManager : MonoBehaviour
 {
-    public InputMaster inputs;
-
-    private void Awake()
+    public GameObject shadowPlayer;
+    public GameObject lightPlayer;
+    
+    private void Update()
     {
-        inputs.Player.Enable();
-        inputs.Player.SetCallbacks(this);
+        //TESTS
+        if (Input.GetButton("Attack"))
+        {
+            Debug.Log("1");
+            shadowPlayer.transform.Translate(1 * new Vector3(1, 0, 0) * Time.deltaTime);
+        }
+        if (Input.GetButton("Joy1_Attack"))
+        {
+            Debug.Log("2");
+            lightPlayer.transform.Translate(1 * new Vector3(1, 0, 0) * Time.deltaTime);
+        }
     }
-
-    public void OnJump(InputAction.CallbackContext ctx)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnOpenMenu(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnAccept(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnRefuse(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void OnDisable()
-    {
-        inputs.Player.Disable();
-    }
-
 }
