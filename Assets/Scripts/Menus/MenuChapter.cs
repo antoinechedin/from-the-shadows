@@ -135,7 +135,6 @@ public class MenuChapter : MonoBehaviour
                 menuManager.OpenSaveMenu();
             }
         }
-
     }
 
     /// <summary>
