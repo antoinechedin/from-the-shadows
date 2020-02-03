@@ -89,7 +89,7 @@ public class GameManager : Singleton<GameManager>
         StartCoroutine(LoadAllsaveFilesAsync());
     }
 
-    public IEnumerator LoadAllsaveFilesAsync()
+    private IEnumerator LoadAllsaveFilesAsync()
     {
         saves = new Save[3];
 
@@ -156,6 +156,83 @@ public class GameManager : Singleton<GameManager>
             yield return null;
         }
 
+        loading = false;
+    }
+
+    /// <summary>
+    /// Loads the SaveFile specified in parameters
+    /// </summary>
+    /// <param name="save"></param>
+    public void LoadSaveFile(int save)
+    {
+        StartCoroutine(LoadSaveFileAsync(save));
+    }
+
+    /// <summary>
+    /// Coroutine Loads the SaveFile specified in parameters
+    /// </summary>
+    /// <param name="save"></param>
+    private IEnumerator LoadSaveFileAsync(int save)
+    {
+        loading = true;
+        bool finished = false;
+
+        while (!finished)
+        {
+            List<Chapter> chapters = new List<Chapter>();
+            Dictionary<string, float> metaFloat = new Dictionary<string, float>();
+            Dictionary<string, int> metaInt = new Dictionary<string, int>();
+
+            JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/Saves/SaveFile" + save + ".json"));
+
+            //chargement des metadonnées
+            int nbPlayer = (int)json["nbPlayer"];
+
+            metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
+            metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
+            metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
+            metaFloat.Add("distance1", (float)json["distance1"]);
+
+            if (nbPlayer == 2)
+            {
+                metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
+                metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
+                metaFloat.Add("distance2", (float)json["distance2"]);
+            }
+
+
+            //chargement des chapitres
+            JArray allChapters = (JArray)json["chapters"];
+            foreach (JObject chap in allChapters)
+            {
+                JArray chapLevels = (JArray)chap["chapter"]["levels"];
+
+                List<Level> levels = new List<Level>();
+                foreach (JObject level in chapLevels)
+                {
+                    int nbCollectible = (int)level["nbCollectible"];
+                    int[] collectibles = new int[nbCollectible];
+
+                    for (int k = 0; k < nbCollectible; k++)
+                    {
+                        collectibles[k] = (int)level["collectibles"][k];
+                    }
+
+                    Level lvl = new Level((bool)level["completed"], nbCollectible, collectibles);
+                    levels.Add(lvl);
+                }
+
+                Chapter chapter = new Chapter(levels);
+                chapter.PrintChapter();
+                chapters.Add(chapter);
+            }
+            FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile0.json");
+            System.DateTime lastDate = fileInfo.LastWriteTime;
+            Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
+            saves[save] = addedSave;
+            finished = true;
+        }
+        yield return null;
         loading = false;
     }
 
@@ -244,11 +321,11 @@ public class GameManager : Singleton<GameManager>
             saveFileContent = File.ReadAllText("Assets/Resources/SaveFileDuo.json");
         }
 
-        Debug.Log(saveFileContent);
-
         //On rempli le nouveau SaveFile
         streamWriter.Write(saveFileContent);
         streamWriter.Close();
+
+        LoadSaveFile(save);
     }
 
 
