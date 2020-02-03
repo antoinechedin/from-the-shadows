@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.UI;
@@ -19,7 +20,7 @@ public class SaveMenu : MonoBehaviour
 
     void Start()
     {
-        GameManager.Instance.LoadAllSaveFiles();
+
         GetExistingSaves();
         actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
         newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
@@ -87,8 +88,9 @@ public class SaveMenu : MonoBehaviour
             {
                 Text empty = buttons[i].transform.Find("Text").GetComponent<Text>();
                 empty.text = "";
-                Text name = buttons[i].transform.Find("SaveInfo").transform.Find("SaveName").GetComponent<Text>();
-                name.text = saves[i].Name;
+                buttons[i].transform.Find("SaveInfo").gameObject.SetActive(true);
+                Text date = buttons[i].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
+                date.text = saves[i].LastWriteTime.ToString();
             }
             else
             {
@@ -105,8 +107,7 @@ public class SaveMenu : MonoBehaviour
     {
         Text empty = buttons[index].transform.Find("Text").GetComponent<Text>();
         empty.text = "NEW GAME";
-        Text name = buttons[index].transform.Find("SaveInfo").transform.Find("SaveName").GetComponent<Text>();
-        name.text = "";
+        buttons[index].transform.Find("SaveInfo").gameObject.SetActive(false);
     }
 
     /// <summary>
