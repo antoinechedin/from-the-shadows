@@ -12,7 +12,8 @@ public class ChapterManager : MonoBehaviour
     void Start()
     {
         //Initialisation of the first level
-        //GameManager.Instance.LoadSaveFile(0); TODO: OBSOLETE. Use LoadAllSaveFile();
+        GameManager.Instance.LoadAllSaveFiles();
+        GameManager.Instance.CurrentSave = 0;
         UpdateEnabledLevels();
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
     }

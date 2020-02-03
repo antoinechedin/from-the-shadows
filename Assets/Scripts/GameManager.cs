@@ -292,13 +292,21 @@ public class GameManager : Singleton<GameManager>
     //---------METADATA MANIPULATION-----------------
 
     /// <summary>
-    /// returns the value of the metadata of name n
+    /// returns the metadata n of the currentSave or the sabe nbSave if it's passed in parameters
     /// </summary>
     /// <param name="n"></param>
     /// <returns></returns>
-    public int GetMetaInt(string n)
+    public int GetMetaInt(string n, int saveNb = -1)
     {
-        return saves[currentSave].MetaInt[n];
+        if (saveNb == -1)
+        {
+            return saves[currentSave].MetaInt[n];
+        }
+        else
+        {
+            return saves[saveNb].MetaInt[n];
+        }
+
     }
 
     /// <summary>
@@ -313,13 +321,20 @@ public class GameManager : Singleton<GameManager>
 
 
     /// <summary>
-    /// returns the value of the metadata of name n
+    /// returns the metadata n of the currentSave or the sabe nbSave if it's passed in parameters
     /// </summary>
     /// <param name="n"></param>
     /// <returns></returns>
-    public float GetMetaFloat(string n)
+    public float GetMetaFloat(string n, int saveNb = -1)
     {
-         return saves[currentSave].MetaFloat[n];
+        if (saveNb == -1)
+        {
+            return saves[currentSave].MetaFloat[n];
+        }
+        else
+        {
+            return saves[saveNb].MetaFloat[n];
+        }
     }
 
     /// <summary>
