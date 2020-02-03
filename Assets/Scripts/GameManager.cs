@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
     public enum GameStates {MainMenu, ChoosingLevel, Playing, Paused};
 
     public GameStates gameState;
-    private List<Save> saves; //store all saves of the game
+    private Save[] saves; //store all saves of the game
     private int currentSave = -1; //l'indice de la save courante
 
     //info about the state of the game
@@ -90,7 +90,7 @@ public class GameManager : Singleton<GameManager>
 
     public IEnumerator LoadAllsaveFilesAsync()
     {
-        saves = new List<Save>();
+        saves = new Save[3];
 
         loading = true;
         bool finished = false;
@@ -148,7 +148,7 @@ public class GameManager : Singleton<GameManager>
                 }
 
                 Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat);
-                saves.Add(addedSave);
+                saves[i] = addedSave;
             }
             finished = true;
             yield return null;
@@ -283,11 +283,6 @@ public class GameManager : Singleton<GameManager>
             yield return null;
         }
     }
-
-
-
-
-
 
     //---------METADATA MANIPULATION-----------------
 
