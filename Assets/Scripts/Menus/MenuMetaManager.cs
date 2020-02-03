@@ -40,13 +40,19 @@ public class MenuMetaManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            GameManager.Instance.LoadSaveFile(0);
             StartCoroutine(WaitForLoadAndPopulate());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            GameManager.Instance.CurrentSave = 0;
         }
     }
 
     public IEnumerator WaitForLoadAndPopulate()
     {
+        GameManager.Instance.LoadAllSaveFiles();
+        GameManager.Instance.CurrentSave = 0;
         while (GameManager.Instance.Loading)
         {
             yield return null;
@@ -63,5 +69,7 @@ public class MenuMetaManager : MonoBehaviour
         shadowGuyToPopulate[0].text = GameManager.Instance.GetMetaInt("playerDeath2").ToString();
         shadowGuyToPopulate[1].text = GameManager.Instance.GetMetaInt("jumpNumber2").ToString();
         shadowGuyToPopulate[2].text = GameManager.Instance.GetMetaFloat("distance2").ToString();
+
+        totalToPopulate[0].text = GameManager.Instance.GetMetaFloat("totalTimePlayed").ToString();
     }
 }
