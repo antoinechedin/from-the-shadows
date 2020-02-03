@@ -13,6 +13,9 @@ public class MenuChapter : MonoBehaviour
     public Text collectiblesNumber;
     public Text completedNumber;
     public GameObject chapterButtonsPanel;
+    public Canvas canvas;
+    public Canvas saveMenu;
+    public MenuManager menuManager;
 
     private List<Chapter> chapters;
     private int currentChapter;
@@ -37,7 +40,6 @@ public class MenuChapter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameManager.Instance.LoadSaveFile(0); // TODO: Charger la bonne sauvegarde
         chapters = GameManager.Instance.GetChapters();
         currentChapter = 0; // TODO: Recuperer le bon chapitre à la fin d'un chapitre par exemple
         EventSystem.current.SetSelectedGameObject(chapterButtons[0].gameObject);
@@ -124,6 +126,11 @@ public class MenuChapter : MonoBehaviour
                 {
                     menuChapterAnimator.SetBool("open", true);
                 }
+            }
+            else if (!chapterMenuIsOpen && !levelMenuIsOpen)
+            {
+                menuCamera.SetReturnToMainMenu(true);
+                menuManager.OpenSaveMenu();
             }
         }
 
