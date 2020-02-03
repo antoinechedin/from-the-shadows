@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -85,6 +85,14 @@ public class PlayerController : MonoBehaviour
         velocity.y -= gravity * Time.deltaTime;
     }
 
+    private void AnimControllerUpdate()
+    {
+        if (velocity.x > 0 && GetComponent<SpriteRenderer>().flipX) GetComponent<SpriteRenderer>().flipX = false;
+        if (velocity.x < 0 && !GetComponent<SpriteRenderer>().flipX) GetComponent<SpriteRenderer>().flipX = true;
+        GetComponent<Animator>().SetBool("Running", (int)velocity.x != 0);
+        GetComponent<Animator>().SetBool("Airborne", state == PlayerState.Airborne);
+    }
+
     private void Update()
     {
         HandleInput();
@@ -93,6 +101,8 @@ public class PlayerController : MonoBehaviour
         oldPosition = transform.position;
         GameManager.Instance.AddMetaFloat("distance1", distance);
         //TODO : save for each player, using player index
+
+        AnimControllerUpdate();
 
         switch (state)
         {
