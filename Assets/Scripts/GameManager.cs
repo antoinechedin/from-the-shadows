@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 using System.IO;
 public class GameManager : Singleton<GameManager>
 {
-    public enum GameStates {MainMenu, ChoosingLevel, Playing, Paused};
+    public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
 
     public GameStates gameState;
-    private List<Save> saves; //store all saves of the game
+    private Save[] saves; //store all saves of the game
     private int currentSave = -1; //l'indice de la save courante
 
     //info about the state of the game
@@ -44,6 +44,11 @@ public class GameManager : Singleton<GameManager>
         {
             return saves[currentSave].Chapters;
         }
+    }
+
+    public Save[] Saves
+    {
+        get { return saves; }
     }
 
     public bool Debuging
@@ -86,7 +91,7 @@ public class GameManager : Singleton<GameManager>
 
     public IEnumerator LoadAllsaveFilesAsync()
     {
-        saves = new List<Save>();
+        saves = new Save[3];
 
         loading = true;
         bool finished = false;
@@ -144,7 +149,7 @@ public class GameManager : Singleton<GameManager>
                 }
 
                 Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat);
-                saves.Add(addedSave);
+                saves[i] = addedSave;
             }
             finished = true;
             yield return null;
@@ -214,6 +219,7 @@ public class GameManager : Singleton<GameManager>
     public void DeleteSaveFile(int save)
     {
         File.Delete("Assets/Resources/Saves/SaveFile" + save + ".json");
+        saves[save] = null;
     }
 
     /// <summary>
@@ -280,21 +286,24 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-
-
-
-
-
     //---------METADATA MANIPULATION-----------------
 
     /// <summary>
-    /// returns the value of the metadata of name n
+    /// returns the metadata n of the currentSave or the sabe nbSave if it's passed in parameters
     /// </summary>
     /// <param name="n"></param>
     /// <returns></returns>
-    public int GetMetaInt(string n)
+    public int GetMetaInt(string n, int saveNb = -1)
     {
-        return saves[currentSave].MetaInt[n];
+        if (saveNb == -1)
+        {
+            return saves[currentSave].MetaInt[n];
+        }
+        else
+        {
+            return saves[saveNb].MetaInt[n];
+        }
+
     }
 
     /// <summary>
@@ -309,13 +318,20 @@ public class GameManager : Singleton<GameManager>
 
 
     /// <summary>
-    /// returns the value of the metadata of name n
+    /// returns the metadata n of the currentSave or the sabe nbSave if it's passed in parameters
     /// </summary>
     /// <param name="n"></param>
     /// <returns></returns>
-    public float GetMetaFloat(string n)
+    public float GetMetaFloat(string n, int saveNb = -1)
     {
-         return saves[currentSave].MetaFloat[n];
+        if (saveNb == -1)
+        {
+            return saves[currentSave].MetaFloat[n];
+        }
+        else
+        {
+            return saves[saveNb].MetaFloat[n];
+        }
     }
 
     /// <summary>
