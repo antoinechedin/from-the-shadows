@@ -130,6 +130,8 @@ public class MenuChapter : MonoBehaviour
             else if (!chapterMenuIsOpen && !levelMenuIsOpen)
             {
                 menuCamera.SetReturnToMainMenu(true);
+                gameObject.transform.position += new Vector3(455, 0, 0);
+                menuLevels.gameObject.transform.position += new Vector3(455, 0, 0);
                 menuManager.OpenSaveMenu();
             }
         }
