@@ -192,7 +192,7 @@ public class GameManager : Singleton<GameManager>
                 chapter.PrintChapter();
                 chapters.Add(chapter);
             }
-            FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile0.json");
+            FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile"+ save +".json");
             System.DateTime lastDate = fileInfo.LastWriteTime;
             Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
             saves[save] = addedSave;
