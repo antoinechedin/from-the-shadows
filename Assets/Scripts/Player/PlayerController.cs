@@ -51,7 +51,8 @@ public class PlayerController : MonoBehaviour
                     velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
                     canStopJump = true;
 
-                    // TODO: Add jump metadata
+                    GameManager.Instance.AddMetaInt("jumpNumber1", 1); // saves number of jumps inside GM
+
                     soundPlayer.PlaySoundAtLocation(soundPlayer.jump, 1);
                 }
                 break;
