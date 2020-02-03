@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class MenuChapter : MonoBehaviour
 {
+    public MenuCamera menuCamera;
     public MenuLevels menuLevels;
     public List<UnityEngine.UI.Button> chapterButtons;
     public Text levelLabel;
@@ -68,7 +69,7 @@ public class MenuChapter : MonoBehaviour
                         {
                             if (collectible == 1) nbCollectibleTaken++;
                         }
-                        totalNbCollectible = l.nbCollectible;
+                        totalNbCollectible += l.nbCollectible;
                         if (l.completed) nbCompleted++;
                         totalLevel++;
                     }
@@ -77,6 +78,7 @@ public class MenuChapter : MonoBehaviour
                     collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;
                     completedNumber.text = nbCompleted + "/" + totalLevel;
                     menuChapterAnimator.SetBool("open", true);
+                    menuCamera.SetZoom(true);
                 }
             }
             // Open the level and close the chapter
@@ -87,7 +89,7 @@ public class MenuChapter : MonoBehaviour
                 levelMenuIsOpen = true;
                 if (menuChapterAnimator != null)
                 {
-                    menuLevels.SetMenuLevels(chapters[currentChapter]);
+                    menuLevels.SetMenuLevels(currentChapter, chapters[currentChapter]);
                     menuLevelAnimator.SetBool("open", true);
                 }
             }
@@ -106,12 +108,14 @@ public class MenuChapter : MonoBehaviour
                 {
                     menuChapterAnimator.SetBool("open", false);
                 }
+                menuCamera.SetZoom(false);
             }
             // Close the level and open the chapter
             else if (!chapterMenuIsOpen && levelMenuIsOpen)
             {
                 chapterMenuIsOpen = true;
                 levelMenuIsOpen = false;
+                menuLevels.DestroyPreviousButtons();
                 if (menuLevelAnimator != null)
                 {
                     menuLevelAnimator.SetBool("open", false);
