@@ -100,57 +100,23 @@ public class GameManager : Singleton<GameManager>
         {
             for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
             {
-                List<Chapter> chapters = new List<Chapter>();
-                Dictionary<string, float> metaFloat = new Dictionary<string, float>();
-                Dictionary<string, int> metaInt = new Dictionary<string, int>();
-
-                JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/Saves/SaveFile" + i + ".json"));
-
-                //chargement des metadonnées
-                int nbPlayer = (int)json["nbPlayer"];
-
-                metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
-                metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
-                metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
-                metaFloat.Add("distance1", (float)json["distance1"]);
-
-                if (nbPlayer == 2)
+                DirectoryInfo directoryInfo = new DirectoryInfo("Assets/Resources/Saves/");
+                FileInfo[] filesInfo = directoryInfo.GetFiles();
+                foreach (FileInfo f in filesInfo)
                 {
-                    metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
-                    metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
-                    metaFloat.Add("distance2", (float)json["distance2"]);
-                }
-
-
-                //chargement des chapitres
-                JArray allChapters = (JArray)json["chapters"];
-                foreach (JObject chap in allChapters)
-                {
-                    JArray chapLevels = (JArray)chap["chapter"]["levels"];
-
-                    List<Level> levels = new List<Level>();
-                    foreach (JObject level in chapLevels)
+                    switch (f.Name)
                     {
-                        int nbCollectible = (int)level["nbCollectible"];
-                        int[] collectibles = new int[nbCollectible];
-
-                        for (int k = 0; k < nbCollectible; k++)
-                        {
-                            collectibles[k] = (int)level["collectibles"][k];
-                        }
-
-                        Level lvl = new Level((bool)level["completed"], nbCollectible, collectibles);
-                        levels.Add(lvl);
+                        case "SaveFile0.json":
+                            LoadSaveFile(0);
+                            break;
+                        case "SaveFile1.json":
+                            LoadSaveFile(1);
+                            break;
+                        case "SaveFile2.json":
+                            LoadSaveFile(2);
+                            break;
                     }
-
-                    Chapter chapter = new Chapter(levels);
-                    chapter.PrintChapter();
-                    chapters.Add(chapter);
                 }
-                FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile0.json");
-                System.DateTime lastDate = fileInfo.LastWriteTime;
-                Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
-                saves[i] = addedSave;
             }
             finished = true;
             yield return null;
@@ -174,11 +140,11 @@ public class GameManager : Singleton<GameManager>
     /// <param name="save"></param>
     private IEnumerator LoadSaveFileAsync(int save)
     {
-        loading = true;
         bool finished = false;
 
         while (!finished)
         {
+            loading = true;
             List<Chapter> chapters = new List<Chapter>();
             Dictionary<string, float> metaFloat = new Dictionary<string, float>();
             Dictionary<string, int> metaInt = new Dictionary<string, int>();
