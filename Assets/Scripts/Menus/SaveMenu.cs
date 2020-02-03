@@ -13,10 +13,41 @@ public class SaveMenu : MonoBehaviour
     public Button[] buttons;
     public FileInfo[] saves = new FileInfo[3];
 
+    private Canvas actionChoiceCanvas;
+    private Canvas newGameChoiceCanvas;
+    private MenuManager menuManager;
 
     void Start()
     {
         GetExistingSaves();
+        actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
+        newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
+        menuManager = GameObject.Find("MenuManager").gameObject.GetComponent<MenuManager>();
+        if (buttons.Length > 0)
+        {
+            EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[0].gameObject);
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetButtonDown("Return"))
+        {
+            if (actionChoiceCanvas.gameObject.activeSelf)
+            {
+                actionChoiceCanvas.gameObject.SetActive(false);
+                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[0].gameObject);
+            }
+            else if (newGameChoiceCanvas.gameObject.activeSelf)
+            {
+                newGameChoiceCanvas.gameObject.SetActive(false);
+                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[0].gameObject);
+            }
+            else
+            {
+                menuManager.OpenStartMenu();
+            }
+        }
     }
 
     /// <summary>
@@ -49,7 +80,7 @@ public class SaveMenu : MonoBehaviour
     /// </summary>
     void DisplayInfoOnButtons()
     {
-        for(int i=0; i < buttons.Length; i++)
+        for (int i = 0; i < buttons.Length; i++)
         {
             if (saves[i] != null)
             {
@@ -62,9 +93,9 @@ public class SaveMenu : MonoBehaviour
             {
                 ResetButton(i);
             }
-        }              
+        }
     }
-    
+
     /// <summary>
     /// Reset a button
     /// </summary>
@@ -85,7 +116,7 @@ public class SaveMenu : MonoBehaviour
     {
         if (currentState == State.Loading && saves[index] != null)
         {
-            Canvas actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
+            actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
             Button playButton = actionChoiceCanvas.transform.Find("PlayButton").GetComponent<Button>();
             Button deleteButton = actionChoiceCanvas.transform.Find("DeleteButton").GetComponent<Button>();
 
@@ -94,9 +125,10 @@ public class SaveMenu : MonoBehaviour
 
             playButton.onClick.AddListener(delegate { Launch(index); });
             deleteButton.onClick.AddListener(delegate { Delete(index); });
-        } else if (saves[index] == null)
+        }
+        else if (saves[index] == null)
         {
-            Canvas newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
+            newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
             Button soloButton = newGameChoiceCanvas.transform.Find("SoloButton").GetComponent<Button>();
             Button duoButton = newGameChoiceCanvas.transform.Find("DuoButton").GetComponent<Button>();
 
@@ -114,9 +146,11 @@ public class SaveMenu : MonoBehaviour
     /// <param name="indexSave"> Index of the file to load</param>
     public void Launch(int indexSave)
     {
-        GameObject.Find("GameManager").GetComponent<GameManager>().LoadSaveFile(indexSave);
-        Debug.Log("Load save number "+indexSave);
-        //TODO Afficher le menu de choix des chapitres
+        GameManager.Instance.LoadSaveFile(indexSave);
+        Debug.Log("Load save number " + indexSave);
+        actionChoiceCanvas.gameObject.SetActive(false);
+        newGameChoiceCanvas.gameObject.SetActive(false);
+        menuManager.OpenChaptersMenu();
     }
 
     /// <summary>
@@ -125,7 +159,7 @@ public class SaveMenu : MonoBehaviour
     /// <param name="indexSave"> Index of the file to delete</param>
     public void Delete(int indexSave)
     {
-        GameObject.Find("GameManager").GetComponent<GameManager>().DeleteSaveFile(indexSave);
+        GameManager.Instance.DeleteSaveFile(indexSave);
         Debug.Log("Delete save number " + indexSave);
 
         gameObject.transform.Find("ActionChoice").gameObject.SetActive(false);
@@ -142,8 +176,10 @@ public class SaveMenu : MonoBehaviour
     /// <param name="indexSave"> Index of the new file</param>
     public void NewGame(int nbPlayer, int indexSave)
     {
-        GameManager gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        gameManager.CreateSaveFile(indexSave, nbPlayer);
-        Debug.Log("Create save number " + indexSave + "( "+ nbPlayer +" players )");
-    } 
+        GameManager.Instance.GetComponent<GameManager>();
+        GameManager.Instance.CreateSaveFile(indexSave, nbPlayer);
+        GetExistingSaves();
+        Debug.Log("Create save number " + indexSave + "( " + nbPlayer + " players )");
+        Launch(indexSave);
+    }
 }

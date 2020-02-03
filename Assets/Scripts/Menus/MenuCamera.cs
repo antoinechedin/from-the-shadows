@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class MenuCamera : MonoBehaviour
 {
+    public GameObject startPosition;
     public List<GameObject> cameraPositions;
     public List<GameObject> cameraPositionsZoom;
     public Image cursor;
@@ -16,6 +17,7 @@ public class MenuCamera : MonoBehaviour
     private int chapterSelected;
     private bool isMoving = false;
     private bool zoom = false;
+    private bool returnToMainMenu = false;
 
     // Update is called once per frame
     void Update()
@@ -24,19 +26,26 @@ public class MenuCamera : MonoBehaviour
         {
             // Move the camera
             Vector3 targetPosition;
-            if (!zoom)
+            Transform targetRotation;
+            if (returnToMainMenu)
+            {
+                targetPosition = startPosition.transform.position;
+                targetRotation = startPosition.transform;
+            }
+            else if (!zoom)
             {
                 targetPosition = cameraPositions[chapterSelected].transform.position;
+                targetRotation = cameraPositions[chapterSelected].transform;
             }
             else
             {
                 targetPosition = cameraPositionsZoom[chapterSelected].transform.position;
+                targetRotation = cameraPositionsZoom[chapterSelected].transform;
             }
             Vector3 velocity = Vector3.zero;
             transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.1f);
 
             // Rotate the camera
-            Transform targetRotation = cameraPositions[chapterSelected].transform;
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation.rotation, Time.deltaTime * cameraSpeed);
 
             Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
@@ -49,6 +58,12 @@ public class MenuCamera : MonoBehaviour
     public void SetZoom(bool isZooming)
     {
         zoom = isZooming;
+        isMoving = true;
+    }
+
+    public void SetReturnToMainMenu(bool var)
+    {
+        returnToMainMenu = var;
         isMoving = true;
     }
 
