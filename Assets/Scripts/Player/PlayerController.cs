@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool jumpInput;
     [HideInInspector] public Vector2 velocity;
     private ActorController controller;
+    private PlayerSoundPlayer soundPlayer;
 
     private bool canStopJump = false;
     private Vector2 velocitySmoothing;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         velocity = targetVelocity = velocitySmoothing = new Vector2();
         controller = GetComponent<ActorController>();
+        soundPlayer = GetComponent<PlayerSoundPlayer>();
     }
 
     public void HandleInput()
@@ -50,6 +52,7 @@ public class PlayerController : MonoBehaviour
                     canStopJump = true;
 
                     // TODO: Add jump metadata
+                    soundPlayer.PlaySoundAtLocation(soundPlayer.jump, 1);
                 }
                 break;
 
@@ -103,7 +106,13 @@ public class PlayerController : MonoBehaviour
                 }
                 if (controller.collisions.below || controller.collisions.above)
                 {
-                    if (controller.collisions.below) state = PlayerState.Standing;
+                    if (controller.collisions.below)
+                    {
+                        state = PlayerState.Standing;
+
+                        soundPlayer.PlaySoundAtLocation(soundPlayer.landing, 1);
+                    }
+
                     velocity.y = 0;
                 }
                 break;
