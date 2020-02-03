@@ -2,12 +2,21 @@
 
 public class InputManager : MonoBehaviour
 {
-    public KeyCode goLeft = KeyCode.Q;
-    public KeyCode goRight = KeyCode.D;
-
+    public GameObject shadowPlayer;
+    public GameObject lightPlayer;
+    
     private void Update()
     {
-        var hor = Input.GetAxis("Horizontal");
-        transform.Translate(hor * new Vector3(1, 0, 0));
+        //TESTS
+        if (Input.GetButton("Attack"))
+        {
+            Debug.Log("1");
+            shadowPlayer.transform.Translate(1 * new Vector3(1, 0, 0) * Time.deltaTime);
+        }
+        if (Input.GetButton("Joy1_Attack"))
+        {
+            Debug.Log("2");
+            lightPlayer.transform.Translate(1 * new Vector3(1, 0, 0) * Time.deltaTime);
+        }
     }
 }
