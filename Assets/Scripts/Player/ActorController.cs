@@ -37,7 +37,7 @@ public class ActorController : MonoBehaviour
         ComputeRaySpacing();
     }
 
-    public void Move(Vector2 moveVec)
+    public Vector2 Move(Vector2 moveVec)
     {
         UpdateRaycastOrigins();
         collisions.Reset();
@@ -56,6 +56,8 @@ public class ActorController : MonoBehaviour
             VerticalCollision(ref moveVec);
         }
         rb.MovePosition((Vector2)transform.position + moveVec);
+
+        return moveVec;
     }
 
     private void HorizontalCollision(ref Vector2 moveVec)

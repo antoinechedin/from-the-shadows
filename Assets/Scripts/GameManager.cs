@@ -16,7 +16,6 @@ public class GameManager : Singleton<GameManager>
     //info about the state of the game
     private bool debuging = false;
     private bool loading = false;
-
     //-------------------------------------------------------------
 
 
@@ -29,9 +28,6 @@ public class GameManager : Singleton<GameManager>
             Debug.Log(debuging);
         }
     }
-
-
-
     //-------------------------------------------------------------
 
     /// <summary>
