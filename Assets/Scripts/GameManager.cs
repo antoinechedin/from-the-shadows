@@ -415,7 +415,10 @@ public class GameManager : Singleton<GameManager>
     /// <param name="val"></param>
     public void AddMetaInt(string n, int val)
     {
-        saves[currentSave].MetaInt[n] = saves[currentSave].MetaInt[n] + val;
+        if (saves != null)
+        {
+            saves[currentSave].MetaInt[n] = saves[currentSave].MetaInt[n] + val;
+        }
     }
 
     /// <summary>
@@ -425,6 +428,9 @@ public class GameManager : Singleton<GameManager>
     /// <param name="val"></param>
     public void AddMetaFloat(string n, float val)
     {
-        saves[currentSave].MetaFloat[n] = saves[currentSave].MetaFloat[n] + val;
+        if (saves != null)
+        {
+            saves[currentSave].MetaFloat[n] = saves[currentSave].MetaFloat[n] + val;
+        }
     }
 }
