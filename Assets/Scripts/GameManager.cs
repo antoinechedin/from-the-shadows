@@ -377,7 +377,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN : No Save detected in the GameManager. Returning -1 by default");
+            Debug.LogWarning("WARN META : No Save detected. Returning -1 by default" + e.StackTrace);
             return -1;
         }
 
@@ -404,7 +404,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN :No Save detected in the GameManager. Returning -1 by default");
+            Debug.LogWarning("WARN META : :No Save detected. Returning -1 by default" + e.StackTrace);
             return -1;
         }
     }
@@ -423,7 +423,10 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN : No Save detected in the GameManager");
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
         }
     }
 
@@ -440,7 +443,10 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN : No Save detected in the GameManager");
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
         }
     }
 
@@ -457,7 +463,10 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN : No Save detected in the GameManager");
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
         }
     }
 
@@ -474,7 +483,10 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN : No Save detected in the GameManager");
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
         }
     }
 }
