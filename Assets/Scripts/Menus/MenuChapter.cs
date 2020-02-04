@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -37,7 +36,6 @@ public class MenuChapter : MonoBehaviour
         });
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         chapters = GameManager.Instance.GetChapters();
@@ -47,7 +45,6 @@ public class MenuChapter : MonoBehaviour
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         // Open the chapter
