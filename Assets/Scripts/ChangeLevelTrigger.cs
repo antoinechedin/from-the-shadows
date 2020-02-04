@@ -7,10 +7,10 @@ public class ChangeLevelTrigger : MonoBehaviour
     public enum Type { Previous, Next };
 
     public Type type;
+    public int nbNecessaryPlayers;
 
     private ChapterManager chapterManager;
     private int nbPlayerInTheTrigger = 0;
-    private int nbNecessaryPlayers = 2;
 
     // Start is called before the first frame update
     void Start()
