@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.IO;
+using System;
+
 public class GameManager : Singleton<GameManager>
 {
     public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
@@ -18,6 +20,9 @@ public class GameManager : Singleton<GameManager>
     private bool loading = false;
 
     private int startingLevelIndex;
+
+    //debug bools
+    private bool displayedNoSaveFile = false;
     //-------------------------------------------------------------
 
 
@@ -359,25 +364,23 @@ public class GameManager : Singleton<GameManager>
     /// <returns></returns>
     public int GetMetaInt(string n, int saveNb = -1)
     {
-        if (saveNb == -1)
+        try
         {
-            return saves[currentSave].MetaInt[n];
+            if (saveNb == -1)
+            {
+                return saves[currentSave].MetaInt[n];
+            }
+            else
+            {
+                return saves[saveNb].MetaInt[n];
+            }
         }
-        else
+        catch (Exception e)
         {
-            return saves[saveNb].MetaInt[n];
+            Debug.LogWarning("WARN META : No Save detected. Returning -1 by default" + e.StackTrace);
+            return -1;
         }
 
-    }
-
-    /// <summary>
-    /// sets the value of the metadata of name n with the value val
-    /// </summary>
-    /// <param name="n"></param>
-    /// <param name="val"></param>
-    public void SetMetaInt(string n, int val)
-    {
-        saves[currentSave].MetaInt[n] = val;
     }
 
 
@@ -388,13 +391,42 @@ public class GameManager : Singleton<GameManager>
     /// <returns></returns>
     public float GetMetaFloat(string n, int saveNb = -1)
     {
-        if (saveNb == -1)
+        try
         {
-            return saves[currentSave].MetaFloat[n];
+            if (saveNb == -1) //if no save number is specified, returns the meta of the current save
+            {
+                return saves[currentSave].MetaFloat[n];
+            }
+            else //else return the meta of the asked save
+            {
+                return saves[saveNb].MetaFloat[n];
+            }
         }
-        else
+        catch (Exception e)
         {
-            return saves[saveNb].MetaFloat[n];
+            Debug.LogWarning("WARN META : :No Save detected. Returning -1 by default" + e.StackTrace);
+            return -1;
+        }
+    }
+
+
+    /// <summary>
+    /// sets the value of the metadata of name n with the value val
+    /// </summary>
+    /// <param name="n"></param>
+    /// <param name="val"></param>
+    public void SetMetaInt(string n, int val)
+    {
+        try
+        {
+            saves[currentSave].MetaInt[n] = val;
+        }
+        catch (Exception e)
+        {
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
         }
     }
 
@@ -405,7 +437,17 @@ public class GameManager : Singleton<GameManager>
     /// <param name="val"></param>
     public void SetMetaFloat(string n, float val)
     {
-        saves[currentSave].MetaFloat[n] = val;
+        try
+        {
+            saves[currentSave].MetaFloat[n] = val;
+        }
+        catch (Exception e)
+        {
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
+        }
     }
 
     /// <summary>
@@ -415,9 +457,16 @@ public class GameManager : Singleton<GameManager>
     /// <param name="val"></param>
     public void AddMetaInt(string n, int val)
     {
-        if (saves != null)
+        try
         {
             saves[currentSave].MetaInt[n] = saves[currentSave].MetaInt[n] + val;
+        }
+        catch (Exception e)
+        {
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
         }
     }
 
@@ -428,9 +477,16 @@ public class GameManager : Singleton<GameManager>
     /// <param name="val"></param>
     public void AddMetaFloat(string n, float val)
     {
-        if (saves != null)
+        try
         {
             saves[currentSave].MetaFloat[n] = saves[currentSave].MetaFloat[n] + val;
+        }
+        catch (Exception e)
+        {
+            if (!displayedNoSaveFile)
+            {
+                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+            }
         }
     }
 }
