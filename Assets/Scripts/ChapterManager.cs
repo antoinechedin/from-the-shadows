@@ -11,16 +11,25 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        //Initialisation of the first level
+        //VIRER CES LIGNES QUAND INTEGRATION TERMINEE
         GameManager.Instance.LoadAllSaveFiles();
         GameManager.Instance.CurrentSave = 0;
+
+        currentLevel = GameManager.Instance.StartLevelIndex;
+        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        SpawnPlayer(levels[currentLevel].playerSpawn.position);
+
         UpdateEnabledLevels();
-        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[GameManager.Instance.StartLevelIndex].cameraPoint.position);
     }
 
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
+    }
+
+    public void SpawnPlayer(Vector3 pos) //TODO : Changer plus tard pour renseigner quel playuer on bouge
+    {
+        GameObject.FindGameObjectWithTag("Player").transform.position = pos;
     }
 
     /// <summary>
