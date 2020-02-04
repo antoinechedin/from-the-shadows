@@ -2,18 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(ActorController))]
+[RequireComponent(typeof(ActorController), typeof(PlayerSoundPlayer))]
+[RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
 public class PlayerController : MonoBehaviour
 {
-    public int playerIndex = 1;
+    public int id = 1;
 
-    public float moveSpeed = 7f;
-    public float gravity = 40f;
-    public float jumpHeight = 4f;
-    public float groundAccelerationTime = 0.07f;
-    public float groundDecelerationTime = 0.07f;
-    public float airAccelerationTime = 0.14f;
-    public float airDecelerationTime = 0.14f;
+    public PlayerSettings settings;
+    public bool doubleJump;
 
     [HideInInspector] public PlayerState state;
     [HideInInspector] public Vector2 targetVelocity;
@@ -23,15 +19,22 @@ public class PlayerController : MonoBehaviour
     private ActorController controller;
     private PlayerSoundPlayer soundPlayer;
 
-    private bool canStopJump = false;
+    private bool canStopJump;
+    private bool canDoubleJump;
     private Vector2 velocitySmoothing;
 
     private void Awake()
     {
-        oldPosition = transform.position;
-        velocity = targetVelocity = velocitySmoothing = new Vector2();
         controller = GetComponent<ActorController>();
         soundPlayer = GetComponent<PlayerSoundPlayer>();
+
+        oldPosition = transform.position;
+        velocity = targetVelocity = velocitySmoothing = new Vector2();
+        canStopJump = false;
+        canDoubleJump = doubleJump;
+
+        controller.maxClimbAngle = settings.maxClimbAngle;
+        controller.maxDescendAngle = settings.maxDescendAngle;
     }
 
     public void HandleInput()
@@ -39,23 +42,23 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.Standing:
-                targetVelocity.x = Input.GetAxisRaw("Horizontal") * moveSpeed;
+                targetVelocity.x = Input.GetAxisRaw("Horizontal_" + id) * settings.moveSpeed;
 
                 velocity.x = Mathf.SmoothDamp(
                     velocity.x,
                     targetVelocity.x,
                     ref velocitySmoothing.x,
-                    targetVelocity.x != 0 ? groundAccelerationTime : groundDecelerationTime
+                    targetVelocity.x != 0 ? settings.groundAccelerationTime : settings.groundDecelerationTime
                 );
                 velocity.y = 0;
 
-                if (Input.GetButtonDown("Jump"))
+                if (Input.GetButtonDown("A_" + id))
                 {
                     state = PlayerState.Airborne;
-                    velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
+                    velocity.y = Mathf.Sqrt(2 * settings.jumpHeight * settings.gravity);
                     canStopJump = true;
 
-                    GameManager.Instance.AddMetaInt("jumpNumber" + playerIndex, 1);
+                    GameManager.Instance.AddMetaInt("jumpNumber" + id, 1);
                     //TODO : save for each player, using player index
 
                     soundPlayer.PlaySoundAtLocation(soundPlayer.jump, 1);
@@ -63,28 +66,39 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.Airborne:
-                targetVelocity.x = Input.GetAxisRaw("Horizontal") * moveSpeed;
+                targetVelocity.x = Input.GetAxisRaw("Horizontal_" + id) * settings.moveSpeed;
                 velocity.x = Mathf.SmoothDamp(
                     velocity.x,
                     targetVelocity.x,
                     ref velocitySmoothing.x,
-                    targetVelocity.x != 0 ? airAccelerationTime : airDecelerationTime
+                    targetVelocity.x != 0 ? settings.airAccelerationTime : settings.airDecelerationTime
                 );
 
-                float stopJumpSpeed = gravity / 6f;
+                float stopJumpSpeed = settings.gravity / 6f;
 
                 if (velocity.y < stopJumpSpeed) canStopJump = false;
                 else
                 {
-                    if (canStopJump && Input.GetButtonUp("Jump"))
+                    if (canStopJump && Input.GetButtonUp("A_" + id))
                     {
                         velocity.y = stopJumpSpeed;
                     }
                 }
+
+                if (canDoubleJump && Input.GetButtonDown("A_" + id))
+                {
+                    canDoubleJump = false;
+                    velocity.y = Mathf.Sqrt(2 * settings.jumpHeight * settings.gravity);
+                    canStopJump = true;
+
+                    GameManager.Instance.AddMetaInt("jumpNumber" + id, 1);
+                    soundPlayer.PlaySoundAtLocation(soundPlayer.jump, 1);
+                }
+
                 break;
         }
 
-        velocity.y -= gravity * Time.deltaTime;
+        velocity.y -= settings.gravity * Time.deltaTime;
     }
 
     private void AnimControllerUpdate()
@@ -97,16 +111,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        foreach(var v in GameManager.Instance.Saves)
-        {
-            Debug.Log(v.ToString());
-        }
-
         HandleInput();
         controller.Move(velocity * Time.deltaTime);
         float distance = ((Vector2)transform.position - oldPosition).magnitude;
         oldPosition = transform.position;
-        GameManager.Instance.AddMetaFloat("distance" + playerIndex, distance);
+        GameManager.Instance.AddMetaFloat("distance" + id, distance);
         //TODO : save for each player, using player index
 
         AnimControllerUpdate();
@@ -133,6 +142,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (controller.collisions.below)
                     {
+                        canDoubleJump = doubleJump;
                         state = PlayerState.Standing;
 
                         soundPlayer.PlaySoundAtLocation(soundPlayer.landing, 1);
@@ -142,11 +152,6 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
         }
-    }
-
-    private void FixedUpdate()
-    {
-
     }
 }
 
