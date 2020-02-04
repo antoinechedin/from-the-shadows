@@ -27,9 +27,13 @@ public class ChapterManager : MonoBehaviour
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
     }
 
-    public void SpawnPlayer(Vector3 pos) //TODO : Changer plus tard pour renseigner quel playuer on bouge
+    public void SpawnPlayer(Vector3 pos)
     {
-        GameObject.FindGameObjectWithTag("Player").transform.position = pos;
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            player.transform.position = pos;
+        }
     }
 
     /// <summary>
