@@ -9,9 +9,9 @@ public class ActorController : MonoBehaviour
     #region GameplayFields
 
     public float skinWidth = 0.005f;
-    public float maxClimbAngle = 60f;
-    public float maxDescendSlope = 60f;
     public LayerMask collisionMask = 1 << 9; // 9 is the Obstacle layer id
+    [HideInInspector] public float maxClimbAngle;
+    [HideInInspector] public float maxDescendAngle;
 
     #endregion
 
@@ -84,7 +84,7 @@ public class ActorController : MonoBehaviour
                         collisions.descendingSlope = false;
                         moveVec = collisions.previousMoveVec;
                     }
-                    
+
                     float distanceToSlope = 0;
                     if (slopeAngle != collisions.previousSlopeAngle)
                     {
@@ -185,7 +185,7 @@ public class ActorController : MonoBehaviour
         if (hit)
         {
             float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            if (slopeAngle != 0 && slopeAngle <= maxDescendSlope)
+            if (slopeAngle != 0 && slopeAngle <= maxDescendAngle)
             {
                 if (Mathf.Sign(hit.normal.x) == directionX)
                 {
