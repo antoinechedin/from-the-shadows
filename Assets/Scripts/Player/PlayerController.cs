@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(ActorController))]
 public class PlayerController : MonoBehaviour
 {
-    public int playerIndex;
+    public int playerIndex = 1;
 
     public float moveSpeed = 7f;
     public float gravity = 40f;

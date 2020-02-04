@@ -5,6 +5,7 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public Transform cameraPoint;
+    public Transform playerSpawn;
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
 
     /// <summary>
