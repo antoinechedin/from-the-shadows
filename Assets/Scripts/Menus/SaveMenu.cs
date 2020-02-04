@@ -12,7 +12,7 @@ public class SaveMenu : MonoBehaviour
     public State currentState;
     public string directoryPath;
     public Button[] buttons;
-    public FileInfo[] saves = new FileInfo[3];
+    private Save[] saves;
 
     private Canvas actionChoiceCanvas;
     private Canvas newGameChoiceCanvas;
@@ -20,8 +20,8 @@ public class SaveMenu : MonoBehaviour
 
     void Start()
     {
-
-        GetExistingSaves();
+        saves = GameManager.Instance.Saves;
+        UpdateButtons();
         actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
         newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
         menuManager = GameObject.Find("MenuManager").gameObject.GetComponent<MenuManager>();
@@ -53,44 +53,21 @@ public class SaveMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// Search for existing save files in the saves directory and load them in saves[]
-    /// </summary>
-    void GetExistingSaves()
-    {
-        DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-        FileInfo[] filesInfo = directoryInfo.GetFiles();
-        foreach (FileInfo f in filesInfo)
-        {
-            switch (f.Name)
-            {
-                case "SaveFile0.json":
-                    saves[0] = f;
-                    break;
-                case "SaveFile1.json":
-                    saves[1] = f;
-                    break;
-                case "SaveFile2.json":
-                    saves[2] = f;
-                    break;
-            }
-        }
-        DisplayInfoOnButtons();
-    }
-
-    /// <summary>
     /// Get file infos and link each save to the corresponding button
     /// </summary>
-    void DisplayInfoOnButtons()
+    void UpdateButtons()
     {
         for (int i = 0; i < buttons.Length; i++)
         {
             if (saves[i] != null)
-            {
+            {                
                 Text empty = buttons[i].transform.Find("Text").GetComponent<Text>();
                 empty.text = "";
                 buttons[i].transform.Find("SaveInfo").gameObject.SetActive(true);
                 Text date = buttons[i].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
-                date.text = saves[i].LastWriteTime.ToString();
+                date.text = saves[i].LastOpenDate.ToString();
+                Text timePlayed = buttons[i].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
+                timePlayed.text = GameManager.Instance.GetMetaFloat("totalTimePlayed", i).ToString();
             }
             else
             {
@@ -108,6 +85,11 @@ public class SaveMenu : MonoBehaviour
         Text empty = buttons[index].transform.Find("Text").GetComponent<Text>();
         empty.text = "NEW GAME";
         buttons[index].transform.Find("SaveInfo").gameObject.SetActive(false);
+
+        Text timePlayed = buttons[index].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
+        timePlayed.text = "";
+        Text date = buttons[index].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
+        date.text = "";
     }
 
     /// <summary>
@@ -116,11 +98,20 @@ public class SaveMenu : MonoBehaviour
     /// <param name="index"> Index of the button clicked </param>
     public void ChooseAction(int index)
     {
+        Button playButton = actionChoiceCanvas.transform.Find("PlayButton").GetComponent<Button>();
+        Button deleteButton = actionChoiceCanvas.transform.Find("DeleteButton").GetComponent<Button>();
+        Button soloButton = newGameChoiceCanvas.transform.Find("SoloButton").GetComponent<Button>();
+        Button duoButton = newGameChoiceCanvas.transform.Find("DuoButton").GetComponent<Button>();
+
+        playButton.onClick.RemoveAllListeners();
+        deleteButton.onClick.RemoveAllListeners();
+        soloButton.onClick.RemoveAllListeners();
+        duoButton.onClick.RemoveAllListeners();
+
         if (currentState == State.Loading && saves[index] != null)
         {
             actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
-            Button playButton = actionChoiceCanvas.transform.Find("PlayButton").GetComponent<Button>();
-            Button deleteButton = actionChoiceCanvas.transform.Find("DeleteButton").GetComponent<Button>();
+            
 
             actionChoiceCanvas.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(playButton.gameObject);
@@ -132,8 +123,7 @@ public class SaveMenu : MonoBehaviour
         else if (saves[index] == null)
         {
             newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
-            Button soloButton = newGameChoiceCanvas.transform.Find("SoloButton").GetComponent<Button>();
-            Button duoButton = newGameChoiceCanvas.transform.Find("DuoButton").GetComponent<Button>();
+            
 
             newGameChoiceCanvas.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(duoButton.gameObject);
@@ -169,7 +159,7 @@ public class SaveMenu : MonoBehaviour
         EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[indexSave].gameObject);
 
         saves[indexSave] = null;
-        GetExistingSaves();
+        UpdateButtons();
     }
 
     /// <summary>
@@ -181,7 +171,7 @@ public class SaveMenu : MonoBehaviour
     {
         GameManager.Instance.GetComponent<GameManager>();
         GameManager.Instance.CreateSaveFile(indexSave, nbPlayer);
-        GetExistingSaves();
+        UpdateButtons();
         Debug.Log("Create save number " + indexSave + "( " + nbPlayer + " players )");
         Launch(indexSave);
     }
