@@ -13,7 +13,7 @@ public class ChapterManager : MonoBehaviour
     {
         //VIRER CES LIGNES QUAND INTEGRATION TERMINEE
         GameManager.Instance.LoadAllSaveFiles();
-        GameManager.Instance.CurrentSave = 0;
+        GameManager.Instance.CurrentSave = 2;
 
         currentLevel = GameManager.Instance.StartLevelIndex;
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
@@ -77,7 +77,7 @@ public class ChapterManager : MonoBehaviour
         {
             Debug.Log("Dernier level terminé, direction le menu de selection de niveau");
             CollectMetaData();
-            GameManager.Instance.LoadScene("ChapterMenu");
+            GameManager.Instance.LoadScene("MainMenu");
         }
         else //on transfert le joueur dans le tableau suivant
         {

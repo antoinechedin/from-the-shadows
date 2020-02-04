@@ -80,7 +80,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// sets the completions of the level "lvl" of the chapter "chap" to true
+    /// sets the completion of the level "lvl" of the chapter "chap" to true
     /// </summary>
     /// <param name="chap"></param>
     /// <param name="lvl"></param>
@@ -92,6 +92,7 @@ public class GameManager : Singleton<GameManager>
         }
         else
         {
+            Debug.Log(saves[currentSave]);
             saves[currentSave].Chapters[chap].GetLevels()[lvl].completed = true;
         }
     }
@@ -426,6 +427,7 @@ public class GameManager : Singleton<GameManager>
             if (!displayedNoSaveFile)
             {
                 Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                displayedNoSaveFile = true;
             }
         }
     }
@@ -446,6 +448,7 @@ public class GameManager : Singleton<GameManager>
             if (!displayedNoSaveFile)
             {
                 Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                displayedNoSaveFile = true;
             }
         }
     }
@@ -466,6 +469,7 @@ public class GameManager : Singleton<GameManager>
             if (!displayedNoSaveFile)
             {
                 Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                displayedNoSaveFile = true;
             }
         }
     }
@@ -486,6 +490,7 @@ public class GameManager : Singleton<GameManager>
             if (!displayedNoSaveFile)
             {
                 Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                displayedNoSaveFile = true;
             }
         }
     }
