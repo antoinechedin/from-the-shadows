@@ -15,7 +15,7 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.LoadAllSaveFiles();
         GameManager.Instance.CurrentSave = 0;
         UpdateEnabledLevels();
-        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[GameManager.Instance.StartLevelIndex].cameraPoint.position);
     }
 
     private void Update()

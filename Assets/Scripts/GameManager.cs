@@ -16,6 +16,8 @@ public class GameManager : Singleton<GameManager>
     //info about the state of the game
     private bool debuging = false;
     private bool loading = false;
+
+    private int startingLevelIndex;
     //-------------------------------------------------------------
 
 
@@ -65,6 +67,11 @@ public class GameManager : Singleton<GameManager>
     {
         get { return currentSave; }
         set { currentSave = value; }
+    }
+
+    public int StartLevelIndex
+    {
+        get { return startingLevelIndex; }
     }
 
     /// <summary>
@@ -299,9 +306,17 @@ public class GameManager : Singleton<GameManager>
     /// Use a coroutine to load a scene in the background
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
-    public void LoadScene(string sceneName)
+    public void LoadScene(string sceneName, int levelIndex = -1)
     {
-        StartCoroutine(LoadAsyncScene(sceneName));
+        if (levelIndex != -1)
+        {
+            StartCoroutine(LoadAsyncScene(sceneName, levelIndex));
+        }
+        else
+        {
+            StartCoroutine(LoadAsyncScene(sceneName));
+        }
+
     }
 
     /// <summary>
@@ -309,8 +324,13 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
     /// <returns></returns>
-    IEnumerator LoadAsyncScene(string sceneName)
+    IEnumerator LoadAsyncScene(string sceneName, int levelIndex = -1)
     {
+        Debug.LogWarning("LoadScene : If you are loading a chapter, don't forget to pass the levelIndex in the second parameter");
+        if (levelIndex != -1)
+        {
+            startingLevelIndex = levelIndex;
+        }
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false; //permet de ne pas charger la scene directos quand elle est prête
 
