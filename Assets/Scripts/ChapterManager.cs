@@ -11,9 +11,9 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        //VIRER CES LIGNES QUAND INTEGRATION TERMINEE
-        GameManager.Instance.LoadAllSaveFiles();
-        GameManager.Instance.CurrentSave = 2;
+        // VIRER CES LIGNES QUAND INTEGRATION TERMINEE
+        // GameManager.Instance.LoadAllSaveFiles();
+        // GameManager.Instance.CurrentSave = 2;
 
         currentLevel = GameManager.Instance.StartLevelIndex;
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
