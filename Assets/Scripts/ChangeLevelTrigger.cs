@@ -12,7 +12,6 @@ public class ChangeLevelTrigger : MonoBehaviour
     private int nbPlayerInTheTrigger = 0;
     private int nbNecessaryPlayers = 2;
 
-    // Start is called before the first frame update
     void Start()
     {
         chapterManager = GameObject.Find("ChapterManager").GetComponent<ChapterManager>();
