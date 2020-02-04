@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(ActorController))]
 public class PlayerController : MonoBehaviour
 {
+    public int playerIndex;
+
     public float moveSpeed = 7f;
     public float gravity = 40f;
     public float jumpHeight = 4f;
@@ -53,7 +55,7 @@ public class PlayerController : MonoBehaviour
                     velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
                     canStopJump = true;
 
-                    GameManager.Instance.AddMetaInt("jumpNumber1", 1); // saves number of jumps inside GM
+                    GameManager.Instance.AddMetaInt("jumpNumber" + playerIndex, 1);
                     //TODO : save for each player, using player index
 
                     soundPlayer.PlaySoundAtLocation(soundPlayer.jump, 1);
@@ -95,11 +97,16 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        foreach(var v in GameManager.Instance.Saves)
+        {
+            Debug.Log(v.ToString());
+        }
+
         HandleInput();
         controller.Move(velocity * Time.deltaTime);
         float distance = ((Vector2)transform.position - oldPosition).magnitude;
         oldPosition = transform.position;
-        GameManager.Instance.AddMetaFloat("distance1", distance);
+        GameManager.Instance.AddMetaFloat("distance" + playerIndex, distance);
         //TODO : save for each player, using player index
 
         AnimControllerUpdate();
