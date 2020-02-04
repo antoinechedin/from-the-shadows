@@ -48,7 +48,7 @@ public class MenuChapter : MonoBehaviour
     void Update()
     {
         // Open the chapter
-        if (Input.GetButtonDown("Accept"))
+        if (Input.GetButtonDown("A_G"))
         {
             if (!chapterMenuIsOpen && !levelMenuIsOpen)
             {
@@ -95,7 +95,7 @@ public class MenuChapter : MonoBehaviour
         }
 
         // Cancel
-        if (Input.GetButtonDown("Return"))
+        if (Input.GetButtonDown("B_G"))
         {
             // Close the chapter
             if (chapterMenuIsOpen && !levelMenuIsOpen)

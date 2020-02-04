@@ -33,7 +33,7 @@ public class SaveMenu : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Return"))
+        if (Input.GetButtonDown("B_G"))
         {
             if (actionChoiceCanvas.gameObject.activeSelf)
             {
