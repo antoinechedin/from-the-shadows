@@ -12,7 +12,7 @@ public class MenuMetaManager : MonoBehaviour
     private List<TextMeshProUGUI> lightGuyToPopulate;
     private List<TextMeshProUGUI> shadowGuyToPopulate;
     private List<TextMeshProUGUI> totalToPopulate;
-    // Start is called before the first frame update
+
     void Start()
     {
         lightGuyToPopulate = new List<TextMeshProUGUI>();
@@ -35,7 +35,6 @@ public class MenuMetaManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
