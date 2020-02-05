@@ -43,11 +43,7 @@ public class MenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Debug.Log(EventSystem.current.currentSelectedGameObject);
-        // if (EventSystem.current.currentSelectedGameObject ==)
-        // {
-        //     EventSystem.current.SetSelectedGameObject(newGame.gameObject);
-        // }
+
     }
 
     public void OpenStartMenu()
@@ -68,8 +64,6 @@ public class MenuManager : MonoBehaviour
     public void OpenChaptersMenu(int chapterIndex)
     {
         // menuChapter.SetCurrentChapter(chapterIndex);
-
-        Debug.Log("open chapter menu " + chapterIndex);
 
         chaptersMenu.gameObject.SetActive(true);
         saveMenu.gameObject.SetActive(false);
