@@ -8,7 +8,7 @@ public class MenuChapter : MonoBehaviour
 {
     public MenuCamera menuCamera;
     public MenuLevels menuLevels;
-    public List<UnityEngine.UI.Button> chapterButtons;
+    public List<Button> chapterButtons;
     public Text levelLabel;
     public Text collectiblesNumber;
     public Text completedNumber;
@@ -45,6 +45,19 @@ public class MenuChapter : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(chapterButtons[0].gameObject);
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
+        for (int i = 0; i < chapters.Count; i++)
+        {
+            Debug.Log("i " + i);
+            if (!chapters[i].GetLevels()[chapters[i].GetNbLevels() - 1].completed)
+            {
+                for (int j = i + 1; j < chapterButtons.Count; j++)
+                {
+                    chapterButtons[j].interactable = false;
+                    Debug.Log("j " + j);
+                }
+                break;
+            }
+        }
     }
 
     // Update is called once per frame

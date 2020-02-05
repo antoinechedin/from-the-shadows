@@ -19,6 +19,21 @@ public class MenuManager : MonoBehaviour
     {
         GameManager.Instance.LoadAllSaveFiles();
         newGame.onClick.AddListener(delegate { OpenSaveMenu(); });
+        switch (GameManager.Instance.StartMenuScene)
+        {
+            case 0: // start menu
+                OpenStartMenu();
+                break;
+            case 1: // save menu
+                OpenSaveMenu();
+                break;
+            case 2: // chapter menu
+                OpenChaptersMenu(GameManager.Instance.StartChapterIndex);
+                break;
+            default:
+                Debug.Log("Menu index doesn't exist");
+                break;
+        }
         EventSystem.current.SetSelectedGameObject(newGame.gameObject);
     }
 
@@ -47,9 +62,10 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(firstSave.gameObject);
     }
 
-    public void OpenChaptersMenu()
+    public void OpenChaptersMenu(int chapterIndex)
     {
         chaptersMenu.gameObject.SetActive(true);
+        chaptersMenu.gameObject.GetComponent<MenuChapter>().SetCurrentChapter(chapterIndex);
         saveMenu.gameObject.SetActive(false);
         menuCamera.SetReturnToMainMenu(false);
         EventSystem.current.SetSelectedGameObject(firstChapter.gameObject);

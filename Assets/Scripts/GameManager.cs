@@ -16,6 +16,13 @@ public class GameManager : Singleton<GameManager>
     //info about the state of the game
     private bool debuging = false;
     private bool loading = false;
+
+    private int startingLevelIndex;
+    private int startingChapterIndex; // index of chapter position for the cursor
+    private int startingMenuScene; // menu to open
+
+    //debug bools
+    private bool displayedNoSaveFile = false;
     //-------------------------------------------------------------
 
 
@@ -65,6 +72,21 @@ public class GameManager : Singleton<GameManager>
     {
         get { return currentSave; }
         set { currentSave = value; }
+    }
+
+    public int StartLevelIndex
+    {
+        get { return startingLevelIndex; }
+    }
+
+    public int StartChapterIndex
+    {
+        get { return startingChapterIndex; }
+    }
+
+    public int StartMenuScene
+    {
+        get { return startingMenuScene; }
     }
 
     /// <summary>
