@@ -18,6 +18,7 @@ public class MenuCamera : MonoBehaviour
     private bool isMoving = false;
     private bool zoom = false;
     private bool returnToMainMenu = false;
+    private bool smoothTransition = false;
 
     // Update is called once per frame
     void Update()
@@ -42,16 +43,26 @@ public class MenuCamera : MonoBehaviour
                 targetPosition = cameraPositionsZoom[chapterSelected].transform.position;
                 targetRotation = cameraPositionsZoom[chapterSelected].transform;
             }
-            Vector3 velocity = Vector3.zero;
-            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.1f);
+            if (smoothTransition)
+            {
+                Vector3 velocity = Vector3.zero;
 
-            // Rotate the camera
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation.rotation, Time.deltaTime * cameraSpeed);
+                // Move the camera
+                transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.1f);
+
+                // Rotate the camera
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation.rotation, Time.deltaTime * cameraSpeed);
+
+                isMoving = !(velocity.magnitude == 0); // Doesn't actualise the camera position while not moving
+            }
+            else
+            {
+                transform.position = targetPosition;
+                transform.rotation = targetRotation.rotation;
+            }
 
             Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
             cursor.GetComponent<RectTransform>().anchoredPosition = screenPoint / canvas.scaleFactor - canvas.GetComponent<RectTransform>().sizeDelta / 2f;
-
-            isMoving = !(velocity.magnitude == 0); // Doesn't actualise the camera position while not moving
         }
     }
 
@@ -75,5 +86,10 @@ public class MenuCamera : MonoBehaviour
     {
         chapterSelected = number;
         isMoving = true;
+    }
+
+    public bool SmoothTransition
+    {
+        set { smoothTransition = value; }
     }
 }
