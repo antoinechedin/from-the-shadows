@@ -37,7 +37,7 @@ public class MenuLevels : MonoBehaviour
             int levelNumber = i;
             GameObject button = Instantiate(levelButtonPrefab.gameObject, buttonsGroup.transform);
             button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
-            button.GetComponent<Button>().onClick.AddListener(delegate { LevelButtonClicked(chapterNumber, levelNumber); });
+            button.GetComponent<Button>().onClick.AddListener(delegate { LevelButtonClicked(new LoadingMenuInfo(2, chapterNumber), levelNumber); });
             button.GetComponent<LevelButton>().menuLevels = this;
             button.GetComponent<LevelButton>().levelNumber = levelNumber;
             if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].completed)
@@ -75,11 +75,9 @@ public class MenuLevels : MonoBehaviour
         }
     }
 
-    private static void LevelButtonClicked(int chapterNumber, int levelNumber)
+    private static void LevelButtonClicked(LoadingMenuInfo loadingMenuInfo, int levelNumber)
     {
-        GameManager.Instance.LoadScene("Leo", levelNumber);
-        GameManager.Instance.StartChapterIndex = chapterNumber;
-        GameManager.Instance.StartMenuScene = 2;
+        GameManager.Instance.LoadScene("Leo", levelNumber, loadingMenuInfo);
     }
 
 }

@@ -39,7 +39,7 @@ public class MenuChapter : MonoBehaviour
     void Start()
     {
         chapters = GameManager.Instance.GetChapters();
-        currentChapter = GameManager.Instance.StartChapterIndex;
+        // currentChapter = GameManager.Instance.CurrentChapter;
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
         for (int i = 0; i < chapters.Count; i++)
@@ -88,6 +88,7 @@ public class MenuChapter : MonoBehaviour
                     completedNumber.text = nbCompleted + "/" + totalLevel;
                     menuChapterAnimator.SetBool("open", true);
                     menuCamera.SetZoom(true);
+                    GameManager.Instance.CurrentChapter = currentChapter;
                 }
             }
             // Open the level and close the chapter
