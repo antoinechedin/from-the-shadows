@@ -21,6 +21,11 @@ public class Chapter
         return levels;
     }
 
+    public int GetNbLevels()
+    {
+        return levels.Count;
+    }
+
     public void PrintChapter()
     {
         Debug.Log("Chapter avec " +levels.Count +" level");
