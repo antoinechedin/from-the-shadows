@@ -132,7 +132,7 @@ public class GameManager : Singleton<GameManager>
         {
             for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo("Assets/Resources/Saves/");
+                DirectoryInfo directoryInfo = new DirectoryInfo(Application.streamingAssetsPath +"/Saves/");
                 FileInfo[] filesInfo = directoryInfo.GetFiles();
                 foreach (FileInfo f in filesInfo)
                 {
