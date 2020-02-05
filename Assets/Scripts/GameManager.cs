@@ -43,7 +43,8 @@ public class GameManager : Singleton<GameManager>
     /// Get all the chapters in the game. Levels are obtained by searching into Chapter attribute named 'levels'.
     /// </summary>
     /// <returns>A list containing all chapters</returns>
-    public List<Chapter> GetChapters() {
+    public List<Chapter> GetChapters()
+    {
         if (currentSave == -1)
         {
             Debug.LogError("GetChapters  : currentSave index not set, returning chapters of Save[0] by default");
@@ -84,11 +85,13 @@ public class GameManager : Singleton<GameManager>
     public int StartChapterIndex
     {
         get { return startingChapterIndex; }
+        set { startingChapterIndex = value; }
     }
 
     public int StartMenuScene
     {
         get { return startingMenuScene; }
+        set { startingMenuScene = value; }
     }
 
     /// <summary>
@@ -217,7 +220,7 @@ public class GameManager : Singleton<GameManager>
                 chapter.PrintChapter();
                 chapters.Add(chapter);
             }
-            FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile"+ save +".json");
+            FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile" + save + ".json");
             System.DateTime lastDate = fileInfo.LastWriteTime;
             Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
             saves[save] = addedSave;
