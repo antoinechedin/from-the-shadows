@@ -9,10 +9,10 @@ public class MenuManager : MonoBehaviour
     public Canvas startMenu;
     public Canvas saveMenu;
     public Canvas chaptersMenu;
+    public MenuChapter menuChapter;
     public MenuCamera menuCamera;
     public Button newGame;
     public Button firstSave;
-    public Button firstChapter;
 
     // Start is called before the first frame update
     void Start()
@@ -34,7 +34,6 @@ public class MenuManager : MonoBehaviour
                 Debug.Log("Menu index doesn't exist");
                 break;
         }
-        EventSystem.current.SetSelectedGameObject(newGame.gameObject);
     }
 
     // Update is called once per frame
@@ -64,11 +63,15 @@ public class MenuManager : MonoBehaviour
 
     public void OpenChaptersMenu(int chapterIndex)
     {
+        menuChapter.SetCurrentChapter(chapterIndex);
+
         chaptersMenu.gameObject.SetActive(true);
-        chaptersMenu.gameObject.GetComponent<MenuChapter>().SetCurrentChapter(chapterIndex);
         saveMenu.gameObject.SetActive(false);
+        startMenu.gameObject.SetActive(false);
+
         menuCamera.SetReturnToMainMenu(false);
-        EventSystem.current.SetSelectedGameObject(firstChapter.gameObject);
+
+        EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
     }
 
 }

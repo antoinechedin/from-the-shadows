@@ -60,7 +60,7 @@ public class SaveMenu : MonoBehaviour
         for (int i = 0; i < buttons.Length; i++)
         {
             if (saves[i] != null)
-            {                
+            {
                 Text empty = buttons[i].transform.Find("Text").GetComponent<Text>();
                 empty.text = "";
                 buttons[i].transform.Find("SaveInfo").gameObject.SetActive(true);
@@ -111,7 +111,7 @@ public class SaveMenu : MonoBehaviour
         if (currentState == State.Loading && saves[index] != null)
         {
             actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
-            
+
 
             actionChoiceCanvas.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(playButton.gameObject);
@@ -123,7 +123,7 @@ public class SaveMenu : MonoBehaviour
         else if (saves[index] == null)
         {
             newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
-            
+
 
             newGameChoiceCanvas.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(duoButton.gameObject);
@@ -144,7 +144,15 @@ public class SaveMenu : MonoBehaviour
         actionChoiceCanvas.gameObject.SetActive(false);
         newGameChoiceCanvas.gameObject.SetActive(false);
         List<Chapter> chapters = GameManager.Instance.GetChapters();
-        menuManager.OpenChaptersMenu(0);
+        for (int i = 0; i < chapters.Count; i++)
+        {
+            if (!chapters[i].isCompleted())
+            {
+                GameManager.Instance.StartChapterIndex = i;
+                menuManager.OpenChaptersMenu(i);
+                return;
+            }
+        }
     }
 
     /// <summary>
