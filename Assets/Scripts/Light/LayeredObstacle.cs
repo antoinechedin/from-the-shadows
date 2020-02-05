@@ -15,6 +15,10 @@ public class LayeredObstacle : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    private void Start() {
+        UpdateCollider();
+    }
+
     public void AddLightSource(LightSource lightSource)
     {
         lightSources.Add(lightSource);
