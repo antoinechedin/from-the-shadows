@@ -148,7 +148,7 @@ public class SaveMenu : MonoBehaviour
         {
             if (!chapters[i].isCompleted())
             {
-                GameManager.Instance.StartChapterIndex = i;
+                GameManager.Instance.LoadingMenuInfos.StartingChapterIndex = i;
                 menuManager.OpenChaptersMenu(i);
                 return;
             }

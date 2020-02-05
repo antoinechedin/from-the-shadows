@@ -26,8 +26,6 @@ public class GameManager : Singleton<GameManager>
     private bool loading = false;
 
     private int startingLevelIndex; //index of the level to start in when entering a chapter
-    private int startingChapterIndex; // index of chapter position for the cursor in the chapterSelection
-    private int startingMenuScene; // Menu to open when going in the mainManu scene (mainMenu, SaveFile, chapterSelection)
 
     //debug bools
     private bool displayedNoSaveFile = false;
@@ -65,12 +63,13 @@ public class GameManager : Singleton<GameManager>
     public int CurrentChapter
     {
         get { return currentChapter; }
-        set { currentChapter = value;}
+        set { currentChapter = value; }
     }
 
     public LoadingMenuInfo LoadingMenuInfos
     {
         get { return loadingMenuInfos; }
+        set { loadingMenuInfos = value; }
     }
 
     public Save[] Saves
@@ -97,18 +96,6 @@ public class GameManager : Singleton<GameManager>
     public int StartLevelIndex
     {
         get { return startingLevelIndex; }
-    }
-
-    public int StartChapterIndex
-    {
-        get { return startingChapterIndex; }
-        set { startingChapterIndex = value; }
-    }
-
-    public int StartMenuScene
-    {
-        get { return startingMenuScene; }
-        set { startingMenuScene = value; }
     }
 
     /// <summary>

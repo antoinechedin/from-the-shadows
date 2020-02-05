@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class LoadingMenuInfo
 {
-    private int startingMenuScene { get;} // Menu to open when going in the mainManu scene (mainMenu, SaveFile, chapterSelection)
-    private int startingChapterIndex { get; } // index of chapter position for the cursor in the chapterSelection
+    private int startingMenuScene; // Menu to open when going in the mainManu scene (mainMenu, SaveFile, chapterSelection)
+    private int startingChapterIndex; // index of chapter position for the cursor in the chapterSelection
 
     public LoadingMenuInfo(int startMenuScene)
     {
@@ -17,5 +17,16 @@ public class LoadingMenuInfo
     {
         startingMenuScene = startMenuScene;
         startingChapterIndex = startingChapter;
+    }
+
+    public int StartingChapterIndex
+    {
+        get { return startingMenuScene; }
+        set { startingMenuScene = value; }
+    }
+
+    public int StartingMenuScene
+    {
+        get { return startingMenuScene; }
     }
 }
