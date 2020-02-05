@@ -21,8 +21,8 @@ public class LoadingMenuInfo
 
     public int StartingChapterIndex
     {
-        get { return startingMenuScene; }
-        set { startingMenuScene = value; }
+        get { return startingChapterIndex; }
+        set { startingChapterIndex = value; }
     }
 
     public int StartingMenuScene

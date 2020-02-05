@@ -28,11 +28,11 @@ public class MenuChapter : MonoBehaviour
     void Awake()
     {
         chaptersName = new List<string>(new string[] {
+            "Chapter 0",
             "Chapter 1",
             "Chapter 2",
             "Chapter 3",
-            "Chapter 4",
-            "Chapter 5"
+            "Chapter 4"
         });
     }
 
