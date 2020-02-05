@@ -11,17 +11,23 @@ public class GameManager : Singleton<GameManager>
 {
     public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
 
+    public const int FIRST_CHAPTER = 9000;
+    public const int LAST_CHAPTER_AVAILABLE = 9001;
+
+    private LoadingMenuInfo loadingMenuInfos;
+
     public GameStates gameState;
     private Save[] saves; //store all saves of the game
     private int currentSave = -1; //l'indice de la save courante
+    private int currentChapter;
 
     //info about the state of the game
     private bool debuging = false;
     private bool loading = false;
 
-    private int startingLevelIndex;
-    private int startingChapterIndex; // index of chapter position for the cursor
-    private int startingMenuScene; // menu to open
+    private int startingLevelIndex; //index of the level to start in when entering a chapter
+    private int startingChapterIndex; // index of chapter position for the cursor in the chapterSelection
+    private int startingMenuScene; // Menu to open when going in the mainManu scene (mainMenu, SaveFile, chapterSelection)
 
     //debug bools
     private bool displayedNoSaveFile = false;
@@ -53,6 +59,17 @@ public class GameManager : Singleton<GameManager>
         {
             return saves[currentSave].Chapters;
         }
+    }
+
+    public int CurrentChapter
+    {
+        get { return currentChapter; }
+        set { currentChapter = value;}
+    }
+
+    public LoadingMenuInfo LoadingMenuInfos
+    {
+        get { return loadingMenuInfos; }
     }
 
     public Save[] Saves
@@ -89,6 +106,7 @@ public class GameManager : Singleton<GameManager>
     public int StartMenuScene
     {
         get { return startingMenuScene; }
+        set { startingMenuScene = value; }
     }
 
     /// <summary>
@@ -324,31 +342,33 @@ public class GameManager : Singleton<GameManager>
     /// Use a coroutine to load a scene in the background
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
-    public void LoadScene(string sceneName, int levelIndex = -1)
+    public void LoadScene(string sceneName, int levelIndex = -1, LoadingMenuInfo loadingMenuInfo = null)
     {
-        if (levelIndex != -1)
-        {
-            StartCoroutine(LoadAsyncScene(sceneName, levelIndex));
-        }
-        else
-        {
-            StartCoroutine(LoadAsyncScene(sceneName));
-        }
-
+        StartCoroutine(LoadAsyncScene(sceneName, levelIndex, loadingMenuInfo));
     }
+
 
     /// <summary>
     /// Coroutine that load the next scene
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
     /// <returns></returns>
-    IEnumerator LoadAsyncScene(string sceneName, int levelIndex = -1)
+    IEnumerator LoadAsyncScene(string sceneName, int levelIndex = -1, LoadingMenuInfo loadMenuInfo = null)
     {
-        Debug.LogWarning("LoadScene : If you are loading a chapter, don't forget to pass the levelIndex in the second parameter");
         if (levelIndex != -1)
         {
             startingLevelIndex = levelIndex;
         }
+        else
+        {
+            Debug.LogWarning("LoadScene : If you are loading a chapter, don't forget to pass the levelIndex in the second parameter");
+        }
+
+
+        //Sets the necessary informations to load the menu
+        loadingMenuInfos = loadMenuInfo;
+
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false; //permet de ne pas charger la scene directos quand elle est prête
 

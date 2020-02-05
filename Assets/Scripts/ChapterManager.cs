@@ -15,6 +15,7 @@ public class ChapterManager : MonoBehaviour
         // GameManager.Instance.LoadAllSaveFiles();
         // GameManager.Instance.CurrentSave = 2;
 
+        GameManager.Instance.CurrentChapter = chapterIndex;
         currentLevel = GameManager.Instance.StartLevelIndex;
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
@@ -77,7 +78,7 @@ public class ChapterManager : MonoBehaviour
         {
             Debug.Log("Dernier level terminé, direction le menu de selection de niveau");
             CollectMetaData();
-            GameManager.Instance.LoadScene("MainMenu");
+            GameManager.Instance.LoadScene("MainMenu", -1, new LoadingMenuInfo(2, GameManager.Instance.CurrentChapter));
         }
         else //on transfert le joueur dans le tableau suivant
         {
