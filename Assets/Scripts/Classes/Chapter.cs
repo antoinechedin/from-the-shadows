@@ -26,9 +26,21 @@ public class Chapter
         return levels.Count;
     }
 
+    public bool isCompleted()
+    {
+        bool completed = true;
+        int i = 0;
+        while (completed && i < levels.Count)
+        {
+            completed = levels[i].completed;
+            i++;
+        }
+        return completed;
+    }
+
     public void PrintChapter()
     {
-        Debug.Log("Chapter avec " +levels.Count +" level");
+        Debug.Log("Chapter avec " + levels.Count + " level");
         foreach (Level l in levels)
         {
             l.PrintLevel();

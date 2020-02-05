@@ -39,19 +39,16 @@ public class MenuChapter : MonoBehaviour
     void Start()
     {
         chapters = GameManager.Instance.GetChapters();
-        currentChapter = 0; // TODO: Recuperer le bon chapitre à la fin d'un chapitre par exemple
-        EventSystem.current.SetSelectedGameObject(chapterButtons[0].gameObject);
+        currentChapter = GameManager.Instance.StartChapterIndex;
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
         for (int i = 0; i < chapters.Count; i++)
         {
-            Debug.Log("i " + i);
             if (!chapters[i].GetLevels()[chapters[i].GetNbLevels() - 1].completed)
             {
                 for (int j = i + 1; j < chapterButtons.Count; j++)
                 {
                     chapterButtons[j].interactable = false;
-                    Debug.Log("j " + j);
                 }
                 break;
             }
