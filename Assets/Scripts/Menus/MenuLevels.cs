@@ -77,7 +77,7 @@ public class MenuLevels : MonoBehaviour
 
     private static void LevelButtonClicked(LoadingMenuInfo loadingMenuInfo, int levelNumber)
     {
-        GameManager.Instance.LoadScene("Leo", levelNumber, loadingMenuInfo);
+        GameManager.Instance.LoadScene("Chapter" + loadingMenuInfo.StartingChapterIndex, levelNumber, loadingMenuInfo);
     }
 
 }
