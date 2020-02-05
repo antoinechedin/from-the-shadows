@@ -56,7 +56,7 @@ public class LayeredObstacle : MonoBehaviour
         {
             Color newColor = spriteRenderer.color;
             if (gameObject.layer == LayerMask.NameToLayer("Obstacle")) newColor.a = 1f;
-            if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle")) newColor.a = 0.3f;
+            if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle")) newColor.a = 0.1f;
             spriteRenderer.color = newColor;
         }
     }
