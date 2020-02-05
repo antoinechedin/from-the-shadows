@@ -143,7 +143,8 @@ public class SaveMenu : MonoBehaviour
         Debug.Log("Load save number " + indexSave);
         actionChoiceCanvas.gameObject.SetActive(false);
         newGameChoiceCanvas.gameObject.SetActive(false);
-        menuManager.OpenChaptersMenu();
+        List<Chapter> chapters = GameManager.Instance.GetChapters();
+        menuManager.OpenChaptersMenu(0);
     }
 
     /// <summary>
