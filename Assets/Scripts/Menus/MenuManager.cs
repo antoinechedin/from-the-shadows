@@ -9,17 +9,21 @@ public class MenuManager : MonoBehaviour
     public Canvas startMenu;
     public Canvas saveMenu;
     public Canvas chaptersMenu;
+    public MenuChapter menuChapter;
     public MenuCamera menuCamera;
     public Button newGame;
     public Button firstSave;
-    public Button firstChapter;
 
     // Start is called before the first frame update
     void Start()
     {
         GameManager.Instance.LoadAllSaveFiles();
         newGame.onClick.AddListener(delegate { OpenSaveMenu(); });
-        switch (GameManager.Instance.StartMenuScene)
+        if (GameManager.Instance.LoadingMenuInfos == null)
+        {
+            GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
+        }
+        switch (GameManager.Instance.LoadingMenuInfos.StartingMenuScene)
         {
             case 0: // start menu
                 OpenStartMenu();
@@ -28,13 +32,12 @@ public class MenuManager : MonoBehaviour
                 OpenSaveMenu();
                 break;
             case 2: // chapter menu
-                OpenChaptersMenu(GameManager.Instance.StartChapterIndex);
+                OpenChaptersMenu(GameManager.Instance.CurrentChapter);
                 break;
             default:
                 Debug.Log("Menu index doesn't exist");
                 break;
         }
-        EventSystem.current.SetSelectedGameObject(newGame.gameObject);
     }
 
     // Update is called once per frame
@@ -64,11 +67,17 @@ public class MenuManager : MonoBehaviour
 
     public void OpenChaptersMenu(int chapterIndex)
     {
+        // menuChapter.SetCurrentChapter(chapterIndex);
+
+        Debug.Log("open chapter menu " + chapterIndex);
+
         chaptersMenu.gameObject.SetActive(true);
-        chaptersMenu.gameObject.GetComponent<MenuChapter>().SetCurrentChapter(chapterIndex);
         saveMenu.gameObject.SetActive(false);
+        startMenu.gameObject.SetActive(false);
+
         menuCamera.SetReturnToMainMenu(false);
-        EventSystem.current.SetSelectedGameObject(firstChapter.gameObject);
+
+        EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
     }
 
 }
