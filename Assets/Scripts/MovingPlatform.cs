@@ -1,30 +1,75 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SolidController))]
 public class MovingPlatform : MonoBehaviour
 {
-    public Vector2 startingPoint;
-    public Vector2 endingPoint;
+    private Vector2 startingPoint;
+    public Vector2 target;
+    
+    public List<Vector2> controlPoints;
+    private int indexCursor = 1;
 
+    public float threshold;
     private int orientation = 1;
+    private bool ignoreStartingPoint = true;
+
 
     private SolidController solidController;
 
-    private void Start()
+    private void Awake()
     {
         solidController = GetComponent<SolidController>();
+        startingPoint = transform.position;
     }
 
     private void Update()
     {
-        float deltaStart = (transform.position - (Vector3)startingPoint).magnitude;
-        float deltaEnd = (transform.position - (Vector3)endingPoint).magnitude;
+        MoveBackAndForth();
+    }
 
-        if (deltaStart < 0.1f || deltaEnd < 0.1f)
-            orientation *= -1;
+    /// <summary>
+    /// Moves back and forth from startingPoint to target
+    /// </summary>
+    private void MoveBackAndForth()
+    {
+        float deltaFrom = (transform.position - (Vector3)startingPoint).magnitude;
+        float deltaTo = (transform.position - (Vector3)target).magnitude;
 
-        solidController.Move((endingPoint - startingPoint) * orientation);
+        if (deltaFrom < threshold && !ignoreStartingPoint)
+        {
+            ChangeOrientation();
+        }
+        else if (deltaTo < threshold)
+        {
+            ChangeOrientation();
+            ignoreStartingPoint = false;
+        }
+
+        solidController.Move((target - startingPoint) * orientation);
+    }
+
+    /// <summary>
+    /// Changes movement orientation;
+    /// </summary>
+    private void ChangeOrientation()
+    {
+        orientation *= -1;
+    }
+
+    /// <summary>
+    /// Moves following control points array
+    /// </summary>
+    private void FollowTrajectory()
+    {
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, startingPoint);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, target);
     }
 }

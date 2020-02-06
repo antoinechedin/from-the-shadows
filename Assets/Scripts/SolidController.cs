@@ -7,7 +7,7 @@ public class SolidController : MonoBehaviour
     /// <summary>
     /// Moves the object in a given direction
     /// </summary>
-    /// <param name="direction">direction of the movement</param>
+    /// <param name="direction">normalized direction of the movement</param>
     public void Move(Vector2 direction)
     {
         transform.Translate(direction.normalized * speed * Time.deltaTime);
