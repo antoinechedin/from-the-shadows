@@ -6,22 +6,25 @@ using UnityEngine;
 public class MovingPlatform : MonoBehaviour
 {
     private Vector2 startingPoint;
+    private Vector2 endingPoint;
     public Vector2 target;
-    
+    private Vector2 limit;
+
     public List<Vector2> controlPoints;
     private int cursor = 0;
 
     public float threshold;
     private int orientation = 1;
-    private bool ignoreStartingPoint = true;
-
 
     private SolidController solidController;
 
     private void Awake()
     {
         solidController = GetComponent<SolidController>();
-        startingPoint = transform.position;
+        startingPoint = controlPoints[0];
+        endingPoint = controlPoints[controlPoints.Count - 1];
+        target = controlPoints[1];
+        limit = endingPoint;
     }
 
     private void Update()
@@ -30,68 +33,62 @@ public class MovingPlatform : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves back and forth from startingPoint to target
+    /// Moves towards given position
     /// </summary>
-    private void MoveBackAndForth()
+    /// <param name="target"></param>
+    private void MoveTowardsTarget(Vector2 target)
     {
-        UpdateOrientation();
-        solidController.Move((target - startingPoint) * orientation);
+        solidController.Move((Vector3)target - transform.position);
     }
 
     /// <summary>
-    /// Moves following control points array
+    /// Moves back and forth following control points array
     /// </summary>
     private void FollowTrajectoryBackAndForth()
     {
-        UpdateOrientation();
-        solidController.Move(controlPoints[cursor + orientation] - controlPoints[cursor]);
-        UpdateCursor();
+        MoveTowardsTarget(target);
+        UpdateCursor(limit);
     }
 
-
     /// <summary>
-    /// Checks and changes orientation when approaching bounds
+    /// Updates cursor position
     /// </summary>
-    private void UpdateOrientation()
+    /// <param name="bound">Limit of cursor de reverse</param>
+    private void UpdateCursor(Vector2 bound)
     {
-        float deltaStart = (transform.position - (Vector3)startingPoint).magnitude;
+        float deltaBound = (transform.position - (Vector3)bound).magnitude;
         float deltaTarget = (transform.position - (Vector3)target).magnitude;
 
-        if (deltaStart < threshold && !ignoreStartingPoint)
+        if (deltaBound < threshold)
         {
+            cursor += orientation;
             ChangeOrientation();
+            target = controlPoints[cursor + orientation];
         }
         else if (deltaTarget < threshold)
         {
-            ChangeOrientation();
-            ignoreStartingPoint = false;
+            cursor += orientation;
+            target = controlPoints[cursor + orientation];
         }
     }
 
     /// <summary>
-    /// Updates cursor position when approaching bounds
-    /// </summary>
-    private void UpdateCursor()
-    {
-        float delta = (transform.position - (Vector3)controlPoints[cursor + orientation]).magnitude;
-
-        if (delta < threshold)
-            cursor += orientation;
-    }
-
-    /// <summary>
-    /// Changes movement orientation
+    /// Inverts movement orientation
     /// </summary>
     private void ChangeOrientation()
     {
         orientation *= -1;
+        if (limit == endingPoint)
+            limit = startingPoint;
+        else if (limit == startingPoint)
+            limit = endingPoint;
     }
 
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, startingPoint);
+        Gizmos.DrawLine(transform.position, controlPoints[cursor]);
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, target);
     }
