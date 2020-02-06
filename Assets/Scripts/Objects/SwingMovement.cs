@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SwingMovement : MonoBehaviour
 {
-    [Range(0,260)]
+    [Range(0,90)]
     public float angle;
     public float speed;
     public float offsetTime;
