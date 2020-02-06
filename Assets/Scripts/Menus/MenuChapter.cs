@@ -40,15 +40,11 @@ public class MenuChapter : MonoBehaviour
         chapters = GameManager.Instance.GetChapters();
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
-        for (int i = 0; i < chapters.Count; i++)
+        for (int i = 0; i < chapters.Count - 1; i++)
         {
-            if (!chapters[i].GetLevels()[chapters[i].GetNbLevels() - 1].completed)
+            if (chapters[i].isCompleted())
             {
-                for (int j = i + 1; j < chapterButtons.Count; j++)
-                {
-                    chapterButtons[j].interactable = false;
-                }
-                break;
+                chapterButtons[i + 1].interactable = true;
             }
         }
     }
@@ -143,5 +139,5 @@ public class MenuChapter : MonoBehaviour
             }
         }
     }
-    
+
 }
