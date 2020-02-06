@@ -11,8 +11,8 @@ public class GameManager : Singleton<GameManager>
 {
     public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
 
-    private LoadingMenuInfo loadingMenuInfos;
-    private LoadingChapterInfo loadingChapterInfos;
+    private LoadingMenuInfo loadingMenuInfos = null;
+    private LoadingChapterInfo loadingChapterInfos = null;
 
     public GameStates gameState;
     private Save[] saves; //store all saves of the game
@@ -129,6 +129,7 @@ public class GameManager : Singleton<GameManager>
 
     private IEnumerator LoadAllsaveFilesAsync()
     {
+        Debug.Log(Application.persistentDataPath);
         saves = new Save[3];
 
         loading = true;
@@ -138,7 +139,7 @@ public class GameManager : Singleton<GameManager>
         {
             for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(Application.streamingAssetsPath +"/Saves/");
+                DirectoryInfo directoryInfo = new DirectoryInfo(Application.persistentDataPath +"/Saves/");
                 FileInfo[] filesInfo = directoryInfo.GetFiles();
                 foreach (FileInfo f in filesInfo)
                 {
@@ -187,7 +188,7 @@ public class GameManager : Singleton<GameManager>
             Dictionary<string, float> metaFloat = new Dictionary<string, float>();
             Dictionary<string, int> metaInt = new Dictionary<string, int>();
 
-            JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/Saves/SaveFile" + save + ".json"));
+            JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath+"/Saves/SaveFile" + save + ".json"));
 
             //chargement des metadonnées
             int nbPlayer = (int)json["nbPlayer"];
@@ -230,7 +231,7 @@ public class GameManager : Singleton<GameManager>
                 chapter.PrintChapter();
                 chapters.Add(chapter);
             }
-            FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile" + save + ".json");
+            FileInfo fileInfo = new FileInfo(Application.persistentDataPath+"/Saves/SaveFile" + save + ".json");
             System.DateTime lastDate = fileInfo.LastWriteTime;
             Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
             saves[save] = addedSave;
@@ -254,7 +255,7 @@ public class GameManager : Singleton<GameManager>
 
         while (!finished)
         {
-            StreamWriter stream = new StreamWriter("Assets/Resources/Saves/SaveFile" + currentSave + ".json");
+            StreamWriter stream = new StreamWriter(Application.persistentDataPath + "/Saves/SaveFile" + currentSave + ".json");
             //Save des Metadonnées
             string jsonString = "{\n\t\"nbPlayer\": " + saves[currentSave].NbPlayer + ",\n\t";
             foreach (string key in saves[currentSave].MetaInt.Keys)
@@ -300,7 +301,7 @@ public class GameManager : Singleton<GameManager>
     /// <param name="save"></param>
     public void DeleteSaveFile(int save)
     {
-        File.Delete("Assets/Resources/Saves/SaveFile" + save + ".json");
+        File.Delete(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
         saves[save] = null;
     }
 
@@ -312,17 +313,17 @@ public class GameManager : Singleton<GameManager>
     public void CreateSaveFile(int save, int nbPlayer)
     {
         //création du file
-        StreamWriter streamWriter = File.CreateText("Assets/Resources/Saves/SaveFile" + save + ".json");
+        StreamWriter streamWriter = File.CreateText(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
 
         //On lit le fichier de création de base duo ou solo
         string saveFileContent = "";
         if (nbPlayer == 1)
         {
-            saveFileContent = File.ReadAllText("Assets/Resources/SaveFileSolo.json");
+            saveFileContent = File.ReadAllText(Application.persistentDataPath + "/SaveFileSolo.json");
         }
         else if (nbPlayer == 2)
         {
-            saveFileContent = File.ReadAllText("Assets/Resources/SaveFileDuo.json");
+            saveFileContent = File.ReadAllText(Application.persistentDataPath + "/SaveFileDuo.json");
         }
 
         //On rempli le nouveau SaveFile
