@@ -10,7 +10,11 @@ public class PlayerSettings : ScriptableObject
     /// <summary>
     /// Height in unit that the player can jump
     /// </summary>
-    public float jumpHeight = 4;
+    public float jumpHeight = 3;
+    /// <summary>
+    /// Double jump height in unit. The double jump is enable in PlayerController
+    /// </summary>
+    public float doubleJumpHeight= 1.5f;
     /// <summary>
     /// Gravity in unit*unit/second
     /// </summary>
