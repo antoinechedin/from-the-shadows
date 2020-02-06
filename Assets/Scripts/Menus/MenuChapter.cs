@@ -38,7 +38,6 @@ public class MenuChapter : MonoBehaviour
     void Start()
     {
         chapters = GameManager.Instance.GetChapters();
-        // currentChapter = GameManager.Instance.CurrentChapter;
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
         for (int i = 0; i < chapters.Count; i++)
@@ -144,4 +143,5 @@ public class MenuChapter : MonoBehaviour
             }
         }
     }
+    
 }

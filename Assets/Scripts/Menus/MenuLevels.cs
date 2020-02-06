@@ -28,12 +28,15 @@ public class MenuLevels : MonoBehaviour
 
         DestroyPreviousButtons();
 
-        for (int i = 0; i < totalLevels; i++)
+        for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
             int levelNumber = i;
             GameObject button = Instantiate(levelButtonPrefab.gameObject, buttonsGroup.transform);
             button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
-            button.GetComponent<Button>().onClick.AddListener(delegate { LevelButtonClicked(new LoadingChapterInfo(chapterNumber), levelNumber); });
+            button.GetComponent<Button>().onClick.AddListener(delegate
+            {
+                LevelButtonClicked(new LoadingChapterInfo(chapterNumber), levelNumber);
+            });
             button.GetComponent<LevelButton>().menuLevels = this;
             button.GetComponent<LevelButton>().levelNumber = levelNumber;
             if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].completed)
@@ -74,7 +77,7 @@ public class MenuLevels : MonoBehaviour
 
     private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, int levelNumber)
     {
-        GameManager.Instance.LoadChapter("Chapter" +GameManager.Instance.CurrentChapter, loadingChapterInfo);
+        GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
     }
 
 }

@@ -13,4 +13,5 @@ public class ChapterButton : MonoBehaviour, ISelectHandler
         GameManager.Instance.CurrentChapter = chapterNumber;
         menuCamera.SetChapterSelected(chapterNumber);
     }
+    
 }
