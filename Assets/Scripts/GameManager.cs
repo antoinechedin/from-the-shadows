@@ -181,7 +181,6 @@ public class GameManager : Singleton<GameManager>
                 }
 
                 Chapter chapter = new Chapter(levels);
-                chapter.PrintChapter();
                 chapters.Add(chapter);
             }
             FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
