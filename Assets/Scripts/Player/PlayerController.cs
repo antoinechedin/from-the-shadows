@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 oldPosition;
     private ActorController controller;
     private PlayerSoundPlayer soundPlayer;
+    private Animator animator;
 
     private bool canStopJump;
     private bool canDoubleJump;
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<ActorController>();
         soundPlayer = GetComponent<PlayerSoundPlayer>();
+        animator = GetComponent<Animator>();
 
         oldPosition = transform.position;
         velocity = targetVelocity = velocitySmoothing = new Vector2();
@@ -54,6 +56,8 @@ public class PlayerController : MonoBehaviour
 
                 if (Input.GetButtonDown("A_" + id))
                 {
+                    animator.SetTrigger("Jump");
+
                     state = PlayerState.Airborne;
                     velocity.y = Mathf.Sqrt(2 * settings.jumpHeight * settings.gravity);
                     canStopJump = true;
@@ -87,6 +91,7 @@ public class PlayerController : MonoBehaviour
 
                 if (canDoubleJump && Input.GetButtonDown("A_" + id))
                 {
+                    animator.SetTrigger("Jump");
                     canDoubleJump = false;
                     velocity.y = Mathf.Sqrt(2 * settings.jumpHeight * settings.gravity);
                     canStopJump = true;
@@ -105,8 +110,8 @@ public class PlayerController : MonoBehaviour
     {
         if (velocity.x > 0 && GetComponent<SpriteRenderer>().flipX) GetComponent<SpriteRenderer>().flipX = false;
         if (velocity.x < 0 && !GetComponent<SpriteRenderer>().flipX) GetComponent<SpriteRenderer>().flipX = true;
-        GetComponent<Animator>().SetBool("Running", (int)velocity.x != 0);
-        GetComponent<Animator>().SetBool("Airborne", state == PlayerState.Airborne);
+        animator.SetBool("Running", (int)velocity.x != 0);
+        animator.SetBool("Airborne", state == PlayerState.Airborne);
     }
 
     private void Update()
