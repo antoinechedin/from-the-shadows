@@ -16,7 +16,7 @@ public class ChapterManager : MonoBehaviour
         // GameManager.Instance.CurrentSave = 2;
 
         // GameManager.Instance.CurrentChapter = chapterIndex;
-        GameManager.Instance.LoadingChapterInfo = new LoadingChapterInfo(0);
+        // GameManager.Instance.LoadingChapterInfo = new LoadingChapterInfo(0);
         currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
 
 
