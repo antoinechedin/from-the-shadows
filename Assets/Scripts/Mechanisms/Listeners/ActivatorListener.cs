@@ -4,13 +4,19 @@ using UnityEngine;
 public abstract class ActivatorListener : MonoBehaviour
 {
     public List<Activator> activators = new List<Activator>();
-    
+
+    /// <summary>
+    /// Method called by the Activator.Activate delegate
+    /// </summary>
     public abstract void OnActivate();
 
+    /// <summary>
+    /// Method called by the Activator.Deactivate delegate
+    /// </summary>
     public abstract void OnDeactivate();
 
     /// <summary>
-    /// Used by the ActivatorEditor class to update Activator/Activable references.static
+    /// Used by the ActivatorListenerEditor class to update Activators references.
     /// Do not call this method outside of the Editor.
     /// </summary>
     public void UpdateActivatorReferences()
