@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
                 {
                     animator.SetTrigger("Jump");
                     canDoubleJump = false;
-                    velocity.y = Mathf.Sqrt(2 * settings.jumpHeight * settings.gravity);
+                    velocity.y = Mathf.Sqrt(2 * settings.doubleJumpHeight * settings.gravity);
                     canStopJump = true;
 
                     GameManager.Instance.AddMetaInt("jumpNumber" + id, 1);
