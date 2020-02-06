@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SolidController))]
@@ -8,7 +9,7 @@ public class MovingPlatform : MonoBehaviour
     public Vector2 target;
     
     public List<Vector2> controlPoints;
-    private int indexCursor = 1;
+    private int cursor = 0;
 
     public float threshold;
     private int orientation = 1;
@@ -25,7 +26,7 @@ public class MovingPlatform : MonoBehaviour
 
     private void Update()
     {
-        MoveBackAndForth();
+        FollowTrajectoryBackAndForth();
     }
 
     /// <summary>
@@ -33,37 +34,59 @@ public class MovingPlatform : MonoBehaviour
     /// </summary>
     private void MoveBackAndForth()
     {
-        float deltaFrom = (transform.position - (Vector3)startingPoint).magnitude;
-        float deltaTo = (transform.position - (Vector3)target).magnitude;
-
-        if (deltaFrom < threshold && !ignoreStartingPoint)
-        {
-            ChangeOrientation();
-        }
-        else if (deltaTo < threshold)
-        {
-            ChangeOrientation();
-            ignoreStartingPoint = false;
-        }
-
+        UpdateOrientation();
         solidController.Move((target - startingPoint) * orientation);
     }
 
     /// <summary>
-    /// Changes movement orientation;
+    /// Moves following control points array
+    /// </summary>
+    private void FollowTrajectoryBackAndForth()
+    {
+        UpdateOrientation();
+        solidController.Move(controlPoints[cursor + orientation] - controlPoints[cursor]);
+        UpdateCursor();
+    }
+
+
+    /// <summary>
+    /// Checks and changes orientation when approaching bounds
+    /// </summary>
+    private void UpdateOrientation()
+    {
+        float deltaStart = (transform.position - (Vector3)startingPoint).magnitude;
+        float deltaTarget = (transform.position - (Vector3)target).magnitude;
+
+        if (deltaStart < threshold && !ignoreStartingPoint)
+        {
+            ChangeOrientation();
+        }
+        else if (deltaTarget < threshold)
+        {
+            ChangeOrientation();
+            ignoreStartingPoint = false;
+        }
+    }
+
+    /// <summary>
+    /// Updates cursor position when approaching bounds
+    /// </summary>
+    private void UpdateCursor()
+    {
+        float delta = (transform.position - (Vector3)controlPoints[cursor + orientation]).magnitude;
+
+        if (delta < threshold)
+            cursor += orientation;
+    }
+
+    /// <summary>
+    /// Changes movement orientation
     /// </summary>
     private void ChangeOrientation()
     {
         orientation *= -1;
     }
 
-    /// <summary>
-    /// Moves following control points array
-    /// </summary>
-    private void FollowTrajectory()
-    {
-
-    }
 
     private void OnDrawGizmos()
     {
