@@ -7,6 +7,9 @@ public class Test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.SpawnGameManager();
+        GameManager.Instance.LoadAllSaveFiles();
+        GameManager.Instance.CurrentSave = 0;
     }
 
     // Update is called once per frame

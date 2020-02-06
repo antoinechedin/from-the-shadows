@@ -20,7 +20,7 @@ public class Level
         collectibles = collect;
     }
 
-    public void PrintLevel()
+    public string PrintLevel()
     {
         string res = "level: " + completed +" nbCollectible : " +nbCollectible +", collectibles ";
         foreach (int i in collectibles)
@@ -28,6 +28,6 @@ public class Level
             res += i + " ";
         }
 
-        Debug.Log(res);
+        return res;
     }
 }

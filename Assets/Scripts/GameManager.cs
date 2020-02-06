@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -9,36 +10,33 @@ using System;
 
 public class GameManager : Singleton<GameManager>
 {
-    public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
-
     private LoadingMenuInfo loadingMenuInfos = null;
     private LoadingChapterInfo loadingChapterInfos = null;
 
-    public GameStates gameState;
-    private Save[] saves; //store all saves of the game
+    private Save[] saves = new Save[3]; //store all saves of the game
     private int currentSave = -1; //l'indice de la save courante
     private int currentChapter = -1;
 
     //info about the state of the game
     private bool debuging = false;
+    private bool debugCanvasDisplayed = false;
     private bool loading = false;
 
     //debug bools
     private bool displayedNoSaveFile = false;
-    //-------------------------------------------------------------
-
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F3))
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.D))
         {
             debuging = !debuging;
-            Debug.Log(debuging);
         }
-    }
-    //-------------------------------------------------------------
 
+        DisplayDebugCanvas();
+    }
+
+    #region getters / setters
     /// <summary>
     /// Get all the chapters in the game. Levels are obtained by searching into Chapter attribute named 'levels'.
     /// </summary>
@@ -47,7 +45,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (currentSave == -1)
         {
-            Debug.LogError("GetChapters  : currentSave index not set, returning chapters of Save[0] by default");
+            Debug.LogWarning("GetChapters  : currentSave index not set, returning chapters of Save[0] by default");
             return saves[0].Chapters;
         }
         else
@@ -68,7 +66,7 @@ public class GameManager : Singleton<GameManager>
         //WARN : le set n'est là que parce que notre jeu commence direct dans le menu
         //Dans le cas, où on a un splash screen avant, les LoadingMenuInfo seront set via le LoadMenu
         //qui sera appelé depuis le splash screen
-        set { loadingMenuInfos = value; } 
+        set { loadingMenuInfos = value; }
     }
 
     public LoadingChapterInfo LoadingChapterInfo
@@ -97,7 +95,9 @@ public class GameManager : Singleton<GameManager>
         get { return currentSave; }
         set { currentSave = value; }
     }
+    #endregion
 
+    #region Save data manipulation
     /// <summary>
     /// sets the completion of the level "lvl" of the chapter "chap" to true
     /// </summary>
@@ -114,95 +114,11 @@ public class GameManager : Singleton<GameManager>
             Debug.LogWarning("WARN META : No Save detected. Doing nothing>" + e.StackTrace);
         }
     }
+    #endregion
 
-    public void LoadAllSaveFiles()
-    {
-        StartCoroutine(LoadAllsaveFilesAsync());
-    }
-
-    private IEnumerator LoadAllsaveFilesAsync()
-    {
-        Debug.Log(Application.persistentDataPath);
-        saves = new Save[3];
-
-        loading = true;
-        bool finished = false;
-
-        while (!finished)
-        {
-            for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(Application.persistentDataPath +"/Saves/");
-                FileInfo[] filesInfo = directoryInfo.GetFiles();
-                foreach (FileInfo f in filesInfo)
-                {
-                    switch (f.Name)
-                    {
-                        case "SaveFile0.json":
-                            LoadSaveFile(0);
-                            break;
-                        case "SaveFile1.json":
-                            LoadSaveFile(1);
-                            break;
-                        case "SaveFile2.json":
-                            LoadSaveFile(2);
-                            break;
-                    }
-                }
-            }
-            finished = true;
-            yield return null;
-        }
-
-        loading = false;
-    }
-
-
-
-
-    public void TestLoadSave(int save)
-    {
-        //List<Chapter> chapters = new List<Chapter>();
-        //Dictionary<string, float> metaFloat = new Dictionary<string, float>();
-        //Dictionary<string, int> metaInt = new Dictionary<string, int>();
-
-        JObject json = JObject.Parse(File.ReadAllText("C:/Users/lveyssiere/Desktop/SaveFileDuo.json"));
-
-        /*//chargement des metadonnées
-        int nbPlayer = (int)json["nbPlayer"];
-
-        metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
-        metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
-        metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
-        metaFloat.Add("distance1", (float)json["distance1"]);
-
-        if (nbPlayer == 2)
-        {
-            metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
-            metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
-            metaFloat.Add("distance2", (float)json["distance2"]);
-        }
-        */
-
-
-        //chargement des chapitres
-        List<Chapter> chaps = JsonConvert.DeserializeObject<List<Chapter>>(json["chapters"].ToString());
-        Chapter chaptest = JsonConvert.DeserializeObject<Chapter>(json["chapters"][0]["chapter"].ToString());
-        chaptest.PrintChapter();
-
-
-        /*FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
-        System.DateTime lastDate = fileInfo.LastWriteTime;
-        Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
-        saves[save] = addedSave; */
-    }
-
-
-
-
-
+    #region Save Json Load
     /// <summary>
-    /// Loads the SaveFile specified in parameters
+    /// Calls the coroutine that loads the file given in parameters
     /// </summary>
     /// <param name="save"></param>
     public void LoadSaveFile(int save)
@@ -225,7 +141,7 @@ public class GameManager : Singleton<GameManager>
             Dictionary<string, float> metaFloat = new Dictionary<string, float>();
             Dictionary<string, int> metaInt = new Dictionary<string, int>();
 
-            JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath+"/Saves/SaveFile" + save + ".json"));
+            JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json"));
 
             //chargement des metadonnées
             int nbPlayer = (int)json["nbPlayer"];
@@ -268,7 +184,7 @@ public class GameManager : Singleton<GameManager>
                 chapter.PrintChapter();
                 chapters.Add(chapter);
             }
-            FileInfo fileInfo = new FileInfo(Application.persistentDataPath+"/Saves/SaveFile" + save + ".json");
+            FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
             System.DateTime lastDate = fileInfo.LastWriteTime;
             Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
             saves[save] = addedSave;
@@ -279,13 +195,68 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// Write the SaveFile based on the new data in GameManager and writes it on the save file of index "currentSave"
+    /// Calls the coroutine that load all the saves at once.
+    /// </summary>
+    public void LoadAllSaveFiles()
+    {
+        StartCoroutine(LoadAllsaveFilesAsync());
+    }
+
+    /// <summary>
+    /// Asynchromously loads all the saves
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator LoadAllsaveFilesAsync()
+    {
+        Debug.Log(Application.persistentDataPath);
+        saves = new Save[3];
+
+        loading = true;
+        bool finished = false;
+
+        while (!finished)
+        {
+            for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(Application.persistentDataPath + "/Saves/");
+                FileInfo[] filesInfo = directoryInfo.GetFiles();
+                foreach (FileInfo f in filesInfo)
+                {
+                    switch (f.Name)
+                    {
+                        case "SaveFile0.json":
+                            LoadSaveFile(0);
+                            break;
+                        case "SaveFile1.json":
+                            LoadSaveFile(1);
+                            break;
+                        case "SaveFile2.json":
+                            LoadSaveFile(2);
+                            break;
+                    }
+                }
+            }
+            finished = true;
+            yield return null;
+        }
+
+        loading = false;
+    }
+    #endregion
+
+    #region Save Json Write
+    /// <summary>
+    /// Calls the coroutine that saves the data present in GM on the current loaded saveFile
     /// </summary>
     public void WriteSaveFile()
     {
         StartCoroutine(WriteSaveFileAsync());
     }
 
+    /// <summary>
+    /// Write the SaveFile based on the new data in GameManager and writes it on the save file of index "currentSave"
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator WriteSaveFileAsync()
     {
         bool finished = false;
@@ -331,7 +302,9 @@ public class GameManager : Singleton<GameManager>
             yield return null;
         }
     }
+    #endregion
 
+    #region Json SaveFiles management
     /// <summary>
     /// Deletes the json file at the index "save"
     /// </summary>
@@ -369,19 +342,30 @@ public class GameManager : Singleton<GameManager>
 
         LoadSaveFile(save);
     }
+    #endregion
 
+    #region Load scenes
+    /// <summary>
+    /// Set the LoadingMenuInfos before loading the scene.
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <param name="loadingInfo"></param>
     public void LoadMenu(string sceneName, LoadingMenuInfo loadingInfo)
     {
         loadingMenuInfos = loadingInfo;
         StartCoroutine(LoadAsyncScene(sceneName));
     }
 
+    /// <summary>
+    /// Set the LoadingChapterInfos before loading the scene
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <param name="loadingInfo"></param>
     public void LoadChapter(string sceneName, LoadingChapterInfo loadingInfo)
     {
         loadingChapterInfos = loadingInfo;
         StartCoroutine(LoadAsyncScene(sceneName));
     }
-
 
     /// <summary>
     /// Use a coroutine to load a scene in the background
@@ -392,9 +376,8 @@ public class GameManager : Singleton<GameManager>
         StartCoroutine(LoadAsyncScene(sceneName));
     }
 
-
     /// <summary>
-    /// Coroutine that load the next scene
+    /// Coroutine that load a scene fading the screen to black
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
     /// <returns></returns>
@@ -418,8 +401,9 @@ public class GameManager : Singleton<GameManager>
             yield return null;
         }
     }
+    #endregion
 
-    //---------METADATA MANIPULATION-----------------
+    #region Metadata
 
     /// <summary>
     /// returns the metadata n of the currentSave or the sabe nbSave if it's passed in parameters
@@ -449,7 +433,7 @@ public class GameManager : Singleton<GameManager>
 
 
     /// <summary>
-    /// returns the metadata n of the currentSave or the sabe nbSave if it's passed in parameters
+    /// returns the metadata n of the currentSave or the save nbSave if it's passed in parameters
     /// </summary>
     /// <param name="n"></param>
     /// <returns></returns>
@@ -472,7 +456,6 @@ public class GameManager : Singleton<GameManager>
             return -1;
         }
     }
-
 
     /// <summary>
     /// sets the value of the metadata of name n with the value val
@@ -556,5 +539,111 @@ public class GameManager : Singleton<GameManager>
                 displayedNoSaveFile = true;
             }
         }
+    }
+    #endregion
+
+
+    private void DisplayDebugCanvas()
+    {
+        if (debuging)//display
+        {
+            if (!debugCanvasDisplayed)
+            {
+                string savesLength = "saves length : ",
+                    save0 = "save 0 : ",
+                    save1 = "save 1 : ",
+                    save2 = "save 2 : ",
+                    curSave = "Current save : ",
+                    load = "Loading : ",
+                    nbChapter = "nb chapter : ",
+                    currentChap = "current chapter : ",
+                    nbLvl = "nb levels : ",
+                    loadingMenInfo = "LoadingMenuInfo : ",
+                    loadingChapInfo = "LoadingChapterInfo : ";
+
+                GameObject debugCanvas = Instantiate((GameObject)Resources.Load("GMDebugCanvas"), Vector3.zero, Quaternion.identity);
+                if (saves != null)
+                {
+                    savesLength += saves.Length.ToString();
+                    save0 += saves[0] != null ? saves[0].Print() : "null";
+                    save1 += saves[1] != null ? saves[1].Print() : "null";
+                    save2 += saves[2] != null ? saves[2].Print() : "null";
+                    if (currentSave != -1 && saves[currentSave] != null)
+                    {
+                        nbChapter += saves[currentSave].Chapters.Count.ToString();
+                        if (CurrentChapter != -1 && saves[currentSave].Chapters[currentChapter] != null)
+                        {
+                            nbLvl += saves[CurrentSave].Chapters[currentChapter].GetNbLevels();
+                        }
+                        else
+                        {
+                            nbLvl += "null";
+                        }
+                    }
+                    else
+                    {
+                        nbChapter += "null";
+                        nbLvl += "null";
+                    }
+                }
+                else
+                {
+                    savesLength += "null";
+                    nbChapter += "null";
+                    save0 += "null";
+                    save1 += "null";
+                    save2 += "null";
+                    nbLvl += "null";
+                }
+
+
+                curSave += currentSave;
+                load += loading.ToString();
+
+                loadingMenInfo += loadingMenuInfos != null ? loadingMenuInfos.Print() : "null";
+                loadingChapInfo += loadingChapterInfos != null ? loadingChapterInfos.Print() : "null";
+
+                debugCanvas.transform.Find("Saves length").GetComponent<Text>().text = savesLength;
+                debugCanvas.transform.Find("Save0").GetComponent<Text>().text = save0;
+                debugCanvas.transform.Find("Save1").GetComponent<Text>().text = save1;
+                debugCanvas.transform.Find("Save2").GetComponent<Text>().text = save2;
+                debugCanvas.transform.Find("Current Save").GetComponent<Text>().text = curSave;
+                debugCanvas.transform.Find("loading").GetComponent<Text>().text = load;
+                debugCanvas.transform.Find("nbChapterCurrentSave").GetComponent<Text>().text = nbChapter;
+                debugCanvas.transform.Find("nbLevels").GetComponent<Text>().text = nbLvl;
+                debugCanvas.transform.Find("currentChapter").GetComponent<Text>().text = currentChap;
+                debugCanvas.transform.Find("loadingMenuInfo").GetComponent<Text>().text = loadingMenInfo;
+                debugCanvas.transform.Find("loadingChapterInfo").GetComponent<Text>().text = loadingChapInfo;
+   
+                debugCanvasDisplayed = true;
+            }
+        }
+        else //destroy
+        {
+            Destroy(GameObject.Find("GMDebugCanvas(Clone)"));
+            debugCanvasDisplayed = false;
+        }
+
+    }
+
+    public void TestLoadSave(int save)
+    {
+
+        JObject json = JObject.Parse(File.ReadAllText("C:/Users/lveyssiere/Desktop/SaveFileDuo.json"));
+
+
+        //chargement des chapitres
+        List<Chapter> chaps = JsonConvert.DeserializeObject<List<Chapter>>(json["chapters"].ToString());
+        Debug.Log(json["chapters"].ToString());
+        Chapter chaptest = JsonConvert.DeserializeObject<Chapter>(json["chapters"][0]["chapter"].ToString());
+        chaptest.PrintChapter();
+    }
+
+    /// <summary>
+    /// This function does nothing except allowing to call the GM therefore make it spawn
+    /// </summary>
+    public void SpawnGameManager()
+    {
+        Debug.Log("GameManager spawned");
     }
 }
