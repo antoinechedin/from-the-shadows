@@ -12,13 +12,13 @@ public class MenuCamera : MonoBehaviour
     public List<GameObject> cursorPositions;
     public float cameraSpeed;
 
-    public Canvas canvas;
+    public Canvas chapterCanvas;
 
     private int chapterSelected;
     private bool isMoving = false;
     private bool zoom = false;
     private bool returnToMainMenu = false;
-    private bool smoothTransition = false;
+    private bool smoothTransition = true;
 
     // Update is called once per frame
     void Update()
@@ -28,6 +28,7 @@ public class MenuCamera : MonoBehaviour
             // Move the camera
             Vector3 targetPosition;
             Transform targetRotation;
+
             if (returnToMainMenu)
             {
                 targetPosition = startPosition.transform.position;
@@ -43,6 +44,7 @@ public class MenuCamera : MonoBehaviour
                 targetPosition = cameraPositionsZoom[chapterSelected].transform.position;
                 targetRotation = cameraPositionsZoom[chapterSelected].transform;
             }
+
             if (smoothTransition)
             {
                 Vector3 velocity = Vector3.zero;
@@ -51,7 +53,11 @@ public class MenuCamera : MonoBehaviour
                 transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.1f);
 
                 // Rotate the camera
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation.rotation, Time.deltaTime * cameraSpeed);
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    targetRotation.rotation,
+                    Time.deltaTime * cameraSpeed
+                );
 
                 isMoving = !(velocity.magnitude == 0); // Doesn't actualise the camera position while not moving
             }
@@ -59,19 +65,29 @@ public class MenuCamera : MonoBehaviour
             {
                 transform.position = targetPosition;
                 transform.rotation = targetRotation.rotation;
+                isMoving = false;
             }
 
+            // Cursor on UI follow world points
             Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
-            cursor.GetComponent<RectTransform>().anchoredPosition = screenPoint / canvas.scaleFactor - canvas.GetComponent<RectTransform>().sizeDelta / 2f;
+            Vector2 canvasSizeDelta = chapterCanvas.GetComponent<RectTransform>().sizeDelta / 2f;
+            float canvasScaleFactor = chapterCanvas.scaleFactor;
+            cursor.GetComponent<RectTransform>().anchoredPosition = screenPoint / canvasScaleFactor - canvasSizeDelta;
         }
     }
 
+    /// <summary>
+    /// Set if the camera must use its zoom position or not.
+    /// </summary>
     public void SetZoom(bool isZooming)
     {
         zoom = isZooming;
         isMoving = true;
     }
 
+    /// <summary>
+    /// Set if the camera must return to its start position.
+    /// </summary>
     public void SetReturnToMainMenu(bool var)
     {
         returnToMainMenu = var;
@@ -88,6 +104,9 @@ public class MenuCamera : MonoBehaviour
         isMoving = true;
     }
 
+    /// <summary>
+    /// If the camera must move smoothly or not.
+    /// </summary>
     public bool SmoothTransition
     {
         set { smoothTransition = value; }
