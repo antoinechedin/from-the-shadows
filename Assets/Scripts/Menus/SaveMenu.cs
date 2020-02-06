@@ -144,16 +144,14 @@ public class SaveMenu : MonoBehaviour
         actionChoiceCanvas.gameObject.SetActive(false);
         newGameChoiceCanvas.gameObject.SetActive(false);
         List<Chapter> chapters = GameManager.Instance.GetChapters();
-        if (GameManager.Instance.CurrentChapter == -1)
+        for (int i = 0; i < chapters.Count; i++)
         {
-            for (int i = 0; i < chapters.Count; i++)
+            if (!chapters[i].isCompleted())
             {
-                if (!chapters[i].isCompleted())
-                {
-                    GameManager.Instance.CurrentChapter = i;
-                    menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter);
-                    return;
-                }
+                GameManager.Instance.CurrentChapter = i;
+                Debug.Log("Maintenant egal à : " + GameManager.Instance.CurrentChapter);
+                menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter);
+                return;
             }
         }
     }
