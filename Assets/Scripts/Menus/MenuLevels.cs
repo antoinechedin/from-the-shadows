@@ -35,7 +35,7 @@ public class MenuLevels : MonoBehaviour
             button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
             button.GetComponent<Button>().onClick.AddListener(delegate
             {
-                LevelButtonClicked(new LoadingChapterInfo(chapterNumber), levelNumber);
+                LevelButtonClicked(new LoadingChapterInfo(levelNumber));
             });
             button.GetComponent<LevelButton>().menuLevels = this;
             button.GetComponent<LevelButton>().levelNumber = levelNumber;
@@ -75,7 +75,7 @@ public class MenuLevels : MonoBehaviour
         }
     }
 
-    private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, int levelNumber)
+    private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo)
     {
         GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
     }

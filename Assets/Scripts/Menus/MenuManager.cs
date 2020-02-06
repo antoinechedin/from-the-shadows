@@ -68,6 +68,7 @@ public class MenuManager : MonoBehaviour
         startMenu.gameObject.SetActive(false);
 
         menuCamera.SetReturnToMainMenu(false);
+        menuChapter.ResetInteractablesChaptersButtons();
 
         EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
     }
