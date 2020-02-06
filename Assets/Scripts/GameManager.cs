@@ -217,6 +217,10 @@ public class GameManager : Singleton<GameManager>
         {
             for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
             {
+                if (!Directory.Exists(Application.persistentDataPath + "/Saves"))
+                {
+                    Directory.CreateDirectory(Application.persistentDataPath + "/Saves");
+                }
                 DirectoryInfo directoryInfo = new DirectoryInfo(Application.persistentDataPath + "/Saves/");
                 FileInfo[] filesInfo = directoryInfo.GetFiles();
                 foreach (FileInfo f in filesInfo)
@@ -613,7 +617,7 @@ public class GameManager : Singleton<GameManager>
                 debugCanvas.transform.Find("currentChapter").GetComponent<Text>().text = currentChap;
                 debugCanvas.transform.Find("loadingMenuInfo").GetComponent<Text>().text = loadingMenInfo;
                 debugCanvas.transform.Find("loadingChapterInfo").GetComponent<Text>().text = loadingChapInfo;
-   
+
                 debugCanvasDisplayed = true;
             }
         }
