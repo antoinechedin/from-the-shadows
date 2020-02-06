@@ -27,11 +27,15 @@ public abstract class ActivatorListener : MonoBehaviour
             if (allActivators[i].listeners.Contains(this) && !activators.Contains(allActivators[i]))
             {
                 allActivators[i].listeners.Remove(this);
+                allActivators[i].Activate -= OnActivate;
+                allActivators[i].Deactivate -= OnDeactivate;
             }
 
             if (activators.Contains(allActivators[i]) && !allActivators[i].listeners.Contains(this))
             {
                 allActivators[i].listeners.Add(this);
+                allActivators[i].Activate += OnActivate;
+                allActivators[i].Deactivate += OnDeactivate;
             }
         }
     }

@@ -31,11 +31,15 @@ public class Activator : MonoBehaviour
             if (allListeners[i].activators.Contains(this) && !listeners.Contains(allListeners[i]))
             {
                 allListeners[i].activators.Remove(this);
+                Activate -= allListeners[i].OnActivate;
+                Deactivate -= allListeners[i].OnDeactivate;
             }
 
             if (listeners.Contains(allListeners[i]) && !allListeners[i].activators.Contains(this))
             {
                 allListeners[i].activators.Add(this);
+                Activate += allListeners[i].OnActivate;
+                Deactivate += allListeners[i].OnDeactivate;
             }
         }
     }
