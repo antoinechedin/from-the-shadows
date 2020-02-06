@@ -18,6 +18,7 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         GameManager.Instance.LoadAllSaveFiles();
+
         newGame.onClick.AddListener(delegate { OpenSaveMenu(); });
         if (GameManager.Instance.LoadingMenuInfos == null)
         {

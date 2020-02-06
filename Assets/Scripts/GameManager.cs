@@ -11,15 +11,13 @@ public class GameManager : Singleton<GameManager>
 {
     public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
 
-    public const int FIRST_CHAPTER = 9000;
-    public const int LAST_CHAPTER_AVAILABLE = 9001;
-
     private LoadingMenuInfo loadingMenuInfos;
+    private LoadingChapterInfo loadingChapterInfos;
 
     public GameStates gameState;
     private Save[] saves; //store all saves of the game
     private int currentSave = -1; //l'indice de la save courante
-    private int currentChapter;
+    private int currentChapter = -1;
 
     //info about the state of the game
     private bool debuging = false;
@@ -69,7 +67,15 @@ public class GameManager : Singleton<GameManager>
     public LoadingMenuInfo LoadingMenuInfos
     {
         get { return loadingMenuInfos; }
-        set { loadingMenuInfos = value; }
+        //WARN : le set n'est là que parce que notre jeu commence direct dans le menu
+        //Dans le cas, où on a un splash screen avant, les LoadingMenuInfo seront set via le LoadMenu
+        //qui sera appelé depuis le splash screen
+        set { loadingMenuInfos = value; } 
+    }
+
+    public LoadingChapterInfo LoadingChapterInfo
+    {
+        get { return loadingChapterInfos; }
     }
 
     public Save[] Saves
@@ -326,14 +332,26 @@ public class GameManager : Singleton<GameManager>
         LoadSaveFile(save);
     }
 
+    public void LoadMenu(string sceneName, LoadingMenuInfo loadingInfo)
+    {
+        loadingMenuInfos = loadingInfo;
+        StartCoroutine(LoadAsyncScene(sceneName));
+    }
+
+    public void LoadChapter(string sceneName, LoadingChapterInfo loadingInfo)
+    {
+        loadingChapterInfos = loadingInfo;
+        StartCoroutine(LoadAsyncScene(sceneName));
+    }
+
 
     /// <summary>
     /// Use a coroutine to load a scene in the background
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
-    public void LoadScene(string sceneName, int levelIndex = -1, LoadingMenuInfo loadingMenuInfo = null)
+    public void LoadScene(string sceneName)
     {
-        StartCoroutine(LoadAsyncScene(sceneName, levelIndex, loadingMenuInfo));
+        StartCoroutine(LoadAsyncScene(sceneName));
     }
 
 

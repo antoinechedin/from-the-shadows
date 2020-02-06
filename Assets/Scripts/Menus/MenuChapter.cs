@@ -17,7 +17,6 @@ public class MenuChapter : MonoBehaviour
     public MenuManager menuManager;
 
     private List<Chapter> chapters;
-    private int currentChapter;
     private Animator menuChapterAnimator;
     private Animator menuLevelAnimator;
     private bool chapterMenuIsOpen = false;
@@ -57,6 +56,7 @@ public class MenuChapter : MonoBehaviour
 
     void Update()
     {
+        int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Open the chapter
         if (Input.GetButtonDown("A_G"))
         {
@@ -71,7 +71,7 @@ public class MenuChapter : MonoBehaviour
                     int nbCompleted = 0;
                     int totalLevel = 0;
 
-                    List<Level> levels = chapters[currentChapter].GetLevels();
+                    List<Level> levels = chapters[localIndexCurrentChapter].GetLevels();
                     foreach (Level l in levels)
                     {
                         foreach (int collectible in l.collectibles)
@@ -83,12 +83,12 @@ public class MenuChapter : MonoBehaviour
                         totalLevel++;
                     }
 
-                    levelLabel.text = chaptersName[currentChapter];
+                    levelLabel.text = chaptersName[localIndexCurrentChapter];
                     collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;
                     completedNumber.text = nbCompleted + "/" + totalLevel;
                     menuChapterAnimator.SetBool("open", true);
                     menuCamera.SetZoom(true);
-                    GameManager.Instance.CurrentChapter = currentChapter;
+                    GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
                 }
             }
             // Open the level and close the chapter
@@ -99,7 +99,7 @@ public class MenuChapter : MonoBehaviour
                 levelMenuIsOpen = true;
                 if (menuChapterAnimator != null)
                 {
-                    menuLevels.SetMenuLevels(currentChapter, chapters[currentChapter]);
+                    menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
                     menuLevelAnimator.SetBool("open", true);
                 }
             }
@@ -113,7 +113,7 @@ public class MenuChapter : MonoBehaviour
             {
                 chapterMenuIsOpen = false;
                 chapterButtonsPanel.SetActive(true);
-                EventSystem.current.SetSelectedGameObject(chapterButtons[currentChapter].gameObject);
+                EventSystem.current.SetSelectedGameObject(chapterButtons[localIndexCurrentChapter].gameObject);
                 if (menuChapterAnimator != null)
                 {
                     menuChapterAnimator.SetBool("open", false);
@@ -143,14 +143,5 @@ public class MenuChapter : MonoBehaviour
                 menuManager.OpenSaveMenu();
             }
         }
-    }
-
-    /// <summary>
-    /// Set the number of the current chapter
-    /// </summary>
-    /// <param name="number">The new current chapter</param>
-    public void SetCurrentChapter(int number)
-    {
-        currentChapter = number;
     }
 }

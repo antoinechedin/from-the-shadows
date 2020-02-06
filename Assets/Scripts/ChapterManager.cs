@@ -78,7 +78,7 @@ public class ChapterManager : MonoBehaviour
         {
             Debug.Log("Dernier level terminé, direction le menu de selection de niveau");
             CollectMetaData();
-            GameManager.Instance.LoadScene("MainMenu", -1, new LoadingMenuInfo(2, GameManager.Instance.CurrentChapter));
+            GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
         }
         else //on transfert le joueur dans le tableau suivant
         {
