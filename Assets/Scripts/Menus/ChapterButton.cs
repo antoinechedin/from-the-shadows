@@ -7,11 +7,11 @@ public class ChapterButton : MonoBehaviour, ISelectHandler
 {
     public int chapterNumber;
     public MenuCamera menuCamera;
-    public MenuChapter menuChapter;
 
     public void OnSelect(BaseEventData eventData)
     {
+        GameManager.Instance.CurrentChapter = chapterNumber;
         menuCamera.SetChapterSelected(chapterNumber);
-        menuChapter.SetCurrentChapter(chapterNumber);
     }
+    
 }

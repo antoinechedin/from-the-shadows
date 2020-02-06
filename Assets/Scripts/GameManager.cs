@@ -11,21 +11,17 @@ public class GameManager : Singleton<GameManager>
 {
     public enum GameStates { MainMenu, ChoosingLevel, Playing, Paused };
 
-    public const int FIRST_CHAPTER = 9000;
-    public const int LAST_CHAPTER_AVAILABLE = 9001;
-
-    private LoadingMenuInfo loadingMenuInfos;
+    private LoadingMenuInfo loadingMenuInfos = null;
+    private LoadingChapterInfo loadingChapterInfos = null;
 
     public GameStates gameState;
     private Save[] saves; //store all saves of the game
     private int currentSave = -1; //l'indice de la save courante
-    private int currentChapter;
+    private int currentChapter = -1;
 
     //info about the state of the game
     private bool debuging = false;
     private bool loading = false;
-
-    private int startingLevelIndex; //index of the level to start in when entering a chapter
 
     //debug bools
     private bool displayedNoSaveFile = false;
@@ -69,7 +65,16 @@ public class GameManager : Singleton<GameManager>
     public LoadingMenuInfo LoadingMenuInfos
     {
         get { return loadingMenuInfos; }
-        set { loadingMenuInfos = value; }
+        //WARN : le set n'est là que parce que notre jeu commence direct dans le menu
+        //Dans le cas, où on a un splash screen avant, les LoadingMenuInfo seront set via le LoadMenu
+        //qui sera appelé depuis le splash screen
+        set { loadingMenuInfos = value; } 
+    }
+
+    public LoadingChapterInfo LoadingChapterInfo
+    {
+        get { return loadingChapterInfos; }
+        set { loadingChapterInfos = value; }
     }
 
     public Save[] Saves
@@ -93,11 +98,6 @@ public class GameManager : Singleton<GameManager>
         set { currentSave = value; }
     }
 
-    public int StartLevelIndex
-    {
-        get { return startingLevelIndex; }
-    }
-
     /// <summary>
     /// sets the completion of the level "lvl" of the chapter "chap" to true
     /// </summary>
@@ -105,14 +105,13 @@ public class GameManager : Singleton<GameManager>
     /// <param name="lvl"></param>
     public void SetLevelCompleted(int chap, int lvl)
     {
-        if (currentSave == -1)
+        try
         {
-            Debug.LogError("SetLevelCompleted  : currentSave index not set. The level hasn't been set to completed");
-        }
-        else
-        {
-            Debug.Log(saves[currentSave]);
             saves[currentSave].Chapters[chap].GetLevels()[lvl].completed = true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("WARN META : No Save detected. Doing nothing>" + e.StackTrace);
         }
     }
 
@@ -123,6 +122,7 @@ public class GameManager : Singleton<GameManager>
 
     private IEnumerator LoadAllsaveFilesAsync()
     {
+        Debug.Log(Application.persistentDataPath);
         saves = new Save[3];
 
         loading = true;
@@ -132,7 +132,7 @@ public class GameManager : Singleton<GameManager>
         {
             for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(Application.streamingAssetsPath +"/Saves/");
+                DirectoryInfo directoryInfo = new DirectoryInfo(Application.persistentDataPath +"/Saves/");
                 FileInfo[] filesInfo = directoryInfo.GetFiles();
                 foreach (FileInfo f in filesInfo)
                 {
@@ -156,6 +156,50 @@ public class GameManager : Singleton<GameManager>
 
         loading = false;
     }
+
+
+
+
+    public void TestLoadSave(int save)
+    {
+        //List<Chapter> chapters = new List<Chapter>();
+        //Dictionary<string, float> metaFloat = new Dictionary<string, float>();
+        //Dictionary<string, int> metaInt = new Dictionary<string, int>();
+
+        JObject json = JObject.Parse(File.ReadAllText("C:/Users/lveyssiere/Desktop/SaveFileDuo.json"));
+
+        /*//chargement des metadonnées
+        int nbPlayer = (int)json["nbPlayer"];
+
+        metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
+        metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
+        metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
+        metaFloat.Add("distance1", (float)json["distance1"]);
+
+        if (nbPlayer == 2)
+        {
+            metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
+            metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
+            metaFloat.Add("distance2", (float)json["distance2"]);
+        }
+        */
+
+
+        //chargement des chapitres
+        List<Chapter> chaps = JsonConvert.DeserializeObject<List<Chapter>>(json["chapters"].ToString());
+        Chapter chaptest = JsonConvert.DeserializeObject<Chapter>(json["chapters"][0]["chapter"].ToString());
+        chaptest.PrintChapter();
+
+
+        /*FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
+        System.DateTime lastDate = fileInfo.LastWriteTime;
+        Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
+        saves[save] = addedSave; */
+    }
+
+
+
+
 
     /// <summary>
     /// Loads the SaveFile specified in parameters
@@ -181,7 +225,7 @@ public class GameManager : Singleton<GameManager>
             Dictionary<string, float> metaFloat = new Dictionary<string, float>();
             Dictionary<string, int> metaInt = new Dictionary<string, int>();
 
-            JObject json = JObject.Parse(File.ReadAllText("Assets/Resources/Saves/SaveFile" + save + ".json"));
+            JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath+"/Saves/SaveFile" + save + ".json"));
 
             //chargement des metadonnées
             int nbPlayer = (int)json["nbPlayer"];
@@ -224,7 +268,7 @@ public class GameManager : Singleton<GameManager>
                 chapter.PrintChapter();
                 chapters.Add(chapter);
             }
-            FileInfo fileInfo = new FileInfo("Assets/Resources/Saves/SaveFile" + save + ".json");
+            FileInfo fileInfo = new FileInfo(Application.persistentDataPath+"/Saves/SaveFile" + save + ".json");
             System.DateTime lastDate = fileInfo.LastWriteTime;
             Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
             saves[save] = addedSave;
@@ -248,7 +292,7 @@ public class GameManager : Singleton<GameManager>
 
         while (!finished)
         {
-            StreamWriter stream = new StreamWriter("Assets/Resources/Saves/SaveFile" + currentSave + ".json");
+            StreamWriter stream = new StreamWriter(Application.persistentDataPath + "/Saves/SaveFile" + currentSave + ".json");
             //Save des Metadonnées
             string jsonString = "{\n\t\"nbPlayer\": " + saves[currentSave].NbPlayer + ",\n\t";
             foreach (string key in saves[currentSave].MetaInt.Keys)
@@ -294,7 +338,7 @@ public class GameManager : Singleton<GameManager>
     /// <param name="save"></param>
     public void DeleteSaveFile(int save)
     {
-        File.Delete("Assets/Resources/Saves/SaveFile" + save + ".json");
+        File.Delete(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
         saves[save] = null;
     }
 
@@ -306,17 +350,17 @@ public class GameManager : Singleton<GameManager>
     public void CreateSaveFile(int save, int nbPlayer)
     {
         //création du file
-        StreamWriter streamWriter = File.CreateText("Assets/Resources/Saves/SaveFile" + save + ".json");
+        StreamWriter streamWriter = File.CreateText(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
 
         //On lit le fichier de création de base duo ou solo
         string saveFileContent = "";
         if (nbPlayer == 1)
         {
-            saveFileContent = File.ReadAllText("Assets/Resources/SaveFileSolo.json");
+            saveFileContent = File.ReadAllText(Application.persistentDataPath + "/SaveFileSolo.json");
         }
         else if (nbPlayer == 2)
         {
-            saveFileContent = File.ReadAllText("Assets/Resources/SaveFileDuo.json");
+            saveFileContent = File.ReadAllText(Application.persistentDataPath + "/SaveFileDuo.json");
         }
 
         //On rempli le nouveau SaveFile
@@ -326,14 +370,26 @@ public class GameManager : Singleton<GameManager>
         LoadSaveFile(save);
     }
 
+    public void LoadMenu(string sceneName, LoadingMenuInfo loadingInfo)
+    {
+        loadingMenuInfos = loadingInfo;
+        StartCoroutine(LoadAsyncScene(sceneName));
+    }
+
+    public void LoadChapter(string sceneName, LoadingChapterInfo loadingInfo)
+    {
+        loadingChapterInfos = loadingInfo;
+        StartCoroutine(LoadAsyncScene(sceneName));
+    }
+
 
     /// <summary>
     /// Use a coroutine to load a scene in the background
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
-    public void LoadScene(string sceneName, int levelIndex = -1, LoadingMenuInfo loadingMenuInfo = null)
+    public void LoadScene(string sceneName)
     {
-        StartCoroutine(LoadAsyncScene(sceneName, levelIndex, loadingMenuInfo));
+        StartCoroutine(LoadAsyncScene(sceneName));
     }
 
 
@@ -342,22 +398,8 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
     /// <returns></returns>
-    IEnumerator LoadAsyncScene(string sceneName, int levelIndex = -1, LoadingMenuInfo loadMenuInfo = null)
+    IEnumerator LoadAsyncScene(string sceneName)
     {
-        if (levelIndex != -1)
-        {
-            startingLevelIndex = levelIndex;
-        }
-        else
-        {
-            Debug.LogWarning("LoadScene : If you are loading a chapter, don't forget to pass the levelIndex in the second parameter");
-        }
-
-
-        //Sets the necessary informations to load the menu
-        loadingMenuInfos = loadMenuInfo;
-
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false; //permet de ne pas charger la scene directos quand elle est prête
 

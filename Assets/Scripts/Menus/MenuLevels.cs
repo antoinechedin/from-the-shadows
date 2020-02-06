@@ -11,12 +11,8 @@ public class MenuLevels : MonoBehaviour
     public LevelButton levelButtonPrefab;
     public GameObject collectibleTaken, collectibleMissing; // Prefabs
 
-    private Chapter currentChapter;
-
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
     {
-        currentChapter = chapter;
-
         int nbCompleted = 0;
         int totalLevels = 0;
 
@@ -32,12 +28,15 @@ public class MenuLevels : MonoBehaviour
 
         DestroyPreviousButtons();
 
-        for (int i = 0; i < totalLevels; i++)
+        for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
             int levelNumber = i;
             GameObject button = Instantiate(levelButtonPrefab.gameObject, buttonsGroup.transform);
             button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
-            button.GetComponent<Button>().onClick.AddListener(delegate { LevelButtonClicked(new LoadingMenuInfo(2, chapterNumber), levelNumber); });
+            button.GetComponent<Button>().onClick.AddListener(delegate
+            {
+                LevelButtonClicked(new LoadingChapterInfo(levelNumber));
+            });
             button.GetComponent<LevelButton>().menuLevels = this;
             button.GetComponent<LevelButton>().levelNumber = levelNumber;
             if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].completed)
@@ -50,11 +49,12 @@ public class MenuLevels : MonoBehaviour
 
     public void SetMenuLevelInfo(int level)
     {
+        Chapter localCurrentChapter = GameManager.Instance.GetChapters()[GameManager.Instance.CurrentChapter];
         foreach (Transform child in collectiblesPanel.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
-        foreach (int c in currentChapter.GetLevels()[level].collectibles)
+        foreach (int c in localCurrentChapter.GetLevels()[level].collectibles)
         {
             if (c == 1)
             {
@@ -75,9 +75,9 @@ public class MenuLevels : MonoBehaviour
         }
     }
 
-    private static void LevelButtonClicked(LoadingMenuInfo loadingMenuInfo, int levelNumber)
+    private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo)
     {
-        GameManager.Instance.LoadScene("Chapter" + loadingMenuInfo.StartingChapterIndex, levelNumber, loadingMenuInfo);
+        GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
     }
 
 }

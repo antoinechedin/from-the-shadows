@@ -9,8 +9,10 @@ public class MenuManager : MonoBehaviour
     public Canvas startMenu;
     public Canvas saveMenu;
     public Canvas chaptersMenu;
+
     public MenuChapter menuChapter;
     public MenuCamera menuCamera;
+
     public Button newGame;
     public Button firstSave;
 
@@ -18,32 +20,30 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         GameManager.Instance.LoadAllSaveFiles();
+
         newGame.onClick.AddListener(delegate { OpenSaveMenu(); });
+
         if (GameManager.Instance.LoadingMenuInfos == null)
         {
             GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
         }
-        switch (GameManager.Instance.LoadingMenuInfos.StartingMenuScene)
+
+        int sceneIndex = GameManager.Instance.LoadingMenuInfos.StartingMenuScene;
+        switch (sceneIndex)
         {
-            case 0: // start menu
+            case 0: // Start menu
                 OpenStartMenu();
                 break;
-            case 1: // save menu
+            case 1: // Saves menu
                 OpenSaveMenu();
                 break;
-            case 2: // chapter menu
+            case 2: // Chapters menu
                 OpenChaptersMenu(GameManager.Instance.CurrentChapter);
                 break;
             default:
-                Debug.Log("Menu index doesn't exist");
+                Debug.LogWarning("Menu index " + sceneIndex + " doesn't exist");
                 break;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void OpenStartMenu()
@@ -63,13 +63,12 @@ public class MenuManager : MonoBehaviour
 
     public void OpenChaptersMenu(int chapterIndex)
     {
-        // menuChapter.SetCurrentChapter(chapterIndex);
-
         chaptersMenu.gameObject.SetActive(true);
         saveMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
 
         menuCamera.SetReturnToMainMenu(false);
+        menuChapter.ResetInteractablesChaptersButtons();
 
         EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
     }
