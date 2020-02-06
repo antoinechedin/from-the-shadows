@@ -16,7 +16,7 @@ public class ChapterManager : MonoBehaviour
         // GameManager.Instance.CurrentSave = 2;
 
         // GameManager.Instance.CurrentChapter = chapterIndex;
-        currentLevel = GameManager.Instance.StartLevelIndex;
+        currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
 

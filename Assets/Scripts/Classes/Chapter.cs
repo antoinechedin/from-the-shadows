@@ -9,7 +9,7 @@ using System;
 [Serializable]
 public class Chapter
 {
-    private List<Level> levels;
+    public List<Level> levels;
 
     public Chapter(List<Level> lvl)
     {

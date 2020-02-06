@@ -23,8 +23,6 @@ public class GameManager : Singleton<GameManager>
     private bool debuging = false;
     private bool loading = false;
 
-    private int startingLevelIndex; //index of the level to start in when entering a chapter
-
     //debug bools
     private bool displayedNoSaveFile = false;
     //-------------------------------------------------------------
@@ -99,11 +97,6 @@ public class GameManager : Singleton<GameManager>
         set { currentSave = value; }
     }
 
-    public int StartLevelIndex
-    {
-        get { return startingLevelIndex; }
-    }
-
     /// <summary>
     /// sets the completion of the level "lvl" of the chapter "chap" to true
     /// </summary>
@@ -111,14 +104,13 @@ public class GameManager : Singleton<GameManager>
     /// <param name="lvl"></param>
     public void SetLevelCompleted(int chap, int lvl)
     {
-        if (currentSave == -1)
+        try
         {
-            Debug.LogError("SetLevelCompleted  : currentSave index not set. The level hasn't been set to completed");
-        }
-        else
-        {
-            Debug.Log(saves[currentSave]);
             saves[currentSave].Chapters[chap].GetLevels()[lvl].completed = true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("WARN META : No Save detected. Doing nothing>" + e.StackTrace);
         }
     }
 
@@ -163,6 +155,68 @@ public class GameManager : Singleton<GameManager>
 
         loading = false;
     }
+
+
+
+
+    public void TestLoadSave(int save)
+    {
+        List<Chapter> chapters = new List<Chapter>();
+        Dictionary<string, float> metaFloat = new Dictionary<string, float>();
+        Dictionary<string, int> metaInt = new Dictionary<string, int>();
+
+        JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json"));
+
+        //chargement des metadonnées
+        int nbPlayer = (int)json["nbPlayer"];
+
+        metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
+        metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
+        metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
+        metaFloat.Add("distance1", (float)json["distance1"]);
+
+        if (nbPlayer == 2)
+        {
+            metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
+            metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
+            metaFloat.Add("distance2", (float)json["distance2"]);
+        }
+
+
+        //chargement des chapitres
+        JArray allChapters = (JArray)json["chapters"];
+        foreach (JObject chap in allChapters)
+        {
+            JArray chapLevels = (JArray)chap["chapter"]["levels"];
+
+            List<Level> levels = new List<Level>();
+            foreach (JObject level in chapLevels)
+            {
+                int nbCollectible = (int)level["nbCollectible"];
+                int[] collectibles = new int[nbCollectible];
+
+                for (int k = 0; k < nbCollectible; k++)
+                {
+                    collectibles[k] = (int)level["collectibles"][k];
+                }
+
+                Level lvl = new Level((bool)level["completed"], nbCollectible, collectibles);
+                levels.Add(lvl);
+            }
+
+            Chapter chapter = new Chapter(levels);
+            chapter.PrintChapter();
+            chapters.Add(chapter);
+        }
+        FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
+        System.DateTime lastDate = fileInfo.LastWriteTime;
+        Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
+        saves[save] = addedSave;
+    }
+
+
+
+
 
     /// <summary>
     /// Loads the SaveFile specified in parameters
@@ -361,22 +415,8 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     /// <param name="sceneName"> The name of the scene to load </param>
     /// <returns></returns>
-    IEnumerator LoadAsyncScene(string sceneName, int levelIndex = -1, LoadingMenuInfo loadMenuInfo = null)
+    IEnumerator LoadAsyncScene(string sceneName)
     {
-        if (levelIndex != -1)
-        {
-            startingLevelIndex = levelIndex;
-        }
-        else
-        {
-            Debug.LogWarning("LoadScene : If you are loading a chapter, don't forget to pass the levelIndex in the second parameter");
-        }
-
-
-        //Sets the necessary informations to load the menu
-        loadingMenuInfos = loadMenuInfo;
-
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false; //permet de ne pas charger la scene directos quand elle est prête
 
