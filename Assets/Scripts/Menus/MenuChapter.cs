@@ -37,16 +37,8 @@ public class MenuChapter : MonoBehaviour
 
     void Start()
     {
-        chapters = GameManager.Instance.GetChapters();
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         menuLevelAnimator = menuLevels.GetComponent<Animator>();
-        for (int i = 0; i < chapters.Count - 1; i++)
-        {
-            if (chapters[i].isCompleted())
-            {
-                chapterButtons[i + 1].interactable = true;
-            }
-        }
     }
 
     void Update()
@@ -136,6 +128,22 @@ public class MenuChapter : MonoBehaviour
                 gameObject.transform.position += new Vector3(455, 0, 0);
                 menuLevels.gameObject.transform.position += new Vector3(455, 0, 0);
                 menuManager.OpenSaveMenu();
+            }
+        }
+    }
+
+    public void ResetInteractablesChaptersButtons()
+    {
+        chapters = GameManager.Instance.GetChapters();
+        for (int i = 1; i < chapterButtons.Count; i++)
+        {
+            chapterButtons[i].interactable = false;
+        }
+        for (int i = 0; i < chapters.Count - 1; i++)
+        {
+            if (chapters[i].isCompleted())
+            {
+                chapterButtons[i + 1].interactable = true;
             }
         }
     }
