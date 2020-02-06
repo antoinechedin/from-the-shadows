@@ -15,4 +15,9 @@ public class LoadingMenuInfo
     {
         get { return startingMenuScene; }
     }
+
+    public string Print()
+    {
+        return "startingMenuScene : " +startingMenuScene;
+    }
 }

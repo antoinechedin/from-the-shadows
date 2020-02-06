@@ -45,4 +45,9 @@ public class Save
     {
         get { return metaFloat; }
     }
+
+    public string Print()
+    {
+        return "nb player : " + nbPlayer + ". nb chapters : " + chapters.Count;
+    }
 }

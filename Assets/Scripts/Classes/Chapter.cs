@@ -38,12 +38,14 @@ public class Chapter
         return completed;
     }
 
-    public void PrintChapter()
+    public string PrintChapter()
     {
+        string res = "";
         Debug.Log("Chapter avec " + levels.Count + " level");
         foreach (Level l in levels)
         {
             l.PrintLevel();
         }
+        return res;
     }
 }

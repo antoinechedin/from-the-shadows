@@ -15,4 +15,9 @@ public class LoadingChapterInfo
     {
         get { return startLevelIndex; }
     }
+
+    public string Print()
+    {
+        return "startLevelIndex : " + startLevelIndex;
+    }
 }

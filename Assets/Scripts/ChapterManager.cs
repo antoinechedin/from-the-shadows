@@ -11,15 +11,10 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        // VIRER CES LIGNES QUAND INTEGRATION TERMINEE
-        // GameManager.Instance.LoadAllSaveFiles();
-        // GameManager.Instance.CurrentSave = 2;
-
-        // GameManager.Instance.CurrentChapter = chapterIndex;
-        // GameManager.Instance.LoadingChapterInfo = new LoadingChapterInfo(0);
-        currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
-
-
+        if (GameManager.Instance.LoadingChapterInfo != null)
+        {
+            currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
+        }
 
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
