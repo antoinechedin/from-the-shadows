@@ -17,7 +17,24 @@ public class Test : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            GameManager.Instance.TestLoadSave(0);
+            List<Level> levels = new List<Level>();
+            levels.Add(new Level(false, 1, new int[] { 0 }));
+            levels.Add(new Level(false, 1, new int[] { 0 }));
+
+            List<Chapter> chaps = new List<Chapter>();
+            chaps.Add(new Chapter(levels));
+
+            Dictionary<string, float> testDic = new Dictionary<string, float>();
+            testDic.Add("mabite", 17f);
+
+            Save save = new Save(chaps, 1, new Dictionary<string, int>(), testDic, new System.DateTime());
+
+            Save.TestWriteSaveFile(save);
+        }
+
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Save.TestLoadSaveFile();
         }
     }
 }
