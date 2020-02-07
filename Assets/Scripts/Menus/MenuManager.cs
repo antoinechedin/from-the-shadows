@@ -75,6 +75,14 @@ public class MenuManager : MonoBehaviour
 
     public void Quit()
     {
+        GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen");
+        loadingScreen = Instantiate(loadingScreen, gameObject.transform);
+        StartCoroutine(Fade());
+    }
+
+    IEnumerator Fade()
+    {
+        yield return new WaitForSeconds(1f);
         Application.Quit();
     }
 
