@@ -27,7 +27,7 @@ public class MovingPlatform : MonoBehaviour
         limit = endingPoint;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         FollowTrajectoryBackAndForth();
     }
@@ -41,14 +41,22 @@ public class MovingPlatform : MonoBehaviour
         solidController.Move((Vector3)target - transform.position);
     }
 
-    private void ApproachBound(Vector2 bound)
+    /// <summary>
+    /// Easing movement towards bounds
+    /// </summary>
+    /// <param name="bounds">target boundary</param>
+    private void ApproachBound(Vector2 bounds)
     {
-        solidController.Approach((Vector3)bound - transform.position);
+        solidController.Approach((Vector3)bounds - transform.position);
     }
 
-    private void LeaveBound(Vector2 bound)
+    /// <summary>
+    /// Easing movement leaving bounds
+    /// </summary>
+    /// <param name="bounds"></param>
+    private void LeaveBound(Vector2 bounds)
     {
-        solidController.Leave((Vector3)bound - transform.position);
+        solidController.Leave((Vector3)bounds - transform.position);
     }
 
     /// <summary>
@@ -56,9 +64,9 @@ public class MovingPlatform : MonoBehaviour
     /// </summary>
     private void FollowTrajectoryBackAndForth()
     {
-        if (IsTargetBound() && ((Vector3)target - transform.position).magnitude < 1.5f)
+        if (IsTargetBounds() && ((Vector3)target - transform.position).magnitude < 1.5f)
             ApproachBound(target);
-        else if (IsCursorBound() && ((Vector3)target - transform.position).magnitude < 1.5f)
+        else if (IsCursorBounds() && ((Vector3)target - transform.position).magnitude < 1.5f)
             LeaveBound(target);
         else
             MoveTowardsTarget(target);
@@ -66,13 +74,19 @@ public class MovingPlatform : MonoBehaviour
         UpdateCursor(limit);
     }
 
-    private bool IsCursorBound()
+    /// <summary>
+    /// Returns if current control point is a bounds
+    /// </summary>
+    private bool IsCursorBounds()
     {
         return controlPoints[cursor].Equals(controlPoints[0]) || 
             controlPoints[cursor].Equals(controlPoints[controlPoints.Count - 1]);
     }
 
-    private bool IsTargetBound()
+    /// <summary>
+    /// Returns if current target is a bounds
+    /// </summary>
+    private bool IsTargetBounds()
     {
         return target.Equals(controlPoints[0]) || 
             target.Equals(controlPoints[controlPoints.Count - 1]);
@@ -81,13 +95,13 @@ public class MovingPlatform : MonoBehaviour
     /// <summary>
     /// Updates cursor position
     /// </summary>
-    /// <param name="bound">Limit of cursor de reverse</param>
-    private void UpdateCursor(Vector2 bound)
+    /// <param name="bounds">Limit of cursor de reverse</param>
+    private void UpdateCursor(Vector2 bounds)
     {
-        float deltaBound = (transform.position - (Vector3)bound).magnitude;
+        float deltaBounds = (transform.position - (Vector3)bounds).magnitude;
         float deltaTarget = (transform.position - (Vector3)target).magnitude;
 
-        if (deltaBound < threshold)
+        if (deltaBounds < threshold)
         {
             cursor += orientation;
             ChangeOrientation();
@@ -111,7 +125,6 @@ public class MovingPlatform : MonoBehaviour
         else if (limit == startingPoint)
             limit = endingPoint;
     }
-
 
     private void OnDrawGizmos()
     {
