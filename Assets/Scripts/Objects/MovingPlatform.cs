@@ -41,26 +41,41 @@ public class MovingPlatform : MonoBehaviour
         solidController.Move((Vector3)target - transform.position);
     }
 
+    private void ApproachBound(Vector2 bound)
+    {
+        solidController.Approach((Vector3)bound - transform.position);
+    }
+
+    private void LeaveBound(Vector2 bound)
+    {
+        solidController.Leave((Vector3)bound - transform.position);
+    }
+
     /// <summary>
     /// Moves back and forth following control points array
     /// </summary>
     private void FollowTrajectoryBackAndForth()
     {
-        Vector3 tmp = (Vector3)target - transform.position;
-        if (IsTargetBound() && tmp.magnitude < threshold)
-        {
-            Debug.Log("kek");
-            transform.position = Vector3.SmoothDamp(transform.position, target, ref tmp, 0.1f);
-        }
+        if (IsTargetBound() && ((Vector3)target - transform.position).magnitude < 1.5f)
+            ApproachBound(target);
+        else if (IsCursorBound() && ((Vector3)target - transform.position).magnitude < 1.5f)
+            LeaveBound(target);
         else
             MoveTowardsTarget(target);
         
         UpdateCursor(limit);
     }
 
+    private bool IsCursorBound()
+    {
+        return controlPoints[cursor].Equals(controlPoints[0]) || 
+            controlPoints[cursor].Equals(controlPoints[controlPoints.Count - 1]);
+    }
+
     private bool IsTargetBound()
     {
-        return target.Equals(controlPoints[0]) || target.Equals(controlPoints[controlPoints.Count - 1]);
+        return target.Equals(controlPoints[0]) || 
+            target.Equals(controlPoints[controlPoints.Count - 1]);
     }
 
     /// <summary>
