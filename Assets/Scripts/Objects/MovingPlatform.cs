@@ -46,8 +46,21 @@ public class MovingPlatform : MonoBehaviour
     /// </summary>
     private void FollowTrajectoryBackAndForth()
     {
-        MoveTowardsTarget(target);
+        Vector3 tmp = (Vector3)target - transform.position;
+        if (IsTargetBound() && tmp.magnitude < threshold)
+        {
+            Debug.Log("kek");
+            transform.position = Vector3.SmoothDamp(transform.position, target, ref tmp, 0.1f);
+        }
+        else
+            MoveTowardsTarget(target);
+        
         UpdateCursor(limit);
+    }
+
+    private bool IsTargetBound()
+    {
+        return target.Equals(controlPoints[0]) || target.Equals(controlPoints[controlPoints.Count - 1]);
     }
 
     /// <summary>

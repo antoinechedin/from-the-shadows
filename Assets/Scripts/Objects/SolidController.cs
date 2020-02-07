@@ -8,8 +8,9 @@ public class SolidController : MonoBehaviour
     /// Moves the object in a given direction
     /// </summary>
     /// <param name="direction">normalized direction of the movement</param>
-    public void Move(Vector2 direction)
+    public void Move(Vector2 direction/*, Vector3 target*/)
     {
+
         transform.Translate(direction.normalized * speed * Time.deltaTime);
     }
 }
