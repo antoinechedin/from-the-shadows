@@ -7,12 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class Door : ActivatorListener
 {
-    public bool open;
-
-    private void Start()
-    {
-        GetComponent<BoxCollider2D>().enabled = open;
-    }
+    private bool open;
 
     public override void OnActivate()
     {
