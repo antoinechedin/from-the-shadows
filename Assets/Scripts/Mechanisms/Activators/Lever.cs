@@ -6,14 +6,22 @@ using UnityEngine;
 public class Lever : Activator
 {
     public bool active;
+    GameObject child;
+    public Material activeMat;
+    public Material inactiveMat;
 
     private void Start()
     {
+        child = transform.Find("Cube").gameObject;
         if (!active && Deactivate != null)
+        {
             Deactivate();
+            child.GetComponent<MeshRenderer>().material = inactiveMat;
+        }
         else if (active && Activate != null)
         {
             Activate();
+            child.GetComponent<MeshRenderer>().material = activeMat;
         }
     }
 
@@ -25,10 +33,12 @@ public class Lever : Activator
             {
                 if (Activate != null) Activate();
                 active = true;
+                child.GetComponent<MeshRenderer>().material = activeMat;
             }
             else
             {
                 if (Deactivate != null) Deactivate();
+                child.GetComponent<MeshRenderer>().material = inactiveMat;
                 active = false;
             }
         }
