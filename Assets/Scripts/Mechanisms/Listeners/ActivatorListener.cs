@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class ActivatorListener : MonoBehaviour
 {
     public List<Activator> activators = new List<Activator>();
+    public Color gizmoColor;
 
     /// <summary>
     /// Method called by the Activator.Activate delegate
@@ -37,6 +38,16 @@ public abstract class ActivatorListener : MonoBehaviour
                 allActivators[i].Activate += OnActivate;
                 allActivators[i].Deactivate += OnDeactivate;
             }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(gizmoColor.r, gizmoColor.g, gizmoColor.b);
+        Gizmos.DrawWireSphere(transform.position, 0.6f);
+        foreach (Activator activator in activators)
+        {
+            if (activator != null) Gizmos.DrawWireSphere(activator.transform.position, 0.6f);
         }
     }
 }
