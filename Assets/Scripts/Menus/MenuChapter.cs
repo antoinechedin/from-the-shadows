@@ -40,47 +40,10 @@ public class MenuChapter : MonoBehaviour
 
     void Update()
     {
-        int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
-        // Open the chapter
-        if (Input.GetButtonDown("A_G"))
-        {
-            if (!chapterMenuIsOpen)
-            {
-                chapterMenuIsOpen = true;
-                chapterButtonsPanel.SetActive(false);
-                if (menuChapterAnimator != null)
-                {
-                    int nbCollectibleTaken = 0;
-                    int totalNbCollectible = 0;
-                    int nbCompleted = 0;
-                    int totalLevel = 0;
-
-                    List<Level> levels = chapters[localIndexCurrentChapter].GetLevels();
-                    foreach (Level l in levels)
-                    {
-                        foreach (int collectible in l.collectibles)
-                        {
-                            if (collectible == 1) nbCollectibleTaken++;
-                        }
-                        totalNbCollectible += l.nbCollectible;
-                        if (l.completed) nbCompleted++;
-                        totalLevel++;
-                    }
-
-                    levelLabel.text = chaptersName[localIndexCurrentChapter];
-                    collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;
-                    completedNumber.text = nbCompleted + "/" + totalLevel;
-                    menuChapterAnimator.SetBool("open", true);
-                    menuCamera.SetZoom(true);
-                    GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
-                    menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
-                }
-            }
-        }
-
         // Cancel
         if (Input.GetButtonDown("B_G"))
         {
+            int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
             // Close the chapter
             if (chapterMenuIsOpen)
             {
@@ -99,6 +62,43 @@ public class MenuChapter : MonoBehaviour
                 menuCamera.SetReturnToMainMenu(true);
                 gameObject.transform.position += new Vector3(605, 0, 0);
                 menuManager.OpenSaveMenu();
+            }
+        }
+    }
+
+    public void OpenChapterMenu()
+    {
+        int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
+        if (!chapterMenuIsOpen)
+        {
+            chapterMenuIsOpen = true;
+            chapterButtonsPanel.SetActive(false);
+            if (menuChapterAnimator != null)
+            {
+                int nbCollectibleTaken = 0;
+                int totalNbCollectible = 0;
+                int nbCompleted = 0;
+                int totalLevel = 0;
+
+                List<Level> levels = chapters[localIndexCurrentChapter].GetLevels();
+                foreach (Level l in levels)
+                {
+                    foreach (int collectible in l.collectibles)
+                    {
+                        if (collectible == 1) nbCollectibleTaken++;
+                    }
+                    totalNbCollectible += l.nbCollectible;
+                    if (l.completed) nbCompleted++;
+                    totalLevel++;
+                }
+
+                levelLabel.text = chaptersName[localIndexCurrentChapter];
+                collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;
+                completedNumber.text = nbCompleted + "/" + totalLevel;
+                menuChapterAnimator.SetBool("open", true);
+                menuCamera.SetZoom(true);
+                GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
+                menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
             }
         }
     }

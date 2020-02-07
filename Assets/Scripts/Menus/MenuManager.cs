@@ -73,4 +73,9 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
     }
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
 }
