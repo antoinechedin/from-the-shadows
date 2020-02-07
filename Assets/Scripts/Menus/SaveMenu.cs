@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -181,7 +181,7 @@ public class SaveMenu : MonoBehaviour
         GameManager.Instance.GetComponent<GameManager>();
         GameManager.Instance.CreateSaveFile(indexSave, nbPlayer);
         UpdateButtons();
-        Debug.Log("Create save number " + indexSave + "( " + nbPlayer + " players )");
+        Debug.Log("Create save number " + indexSave + " (" + nbPlayer + " players).");
         Launch(indexSave);
     }
 }

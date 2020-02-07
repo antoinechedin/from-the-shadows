@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,7 +45,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (currentSave == -1)
         {
-            Debug.LogWarning("GetChapters  : currentSave index not set, returning chapters of Save[0] by default");
+            Debug.LogWarning("GetChapters : currentSave index not set, returning chapters of Save[0] by default");
             return saves[0].Chapters;
         }
         else
@@ -111,7 +111,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN META : No Save detected. Doing nothing>" + e.StackTrace);
+            Debug.LogWarning("WARN META : No Save detected. Doing nothing" + e.StackTrace);
         }
     }
     #endregion
@@ -455,7 +455,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN META : :No Save detected. Returning -1 by default" + e.StackTrace);
+            Debug.LogWarning("WARN META : No Save detected. Returning -1 by default" + e.StackTrace);
             return -1;
         }
     }
