@@ -5,13 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Lever : Activator
 {
-    bool active;
+    public bool active;
+
     private void Start()
     {
-        if (Deactivate != null)
+        if (!active && Deactivate != null)
             Deactivate();
-
-        active = false;
+        else if (active && Activate != null)
+        {
+            Activate();
+        }
     }
 
     public void OnTriggerStay2D(Collider2D collision)

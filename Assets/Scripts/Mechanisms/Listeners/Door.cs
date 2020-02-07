@@ -16,15 +16,15 @@ public class Door : ActivatorListener
 
     public override void OnActivate()
     {
-        open = !open;
-        GetComponent<BoxCollider2D>().enabled = open;
-        GetComponent<MeshRenderer>().enabled = open;
+        open = true;
+        GetComponent<BoxCollider2D>().enabled = !open;
+        GetComponent<MeshRenderer>().enabled = !open;
     }
 
     public override void OnDeactivate()
     {
-        open = !open;
-        GetComponent<BoxCollider2D>().enabled = open;
-        GetComponent<MeshRenderer>().enabled = open;
+        open = false;
+        GetComponent<BoxCollider2D>().enabled = !open;
+        GetComponent<MeshRenderer>().enabled = !open;
     }
 }
