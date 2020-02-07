@@ -5,6 +5,7 @@ public class ChapterManager : MonoBehaviour
 {
     public int chapterIndex;
     public List<LevelManager> levels;
+    public PauseMenu pauseMenu;
     private int currentLevel = 0; //indice du niveau actuel
     private float timeSinceBegin = 0;
 
@@ -25,6 +26,12 @@ public class ChapterManager : MonoBehaviour
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
+
+        if (Input.GetButtonDown("Start_G"))
+        {
+            pauseMenu.gameObject.SetActive(true);
+            pauseMenu.OpenPauseMenu();
+        }
     }
 
     public void SpawnPlayer(Vector3 pos)
