@@ -44,7 +44,7 @@ public class MenuManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("WARN MenuManager.Start: CurrentSave not set. Opening at chapter0");
+                    Debug.LogWarning("WARN MenuManager.Start: CurrentSave not set. Opening at chapter");
                     OpenChaptersMenu(0);
                 }
 

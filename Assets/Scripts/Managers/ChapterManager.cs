@@ -16,6 +16,14 @@ public class ChapterManager : MonoBehaviour
         {
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
         }
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
+        {
+            NextLevel();
+        }
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
+        {
+            PreviousLevel();
+        }
 
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
