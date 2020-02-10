@@ -9,6 +9,7 @@ public class MenuManager : MonoBehaviour
     public Canvas startMenu;
     public Canvas saveMenu;
     public Canvas chaptersMenu;
+    public Canvas optionsMenu;
 
     public MenuChapter menuChapter;
     public MenuCamera menuCamera;
@@ -59,6 +60,9 @@ public class MenuManager : MonoBehaviour
     {
         startMenu.gameObject.SetActive(true);
         saveMenu.gameObject.SetActive(false);
+        chaptersMenu.gameObject.SetActive(false);
+        optionsMenu.gameObject.SetActive(false);
+
         EventSystem.current.SetSelectedGameObject(newGame.gameObject);
     }
 
@@ -67,6 +71,8 @@ public class MenuManager : MonoBehaviour
         saveMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
+        optionsMenu.gameObject.SetActive(false);
+
         EventSystem.current.SetSelectedGameObject(firstSave.gameObject);
     }
 
@@ -75,11 +81,22 @@ public class MenuManager : MonoBehaviour
         chaptersMenu.gameObject.SetActive(true);
         saveMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
+        optionsMenu.gameObject.SetActive(false);
 
         menuCamera.SetReturnToMainMenu(false);
         menuChapter.ResetInteractablesChaptersButtons();
 
         EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
+    }
+
+    public void OpenOptionsMenu()
+    {
+        optionsMenu.gameObject.SetActive(true);
+        chaptersMenu.gameObject.SetActive(false);
+        saveMenu.gameObject.SetActive(false);
+        startMenu.gameObject.SetActive(false);
+
+        optionsMenu.GetComponent<MenuOptions>().OpenOptionsMenu();
     }
 
     public void Quit()
