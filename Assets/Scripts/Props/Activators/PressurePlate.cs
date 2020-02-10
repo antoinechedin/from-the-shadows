@@ -5,8 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class PressurePlate : Activator
 {
+    public AudioClip sound;
+    private SoundPlayer soundPlayer;
+
     private void Start()
     {
+        soundPlayer = GetComponent<SoundPlayer>();       
         child = transform.Find("Child").gameObject;
         Off();
     }
@@ -19,6 +23,8 @@ public class PressurePlate : Activator
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
         {
             On(false);
+            if (soundPlayer != null)
+                soundPlayer.PlaySoundAtLocation(sound, 1f);
         }            
     }
 
