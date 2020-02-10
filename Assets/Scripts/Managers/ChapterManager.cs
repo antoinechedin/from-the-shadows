@@ -43,6 +43,15 @@ public class ChapterManager : MonoBehaviour
         }
     }
 
+    public void SpawnPlayer(Vector3 posLight, Vector3 posShadow)
+    {
+        GameObject light = GameObject.Find("Player2");
+        GameObject shadow = GameObject.Find("Player1");
+
+        light.transform.position = posLight;
+        shadow.transform.position = posShadow;
+    }
+
     /// <summary>
     /// decrease the current level index and teleports the cameara to the position avec the previous level
     /// </summary>
