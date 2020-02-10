@@ -95,12 +95,12 @@ public class MenuChapter : MonoBehaviour
                 List<Level> levels = chapters[localIndexCurrentChapter].GetLevels();
                 foreach (Level l in levels)
                 {
-                    foreach (int collectible in l.collectibles)
+                    foreach (bool collectible in l.Collectibles)
                     {
-                        if (collectible == 1) nbCollectibleTaken++;
+                        if (collectible == true) nbCollectibleTaken++;
                     }
-                    totalNbCollectible += l.nbCollectible;
-                    if (l.completed) nbCompleted++;
+                    totalNbCollectible += l.Collectibles.Length;
+                    if (l.Completed) nbCompleted++;
                     totalLevel++;
                 }
 

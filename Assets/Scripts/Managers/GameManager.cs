@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,7 +45,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (currentSave == -1)
         {
-            Debug.LogWarning("GetChapters : currentSave index not set, returning chapters of Save[0] by default");
+            Debug.LogWarning("GetChapters  : currentSave index not set, returning chapters of Save[0] by default");
             return saves[0].Chapters;
         }
         else
@@ -88,6 +88,7 @@ public class GameManager : Singleton<GameManager>
     public bool Loading
     {
         get { return loading; }
+        set { loading = value; }
     }
 
     public int CurrentSave
@@ -107,243 +108,12 @@ public class GameManager : Singleton<GameManager>
     {
         try
         {
-            saves[currentSave].Chapters[chap].GetLevels()[lvl].completed = true;
+            saves[currentSave].Chapters[chap].GetLevels()[lvl].Completed = true;
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN META : No Save detected. Doing nothing" + e.StackTrace);
+            Debug.LogWarning("WARN META : No Save detected. Doing nothing>" + e.StackTrace);
         }
-    }
-    #endregion
-
-    #region Save Json Load
-    /// <summary>
-    /// Calls the coroutine that loads the file given in parameters
-    /// </summary>
-    /// <param name="save"></param>
-    public void LoadSaveFile(int save)
-    {
-        StartCoroutine(LoadSaveFileAsync(save));
-    }
-
-    /// <summary>
-    /// Coroutine Loads the SaveFile specified in parameters
-    /// </summary>
-    /// <param name="save"></param>
-    private IEnumerator LoadSaveFileAsync(int save)
-    {
-        bool finished = false;
-
-        while (!finished)
-        {
-            loading = true;
-            List<Chapter> chapters = new List<Chapter>();
-            Dictionary<string, float> metaFloat = new Dictionary<string, float>();
-            Dictionary<string, int> metaInt = new Dictionary<string, int>();
-
-            JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json"));
-
-            //chargement des metadonnées
-            int nbPlayer = (int)json["nbPlayer"];
-
-            metaFloat.Add("totalTimePlayed", (float)json["totalTimePlayed"]);
-            metaInt.Add("playerDeath1", (int)json["playerDeath1"]);
-            metaInt.Add("jumpNumber1", (int)json["jumpNumber1"]);
-            metaFloat.Add("distance1", (float)json["distance1"]);
-
-            if (nbPlayer == 2)
-            {
-                metaInt.Add("playerDeath2", (int)json["playerDeath2"]);
-                metaInt.Add("jumpNumber2", (int)json["jumpNumber2"]);
-                metaFloat.Add("distance2", (float)json["distance2"]);
-            }
-
-
-            //chargement des chapitres
-            JArray allChapters = (JArray)json["chapters"];
-            foreach (JObject chap in allChapters)
-            {
-                JArray chapLevels = (JArray)chap["chapter"]["levels"];
-
-                List<Level> levels = new List<Level>();
-                foreach (JObject level in chapLevels)
-                {
-                    int nbCollectible = (int)level["nbCollectible"];
-                    int[] collectibles = new int[nbCollectible];
-
-                    for (int k = 0; k < nbCollectible; k++)
-                    {
-                        collectibles[k] = (int)level["collectibles"][k];
-                    }
-
-                    Level lvl = new Level((bool)level["completed"], nbCollectible, collectibles);
-                    levels.Add(lvl);
-                }
-
-                Chapter chapter = new Chapter(levels);
-                chapters.Add(chapter);
-            }
-            FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
-            System.DateTime lastDate = fileInfo.LastWriteTime;
-            Save addedSave = new Save(chapters, nbPlayer, metaInt, metaFloat, lastDate);
-            saves[save] = addedSave;
-            finished = true;
-        }
-        yield return null;
-        loading = false;
-    }
-
-    /// <summary>
-    /// Calls the coroutine that load all the saves at once.
-    /// </summary>
-    public void LoadAllSaveFiles()
-    {
-        StartCoroutine(LoadAllsaveFilesAsync());
-    }
-
-    /// <summary>
-    /// Asynchromously loads all the saves
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator LoadAllsaveFilesAsync()
-    {
-        Debug.Log(Application.persistentDataPath);
-        saves = new Save[3];
-
-        loading = true;
-        bool finished = false;
-
-        while (!finished)
-        {
-            for (int i = 0; i < 3; i++) //Warn : set to 3 by default. Need to change if we had more saves
-            {
-                if (!Directory.Exists(Application.persistentDataPath + "/Saves"))
-                {
-                    Directory.CreateDirectory(Application.persistentDataPath + "/Saves");
-                }
-                DirectoryInfo directoryInfo = new DirectoryInfo(Application.persistentDataPath + "/Saves/");
-                FileInfo[] filesInfo = directoryInfo.GetFiles();
-                foreach (FileInfo f in filesInfo)
-                {
-                    switch (f.Name)
-                    {
-                        case "SaveFile0.json":
-                            LoadSaveFile(0);
-                            break;
-                        case "SaveFile1.json":
-                            LoadSaveFile(1);
-                            break;
-                        case "SaveFile2.json":
-                            LoadSaveFile(2);
-                            break;
-                    }
-                }
-            }
-            finished = true;
-            yield return null;
-        }
-
-        loading = false;
-    }
-    #endregion
-
-    #region Save Json Write
-    /// <summary>
-    /// Calls the coroutine that saves the data present in GM on the current loaded saveFile
-    /// </summary>
-    public void WriteSaveFile()
-    {
-        StartCoroutine(WriteSaveFileAsync());
-    }
-
-    /// <summary>
-    /// Write the SaveFile based on the new data in GameManager and writes it on the save file of index "currentSave"
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator WriteSaveFileAsync()
-    {
-        bool finished = false;
-
-        while (!finished)
-        {
-            StreamWriter stream = new StreamWriter(Application.persistentDataPath + "/Saves/SaveFile" + currentSave + ".json");
-            //Save des Metadonnées
-            string jsonString = "{\n\t\"nbPlayer\": " + saves[currentSave].NbPlayer + ",\n\t";
-            foreach (string key in saves[currentSave].MetaInt.Keys)
-            {
-                jsonString += "\"" + key + "\": " + saves[currentSave].MetaInt[key] + ",\n\t";
-            }
-
-            foreach (string key in saves[currentSave].MetaFloat.Keys)
-            {
-                string value = saves[currentSave].MetaFloat[key].ToString().Replace(",", ".");
-                jsonString += "\"" + key + "\": " + value + ",\n\t";
-            }
-
-
-            //Save des chapitres
-            jsonString += "\"chapters\":[";
-            int i = 1;
-            foreach (Chapter chap in saves[currentSave].Chapters)
-            {
-                jsonString += "\n\t\t{\n\t\t\t\"chapter\": {\"levels\" :\n\t\t\t[";
-                foreach (Level lvl in chap.GetLevels())
-                {
-                    jsonString += "\n\t\t\t\t" + JsonUtility.ToJson(lvl) + ",";
-                }
-                jsonString = jsonString.Substring(0, jsonString.Length - 1);
-                i++;
-
-                jsonString += "\n\t\t\t]}\n\n\t\t},";
-            }
-            jsonString = jsonString.Substring(0, jsonString.Length - 1);
-            jsonString += "\n\t]\n}";
-            stream.Write(jsonString);
-            stream.Close();
-
-            finished = true;
-            yield return null;
-        }
-    }
-    #endregion
-
-    #region Json SaveFiles management
-    /// <summary>
-    /// Deletes the json file at the index "save"
-    /// </summary>
-    /// <param name="save"></param>
-    public void DeleteSaveFile(int save)
-    {
-        File.Delete(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
-        saves[save] = null;
-    }
-
-    /// <summary>
-    /// Creates a Json file representing the empty save at the index "save"
-    /// </summary>
-    /// <param name="save"></param>
-    /// <param name="nbPlayer"></param>
-    public void CreateSaveFile(int save, int nbPlayer)
-    {
-        //création du file
-        StreamWriter streamWriter = File.CreateText(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
-
-        //On lit le fichier de création de base duo ou solo
-        string saveFileContent = "";
-        if (nbPlayer == 1)
-        {
-            saveFileContent = File.ReadAllText(Application.persistentDataPath + "/SaveFileSolo.json");
-        }
-        else if (nbPlayer == 2)
-        {
-            saveFileContent = File.ReadAllText(Application.persistentDataPath + "/SaveFileDuo.json");
-        }
-
-        //On rempli le nouveau SaveFile
-        streamWriter.Write(saveFileContent);
-        streamWriter.Close();
-
-        LoadSaveFile(save);
     }
     #endregion
 
@@ -455,7 +225,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN META : No Save detected. Returning -1 by default" + e.StackTrace);
+            Debug.LogWarning("WARN META : :No Save detected. Returning -1 by default" + e.StackTrace);
             return -1;
         }
     }
@@ -545,7 +315,7 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
-
+    #region Debug
     private void DisplayDebugCanvas()
     {
         if (debuging)//display
@@ -628,19 +398,7 @@ public class GameManager : Singleton<GameManager>
         }
 
     }
-
-    public void TestLoadSave(int save)
-    {
-
-        JObject json = JObject.Parse(File.ReadAllText("C:/Users/lveyssiere/Desktop/SaveFileDuo.json"));
-
-
-        //chargement des chapitres
-        List<Chapter> chaps = JsonConvert.DeserializeObject<List<Chapter>>(json["chapters"].ToString());
-        Debug.Log(json["chapters"].ToString());
-        Chapter chaptest = JsonConvert.DeserializeObject<Chapter>(json["chapters"][0]["chapter"].ToString());
-        chaptest.PrintChapter();
-    }
+    #endregion
 
     /// <summary>
     /// This function does nothing except allowing to call the GM therefore make it spawn

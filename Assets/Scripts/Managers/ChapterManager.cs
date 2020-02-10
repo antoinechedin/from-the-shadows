@@ -43,15 +43,6 @@ public class ChapterManager : MonoBehaviour
         }
     }
 
-    public void SpawnPlayer(Vector3 posLight, Vector3 posShadow)
-    {
-        GameObject light = GameObject.Find("Player2");
-        GameObject shadow = GameObject.Find("Player1");
-
-        light.transform.position = posLight;
-        shadow.transform.position = posShadow;
-    }
-
     /// <summary>
     /// decrease the current level index and teleports the cameara to the position avec the previous level
     /// </summary>
@@ -75,8 +66,6 @@ public class ChapterManager : MonoBehaviour
     {
         //Mise àjour des infos concernant le niveau courant
         GameManager.Instance.SetLevelCompleted(chapterIndex, currentLevel);
-        GameManager.Instance.WriteSaveFile();
-        
         currentLevel++;
 
         //Activation du niveau courant et désactivation des autres
@@ -85,7 +74,9 @@ public class ChapterManager : MonoBehaviour
 
         if (currentLevel == levels.Count) //Le chapitre est terminé
         {
+            //Save the metaData
             CollectMetaData();
+            SaveManager.Instance.WriteSaveFile();
             GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
         }
         else //on transfert le joueur dans le tableau suivant
@@ -93,6 +84,8 @@ public class ChapterManager : MonoBehaviour
             //appel de la fonction pour faire bouger la cam
             Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         }
+
+        SaveManager.Instance.WriteSaveFile();
     }
 
     public void UpdateEnabledLevels()
@@ -113,7 +106,6 @@ public class ChapterManager : MonoBehaviour
     private void CollectMetaData()
     {
         GameManager.Instance.AddMetaFloat("totalTimePlayed", timeSinceBegin); //collecte du temps de jeu
-        GameManager.Instance.WriteSaveFile();
         timeSinceBegin = 0;
     }
 }

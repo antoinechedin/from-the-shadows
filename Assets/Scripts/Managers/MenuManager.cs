@@ -19,7 +19,7 @@ public class MenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameManager.Instance.LoadAllSaveFiles();
+        SaveManager.Instance.LoadAllSaveFiles();
 
         newGame.onClick.AddListener(delegate { OpenSaveMenu(); });
 

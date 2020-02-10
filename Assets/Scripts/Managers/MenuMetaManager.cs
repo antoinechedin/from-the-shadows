@@ -50,7 +50,7 @@ public class MenuMetaManager : MonoBehaviour
 
     public IEnumerator WaitForLoadAndPopulate()
     {
-        GameManager.Instance.LoadAllSaveFiles();
+        SaveManager.Instance.LoadAllSaveFiles();
         GameManager.Instance.CurrentSave = 0;
         while (GameManager.Instance.Loading)
         {

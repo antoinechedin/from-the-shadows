@@ -32,7 +32,7 @@ public class Chapter
         int i = 0;
         while (completed && i < levels.Count)
         {
-            completed = levels[i].completed;
+            completed = levels[i].Completed;
             i++;
         }
         return completed;
@@ -41,7 +41,7 @@ public class Chapter
     public string PrintChapter()
     {
         string res = "";
-        Debug.Log("Chapter with " + levels.Count + " levels.");
+        Debug.Log("Chapter avec " + levels.Count + " level");
         foreach (Level l in levels)
         {
             l.PrintLevel();

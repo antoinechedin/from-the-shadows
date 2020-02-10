@@ -20,7 +20,7 @@ public class MenuLevels : MonoBehaviour
         foreach (Level l in levels)
         {
 
-            if (l.completed) nbCompleted++;
+            if (l.Completed) nbCompleted++;
             totalLevels++;
         }
 
@@ -39,7 +39,7 @@ public class MenuLevels : MonoBehaviour
             });
             button.GetComponent<LevelButton>().menuLevels = this;
             button.GetComponent<LevelButton>().levelNumber = levelNumber;
-            if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].completed)
+            if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].Completed)
             {
                 button.GetComponent<Button>().interactable = false;
             }
@@ -54,9 +54,9 @@ public class MenuLevels : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
-        foreach (int c in localCurrentChapter.GetLevels()[level].collectibles)
+        foreach (bool b in localCurrentChapter.GetLevels()[level].Collectibles)
         {
-            if (c == 1)
+            if (b == true)
             {
                 Instantiate(collectibleTaken, collectiblesPanel.transform);
             }

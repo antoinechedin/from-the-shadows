@@ -9,23 +9,33 @@ using System;
 [Serializable]
 public class Level
 {
-    public bool completed = false; //indicates wether the level as been completed or not
-    public int nbCollectible;
-    public int[] collectibles;
+    private bool completed = false; //indicates wether the level as been completed or not
+    private bool[] collectibles;
 
-    public Level(bool completed, int nbCollect, int[] collect)
+    public Level(bool completed, bool[] collect)
     {
         this.completed = completed;
-        nbCollectible = nbCollect;
         collectibles = collect;
+    }
+
+    public bool Completed
+    {
+        get { return completed; }
+        set { completed = value; }
+    }
+
+    public bool[] Collectibles
+    {
+        get { return collectibles; }
+        set { collectibles = value; }
     }
 
     public string PrintLevel()
     {
-        string res = "level: " + completed +" nbCollectible : " +nbCollectible +", collectibles ";
-        foreach (int i in collectibles)
+        string res = "level: " + completed +", collectibles : ";
+        foreach (bool b in collectibles)
         {
-            res += i + " ";
+            res += b.ToString() + " ";
         }
 
         return res;

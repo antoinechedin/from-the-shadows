@@ -28,26 +28,31 @@ public class Save
     public List<Chapter> Chapters
     {
         get { return chapters; }
+        set { chapters = value; }
     }
 
     public System.DateTime LastOpenDate
     {
         get { return lastOpenDate; }
+        set { lastOpenDate = value; }
     }
 
     public int NbPlayer
     {
         get { return nbPlayer; }
+        set { nbPlayer = value; }
     }
 
     public Dictionary<string, int> MetaInt
     {
         get {return metaInt;}
+        set { metaInt = value; }
     }
 
     public Dictionary<string, float> MetaFloat
     {
         get { return metaFloat; }
+        set { metaFloat = value; }
     }
 
     public string Print()
@@ -56,39 +61,4 @@ public class Save
     }
 
 
-
-
-    public static void TestWriteSaveFile(Save save)
-    {
-
-        //Save save = GameManager.Instance.Saves[GameManager.Instance.CurrentSave];
-
-        string json = JsonConvert.SerializeObject(save);
-        Debug.Log(json);
-    }
-
-    public static void TestLoadSaveFile()
-    {
-        JObject json = JObject.Parse(File.ReadAllText("C:/Users/Leo/Desktop/SaveFileDuo.json"));
-
-        Save save = JsonConvert.DeserializeObject<Save>(json.ToString());
-        Debug.Log(save.nbPlayer);
-    }
-
-
-
-    /// <summary>
-    /// Create an empty save file of the solo campaign
-    /// </summary>
-    public static void CreateSoloFile(int saveIndex)
-    {
-    }
-
-    /// <summary>
-    /// Create an empty save file of the duo campaign
-    /// </summary>
-    public static void CreateDuoFile()
-    {
-
-    }
 }

@@ -160,7 +160,7 @@ public class SaveMenu : MonoBehaviour
     /// <param name="indexSave"> Index of the file to delete</param>
     public void Delete(int indexSave)
     {
-        GameManager.Instance.DeleteSaveFile(indexSave);
+        SaveManager.Instance.DeleteSaveFile(indexSave);
         Debug.Log("Delete save number " + indexSave);
 
         gameObject.transform.Find("ActionChoice").gameObject.SetActive(false);
@@ -178,7 +178,7 @@ public class SaveMenu : MonoBehaviour
     public void NewGame(int nbPlayer, int indexSave)
     {
         GameManager.Instance.GetComponent<GameManager>();
-        GameManager.Instance.CreateSaveFile(indexSave, nbPlayer);
+        SaveManager.Instance.CreateSaveFile(indexSave, nbPlayer);
         UpdateButtons();
         Debug.Log("Create save number " + indexSave + " (" + nbPlayer + " players).");
         Launch(indexSave);
