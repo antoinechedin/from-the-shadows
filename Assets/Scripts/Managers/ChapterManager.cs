@@ -31,6 +31,10 @@ public class ChapterManager : MonoBehaviour
             pauseMenu.gameObject.SetActive(true);
             pauseMenu.OpenPauseMenu();
         }
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
+        {
+            NextLevel();
+        }
     }
 
     public void SpawnPlayer(Vector3 pos)
@@ -106,5 +110,17 @@ public class ChapterManager : MonoBehaviour
     {
         GameManager.Instance.AddMetaFloat("totalTimePlayed", timeSinceBegin); //collecte du temps de jeu
         timeSinceBegin = 0;
+    }
+
+    /// <summary>
+    /// Allows to reset the level on playerDeath
+    /// </summary>
+    /// <param name="PlayerId"></param>
+    public void ResetLevel(int playerId)
+    {
+        //Teleporte les joueurs au début du jeu
+        SpawnPlayer(levels[currentLevel].playerSpawn.position);
+        //Incrémente la meta donnée du joueur mort
+        GameManager.Instance.AddMetaInt("playerDeath"+playerId, 1);
     }
 }
