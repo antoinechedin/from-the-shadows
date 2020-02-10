@@ -64,9 +64,9 @@ public class MovingPlatform : MonoBehaviour
     /// </summary>
     private void FollowTrajectoryBackAndForth()
     {
-        if (IsTargetBounds() /*&& ((Vector3)target - transform.position).magnitude < 1.5f*/)
+        if (IsTargetBounds())
             ApproachBound(target);
-        else if (IsCursorBounds() /*&& ((Vector3)controlPoints[cursor] - transform.position).magnitude < 1.5f*/)
+        else if (IsCursorBounds())
             LeaveBound(target);
         else
             MoveTowardsTarget(target);
