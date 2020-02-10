@@ -39,6 +39,10 @@ public class SaveManager : Singleton<SaveManager>
 
         while (!finished)
         {
+            if (!Directory.Exists(Application.persistentDataPath + "/Saves"))
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/Saves");
+            }
             DirectoryInfo directoryInfo = new DirectoryInfo(Application.persistentDataPath + "/Saves/");
             FileInfo[] filesInfo = directoryInfo.GetFiles();
             foreach (FileInfo f in filesInfo)
