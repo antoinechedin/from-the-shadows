@@ -1,86 +1,117 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class NewActorController : MonoBehaviour
 {
-    private float xRemainder = 0;
-    private float yRemainder = 0;
-
     public LayerMask collisionMask = 1 << 9;
-    private BoxCollider2D boxCollider;
 
-    private float xMove;
+    private const float skinWidth = 0.02f;
+    //private const float minMoveMagnitude = 0.001f;
+
+    private const float maxRaySpacing = 0.2f;
+
+    private int hRayCount;
+    private int vRayCount;
+    private float hRaySpacing;
+    private float vRaySpacing;
+
+    private Rigidbody2D body;
+    private BoxCollider2D boxCollider;
+    private RaycastOrigins raycastOrigins;
 
     private void Awake()
     {
+        body = GetComponent<Rigidbody2D>();
+        body.bodyType = RigidbodyType2D.Kinematic;
         boxCollider = GetComponent<BoxCollider2D>();
+        InitRaySpacing();
     }
 
-    public void MoveX(float amount)
+    public Vector2 Move(Vector2 velocity, float deltaTime)
     {
-        xRemainder += amount;
-        float move = (float)System.Math.Round(xRemainder, 2);
+        UpdateRaycastOrigins();
 
-        if (move != 0)
+        Vector2 move = velocity * deltaTime;
+
+        // Always call MoveX before MoveY
+        if (move.x != 0) MoveX(ref move);
+        if (move.y != 0) MoveY(ref move);
+
+        body.MovePosition(body.position + move);
+        return move / deltaTime;
+    }
+
+    private void MoveX(ref Vector2 move)
+    {
+        float xSign = Mathf.Sign(move.x);
+        float rayLength = Mathf.Abs(move.x) + skinWidth;
+
+        for (int i = 0; i < hRayCount; i++)
         {
-            xRemainder -= move;
-            float xSign = move < 0 ? -0.01f : 0.01f;
-            float distance = 0;
-            int stop = 0;
-            while (Mathf.Abs(distance) <= Mathf.Abs(move) && stop < 100000)
-            {
-                stop++;
-                Vector2 position = (Vector2)boxCollider.bounds.center + Vector2.right * distance;
-                if (!Physics2D.OverlapBox(position + Vector2.right * xSign, boxCollider.bounds.size, 0, collisionMask))
-                {
-                    distance += xSign;
-                }
-                else
-                {
-                    xRemainder = 0;
-                    break;
-                }
-            }
-            //transform.position = transform.position + Vector3.right * distance;
-            transform.Translate((float)System.Math.Round(distance, 2), 0, 0);
-            xMove = (float)System.Math.Round(distance, 2);
+            Vector2 rayOrigin = xSign < 0 ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (hRaySpacing * i);
 
-            if (stop >= 100000) Debug.Log("no");
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * xSign, rayLength, collisionMask);
+            if (hit)
+            {
+                move.x = (hit.distance - skinWidth) * xSign;
+                rayLength = hit.distance;
+            }
+
+            Debug.DrawRay(rayOrigin, Vector2.right * xSign * rayLength * 5, Color.red);
         }
     }
 
-    public void MoveY(float amount)
+    private void MoveY(ref Vector2 move)
     {
-        yRemainder += amount;
-        float move = (float)System.Math.Round(yRemainder, 2);
+        float ySign = Mathf.Sign(move.y);
+        float rayLength = Mathf.Abs(move.y) + skinWidth;
 
-        if (move != 0)
+        for (int i = 0; i < vRayCount; i++)
         {
-            yRemainder -= move;
-            float ySign = move < 0 ? -0.01f : 0.01f;
-            float distance = 0;
-            int stop = 0;
-            while (Mathf.Abs(distance) <= Mathf.Abs(move) && stop < 100000)
-            {
-                stop++;
-                Vector2 position = (Vector2)boxCollider.bounds.center + Vector2.up * distance;
-                if (!Physics2D.OverlapBox(position + Vector2.up * ySign + Vector2.right * xMove, boxCollider.bounds.size, 0, collisionMask))
-                {
-                    distance += ySign;
-                }
-                else
-                {
-                    yRemainder = 0;
-                    break;
-                }
-            }
-            //transform.position = transform.position + Vector3.right * distance;
-            transform.Translate(0, (float)System.Math.Round(distance, 2), 0);
+            Vector2 rayOrigin = ySign < 0 ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (vRaySpacing * i + move.x);
 
-            if (stop >= 100000) Debug.Log("no");
-            xMove = 0;
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * ySign, rayLength, collisionMask);
+            if (hit)
+            {
+                move.y = (hit.distance - skinWidth) * ySign;
+                rayLength = hit.distance;
+            }
+
+            Debug.DrawRay(rayOrigin, Vector2.up * ySign * rayLength * 5, Color.red);
         }
+    }
+
+    private void UpdateRaycastOrigins()
+    {
+        Bounds bounds = boxCollider.bounds;
+        bounds.Expand(skinWidth * -2);
+
+        this.raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+        this.raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
+        this.raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
+        this.raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
+    }
+
+    private void InitRaySpacing()
+    {
+        Bounds bounds = boxCollider.bounds;
+        bounds.Expand(skinWidth * -2);
+        float width = bounds.size.x;
+        float height = bounds.size.y;
+
+        this.hRayCount = Mathf.FloorToInt(height / maxRaySpacing) + 2;
+        this.vRayCount = Mathf.FloorToInt(width / maxRaySpacing) + 2;
+        this.hRaySpacing = height / (hRayCount - 1);
+        this.vRaySpacing = width / (vRayCount - 1);
+    }
+
+    struct RaycastOrigins
+    {
+        public Vector2 bottomLeft, bottomRight, topLeft, topRight;
     }
 }
