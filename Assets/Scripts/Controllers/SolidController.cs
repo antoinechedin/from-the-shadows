@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class SolidController : MonoBehaviour
 {
-    private float currentSpeed;
+    public float speed;
     public float maxSpeed;
-    private Vector3 moveVec;
 
     private void Awake()
     {
-        currentSpeed = maxSpeed;
+
     }
 
     /// <summary>
@@ -18,21 +18,21 @@ public class SolidController : MonoBehaviour
     /// <param name="direction">normalized direction of the movement</param>
     public void Move(Vector2 direction)
     {
-        moveVec = direction.normalized * currentSpeed * Time.fixedDeltaTime;
+        Vector3 moveVec = direction.normalized * speed * Time.fixedDeltaTime;
         transform.Translate(moveVec);
     }
 
-    public void Approach(Vector2 bounds)
+    public void Approach(Vector2 bounds, Vector2 origin)
     {
-        // TODO : ease approach of target
-        currentSpeed = Mathf.SmoothStep(maxSpeed, 0, currentSpeed);
-        Move(bounds);
+        float t = (transform.position - (Vector3)origin).magnitude / (bounds - origin).magnitude;
+        speed = Mathf.Lerp(maxSpeed, 1.5f, t);
+        Move((Vector3)bounds - transform.position);
     }
 
-    public void Leave(Vector2 bounds)
+    public void Leave(Vector2 bounds, Vector2 target, Vector2 origin)
     {
-        // TODO : ease bound leaving
-        currentSpeed = Mathf.SmoothStep(0, maxSpeed, currentSpeed);
-        Move(bounds);
+        float t = (transform.position - (Vector3)origin).magnitude / (bounds - origin).magnitude;        
+        speed = Mathf.Lerp(speed, maxSpeed, t);
+        Move((Vector3)target - transform.position);
     }
 }

@@ -47,7 +47,7 @@ public class MovingPlatform : MonoBehaviour
     /// <param name="bounds">target boundary</param>
     private void ApproachBound(Vector2 bounds)
     {
-        solidController.Approach((Vector3)bounds - transform.position);
+        solidController.Approach(bounds, controlPoints[cursor]);
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class MovingPlatform : MonoBehaviour
     /// <param name="bounds"></param>
     private void LeaveBound(Vector2 bounds)
     {
-        solidController.Leave((Vector3)bounds - transform.position);
+        solidController.Leave(bounds, target, controlPoints[cursor]);
     }
 
     /// <summary>
@@ -64,9 +64,9 @@ public class MovingPlatform : MonoBehaviour
     /// </summary>
     private void FollowTrajectoryBackAndForth()
     {
-        if (IsTargetBounds() && ((Vector3)target - transform.position).magnitude < 1.5f)
+        if (IsTargetBounds() /*&& ((Vector3)target - transform.position).magnitude < 1.5f*/)
             ApproachBound(target);
-        else if (IsCursorBounds() && ((Vector3)target - transform.position).magnitude < 1.5f)
+        else if (IsCursorBounds() /*&& ((Vector3)controlPoints[cursor] - transform.position).magnitude < 1.5f*/)
             LeaveBound(target);
         else
             MoveTowardsTarget(target);
@@ -93,7 +93,7 @@ public class MovingPlatform : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates cursor position
+    /// Updates cursor position in control points array
     /// </summary>
     /// <param name="bounds">Limit of cursor de reverse</param>
     private void UpdateCursor(Vector2 bounds)
@@ -115,7 +115,7 @@ public class MovingPlatform : MonoBehaviour
     }
 
     /// <summary>
-    /// Inverts movement orientation
+    /// Inverts movement orientation in control points array
     /// </summary>
     private void ChangeOrientation()
     {
