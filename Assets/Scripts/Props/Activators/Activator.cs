@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Activator : MonoBehaviour
 {
     public List<ActivatorListener> listeners = new List<ActivatorListener>();
+    public bool active;
+    public bool hasTimer;
+    public float timer;
+    public Material activeMat;
+    public Material inactiveMat;
+
+    protected GameObject child;
 
     /// <summary>
     /// Activate delegate. Don't forget to test if(Activate != null) before
@@ -13,7 +21,7 @@ public class Activator : MonoBehaviour
     public delegate void OnActivate();
 
     /// <summary>
-    /// Activate delegate. Don't forget to test if(Activate != null) before
+    /// Deactivate delegate. Don't forget to test if(Deactivate != null) before
     /// calling it.
     /// </summary>
     public OnDeactivate Deactivate;
@@ -57,7 +65,7 @@ public class Activator : MonoBehaviour
     }
 
      protected virtual void OnDisable()
-    {
+     {
         for (int i = 0; i < listeners.Count; i++)
         {
             if (listeners[i] != null)
@@ -66,5 +74,53 @@ public class Activator : MonoBehaviour
                 Deactivate -= listeners[i].OnDeactivate;
             }
         }
+     }
+
+    /// <summary>
+    /// Activate the activator
+    /// </summary>
+    /// <param name="ignoreTimer"> Ignore timer reset (when the activator is active at the beginning of the level</param>
+    protected void On(bool ignoreTimer)
+    {
+        if (Activate != null)
+        {
+            Activate();
+            active = true;
+            if (child != null)
+            {
+                child.GetComponent<MeshRenderer>().material = activeMat;
+            }
+            if (hasTimer && !ignoreTimer)
+            {
+                StartCoroutine(DeactivateAfterTimer());
+            }
+        }       
+    }
+
+    /// <summary>
+    /// Deactivate the activator 
+    /// </summary>
+    protected void Off()
+    {
+        if (Deactivate != null)
+        {
+            Deactivate();
+            active = false;
+            if (child != null)
+            {
+                child.GetComponent<MeshRenderer>().material = inactiveMat;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Deactivate the activator at the end of the timer
+    /// </summary>
+    /// <returns></returns>
+    protected IEnumerator DeactivateAfterTimer()
+    {
+        yield return new WaitForSeconds(timer);
+        Off();
     }
 }
+
