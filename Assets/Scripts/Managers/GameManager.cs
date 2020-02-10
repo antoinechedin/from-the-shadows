@@ -45,8 +45,8 @@ public class GameManager : Singleton<GameManager>
     {
         if (currentSave == -1)
         {
-            Debug.LogWarning("GetChapters  : currentSave index not set, returning chapters of Save[0] by default");
-            return saves[0].Chapters;
+            Debug.LogWarning("WARN GameManager.GetChapters: currentSave index not set, returning empty List by default");
+            return new List<Chapter>();
         }
         else
         {
@@ -318,78 +318,76 @@ public class GameManager : Singleton<GameManager>
     #region Debug
     private void DisplayDebugCanvas()
     {
+        Destroy(GameObject.Find("GMDebugCanvas(Clone)"));
         if (debuging)//display
         {
-            if (!debugCanvasDisplayed)
-            {
-                string savesLength = "saves length : ",
-                    save0 = "save 0 : ",
-                    save1 = "save 1 : ",
-                    save2 = "save 2 : ",
-                    curSave = "Current save : ",
-                    load = "Loading : ",
-                    nbChapter = "nb chapter : ",
-                    currentChap = "current chapter : ",
-                    nbLvl = "nb levels : ",
-                    loadingMenInfo = "LoadingMenuInfo : ",
-                    loadingChapInfo = "LoadingChapterInfo : ";
+            string savesLength = "saves length : ",
+                save0 = "save 0 : ",
+                save1 = "save 1 : ",
+                save2 = "save 2 : ",
+                curSave = "Current save : ",
+                load = "Loading : ",
+                nbChapter = "nb chapter : ",
+                currentChap = "current chapter : ",
+                nbLvl = "nb levels : ",
+                loadingMenInfo = "LoadingMenuInfo : ",
+                loadingChapInfo = "LoadingChapterInfo : ";
 
-                GameObject debugCanvas = Instantiate((GameObject)Resources.Load("GMDebugCanvas"), Vector3.zero, Quaternion.identity);
-                if (saves != null)
+            GameObject debugCanvas = Instantiate((GameObject)Resources.Load("GMDebugCanvas"), Vector3.zero, Quaternion.identity);
+            if (saves != null)
+            {
+                savesLength += saves.Length.ToString();
+                save0 += saves[0] != null ? saves[0].Print() : "null";
+                save1 += saves[1] != null ? saves[1].Print() : "null";
+                save2 += saves[2] != null ? saves[2].Print() : "null";
+                if (currentSave != -1 && saves[currentSave] != null)
                 {
-                    savesLength += saves.Length.ToString();
-                    save0 += saves[0] != null ? saves[0].Print() : "null";
-                    save1 += saves[1] != null ? saves[1].Print() : "null";
-                    save2 += saves[2] != null ? saves[2].Print() : "null";
-                    if (currentSave != -1 && saves[currentSave] != null)
+                    nbChapter += saves[currentSave].Chapters.Count.ToString();
+                    if (CurrentChapter != -1 && saves[currentSave].Chapters[currentChapter] != null)
                     {
-                        nbChapter += saves[currentSave].Chapters.Count.ToString();
-                        if (CurrentChapter != -1 && saves[currentSave].Chapters[currentChapter] != null)
-                        {
-                            nbLvl += saves[CurrentSave].Chapters[currentChapter].GetNbLevels();
-                        }
-                        else
-                        {
-                            nbLvl += "null";
-                        }
+                        nbLvl += saves[CurrentSave].Chapters[currentChapter].GetNbLevels();
                     }
                     else
                     {
-                        nbChapter += "null";
                         nbLvl += "null";
                     }
                 }
                 else
                 {
-                    savesLength += "null";
                     nbChapter += "null";
-                    save0 += "null";
-                    save1 += "null";
-                    save2 += "null";
                     nbLvl += "null";
                 }
-
-
-                curSave += currentSave;
-                load += loading.ToString();
-
-                loadingMenInfo += loadingMenuInfos != null ? loadingMenuInfos.Print() : "null";
-                loadingChapInfo += loadingChapterInfos != null ? loadingChapterInfos.Print() : "null";
-
-                debugCanvas.transform.Find("Saves length").GetComponent<Text>().text = savesLength;
-                debugCanvas.transform.Find("Save0").GetComponent<Text>().text = save0;
-                debugCanvas.transform.Find("Save1").GetComponent<Text>().text = save1;
-                debugCanvas.transform.Find("Save2").GetComponent<Text>().text = save2;
-                debugCanvas.transform.Find("Current Save").GetComponent<Text>().text = curSave;
-                debugCanvas.transform.Find("loading").GetComponent<Text>().text = load;
-                debugCanvas.transform.Find("nbChapterCurrentSave").GetComponent<Text>().text = nbChapter;
-                debugCanvas.transform.Find("nbLevels").GetComponent<Text>().text = nbLvl;
-                debugCanvas.transform.Find("currentChapter").GetComponent<Text>().text = currentChap;
-                debugCanvas.transform.Find("loadingMenuInfo").GetComponent<Text>().text = loadingMenInfo;
-                debugCanvas.transform.Find("loadingChapterInfo").GetComponent<Text>().text = loadingChapInfo;
-
-                debugCanvasDisplayed = true;
             }
+            else
+            {
+                savesLength += "null";
+                nbChapter += "null";
+                save0 += "null";
+                save1 += "null";
+                save2 += "null";
+                nbLvl += "null";
+            }
+
+
+            curSave += currentSave;
+            load += loading.ToString();
+
+            loadingMenInfo += loadingMenuInfos != null ? loadingMenuInfos.Print() : "null";
+            loadingChapInfo += loadingChapterInfos != null ? loadingChapterInfos.Print() : "null";
+
+            debugCanvas.transform.Find("Saves length").GetComponent<Text>().text = savesLength;
+            debugCanvas.transform.Find("Save0").GetComponent<Text>().text = save0;
+            debugCanvas.transform.Find("Save1").GetComponent<Text>().text = save1;
+            debugCanvas.transform.Find("Save2").GetComponent<Text>().text = save2;
+            debugCanvas.transform.Find("Current Save").GetComponent<Text>().text = curSave;
+            debugCanvas.transform.Find("loading").GetComponent<Text>().text = load;
+            debugCanvas.transform.Find("nbChapterCurrentSave").GetComponent<Text>().text = nbChapter;
+            debugCanvas.transform.Find("nbLevels").GetComponent<Text>().text = nbLvl;
+            debugCanvas.transform.Find("currentChapter").GetComponent<Text>().text = currentChap;
+            debugCanvas.transform.Find("loadingMenuInfo").GetComponent<Text>().text = loadingMenInfo;
+            debugCanvas.transform.Find("loadingChapterInfo").GetComponent<Text>().text = loadingChapInfo;
+
+            debugCanvasDisplayed = true;
         }
         else //destroy
         {

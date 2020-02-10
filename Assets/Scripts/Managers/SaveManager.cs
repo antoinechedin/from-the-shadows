@@ -109,17 +109,24 @@ public class SaveManager : Singleton<SaveManager>
     {
         bool finished = false;
 
-        while (!finished)
+        if (GameManager.Instance.CurrentSave != -1)
         {
-            int currentSave = GameManager.Instance.CurrentSave;
+            while (!finished)
+            {
+                int currentSave = GameManager.Instance.CurrentSave;
 
-            StreamWriter stream = new StreamWriter(Application.persistentDataPath + "/Saves/SaveFile"+GameManager.Instance.CurrentSave+".json");
-            string jsonString = JsonConvert.SerializeObject(GameManager.Instance.Saves[currentSave]); ;
-            stream.Write(jsonString);
-            stream.Close();
+                StreamWriter stream = new StreamWriter(Application.persistentDataPath + "/Saves/SaveFile" + GameManager.Instance.CurrentSave + ".json");
+                string jsonString = JsonConvert.SerializeObject(GameManager.Instance.Saves[currentSave]); ;
+                stream.Write(jsonString);
+                stream.Close();
 
-            finished = true;
-            yield return null;
+                finished = true;
+                yield return null;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("WARN : SaveManager.WriteSaveFile: GameManager.CurrentSave is not set. Not saving.");
         }
     }
     #endregion
@@ -170,7 +177,6 @@ public class SaveManager : Singleton<SaveManager>
         lvlChap2.Add(new Level(false, new bool[] { false }));
 
         chapters.Add(new Chapter(lvlChap2));
-
 
         Save createdSave = new Save(chapters, nbPlayer, mInt, mFloat, System.DateTime.Now);
 
