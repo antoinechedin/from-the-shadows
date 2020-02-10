@@ -5,7 +5,7 @@ public abstract class ActivatorListener : MonoBehaviour
 {
     public List<Activator> activators = new List<Activator>();
     public Color gizmoColor;
-
+  
     /// <summary>
     /// Method called by the Activator.Activate delegate
     /// </summary>
