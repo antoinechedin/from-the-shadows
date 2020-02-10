@@ -38,7 +38,16 @@ public class MenuManager : MonoBehaviour
                 OpenSaveMenu();
                 break;
             case 2: // Chapters menu
-                OpenChaptersMenu(GameManager.Instance.CurrentChapter);
+                if (GameManager.Instance.CurrentChapter != -1)
+                {
+                    OpenChaptersMenu(GameManager.Instance.CurrentChapter);
+                }
+                else
+                {
+                    Debug.LogWarning("WARN MenuManager.Start: CurrentSave not set. Opening at chapter0");
+                    OpenChaptersMenu(0);
+                }
+
                 break;
             default:
                 Debug.LogWarning("Menu index " + sceneIndex + " doesn't exist");

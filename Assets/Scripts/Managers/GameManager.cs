@@ -112,7 +112,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN META : No Save detected. Doing nothing>" + e.StackTrace);
+            Debug.LogWarning("WARN GameManager.SetCompleted : CurrentSAve not set. Doing nothing>" + e.StackTrace);
         }
     }
     #endregion
@@ -198,7 +198,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN META : No Save detected. Returning -1 by default" + e.StackTrace);
+            Debug.LogWarning("WARN GameManager.GetMetaInt: CurrentSave not set. Returning -1 by default" + e.StackTrace);
             return -1;
         }
 
@@ -225,7 +225,7 @@ public class GameManager : Singleton<GameManager>
         }
         catch (Exception e)
         {
-            Debug.LogWarning("WARN META : :No Save detected. Returning -1 by default" + e.StackTrace);
+            Debug.LogWarning("WARN GameManager.GetMetaFloat: CurrentSave not set. Returning -1 by default" + e.StackTrace);
             return -1;
         }
     }
@@ -245,7 +245,7 @@ public class GameManager : Singleton<GameManager>
         {
             if (!displayedNoSaveFile)
             {
-                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                Debug.LogWarning("WARN GameManager.SetMetaInt: CurrentSave not set" + e.StackTrace);
                 displayedNoSaveFile = true;
             }
         }
@@ -266,7 +266,7 @@ public class GameManager : Singleton<GameManager>
         {
             if (!displayedNoSaveFile)
             {
-                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                Debug.LogWarning("WARN GameManager.SetMetaFloat: CurrentSave not set" + e.StackTrace);
                 displayedNoSaveFile = true;
             }
         }
@@ -287,7 +287,7 @@ public class GameManager : Singleton<GameManager>
         {
             if (!displayedNoSaveFile)
             {
-                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                Debug.LogWarning("WARN GameManager.AddMetaInt: CurrentSave not set" + e.StackTrace);
                 displayedNoSaveFile = true;
             }
         }
@@ -308,7 +308,7 @@ public class GameManager : Singleton<GameManager>
         {
             if (!displayedNoSaveFile)
             {
-                Debug.LogWarning("WARN META : No Save detected" + e.StackTrace);
+                Debug.LogWarning("WARN GameManager.AddMetaFloat: CurrentSave not set" + e.StackTrace);
                 displayedNoSaveFile = true;
             }
         }
