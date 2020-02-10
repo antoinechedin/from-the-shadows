@@ -5,16 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class PressurePlate : Activator
 {
-    GameObject plate;
-    public Material activeMat;
-    public Material inactiveMat;
-
     private void Start()
     {
-        plate = transform.Find("Cube").gameObject;
-        plate.GetComponent<MeshRenderer>().material = inactiveMat;
-        if (Deactivate != null)
-            Deactivate();
+        child = transform.Find("Child").gameObject;
+        Off();
     }
 
     /// <summary>
@@ -24,9 +18,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
         {
-            plate.GetComponent<MeshRenderer>().material = activeMat;
-            if (Activate != null)
-                Activate();
+            On(false);
         }            
     }
 
@@ -35,11 +27,9 @@ public class PressurePlate : Activator
     /// </summary>
     public void OnTriggerExit2D(Collider2D collision)
     {        
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
+        if (!hasTimer && (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object")))
         {
-            plate.GetComponent<MeshRenderer>().material = inactiveMat;
-            if (Deactivate != null)
-                Deactivate();
+            Off();
         }
     }
 }
