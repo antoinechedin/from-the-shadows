@@ -6,10 +6,12 @@ using UnityEngine;
 public class NewActorController : MonoBehaviour
 {
     private float xRemainder = 0;
-    //private float yRemainder = 0;
+    private float yRemainder = 0;
 
     public LayerMask collisionMask = 1 << 9;
     private BoxCollider2D boxCollider;
+
+    private float xMove;
 
     private void Awake()
     {
@@ -27,7 +29,7 @@ public class NewActorController : MonoBehaviour
             float xSign = move < 0 ? -0.01f : 0.01f;
             float distance = 0;
             int stop = 0;
-            while (Mathf.Abs(distance) <= Mathf.Abs(move) && stop < 100)
+            while (Mathf.Abs(distance) <= Mathf.Abs(move) && stop < 100000)
             {
                 stop++;
                 Vector2 position = (Vector2)boxCollider.bounds.center + Vector2.right * distance;
@@ -41,9 +43,44 @@ public class NewActorController : MonoBehaviour
                     break;
                 }
             }
+            //transform.position = transform.position + Vector3.right * distance;
             transform.Translate((float)System.Math.Round(distance, 2), 0, 0);
+            xMove = (float)System.Math.Round(distance, 2);
 
-            if (stop >= 100) Debug.Log("no");
+            if (stop >= 100000) Debug.Log("no");
+        }
+    }
+
+    public void MoveY(float amount)
+    {
+        yRemainder += amount;
+        float move = (float)System.Math.Round(yRemainder, 2);
+
+        if (move != 0)
+        {
+            yRemainder -= move;
+            float ySign = move < 0 ? -0.01f : 0.01f;
+            float distance = 0;
+            int stop = 0;
+            while (Mathf.Abs(distance) <= Mathf.Abs(move) && stop < 100000)
+            {
+                stop++;
+                Vector2 position = (Vector2)boxCollider.bounds.center + Vector2.up * distance;
+                if (!Physics2D.OverlapBox(position + Vector2.up * ySign + Vector2.right * xMove, boxCollider.bounds.size, 0, collisionMask))
+                {
+                    distance += ySign;
+                }
+                else
+                {
+                    yRemainder = 0;
+                    break;
+                }
+            }
+            //transform.position = transform.position + Vector3.right * distance;
+            transform.Translate(0, (float)System.Math.Round(distance, 2), 0);
+
+            if (stop >= 100000) Debug.Log("no");
+            xMove = 0;
         }
     }
 }

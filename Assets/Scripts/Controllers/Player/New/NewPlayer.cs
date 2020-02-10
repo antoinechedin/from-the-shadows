@@ -7,6 +7,8 @@ public class NewPlayer : MonoBehaviour
 {
     public PlayerSettings settings;
     private NewActorController controller;
+    
+    private Vector2 velocity;
 
     private void Awake()
     {
@@ -22,7 +24,15 @@ public class NewPlayer : MonoBehaviour
         if (settings != null)
         {
             float xAxis = Input.GetAxisRaw("Horizontal_G");
-            controller.MoveX(xAxis * settings.moveSpeed * Time.deltaTime);
+            float yAxis = Input.GetAxisRaw("Vertical_G");
+            // xAxis = -1f;
+            // yAxis = -1f;
+            velocity = (Vector2.right * xAxis + Vector2.up * yAxis) * settings.moveSpeed;
         }
+    }
+
+    private void FixedUpdate() {
+        controller.MoveX(velocity.x * Time.fixedDeltaTime);
+        controller.MoveY(velocity.y * Time.fixedDeltaTime);
     }
 }
