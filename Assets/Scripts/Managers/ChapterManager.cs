@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class ChapterManager : MonoBehaviour
 {
-    public int chapterIndex;
     public List<LevelManager> levels;
     public PauseMenu pauseMenu;
     private int currentLevel = 0; //indice du niveau actuel
@@ -15,14 +14,6 @@ public class ChapterManager : MonoBehaviour
         if (GameManager.Instance.LoadingChapterInfo != null)
         {
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
-        }
-        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
-        {
-            NextLevel();
-        }
-        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
-        {
-            PreviousLevel();
         }
 
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
@@ -73,7 +64,7 @@ public class ChapterManager : MonoBehaviour
     public void NextLevel()
     {
         //Mise àjour des infos concernant le niveau courant
-        GameManager.Instance.SetLevelCompleted(chapterIndex, currentLevel);
+        GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
         currentLevel++;
 
         //Activation du niveau courant et désactivation des autres
