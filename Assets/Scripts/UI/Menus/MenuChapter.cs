@@ -69,7 +69,7 @@ public class MenuChapter : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Start_G"))
+        if (Input.GetButtonDown("Start_G") && !chapterMenuIsOpen)
         {
             EventSystem.current.SetSelectedGameObject(null);
             chapterButtonsPanel.SetActive(!chapterButtonsPanel.activeSelf);
