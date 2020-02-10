@@ -10,14 +10,11 @@ public class SwingMovement : MonoBehaviour
     public float offsetTime;
     public float ropeLength;
     public Transform origin;
+    public Transform swingingObject;
 
     private float currentTime;
     private Quaternion start;
     private Quaternion end;
-
-
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -26,15 +23,15 @@ public class SwingMovement : MonoBehaviour
         end = RotationMovement(-angle);
         currentTime = offsetTime;
 
-        Transform swingingObject = transform.Find("SwingingObject").transform;
-        swingingObject.Translate(new Vector3(0, -ropeLength, 0));
+        Transform child = swingingObject.transform.Find("Child").transform;
+        child.Translate(new Vector3(0, -ropeLength, 0));
     }
 
     // Update is called once per frame
     void Update()
     {
         currentTime += Time.deltaTime;
-        transform.rotation = Quaternion.Lerp(start, end, (Mathf.Sin( currentTime * speed + Mathf.PI / 2) + 1f) / 2f);
+        swingingObject.transform.rotation = Quaternion.Lerp(start, end, (Mathf.Sin( currentTime * speed + Mathf.PI / 2) + 1f) / 2f);
     }
 
     Quaternion RotationMovement(float angle)
