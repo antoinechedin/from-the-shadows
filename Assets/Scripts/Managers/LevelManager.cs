@@ -5,7 +5,11 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public Transform cameraPoint;
-    public Transform playerSpawn;
+
+    public Transform playerSpawn; // mutual spawn point
+    public Transform lightSpawn;
+    public Transform shadowSpawn;
+
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
 
     /// <summary>
