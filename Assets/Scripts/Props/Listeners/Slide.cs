@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Slide : ActivatorListener
 {
-    public enum Direction { Up, Down, Left, Right};
+    public enum Direction { Up, Down, Left, Right, Depth};
     private bool open;
     private Vector3 stopPosition;
     private Vector3 startPosition;
@@ -32,6 +32,9 @@ public class Slide : ActivatorListener
                 break;
             case Direction.Right:
                 stopPosition = startPosition - (Vector3.left * distance);
+                break;
+            case Direction.Depth:
+                stopPosition = startPosition + (Vector3.forward * distance);
                 break;
         }
     }
