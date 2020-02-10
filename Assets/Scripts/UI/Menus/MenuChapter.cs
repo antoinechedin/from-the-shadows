@@ -15,10 +15,13 @@ public class MenuChapter : MonoBehaviour
     public Canvas canvas;
     public Canvas saveMenu;
     public MenuManager menuManager;
+    public Canvas metaDataCanvas;
 
     private List<Chapter> chapters;
     private Animator menuChapterAnimator;
+    private Animator metaDataCanvasAnimator;
     private bool chapterMenuIsOpen = false;
+    private int localIndexCurrentChapter;
 
     private List<string> chaptersName;
 
@@ -36,14 +39,15 @@ public class MenuChapter : MonoBehaviour
     void Start()
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
+        metaDataCanvasAnimator = metaDataCanvas.gameObject.GetComponent<Animator>();
     }
 
     void Update()
     {
+        localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
         {
-            int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
             // Close the chapter
             if (chapterMenuIsOpen)
             {
@@ -63,6 +67,14 @@ public class MenuChapter : MonoBehaviour
                 gameObject.transform.position += new Vector3(605, 0, 0);
                 menuManager.OpenSaveMenu();
             }
+        }
+
+        if (Input.GetButtonDown("Start_G"))
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            chapterButtonsPanel.SetActive(!chapterButtonsPanel.activeSelf);
+            EventSystem.current.SetSelectedGameObject(chapterButtons[localIndexCurrentChapter].gameObject);
+            metaDataCanvasAnimator.SetBool("open", !metaDataCanvasAnimator.GetBool("open"));
         }
     }
 
