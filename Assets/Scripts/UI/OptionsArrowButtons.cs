@@ -24,7 +24,8 @@ public class OptionsArrowButtons : MonoBehaviour, ISelectHandler
         {
             yield return null;
         }
-        AudioListener.volume += value;
+        
+        AudioListener.volume = Mathf.Clamp(AudioListener.volume + value, 0, 1);
         EventSystem.current.SetSelectedGameObject(origin.gameObject);        
     }
 }

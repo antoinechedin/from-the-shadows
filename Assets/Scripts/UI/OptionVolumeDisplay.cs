@@ -9,6 +9,6 @@ public class OptionVolumeDisplay : MonoBehaviour
 
     void Update()
     {
-        text.text = (AudioListener.volume * 100f).ToString(); // TODO : marche pas, trouver une autre méthode
+        text.text = Mathf.RoundToInt(AudioListener.volume * 100).ToString(); // TODO : marche pas, trouver une autre méthode
     }
 }
