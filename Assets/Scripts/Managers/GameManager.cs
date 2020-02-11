@@ -19,8 +19,11 @@ public class GameManager : Singleton<GameManager>
 
     //info about the state of the game
     private bool debuging = false;
-    private bool debugCanvasDisplayed = false;
     private bool loading = false;
+    private bool debugCanvasDisplayed = false;
+
+    //Store a reference to the debug canvas when it's spawned
+    private GameObject debugCanvas;
 
     //debug bools
     private bool displayedNoSaveFile = false;
@@ -318,7 +321,6 @@ public class GameManager : Singleton<GameManager>
     #region Debug
     private void DisplayDebugCanvas()
     {
-        Destroy(GameObject.Find("GMDebugCanvas(Clone)"));
         if (debuging)//display
         {
             string savesLength = "saves length : ",
@@ -333,7 +335,10 @@ public class GameManager : Singleton<GameManager>
                 loadingMenInfo = "LoadingMenuInfo : ",
                 loadingChapInfo = "LoadingChapterInfo : ";
 
-            GameObject debugCanvas = Instantiate((GameObject)Resources.Load("GMDebugCanvas"), Vector3.zero, Quaternion.identity);
+            if (!debugCanvasDisplayed)
+            {
+                debugCanvas = Instantiate((GameObject)Resources.Load("GMDebugCanvas"), Vector3.zero, Quaternion.identity);
+            }
             if (saves != null)
             {
                 savesLength += saves.Length.ToString();
