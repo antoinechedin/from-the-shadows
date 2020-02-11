@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +20,11 @@ public class NewPlayer : MonoBehaviour
 
     private void Update()
     {
+        if (controller.collisions.bellow || controller.collisions.above)
+        {
+            velocity.y = 0;
+        }
+
         Vector2 inputAxis;
         inputAxis.x = Input.GetAxisRaw("Horizontal_G");
         inputAxis.y = Input.GetAxisRaw("Vertical_G");
@@ -26,20 +32,37 @@ public class NewPlayer : MonoBehaviour
         targetVelocity = inputAxis.normalized * settings.moveSpeed;
         if (inputAxis.x != 0)
         {
-            float acceleration = settings.moveSpeed / settings.groundAccelerationTime; 
+            float acceleration = settings.moveSpeed / settings.groundAccelerationTime;
             velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, acceleration * Time.deltaTime);
         }
         else
         {
-            float deceleration = settings.moveSpeed /settings.groundDecelerationTime;
+            float deceleration = settings.moveSpeed / settings.groundDecelerationTime;
             velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, deceleration * Time.deltaTime);
         }
-        
-        velocity.y = targetVelocity.y;
+
+        velocity.y -= settings.gravity * Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
         velocity = controller.Move(velocity, Time.fixedDeltaTime);
+        UpdateSpriteColor();
+    }
+
+    private void UpdateSpriteColor()
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            if (controller.collisions.bellow)
+            {
+                sr.color = Color.red;
+            }
+            else
+            {
+                sr.color = Color.green;
+            }
+        }
     }
 }

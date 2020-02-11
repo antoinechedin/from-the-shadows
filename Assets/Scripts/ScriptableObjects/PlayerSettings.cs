@@ -23,11 +23,7 @@ public class PlayerSettings : ScriptableObject
     /// <summary>
     /// Max angle in degree the player can walk on
     /// </summary>
-    public float maxClimbAngle = 60;
-    /// <summary>
-    /// Max angle in degree the player can descend
-    /// </summary>
-    public float maxDescendAngle = 60;
+    public float maxSlopeAngle = 60;
 
     /// <summary>
     /// Time in second needed for the player to reach max speed on the ground

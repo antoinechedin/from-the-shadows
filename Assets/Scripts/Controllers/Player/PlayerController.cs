@@ -35,8 +35,8 @@ public class PlayerController : MonoBehaviour
         canStopJump = false;
         canDoubleJump = doubleJump;
 
-        controller.maxClimbAngle = settings.maxClimbAngle;
-        controller.maxDescendAngle = settings.maxDescendAngle;
+        controller.maxClimbAngle = settings.maxSlopeAngle;
+        controller.maxDescendAngle = settings.maxSlopeAngle;
     }
 
     public void HandleInput()
