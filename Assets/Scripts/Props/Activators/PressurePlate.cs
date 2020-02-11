@@ -6,7 +6,13 @@ using UnityEngine;
 public class PressurePlate : Activator
 {
     public AudioClip sound;
+    public Material activeMat;
+    public Material inactiveMat;
+    public bool hasTimer;
+    public float timer;
+
     private SoundPlayer soundPlayer;
+    private GameObject child;
 
     private void Start()
     {
@@ -22,7 +28,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
         {
-            On(false);
+            On();
             if (soundPlayer != null)
                 soundPlayer.PlaySoundAtLocation(sound, 1f);
         }            
@@ -33,9 +39,48 @@ public class PressurePlate : Activator
     /// </summary>
     public void OnTriggerExit2D(Collider2D collision)
     {        
-        if (!hasTimer && (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object")))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
         {
-            Off();
+            if (hasTimer)
+                StartCoroutine(DeactivateAfterTimer());
+            else
+                Off();
         }
+    }
+
+    /// <summary>
+    /// Activate the pressure plate
+    /// </summary>
+    protected void On()
+    {
+        if (Activate != null)
+        {
+            Activate();
+            if (child != null)
+                child.GetComponent<MeshRenderer>().material = activeMat;
+        }
+    }
+
+    /// <summary>
+    /// Deactivate the pressure plate 
+    /// </summary>
+    protected void Off()
+    {
+        if (Deactivate != null)
+        {
+            Deactivate();
+            if (child != null)            
+                child.GetComponent<MeshRenderer>().material = inactiveMat;            
+        }
+    }
+
+    /// <summary>
+    /// Deactivate the activator at the end of the timer
+    /// </summary>
+    /// <returns></returns>
+    protected IEnumerator DeactivateAfterTimer()
+    {
+        yield return new WaitForSeconds(timer);
+        Off();
     }
 }
