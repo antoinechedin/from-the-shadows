@@ -4,20 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System;
 
 public class SaveManager : Singleton<SaveManager>
 {
-
-    public static void TestWriteSaveFile(Save save)
-    {
-
-        //Save save = GameManager.Instance.Saves[GameManager.Instance.CurrentSave];
-
-        string json = JsonConvert.SerializeObject(save);
-        Debug.Log(json);
-    }
-
-
     #region Load Save File
 
     /// <summary>
@@ -83,9 +73,10 @@ public class SaveManager : Singleton<SaveManager>
             //JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json"));
             JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile"+saveIndex+".json"));
 
-            Save createdSave = JsonConvert.DeserializeObject<Save>(json.ToString());
+            //Save createdSave = JsonConvert.DeserializeObject<Save>(json.ToString());
+            Save createdSave = JsonUtility.FromJson<Save>(json.ToString());
             FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json");
-            createdSave.LastOpenDate = fileInfo.LastWriteTime;
+            createdSave.LastOpenDate = new SerializableDate(fileInfo.LastWriteTime);
             GameManager.Instance.Saves[saveIndex] = createdSave;
             Debug.Log("Save " + saveIndex + " loaded : " + createdSave.Print());
 
@@ -120,7 +111,8 @@ public class SaveManager : Singleton<SaveManager>
                 int currentSave = GameManager.Instance.CurrentSave;
 
                 StreamWriter stream = new StreamWriter(Application.persistentDataPath + "/Saves/SaveFile" + GameManager.Instance.CurrentSave + ".json");
-                string jsonString = JsonConvert.SerializeObject(GameManager.Instance.Saves[currentSave]); ;
+                //string jsonString = JsonConvert.SerializeObject(GameManager.Instance.Saves[currentSave]);
+                string jsonString = JsonUtility.ToJson(GameManager.Instance.Saves[currentSave], true);
                 stream.Write(jsonString);
                 stream.Close();
 
@@ -157,13 +149,13 @@ public class SaveManager : Singleton<SaveManager>
         StreamWriter streamWriter = File.CreateText(Application.persistentDataPath + "/Saves/SaveFile"+save+".json");
 
         //création des dictionnaires de metadonnées
-        Dictionary<string, int> mInt = new Dictionary<string, int>();
+        StringIntDictionary mInt = new StringIntDictionary();
         mInt.Add("jumpNumber1", 0);
         mInt.Add("jumpNumber2", 0);
         mInt.Add("playerDeath1", 0);
         mInt.Add("playerDeath2", 0);
 
-        Dictionary<string, float> mFloat = new Dictionary<string, float>();
+        StringFloatDictionary mFloat = new StringFloatDictionary();
         mFloat.Add("distance1", 0);
         mFloat.Add("distance2", 0);
         mFloat.Add("totalTimePlayed", 0);
@@ -182,10 +174,10 @@ public class SaveManager : Singleton<SaveManager>
 
         chapters.Add(new Chapter(lvlChap2));
 
-        Save createdSave = new Save(chapters, nbPlayer, mInt, mFloat, System.DateTime.Now);
+        Save createdSave = new Save(chapters, nbPlayer, mInt, mFloat, new SerializableDate(DateTime.Now));
 
 
-        string saveFileContent = JsonConvert.SerializeObject(createdSave);
+        string saveFileContent = JsonUtility.ToJson(createdSave, true);
 
         //On rempli le nouveau SaveFile
         streamWriter.Write(saveFileContent);
@@ -194,4 +186,35 @@ public class SaveManager : Singleton<SaveManager>
         LoadSaveFile(save);
     }
     #endregion
+
+    public void TestLoad()
+    {
+        List<Level> levels = new List<Level>();
+        Level lvl = new Level(true, new bool[] { false, false });
+        levels.Add(lvl);
+        levels.Add(lvl);
+
+        List<Chapter> chaps = new List<Chapter>();
+        Chapter chap = new Chapter(levels);
+        chaps.Add(chap);
+        chaps.Add(chap);
+
+        StringIntDictionary mInt = new StringIntDictionary();
+        mInt.Add("1", 1);
+        mInt.Add("2", 2);
+
+        StringFloatDictionary mFloat = new StringFloatDictionary();
+        mFloat.Add("1", 1.0f);
+        mFloat.Add("2", 2.0f);
+
+        Save save = new Save(chaps, 1, mInt, mFloat, new SerializableDate(DateTime.Now));
+
+        string json = JsonUtility.ToJson(save, true);
+        Debug.Log(json);
+        save = null;
+        save = JsonUtility.FromJson<Save>(json);
+        Debug.Log(save.Chapters[0].GetLevels()[0].Completed);
+    }
+    
+
 }

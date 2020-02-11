@@ -9,7 +9,8 @@ using System;
 [Serializable]
 public class Chapter
 {
-    public List<Level> levels;
+    [SerializeField]
+    private List<Level> levels;
 
     public Chapter(List<Level> lvl)
     {

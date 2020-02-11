@@ -16,7 +16,7 @@ public class Test : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            SaveManager.Instance.CreateSaveFile(2, 1);
+            SaveManager.Instance.CreateSaveFile(0, 1);
         }
     }
 }

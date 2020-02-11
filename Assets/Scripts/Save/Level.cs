@@ -9,7 +9,9 @@ using System;
 [Serializable]
 public class Level
 {
+    [SerializeField]
     private bool completed = false; //indicates wether the level as been completed or not
+    [SerializeField]
     private bool[] collectibles;
 
     public Level(bool completed, bool[] collect)
