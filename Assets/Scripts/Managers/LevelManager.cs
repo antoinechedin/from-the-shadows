@@ -33,4 +33,12 @@ public class LevelManager : MonoBehaviour
             go.SetActive(true);
         }
     }
+
+    public void ResetAllResetables()
+    {
+        foreach (IResetable resetable in GetComponentsInChildren<IResetable>())
+        {
+            resetable.Reset();
+        }
+    }
 }

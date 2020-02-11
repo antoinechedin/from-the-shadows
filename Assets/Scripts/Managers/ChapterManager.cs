@@ -125,5 +125,7 @@ public class ChapterManager : MonoBehaviour
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
         //Incrémente la meta donnée du joueur mort
         GameManager.Instance.AddMetaInt("playerDeath"+playerId, 1);
+        //Reset tous les objets Resetables
+        levels[currentLevel].ResetAllResetables();
     }
 }
