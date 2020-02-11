@@ -6,12 +6,6 @@ public class Activator : MonoBehaviour
 {
     public List<ActivatorListener> listeners = new List<ActivatorListener>();
     public bool active;
-    public bool hasTimer;
-    public float timer;
-    public Material activeMat;
-    public Material inactiveMat;
-
-    protected GameObject child;
 
     /// <summary>
     /// Activate delegate. Don't forget to test if(Activate != null) before
@@ -75,52 +69,5 @@ public class Activator : MonoBehaviour
             }
         }
      }
-
-    /// <summary>
-    /// Activate the activator
-    /// </summary>
-    /// <param name="ignoreTimer"> Ignore timer reset (when the activator is active at the beginning of the level</param>
-    protected void On(bool ignoreTimer)
-    {
-        if (Activate != null)
-        {
-            Activate();
-            active = true;
-            if (child != null)
-            {
-                child.GetComponent<MeshRenderer>().material = activeMat;
-            }
-            if (hasTimer && !ignoreTimer)
-            {
-                StartCoroutine(DeactivateAfterTimer());
-            }
-        }       
-    }
-
-    /// <summary>
-    /// Deactivate the activator 
-    /// </summary>
-    protected void Off()
-    {
-        if (Deactivate != null)
-        {
-            Deactivate();
-            active = false;
-            if (child != null)
-            {
-                child.GetComponent<MeshRenderer>().material = inactiveMat;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Deactivate the activator at the end of the timer
-    /// </summary>
-    /// <returns></returns>
-    protected IEnumerator DeactivateAfterTimer()
-    {
-        yield return new WaitForSeconds(timer);
-        Off();
-    }
 }
 
