@@ -11,7 +11,10 @@ public class Lever : Activator
     public Material inactiveMat;
     public bool hasTimer;
     public float timer;
+    public bool activeAtStart;
 
+    private bool active;
+    private bool canBeActivated;
     private SoundPlayer soundPlayer;
     private GameObject child;
 
@@ -19,19 +22,31 @@ public class Lever : Activator
     {
         soundPlayer = GetComponent<SoundPlayer>();
         child = transform.Find("Child").gameObject;
-        if (!active)
-            Off();
-        else if (active)
+        active = activeAtStart;
+        if (activeAtStart)
             On(true);
+        else
+            Off();
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+            canBeActivated = true;
+    }
+
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+            canBeActivated = false;
     }
 
     /// <summary>
-    /// Activate or deactivate the lever when a player interracts 
+    /// Activate or deactivate the lever when a player interracts if he is in the collider
     /// </summary>
-    /// <param name="collision"></param>
-    public void OnTriggerStay2D(Collider2D collision)
+    public void Update()
     {
-        if (collision.gameObject.CompareTag("Player") && Input.GetButtonDown("X_G"))
+        if (canBeActivated && Input.GetButtonDown("X_G"))
         {
             if (!active)
             {
@@ -51,7 +66,7 @@ public class Lever : Activator
     /// <summary>
     /// Activate the lever
     /// </summary>
-    /// <param name="ignoreTimer"> Ignore timer reset (when the activator is active at the beginning of the level</param>
+    /// <param name="ignoreTimer"> Ignore timer reset (when the lever is active at the beginning of the level</param>
     protected void On(bool ignoreTimer)
     {
         if (Activate != null)

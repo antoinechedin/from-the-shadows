@@ -5,7 +5,6 @@ using UnityEngine;
 public class Activator : MonoBehaviour
 {
     public List<ActivatorListener> listeners = new List<ActivatorListener>();
-    public bool active;
 
     /// <summary>
     /// Activate delegate. Don't forget to test if(Activate != null) before
