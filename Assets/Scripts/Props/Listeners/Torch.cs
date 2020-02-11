@@ -4,29 +4,28 @@ using UnityEngine;
 
 public class Torch : ActivatorListener
 {
-    private bool active;
+
     public GameObject lightSource;
     public AudioClip soundOn;
     public AudioClip soundOff;
+
     private SoundPlayer soundPlayer;
 
-    void Awake()
+    void Start()
     {
         soundPlayer = GetComponent<SoundPlayer>();
     }
 
     public override void OnActivate()
     {
-        active = true;
-        lightSource.SetActive(active);
+        lightSource.SetActive(true);
         if (soundPlayer != null)
             soundPlayer.PlaySoundAtLocation(soundOn, 1);
     }
 
     public override void OnDeactivate()
     {
-        active = false;
-        lightSource.SetActive(active);
+        lightSource.SetActive(false);
         if (soundPlayer != null)
             soundPlayer.PlaySoundAtLocation(soundOff, 1);
     }

@@ -7,15 +7,18 @@ public class LayeredObstacle : MonoBehaviour
     public LayeredObstacleType type;
     [HideInInspector] public List<LightSource> lightSources;
 
-    private SpriteRenderer spriteRenderer;
+    private MeshRenderer meshRenderer;
 
     private void Awake()
     {
         lightSources = new List<LightSource>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
 
     private void Start() {
+        if (meshRenderer != null)
+            meshRenderer.enabled = false;
+
         UpdateCollider();
     }
 
@@ -52,12 +55,12 @@ public class LayeredObstacle : MonoBehaviour
                 break;
         }
 
-        if (spriteRenderer != null)
+        if (meshRenderer != null)
         {
-            Color newColor = spriteRenderer.color;
-            if (gameObject.layer == LayerMask.NameToLayer("Obstacle")) newColor.a = 1f;
-            if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle")) newColor.a = 0.1f;
-            spriteRenderer.color = newColor;
+            if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+                meshRenderer.enabled = true;
+            else if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle"))
+                meshRenderer.enabled = false;
         }
     }
 }

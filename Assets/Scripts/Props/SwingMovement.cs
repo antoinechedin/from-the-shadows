@@ -19,8 +19,8 @@ public class SwingMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        start = RotationMovement(angle);
-        end = RotationMovement(-angle);
+        start = RotationPoint(angle);
+        end = RotationPoint(-angle);
         currentTime = offsetTime;
 
         Transform child = swingingObject.transform.Find("Child").transform;
@@ -34,19 +34,15 @@ public class SwingMovement : MonoBehaviour
         swingingObject.transform.rotation = Quaternion.Lerp(start, end, (Mathf.Sin( currentTime * speed + Mathf.PI / 2) + 1f) / 2f);
     }
 
-    Quaternion RotationMovement(float angle)
+    Quaternion RotationPoint(float angle)
     {
         Quaternion rotation = transform.rotation;
         float angleZ = rotation.eulerAngles.z + angle;
 
         if (angleZ > 180)
-        {
             angleZ -= 360;
-        }
         else if (angleZ < -180)
-        {
             angleZ += 360;
-        }
 
         rotation.eulerAngles = new Vector3(rotation.eulerAngles.x, rotation.eulerAngles.y, angleZ);
         return rotation;
@@ -64,5 +60,10 @@ public class SwingMovement : MonoBehaviour
         Gizmos.DrawRay(transform.position, direction1);
         Vector3 direction2 = Quaternion.AngleAxis(angle, origin.transform.forward) * -origin.transform.up * ropeLength;
         Gizmos.DrawRay(transform.position, direction2);
+    }
+
+    private void Reset()
+    {
+        currentTime = offsetTime;
     }
 }
