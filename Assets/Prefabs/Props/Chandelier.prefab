@@ -1,5 +1,26 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!50 &3695407071731580800
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879086354558192457}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &5101762595045696285
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +145,6 @@ GameObject:
   - component: {fileID: 6851986707594498054}
   - component: {fileID: 6851986707594498057}
   - component: {fileID: 6851986707594498056}
-  - component: {fileID: 4190728139842878756}
   m_Layer: 0
   m_Name: Child
   m_TagString: Untagged
@@ -191,22 +211,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!58 &4190728139842878756
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6851986707594498053}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
 --- !u!1 &8074372632242692629
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,6 +304,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3817951436072433624, guid: 4a995b7708e4cfc4797a4bc656134f0b,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7658629738040427495, guid: 4a995b7708e4cfc4797a4bc656134f0b,
         type: 3}
       propertyPath: m_Name
@@ -315,6 +324,12 @@ PrefabInstance:
 --- !u!4 &410397532428741674 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2447546856709484247, guid: 4a995b7708e4cfc4797a4bc656134f0b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2613610090545431293}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &879086354558192457 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2915602361206688180, guid: 4a995b7708e4cfc4797a4bc656134f0b,
     type: 3}
   m_PrefabInstance: {fileID: 2613610090545431293}
   m_PrefabAsset: {fileID: 0}
