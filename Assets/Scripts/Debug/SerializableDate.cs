@@ -28,4 +28,10 @@ public class SerializableDate : ISerializationCallbackReceiver
     {
         return date.ToString();
     }
+
+    override
+    public string ToString()
+    {
+        return date.ToString();
+    }
 }

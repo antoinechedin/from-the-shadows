@@ -16,7 +16,8 @@ public class Test : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            SaveManager.Instance.CreateSaveFile(0, 1);
+            testClass test = new testClass(new SerializableDate(System.DateTime.Now));
+            Debug.Log(JsonUtility.ToJson(test));
         }
     }
 }

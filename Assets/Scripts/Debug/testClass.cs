@@ -7,16 +7,10 @@ using System;
 public class testClass
 {
     [SerializeField]
-    private int nb;
-    [SerializeField]
-    public StringIntDictionary metaInt;
-    [SerializeField]
-    public StringFloatDictionary metaFloat;
+    private SerializableDate date;
 
-    public testClass(int n, StringIntDictionary mInt, StringFloatDictionary mFloat)
+    public testClass(SerializableDate d)
     {
-        nb = n;
-        metaInt = mInt;
-        metaFloat = mFloat;
+        date = d;
     }
 }
