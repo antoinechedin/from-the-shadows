@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -70,11 +68,9 @@ public class SaveManager : Singleton<SaveManager>
         {
             GameManager.Instance.Loading = true;
 
-            //JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json"));
-            JObject json = JObject.Parse(File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile"+saveIndex+".json"));
+            string json = File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile"+saveIndex+".json");
 
-            //Save createdSave = JsonConvert.DeserializeObject<Save>(json.ToString());
-            Save createdSave = JsonUtility.FromJson<Save>(json.ToString());
+            Save createdSave = JsonUtility.FromJson<Save>(json);
             FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json");
             createdSave.LastOpenDate = new SerializableDate(fileInfo.LastWriteTime);
             GameManager.Instance.Saves[saveIndex] = createdSave;
