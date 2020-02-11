@@ -68,7 +68,7 @@ public class SaveManager : Singleton<SaveManager>
         {
             GameManager.Instance.Loading = true;
 
-            string json = File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile"+saveIndex+".json");
+            string json = File.ReadAllText(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json");
 
             Save createdSave = JsonUtility.FromJson<Save>(json);
             FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json");
@@ -142,7 +142,7 @@ public class SaveManager : Singleton<SaveManager>
     public void CreateSaveFile(int save, int nbPlayer)
     {
         //création du file
-        StreamWriter streamWriter = File.CreateText(Application.persistentDataPath + "/Saves/SaveFile"+save+".json");
+        StreamWriter streamWriter = File.CreateText(Application.persistentDataPath + "/Saves/SaveFile" + save + ".json");
 
         //création des dictionnaires de metadonnées
         StringIntDictionary mInt = new StringIntDictionary();
@@ -211,6 +211,6 @@ public class SaveManager : Singleton<SaveManager>
         save = JsonUtility.FromJson<Save>(json);
         Debug.Log(save.Chapters[0].GetLevels()[0].Completed);
     }
-    
+
 
 }
