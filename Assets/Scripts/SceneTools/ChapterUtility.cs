@@ -106,7 +106,7 @@ public class ChapterUtility : MonoBehaviour
     /// <summary>
     /// Display Custom Icons for CameraPoints & Colors for LevelTriggers / InvisibleWalls
     /// </summary>
-    void OnDrawGizmos()
+    /*void OnDrawGizmos()
     {
         // CameraPoints Custom Icons + Number
         int i = 0;
@@ -143,5 +143,5 @@ public class ChapterUtility : MonoBehaviour
             Gizmos.DrawWireCube((Vector2)boxCollider.bounds.center,
                                 (Vector2)boxCollider.bounds.extents * 2);
         }
-    }
+    }*/
 }

@@ -4,19 +4,25 @@ using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 
-[System.Serializable]
+[Serializable]
 public class Save
 {
+    [SerializeField]
     private List<Chapter> chapters; //structure qui stock toutes les infos sur les chapitres (et par parentée, sur tous les level)
+    [SerializeField]
     private int nbPlayer; //stock si c'est une partie en solo ou en duo
 
     //METADATA
-    private Dictionary<string, int> metaInt;
-    private Dictionary<string, float> metaFloat;
-    private System.DateTime lastOpenDate;
+    [SerializeField]
+    private StringIntDictionary metaInt;
+    [SerializeField]
+    private StringFloatDictionary metaFloat;
+    [SerializeField]
+    private SerializableDate lastOpenDate;
 
-    public Save(List<Chapter> chaps, int nbPlay, Dictionary<string, int> mInt, Dictionary<string, float> mFloat, System.DateTime dt)
+    public Save(List<Chapter> chaps, int nbPlay, StringIntDictionary mInt, StringFloatDictionary mFloat, SerializableDate dt)
     {
         chapters = chaps;
         nbPlayer = nbPlay;
@@ -31,7 +37,7 @@ public class Save
         set { chapters = value; }
     }
 
-    public System.DateTime LastOpenDate
+    public SerializableDate LastOpenDate
     {
         get { return lastOpenDate; }
         set { lastOpenDate = value; }
@@ -43,13 +49,13 @@ public class Save
         set { nbPlayer = value; }
     }
 
-    public Dictionary<string, int> MetaInt
+    public StringIntDictionary MetaInt
     {
         get {return metaInt;}
         set { metaInt = value; }
     }
 
-    public Dictionary<string, float> MetaFloat
+    public StringFloatDictionary MetaFloat
     {
         get { return metaFloat; }
         set { metaFloat = value; }
