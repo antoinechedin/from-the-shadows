@@ -67,7 +67,7 @@ public class SaveMenu : MonoBehaviour
                 Text date = buttons[i].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
                 date.text = saves[i].LastOpenDate.ToString();
                 Text timePlayed = buttons[i].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
-                timePlayed.text = GameManager.Instance.GetMetaFloat("totalTimePlayed", i).ToString();
+                timePlayed.text = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm\:ss");
             }
             else
             {

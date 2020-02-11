@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,9 +33,10 @@ public class MenuMetaManager : MonoBehaviour
 
         newData = Instantiate(dataPrefab, shadowCharContent.transform);
         newData.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = "Distance";
-        newData.transform.Find("Value").GetComponent<TextMeshProUGUI>().text = GameManager.Instance.GetMetaFloat("distance1").ToString();
+        newData.transform.Find("Value").GetComponent<TextMeshProUGUI>().text = System.Math.Round(GameManager.Instance.GetMetaFloat("distance1"), 2).ToString();
 
         // PLAYER 2 (Light character)
+
         newData = Instantiate(dataPrefab, lightCharContent.transform);
         newData.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = "Morts";
         newData.transform.Find("Value").GetComponent<TextMeshProUGUI>().text = GameManager.Instance.GetMetaInt("playerDeath2").ToString();
@@ -45,12 +47,12 @@ public class MenuMetaManager : MonoBehaviour
 
         newData = Instantiate(dataPrefab, lightCharContent.transform);
         newData.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = "Distance";
-        newData.transform.Find("Value").GetComponent<TextMeshProUGUI>().text = GameManager.Instance.GetMetaFloat("distance2").ToString();
+        newData.transform.Find("Value").GetComponent<TextMeshProUGUI>().text = System.Math.Round(GameManager.Instance.GetMetaFloat("distance2"), 2).ToString();
 
         // GENERAL
 
         newData = Instantiate(dataPrefab, generalContent.transform);
         newData.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = "Temps joué";
-        newData.transform.Find("Value").GetComponent<TextMeshProUGUI>().text = GameManager.Instance.GetMetaFloat("totalTimePlayed").ToString();
+        newData.transform.Find("Value").GetComponent<TextMeshProUGUI>().text = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed")).ToString(@"hh\:mm\:ss");
     }
 }
