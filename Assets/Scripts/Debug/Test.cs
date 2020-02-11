@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test : MonoBehaviour
+public class Test : MonoBehaviour, IResetable
 {
+    public void Reset()
+    {
+
+        Debug.Log("Script Test : Je me reset");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
