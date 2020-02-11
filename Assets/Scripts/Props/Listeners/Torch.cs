@@ -8,6 +8,7 @@ public class Torch : ActivatorListener
     public GameObject lightSource;
     public AudioClip soundOn;
     public AudioClip soundOff;
+    public bool activeAtStart;
 
     private SoundPlayer soundPlayer;
     private Vector3 targetScale = Vector3.zero;
@@ -15,11 +16,15 @@ public class Torch : ActivatorListener
     void Start()
     {
         soundPlayer = GetComponent<SoundPlayer>();
+        if (activeAtStart)
+        {
+            OnActivate();
+        }
     }
 
     private void Update()
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 10);
+        lightSource.transform.localScale = Vector3.Lerp(lightSource.transform.localScale, targetScale, Time.deltaTime * 10);
     }
 
     public override void OnActivate()
