@@ -118,6 +118,9 @@ public class ChapterManager : MonoBehaviour
     /// <param name="PlayerId"></param>
     public void ResetLevel(int playerId)
     {
+        //Fondu au noir
+        GameObject loadingScreen = (GameObject)Resources.Load("FadeToBlackScreen"); //load le prefab de l'écran de chargement
+        loadingScreen = Instantiate(loadingScreen, gameObject.transform); //l'affiche
         //Teleporte les joueurs au début du jeu
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
         //Incrémente la meta donnée du joueur mort
