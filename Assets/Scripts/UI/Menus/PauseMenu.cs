@@ -10,7 +10,7 @@ public class PauseMenu : MonoBehaviour
 
     public void OpenPauseMenu()
     {
-        // TODO: Freeze the game
+        Time.timeScale = 0;
         EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
     }
 
@@ -23,21 +23,25 @@ public class PauseMenu : MonoBehaviour
     {
         EventSystem.current.SetSelectedGameObject(null);
         gameObject.SetActive(false);
-        // TODO: Unfreeze the game
+        Input.ResetInputAxes();
+        Time.timeScale = 1;
     }
 
     public void Home()
     {
+        Time.timeScale = 1;
         GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
     }
 
     public void Options()
     {
+        // Time.timeScale = 1;
         // TODO: Menu Options
     }
 
     public void Quit()
     {
+        Time.timeScale = 1;
         GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen");
         loadingScreen = Instantiate(loadingScreen, transform.parent);
         StartCoroutine(Fade());
