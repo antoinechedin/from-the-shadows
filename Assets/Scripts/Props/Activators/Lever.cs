@@ -17,6 +17,7 @@ public class Lever : Activator
     private bool canBeActivated;
     private SoundPlayer soundPlayer;
     private GameObject child;
+    private bool isMute = true;
 
     private void Start()
     {
@@ -27,6 +28,8 @@ public class Lever : Activator
             On(true);
         else
             Off();
+
+        isMute = false;
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -49,17 +52,9 @@ public class Lever : Activator
         if (canBeActivated && Input.GetButtonDown("X_G"))
         {
             if (!active)
-            {
                 On(false);
-                if (soundPlayer != null)
-                    soundPlayer.PlaySoundAtLocation(soundOn, 1f);
-            }
             else
-            {
-                Off();
-                if (soundPlayer != null)
-                    soundPlayer.PlaySoundAtLocation(soundOff, 1f);
-            }                
+                Off();                
         }
     }
 
@@ -73,14 +68,14 @@ public class Lever : Activator
         {
             Activate();
             active = true;
+            if (soundPlayer != null && !isMute)
+                soundPlayer.PlaySoundAtLocation(soundOn, 1f);
             if (child != null)
-            {
                 child.GetComponent<MeshRenderer>().material = activeMat;
-            }
+
             if (hasTimer && !ignoreTimer)
-            {
                 StartCoroutine(DeactivateAfterTimer());
-            }
+
         }
     }
 
@@ -93,10 +88,10 @@ public class Lever : Activator
         {
             Deactivate();
             active = false;
+            if (soundPlayer != null && !isMute)
+                soundPlayer.PlaySoundAtLocation(soundOff, 1f);
             if (child != null)
-            {
                 child.GetComponent<MeshRenderer>().material = inactiveMat;
-            }
         }
     }
 
@@ -108,5 +103,15 @@ public class Lever : Activator
     {
         yield return new WaitForSeconds(timer);
         Off();
+    }
+
+    private void Reset()
+    {
+        isMute = true;
+        if (active && !activeAtStart)
+            Off();
+        else if (!active && activeAtStart)
+            On(true);
+        isMute = false;
     }
 }

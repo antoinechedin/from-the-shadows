@@ -42,8 +42,7 @@ public class Slide : ActivatorListener
     public override void OnActivate()
     {
         open = true;
-        targetPosition = stopPosition;
-         
+        targetPosition = stopPosition;         
     }
 
     public override void OnDeactivate()

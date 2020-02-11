@@ -57,9 +57,7 @@ public class PressurePlate : Activator
         {
             Activate();
             if (child != null)
-            {
                 child.GetComponent<MeshRenderer>().material = activeMat;
-            }
         }
     }
 
@@ -71,10 +69,8 @@ public class PressurePlate : Activator
         if (Deactivate != null)
         {
             Deactivate();
-            if (child != null)
-            {
-                child.GetComponent<MeshRenderer>().material = inactiveMat;
-            }
+            if (child != null)            
+                child.GetComponent<MeshRenderer>().material = inactiveMat;            
         }
     }
 
