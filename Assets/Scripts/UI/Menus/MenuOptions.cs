@@ -27,11 +27,6 @@ public class MenuOptions : MonoBehaviour
         }
     }
 
-    public void ChangeVolume()
-    {
-        //AudioListener.volume = ;
-    }
-
     public void ChangeResolution()
     {
         //Screen.SetResolution();

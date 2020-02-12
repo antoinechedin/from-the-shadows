@@ -9,12 +9,14 @@ public class OptionsArrowButtons : MonoBehaviour, ISelectHandler
     public Selectable origin;
     public float value;
 
+    public string onSelectFunction;
+
     bool done;
 
     public void OnSelect(BaseEventData eventData)
     {
         done = false;
-        StartCoroutine(ChangeVolume());
+        StartCoroutine(onSelectFunction);
         done = true;
     }
 
