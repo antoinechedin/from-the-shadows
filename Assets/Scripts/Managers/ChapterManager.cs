@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ChapterManager : MonoBehaviour
@@ -112,19 +113,32 @@ public class ChapterManager : MonoBehaviour
         timeSinceBegin = 0;
     }
 
+    public void ResetLevel(int playerId)
+    {
+        StartCoroutine(ResetLevelAsync(playerId));
+    }
+
     /// <summary>
     /// Allows to reset the level on playerDeath
     /// </summary>
     /// <param name="PlayerId"></param>
-    public void ResetLevel(int playerId)
+    IEnumerator ResetLevelAsync(int playerId)
     {
         //Fondu au noir
-        GameObject loadingScreen = (GameObject)Resources.Load("FadeToBlackScreen"); //load le prefab de l'écran de chargement
-        loadingScreen = Instantiate(loadingScreen, gameObject.transform); //l'affiche
+        GameObject fadingScreen = (GameObject)Resources.Load("FadeToBlackScreen"); //load le prefab de l'écran de chargement
+        fadingScreen = Instantiate(fadingScreen, gameObject.transform); //l'affiche
+
+        //tant que l'ecran n'a pas fini de fade au noir
+        while (!fadingScreen.GetComponent<FadeToBlackScreen>().finishedFadingIn)
+        {
+            yield return null;
+        }
+        fadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true);
+
         //Teleporte les joueurs au début du jeu
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
         //Incrémente la meta donnée du joueur mort
-        GameManager.Instance.AddMetaInt("playerDeath"+playerId, 1);
+        GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
     }
