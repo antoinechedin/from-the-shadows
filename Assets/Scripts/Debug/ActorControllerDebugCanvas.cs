@@ -36,15 +36,15 @@ public class ActorControllerDebugCanvas : MonoBehaviour
                     controllerInfosTemplate,
                     actorController.collisions.move.x,
                     actorController.collisions.move.y,
-                    actorController.collisions.moveOld.x,
-                    actorController.collisions.moveOld.y,
+                    actorController.collisionsPrevious.move.x,
+                    actorController.collisionsPrevious.move.y,
                     actorController.collisions.groundNormal.x,
                     actorController.collisions.groundNormal.y,
                     actorController.collisions.climbingSlope ? "X" : " ",
                     actorController.collisions.descendingSlope ? "X" : " ",
                     actorController.collisions.slidingSlope ? "X" : " ",
                     actorController.collisions.slopeAngle,
-                    actorController.collisions.slopeAngleOld
+                    actorController.collisionsPrevious.slopeAngle
                 );
             }
             if (collisionInfos != null)
@@ -54,7 +54,11 @@ public class ActorControllerDebugCanvas : MonoBehaviour
                     actorController.collisions.above ? "X" : "_",
                     actorController.collisions.bellow ? "X" : "_",
                     actorController.collisions.left ? "X" : "_",
-                    actorController.collisions.right ? "X" : "_"
+                    actorController.collisions.right ? "X" : "_",
+                    actorController.collisionsPrevious.above ? "X" : "_",
+                    actorController.collisionsPrevious.bellow ? "X" : "_",
+                    actorController.collisionsPrevious.left ? "X" : "_",
+                    actorController.collisionsPrevious.right ? "X" : "_"
                 );
             }
         }

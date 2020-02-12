@@ -55,7 +55,7 @@ public class NewPlayer : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
-            if (controller.collisions.bellow)
+            if (controller.collisions.bellow || controller.collisionsPrevious.bellow)
             {
                 sr.color = Color.green;
             }

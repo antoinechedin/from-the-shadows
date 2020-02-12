@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +23,7 @@ public class NewActorController : MonoBehaviour
     private RaycastOrigins raycastOrigins;
 
     public CollisionInfo collisions;
+    public CollisionInfo collisionsPrevious;
 
     private void Awake()
     {
@@ -35,10 +36,11 @@ public class NewActorController : MonoBehaviour
     public Vector2 Move(Vector2 velocity, float deltaTime)
     {
         UpdateRaycastOrigins();
+        collisionsPrevious = collisions;
         collisions.Reset();
 
         Vector2 move = velocity * deltaTime;
-        collisions.moveOld = move;
+        collisionsPrevious.move = move;
 
         if (move.y < 0)
         {
@@ -73,11 +75,11 @@ public class NewActorController : MonoBehaviour
                     if (collisions.descendingSlope)
                     {
                         collisions.descendingSlope = false;
-                        move = collisions.moveOld;
+                        move = collisionsPrevious.move;
                     }
 
                     float dstToSlope = 0;
-                    if (slopeAngle != collisions.slopeAngleOld)
+                    if (slopeAngle != collisionsPrevious.slopeAngle)
                     {
                         dstToSlope = hit.distance - skinWidth;
                         move.x -= dstToSlope * xSign;
@@ -263,19 +265,15 @@ public class NewActorController : MonoBehaviour
     {
         public bool above, bellow, left, right;
         public bool climbingSlope, descendingSlope, slidingSlope;
-        public float slopeAngle, slopeAngleOld;
+        public float slopeAngle;
         public Vector2 move;
-        public Vector2 moveOld;
         public Vector2 groundNormal;
 
         public void Reset()
         {
             above = bellow = left = right = false;
             climbingSlope = descendingSlope = slidingSlope = false;
-
-            slopeAngleOld = slopeAngle;
             slopeAngle = 0;
-
             groundNormal = Vector2.zero;
         }
     }
