@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SolidController))]
-public class MovingPlatform : MonoBehaviour
+public class MovingPlatform : MonoBehaviour, IResetable
 {
     private Vector2 startingPoint;
     private Vector2 endingPoint;
@@ -23,8 +24,8 @@ public class MovingPlatform : MonoBehaviour
         solidController = GetComponent<SolidController>();
         startingPoint = controlPoints[0];
         endingPoint = controlPoints[controlPoints.Count - 1];
-        target = controlPoints[1];
-        limit = endingPoint;
+        
+        Reset();
     }
 
     private void FixedUpdate()
@@ -124,6 +125,15 @@ public class MovingPlatform : MonoBehaviour
             limit = startingPoint;
         else if (limit == startingPoint)
             limit = endingPoint;
+    }
+
+    public void Reset()
+    {
+        transform.position = startingPoint;
+        orientation = 1;
+        cursor = 0;
+        target = controlPoints[cursor + orientation];
+        limit = endingPoint;
     }
 
     private void OnDrawGizmos()
