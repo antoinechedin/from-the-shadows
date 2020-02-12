@@ -11,8 +11,8 @@ public class PressurePlate : Activator
     public bool hasTimer;
     public float timer;
 
-    private SoundPlayer soundPlayer;
     private GameObject child;
+    private SoundPlayer soundPlayer;
 
     private void Start()
     {
@@ -42,7 +42,7 @@ public class PressurePlate : Activator
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
         {
             if (hasTimer)
-                StartCoroutine(DeactivateAfterTimer());
+                Invoke("Off", timer);
             else
                 Off();
         }
@@ -72,15 +72,5 @@ public class PressurePlate : Activator
             if (child != null)            
                 child.GetComponent<MeshRenderer>().material = inactiveMat;            
         }
-    }
-
-    /// <summary>
-    /// Deactivate the activator at the end of the timer
-    /// </summary>
-    /// <returns></returns>
-    protected IEnumerator DeactivateAfterTimer()
-    {
-        yield return new WaitForSeconds(timer);
-        Off();
     }
 }
