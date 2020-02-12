@@ -19,6 +19,7 @@ public class SolidController : MonoBehaviour
     public void Move(Vector2 direction)
     {
         Vector3 moveVec = direction.normalized * speed * Time.fixedDeltaTime;
+        Debug.Log(moveVec);
         transform.Translate(moveVec);
     }
 

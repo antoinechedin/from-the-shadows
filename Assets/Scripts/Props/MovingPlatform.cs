@@ -13,7 +13,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
 
     public List<Vector2> controlPoints;
     private int cursor = 0;
-
+    
     public float threshold;
     private int orientation = 1;
 
@@ -27,7 +27,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
         
         Reset();
     }
-
+    
     private void FixedUpdate()
     {
         FollowTrajectoryBackAndForth();
@@ -127,14 +127,76 @@ public class MovingPlatform : MonoBehaviour, IResetable
             limit = endingPoint;
     }
 
+    /// <summary>
+    /// Resets platform to initial position
+    /// </summary>
     public void Reset()
     {
+        if (controlPoints.Count < 2)
+        {
+            Debug.LogError("MovingPlatform : Control points count must be over 1");
+        }
         transform.position = startingPoint;
         orientation = 1;
         cursor = 0;
         target = controlPoints[cursor + orientation];
         limit = endingPoint;
     }
+
+    #region Editor functions
+    
+    /// <summary>
+    /// Create GameObjects in edit mode
+    /// </summary>
+    public void CreateControlPointsGameObjects()
+    {
+        startingPoint = controlPoints[0];
+        endingPoint = controlPoints[controlPoints.Count - 1];
+
+        GameObject listCP = FindOrCreateEmptyChild("_Control Points", transform);
+        GameObject sp = FindOrCreateEmptyChild("Starting Point", transform);
+        GameObject ep = FindOrCreateEmptyChild("Ending Point", transform);
+               
+        sp.transform.position = startingPoint;
+        ep.transform.position = endingPoint;
+
+        for (int i = 1; i < controlPoints.Count - 1; i++)
+        {
+            GameObject cp = FindOrCreateEmptyChild("CP" + i, listCP.transform);
+            cp.transform.position = controlPoints[i];
+        }
+    }
+
+    /// <summary>
+    /// Updates control points with gameobjects position
+    /// </summary>
+    public void UpdateControlPointsArray()
+    {
+        Transform listCP = transform.Find("_Control Points");
+    }
+
+    /// <summary>
+    /// Looks for child GameObject with name, returns existing if found, new if not
+    /// </summary>
+    /// <param name="name">GameObject's name to look for</param>
+    /// <param name="parent">Parent of the searched GameObject</param>
+    /// <returns></returns>
+    private GameObject FindOrCreateEmptyChild(string name, Transform parent)
+    {
+        Transform tmp = parent.Find(name);
+        GameObject go;
+        if (tmp == null)
+        {
+            go = new GameObject(name);
+            go.transform.parent = parent;
+        }
+        else
+            go = tmp.gameObject;
+
+        return go;
+    }
+
+    #endregion
 
     private void OnDrawGizmos()
     {
