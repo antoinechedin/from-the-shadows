@@ -182,7 +182,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
         List<GameObject> toDestroy = new List<GameObject>();
 
         sp.transform.position = controlPoints[0];
-        for (int i = 1; i < listCP.transform.childCount; i++)
+        for (int i = 1; i <= listCP.transform.childCount; i++)
         {
             GameObject cp = FetchChild("CP" + i, listCP.transform);
             if(i < controlPoints.Count - 1)
@@ -200,6 +200,9 @@ public class MovingPlatform : MonoBehaviour, IResetable
         {
             DestroyImmediate(go);            
         }
+
+        if (listCP.transform.childCount == 0)
+            DestroyImmediate(listCP);
 
         Reset();
     }
