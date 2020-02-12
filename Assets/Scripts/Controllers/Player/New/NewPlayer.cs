@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(NewActorController))]
+[RequireComponent(typeof(NewActorController), typeof(PlayerInput))]
 public class NewPlayer : MonoBehaviour
 {
     public PhysicsSettings settings;
 
     private NewActorController controller;
+    private PlayerInput playerInput;
 
     private Vector2 targetVelocity;
     private Vector2 velocity;
@@ -16,6 +17,7 @@ public class NewPlayer : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<NewActorController>();
+        playerInput = GetComponent<PlayerInput>();
     }
 
     private void Update()
@@ -26,12 +28,8 @@ public class NewPlayer : MonoBehaviour
                 velocity.y = 0;
         }
 
-        Vector2 inputAxis;
-        inputAxis.x = Input.GetAxisRaw("Horizontal_G");
-        inputAxis.y = Input.GetAxisRaw("Vertical_G");
-
-        targetVelocity = inputAxis.normalized * settings.moveSpeed;
-        if (inputAxis.x != 0)
+        targetVelocity = playerInput.moveAxis.normalized * settings.moveSpeed;
+        if (playerInput.moveAxis.x != 0)
         {
             float acceleration = settings.moveSpeed / settings.groundAccelerationTime;
             velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, acceleration * Time.deltaTime);
@@ -59,11 +57,11 @@ public class NewPlayer : MonoBehaviour
         {
             if (controller.collisions.bellow)
             {
-                sr.color = Color.red;
+                sr.color = Color.green;
             }
             else
             {
-                sr.color = Color.green;
+                sr.color = Color.blue;
             }
         }
     }
