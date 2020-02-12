@@ -82,7 +82,7 @@ public class NewActorController : MonoBehaviour
                         dstToSlope = hit.distance - skinWidth;
                         move.x -= dstToSlope * xSign;
                     }
-                    ClimbSlope(ref move, slopeAngle);
+                    ClimbSlope(ref move, slopeAngle, hit.normal);
 
                     move.x += dstToSlope * xSign;
                 }
@@ -126,8 +126,15 @@ public class NewActorController : MonoBehaviour
                     move.x = move.y / Mathf.Tan(collisions.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(move.x);
                 }
 
-                collisions.bellow = ySign < 0;
-                collisions.above = ySign >= 0;
+                if (ySign < 0)
+                {
+                    collisions.bellow = true;
+                    collisions.groundNormal = hit.normal;
+                }
+                else
+                {
+                    collisions.above = ySign >= 0;
+                }
             }
 
 
@@ -148,12 +155,13 @@ public class NewActorController : MonoBehaviour
                 {
                     move.x = (hit.distance - skinWidth) * xSign;
                     collisions.slopeAngle = slopeAngle;
+                    collisions.groundNormal = hit.normal;
                 }
             }
         }
     }
 
-    private void ClimbSlope(ref Vector2 move, float slopeAngle)
+    private void ClimbSlope(ref Vector2 move, float slopeAngle, Vector2 slopeNormal)
     {
         float moveDistance = Mathf.Abs(move.x);
         float climbMoveY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
@@ -164,6 +172,7 @@ public class NewActorController : MonoBehaviour
             collisions.bellow = true;
             collisions.climbingSlope = true;
             collisions.slopeAngle = slopeAngle;
+            collisions.groundNormal = slopeNormal;
         }
     }
 
@@ -202,6 +211,7 @@ public class NewActorController : MonoBehaviour
                             collisions.slopeAngle = slopeAngle;
                             collisions.descendingSlope = true;
                             collisions.bellow = true;
+                            collisions.groundNormal = hit.normal;
                         }
                     }
                 }
@@ -220,6 +230,7 @@ public class NewActorController : MonoBehaviour
 
                 collisions.slopeAngle = slopeAngle;
                 collisions.slidingSlope = true;
+                collisions.groundNormal = hit.normal;
             }
         }
     }
@@ -255,6 +266,7 @@ public class NewActorController : MonoBehaviour
         public float slopeAngle, slopeAngleOld;
         public Vector2 move;
         public Vector2 moveOld;
+        public Vector2 groundNormal;
 
         public void Reset()
         {
@@ -263,6 +275,8 @@ public class NewActorController : MonoBehaviour
 
             slopeAngleOld = slopeAngle;
             slopeAngle = 0;
+
+            groundNormal = Vector2.zero;
         }
     }
 }

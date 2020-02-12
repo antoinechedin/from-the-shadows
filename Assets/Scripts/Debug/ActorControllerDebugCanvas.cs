@@ -38,6 +38,8 @@ public class ActorControllerDebugCanvas : MonoBehaviour
                     actorController.collisions.move.y,
                     actorController.collisions.moveOld.x,
                     actorController.collisions.moveOld.y,
+                    actorController.collisions.groundNormal.x,
+                    actorController.collisions.groundNormal.y,
                     actorController.collisions.climbingSlope ? "X" : " ",
                     actorController.collisions.descendingSlope ? "X" : " ",
                     actorController.collisions.slidingSlope ? "X" : " ",
