@@ -113,19 +113,26 @@ public class ChapterManager : MonoBehaviour
         timeSinceBegin = 0;
     }
 
+    /// <summary>
+    /// The player died : displays all deaths animations (player, screen, etc...) and reset all Resetable Objects
+    /// </summary>
+    /// <param name="playerId"></param>
     public void ResetLevel(int playerId)
     {
         StartCoroutine(ResetLevelAsync(playerId));
     }
 
     /// <summary>
-    /// Allows to reset the level on playerDeath
+    /// The player died : displays all deaths animations (player, screen, etc...) and reset all Resetable Objects
     /// </summary>
-    /// <param name="PlayerId"></param>
+    /// <param name="playerId"></param>
     IEnumerator ResetLevelAsync(int playerId)
     {
-        //Fondu au noir
-        GameObject fadingScreen = (GameObject)Resources.Load("FadeToBlackScreen"); //load le prefab de l'écran de chargement
+        //déplacement de la camera à l'endroit de la mort
+        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        //Petit zoom de la caméra
+        //Animation screen
+        GameObject fadingScreen = (GameObject)Resources.Load("FadeToBlackScreen"); //load le prefab
         fadingScreen = Instantiate(fadingScreen, gameObject.transform); //l'affiche
 
         //tant que l'ecran n'a pas fini de fade au noir
@@ -133,13 +140,17 @@ public class ChapterManager : MonoBehaviour
         {
             yield return null;
         }
-        fadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true);
+        //On fait ci dessous tout ce qui intervient pendant que l'écran est noir
 
         //Teleporte les joueurs au début du jeu
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
+        //téléporte la camera à sa position de départ
+        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         //Incrémente la meta donnée du joueur mort
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
+        //on déclenche le fondu au blanc (l'inverse du fondu au noir quoi)
+        fadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true);
     }
 }
