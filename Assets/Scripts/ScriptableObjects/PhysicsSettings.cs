@@ -19,6 +19,10 @@ public class PhysicsSettings : ScriptableObject
     /// Gravity in unit*unit/second
     /// </summary>
     public float gravity = 40;
+    /// <summary>
+    /// Max fall speed in unit/second that the player can fall
+    /// </summary>
+    public float maxFallSpeed = 15;
 
     /// <summary>
     /// Max angle in degree the player can walk on

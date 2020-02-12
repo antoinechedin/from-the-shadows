@@ -11,7 +11,7 @@ public class NewActorController : MonoBehaviour
 
     private const float skinWidth = 0.021f;
 
-    private const float maxRaySpacing = 0.2f;
+    private const float maxRaySpacing = 0.05f;
 
     private int hRayCount;
     private int vRayCount;
@@ -190,7 +190,7 @@ public class NewActorController : MonoBehaviour
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
                 if (slopeAngle != 0 && slopeAngle <= maxSlopeAngle)
                 {
-                    if (Mathf.Sign(hit.normal.x) == xSign)
+                    if (move.x != 0 && Mathf.Sign(hit.normal.x) == xSign)
                     {
                         if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(move.x))
                         {

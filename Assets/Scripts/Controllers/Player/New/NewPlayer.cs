@@ -43,8 +43,7 @@ public class NewPlayer : MonoBehaviour
         }
 
         velocity.y -= settings.gravity * Time.deltaTime;
-
-        
+        velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
     }
 
     private void FixedUpdate()
