@@ -22,8 +22,6 @@ public class MovingPlatform : MonoBehaviour, IResetable
     private void Awake()
     {
         solidController = GetComponent<SolidController>();
-        startingPoint = controlPoints[0];
-        endingPoint = controlPoints[controlPoints.Count - 1];
         
         Reset();
     }
@@ -136,6 +134,8 @@ public class MovingPlatform : MonoBehaviour, IResetable
         {
             Debug.LogError("MovingPlatform : Control points count must be over 1");
         }
+        startingPoint = controlPoints[0];
+        endingPoint = controlPoints[controlPoints.Count - 1];
         transform.position = startingPoint;
         orientation = 1;
         cursor = 0;
@@ -150,20 +150,23 @@ public class MovingPlatform : MonoBehaviour, IResetable
     /// </summary>
     public void CreateControlPointsGameObjects()
     {
-        startingPoint = controlPoints[0];
-        endingPoint = controlPoints[controlPoints.Count - 1];
+        GameObject listCP = FetchChild("_Control Points", transform);
+        if (listCP == null)
+            listCP = CreateChild("_Control Points", transform);
 
-        GameObject listCP = FindOrCreateEmptyChild("_Control Points", transform);
-        GameObject sp = FindOrCreateEmptyChild("Starting Point", transform);
-        GameObject ep = FindOrCreateEmptyChild("Ending Point", transform);
+        GameObject sp = FetchChild("Starting Point", transform);
+        if(sp == null)
+            CreateChild("Starting Point", transform);
+
+        GameObject ep = FetchChild("Ending Point", transform);
+        if (ep == null)
+            CreateChild("Ending Point", transform);
                
-        sp.transform.position = startingPoint;
-        ep.transform.position = endingPoint;
-
         for (int i = 1; i < controlPoints.Count - 1; i++)
         {
-            GameObject cp = FindOrCreateEmptyChild("CP" + i, listCP.transform);
-            cp.transform.position = controlPoints[i];
+            GameObject cp = FetchChild("CP" + i, listCP.transform);
+            if (cp == null)
+                CreateChild("CP" + i, listCP.transform);
         }
     }
 
@@ -172,26 +175,62 @@ public class MovingPlatform : MonoBehaviour, IResetable
     /// </summary>
     public void UpdateControlPointsArray()
     {
-        Transform listCP = transform.Find("_Control Points");
+        GameObject listCP = FetchChild("_Control Points", transform);
+        GameObject sp = FetchChild("Starting Point", transform);
+        GameObject ep = FetchChild("Ending Point", transform);
+
+        List<GameObject> toDestroy = new List<GameObject>();
+
+        sp.transform.position = controlPoints[0];
+        for (int i = 1; i < listCP.transform.childCount; i++)
+        {
+            GameObject cp = FetchChild("CP" + i, listCP.transform);
+            if(i < controlPoints.Count - 1)
+            {
+                controlPoints[i] = cp.transform.position;
+            }
+            else
+            {
+                toDestroy.Add(cp);
+            }
+        }
+        ep.transform.position = controlPoints[controlPoints.Count - 1];
+
+        foreach (var go in toDestroy)
+        {
+            DestroyImmediate(go);            
+        }
+
+        Reset();
     }
 
     /// <summary>
-    /// Looks for child GameObject with name, returns existing if found, new if not
+    /// Fetches child GameObject with name
     /// </summary>
     /// <param name="name">GameObject's name to look for</param>
-    /// <param name="parent">Parent of the searched GameObject</param>
+    /// <param name="parent">Parent's transform</param>
     /// <returns></returns>
-    private GameObject FindOrCreateEmptyChild(string name, Transform parent)
+    private GameObject FetchChild(string name, Transform parent)
     {
         Transform tmp = parent.Find(name);
-        GameObject go;
         if (tmp == null)
         {
-            go = new GameObject(name);
-            go.transform.parent = parent;
+            return null;
         }
         else
-            go = tmp.gameObject;
+            return tmp.gameObject;
+    }
+
+    /// <summary>
+    /// Creates a child for parent with name
+    /// </summary>
+    /// <param name="name">Name of the new GameObject</param>
+    /// <param name="parent">Parent's transform</param>
+    /// <returns></returns>
+    private GameObject CreateChild(string name, Transform parent)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.parent = parent;
 
         return go;
     }
