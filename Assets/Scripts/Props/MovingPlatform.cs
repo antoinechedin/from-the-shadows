@@ -25,7 +25,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
         startingPoint = controlPoints[0];
         endingPoint = controlPoints[controlPoints.Count - 1];
         
-        Reset();
+        //Reset();
     }
 
     private void FixedUpdate()
@@ -132,7 +132,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
         transform.position = startingPoint;
         orientation = 1;
         cursor = 0;
-        target = controlPoints[cursor + orientation];
+        target = controlPoints[controlPoints.Count -1];
         limit = endingPoint;
     }
 
