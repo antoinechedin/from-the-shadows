@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SolidController))]
-public class MovingPlatform : MonoBehaviour
+public class MovingPlatform : MonoBehaviour, IResetable
 {
     private Vector2 startingPoint;
     private Vector2 endingPoint;
