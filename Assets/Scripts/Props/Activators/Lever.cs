@@ -74,8 +74,7 @@ public class Lever : Activator, IResetable
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
             if (hasTimer && !ignoreTimer)
-                StartCoroutine(DeactivateAfterTimer());
-
+                Invoke("Off", timer);
         }
     }
 
@@ -93,16 +92,6 @@ public class Lever : Activator, IResetable
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = inactiveMat;
         }
-    }
-
-    /// <summary>
-    /// Deactivate the activator at the end of the timer
-    /// </summary>
-    /// <returns></returns>
-    protected IEnumerator DeactivateAfterTimer()
-    {
-        yield return new WaitForSeconds(timer);
-        Off();
     }
 
     public void Reset()
