@@ -48,10 +48,9 @@ public class NewActorController : MonoBehaviour
         if (move.x != 0) MoveX(ref move);
         if (move.y != 0) MoveY(ref move);
 
-        if (move.magnitude >= skinWidth)
-        {
-            body.MovePosition(body.position + move);
-        }
+
+        body.MovePosition(body.position + move);
+        collisions.move = move;
         return move / deltaTime;
     }
 
@@ -170,29 +169,57 @@ public class NewActorController : MonoBehaviour
 
     private void DescendSlope(ref Vector2 move)
     {
-        float xSign = Mathf.Sign(move.x);
-        Vector2 rayOrigin = xSign < 0 ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
+        RaycastHit2D maxSlopeHitLeft = Physics2D.Raycast(raycastOrigins.bottomLeft, Vector2.down,
+            Mathf.Abs(move.y) + skinWidth, collisionMask
+        );
+        RaycastHit2D maxSlopeHitRight = Physics2D.Raycast(raycastOrigins.bottomRight, Vector2.down,
+            Mathf.Abs(move.y) + skinWidth, collisionMask
+        );
 
-        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+        SlideDown(maxSlopeHitLeft, ref move);
+        SlideDown(maxSlopeHitRight, ref move);
+
+        if (!collisions.slidingSlope)
+        {
+            float xSign = Mathf.Sign(move.x);
+            Vector2 rayOrigin = xSign < 0 ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
+
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+            if (hit)
+            {
+                float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+                if (slopeAngle != 0 && slopeAngle <= maxSlopeAngle)
+                {
+                    if (Mathf.Sign(hit.normal.x) == xSign)
+                    {
+                        if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(move.x))
+                        {
+                            float moveDistance = Mathf.Abs(move.x);
+                            float descendMoveY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
+                            move.y -= descendMoveY;
+                            move.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * xSign;
+
+                            collisions.slopeAngle = slopeAngle;
+                            collisions.descendingSlope = true;
+                            collisions.bellow = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void SlideDown(RaycastHit2D hit, ref Vector2 move)
+    {
         if (hit)
         {
             float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            if (slopeAngle != 0 && slopeAngle <= maxSlopeAngle)
+            if (slopeAngle > maxSlopeAngle)
             {
-                if (Mathf.Sign(hit.normal.x) == xSign)
-                {
-                    if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(move.x))
-                    {
-                        float moveDistance = Mathf.Abs(move.x);
-                        float descendMoveY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
-                        move.y -= descendMoveY;
-                        move.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * xSign;
+                move.x = hit.normal.x * (Mathf.Abs(move.y) - hit.distance) / Mathf.Tan(slopeAngle * Mathf.Deg2Rad);
 
-                        collisions.slopeAngle = slopeAngle;
-                        collisions.descendingSlope = true;
-                        collisions.bellow = true;
-                    }
-                }
+                collisions.slopeAngle = slopeAngle;
+                collisions.slidingSlope = true;
             }
         }
     }
@@ -224,14 +251,15 @@ public class NewActorController : MonoBehaviour
     public struct CollisionInfo
     {
         public bool above, bellow, left, right;
-        public bool climbingSlope, descendingSlope;
+        public bool climbingSlope, descendingSlope, slidingSlope;
         public float slopeAngle, slopeAngleOld;
+        public Vector2 move;
         public Vector2 moveOld;
 
         public void Reset()
         {
             above = bellow = left = right = false;
-            climbingSlope = descendingSlope = false;
+            climbingSlope = descendingSlope = slidingSlope = false;
 
             slopeAngleOld = slopeAngle;
             slopeAngle = 0;

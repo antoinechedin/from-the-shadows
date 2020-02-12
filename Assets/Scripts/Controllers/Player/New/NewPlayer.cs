@@ -22,7 +22,8 @@ public class NewPlayer : MonoBehaviour
     {
         if (controller.collisions.bellow || controller.collisions.above)
         {
-            velocity.y = 0;
+            if (!controller.collisions.slidingSlope)
+                velocity.y = 0;
         }
 
         Vector2 inputAxis;
@@ -42,11 +43,13 @@ public class NewPlayer : MonoBehaviour
         }
 
         velocity.y -= settings.gravity * Time.deltaTime;
+
+        
     }
 
     private void FixedUpdate()
     {
-        velocity = controller.Move(velocity, Time.fixedDeltaTime);
+        controller.Move(velocity, Time.fixedDeltaTime);
         UpdateSpriteColor();
     }
 
