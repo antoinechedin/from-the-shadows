@@ -38,7 +38,7 @@ public class FallingPlatform : MonoBehaviour, IResetable
         }
 
         Color color = child.GetComponent<MeshRenderer>().material.color;
-        child.GetComponent<MeshRenderer>().material.color = Color.Lerp(color, targetColor, Time.deltaTime * 5);
+        child.GetComponent<MeshRenderer>().material.color = Color.Lerp(color, targetColor, Time.deltaTime * 10);
         transform.position = Vector3.Lerp(transform.position, fallingPosition, Time.deltaTime * 5);
     }
 
