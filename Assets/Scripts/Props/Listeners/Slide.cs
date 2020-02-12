@@ -34,7 +34,7 @@ public class Slide : ActivatorListener
                 stopPosition = startPosition - (Vector3.left * distance);
                 break;
             case Direction.Depth:
-                stopPosition = startPosition + (Vector3.forward * distance);
+                stopPosition = startPosition + (Vector3.forward * distance); 
                 break;
         }
     }
