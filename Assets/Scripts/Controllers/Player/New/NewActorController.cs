@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -205,7 +205,7 @@ public class NewActorController : MonoBehaviour
                         {
                             float moveDistance = Mathf.Abs(move.x);
                             float descendMoveY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
-                            move.y -= descendMoveY;
+                            move.y -= descendMoveY + hit.distance - skinWidth;
                             move.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * xSign;
 
                             collisions.slopeAngle = slopeAngle;
