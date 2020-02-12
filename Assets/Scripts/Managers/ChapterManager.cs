@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +8,7 @@ public class ChapterManager : MonoBehaviour
     public PauseMenu pauseMenu;
     private int currentLevel = 0; //indice du niveau actuel
     private float timeSinceBegin = 0;
+    private LevelCamera levelCamera;
 
     // Update is called once per frame
     void Start()
@@ -17,7 +18,10 @@ public class ChapterManager : MonoBehaviour
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
         }
 
-        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        levelCamera = Camera.main.GetComponent<LevelCamera>();
+        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position+levels[currentLevel].cameraLimitLB.position)/2, false);
+        levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
+
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
 
         UpdateEnabledLevels();
@@ -26,6 +30,14 @@ public class ChapterManager : MonoBehaviour
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
+
+        // Position moyenne des deux joueurs
+
+        Vector3 meanPosition = new Vector3();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        meanPosition = (players[0].transform.position + players[1].transform.position) / 2;
+        meanPosition.z = Camera.main.transform.position.z;
+        Camera.main.GetComponent<LevelCamera>().MoveTo(meanPosition);
 
         if (Input.GetButtonDown("Start_G"))
         {
@@ -59,7 +71,7 @@ public class ChapterManager : MonoBehaviour
 
         if(currentLevel >= 0) //on bouge la cam dans le tableau précédent
         {
-            Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+            levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
     }
 
@@ -86,7 +98,7 @@ public class ChapterManager : MonoBehaviour
         else //on transfert le joueur dans le tableau suivant
         {
             //appel de la fonction pour faire bouger la cam
-            Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+            levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
 
         SaveManager.Instance.WriteSaveFile();
