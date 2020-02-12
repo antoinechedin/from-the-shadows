@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Torch : ActivatorListener
+public class Torch : ActivatorListener, IResetable
 {
 
     public GameObject lightSource;
@@ -10,6 +10,8 @@ public class Torch : ActivatorListener
     public AudioClip soundOff;
     public bool activeAtStart;
 
+    private bool isMute = true;
+    public bool active;
     private SoundPlayer soundPlayer;
     private Vector3 targetScale = Vector3.zero;
 
@@ -20,6 +22,8 @@ public class Torch : ActivatorListener
         {
             OnActivate();
         }
+        isMute = false;
+        active = activeAtStart;
     }
 
     private void Update()
@@ -30,14 +34,26 @@ public class Torch : ActivatorListener
     public override void OnActivate()
     {
         targetScale = Vector3.one;
-        if (soundPlayer != null)
+        active = true;
+        if (soundPlayer != null && !isMute)
             soundPlayer.PlaySoundAtLocation(soundOn, 1);
     }
 
     public override void OnDeactivate()
     {
         targetScale = Vector3.zero;
-        if (soundPlayer != null)
+        active = false;
+        if (soundPlayer != null && !isMute)
             soundPlayer.PlaySoundAtLocation(soundOff, 1);
+    }
+
+    public void Reset()
+    {
+        isMute = true;
+        if (active && !activeAtStart)
+            OnDeactivate();
+        else if (!active && activeAtStart)
+            OnActivate();
+        isMute = false;
     }
 }
