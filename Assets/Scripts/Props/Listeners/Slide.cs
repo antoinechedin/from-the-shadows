@@ -42,7 +42,11 @@ public class Slide : ActivatorListener
     public override void OnActivate()
     {
         open = true;
-        targetPosition = stopPosition;         
+        targetPosition = stopPosition;
+        if(direction == Direction.Depth)
+        {
+            GetComponent<Collider2D>().enabled = false;
+        }
     }
 
     public override void OnDeactivate()
@@ -51,6 +55,10 @@ public class Slide : ActivatorListener
         {
             open = false;
             targetPosition = startPosition;
+            if (direction == Direction.Depth)
+            {
+                GetComponent<Collider2D>().enabled = true;
+            }
         }
     }
 

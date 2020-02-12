@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class Lever : Activator
+public class Lever : Activator, IResetable
 {
     public AudioClip soundOn;
     public AudioClip soundOff;
@@ -105,7 +105,7 @@ public class Lever : Activator
         Off();
     }
 
-    private void Reset()
+    public void Reset()
     {
         isMute = true;
         if (active && !activeAtStart)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwingMovement : MonoBehaviour
+public class SwingMovement : MonoBehaviour, IResetable
 {
     [Range(0,90)]
     public float angle;
@@ -62,7 +62,7 @@ public class SwingMovement : MonoBehaviour
         Gizmos.DrawRay(transform.position, direction2);
     }
 
-    private void Reset()
+    public void Reset()
     {
         currentTime = offsetTime;
     }
