@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "Default Player", menuName = "Settings/Player", order = 1)]
-public class PlayerSettings : ScriptableObject
+[CreateAssetMenu(fileName = "Default Player", menuName = "Settings/Physics", order = 1)]
+public class PhysicsSettings : ScriptableObject
 {
     /// <summary>
     /// Maximum speed in unit/second that the character can moves.

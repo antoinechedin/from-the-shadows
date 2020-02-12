@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(NewActorController))]
 public class NewPlayer : MonoBehaviour
 {
-    public PlayerSettings settings;
+    public PhysicsSettings settings;
 
     private NewActorController controller;
 

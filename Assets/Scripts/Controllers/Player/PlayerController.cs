@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     public int id = 1;
 
-    public PlayerSettings settings;
+    public PhysicsSettings settings;
     public bool doubleJump;
 
     [HideInInspector] public PlayerState state;
