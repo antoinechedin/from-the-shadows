@@ -21,13 +21,13 @@ public class ChapterUtility : MonoBehaviour
         }
     }
 
-    [SerializeField] Camera mainCam;
+    Camera mainCam;
     [SerializeField] private int countLevel;
     [SerializeField] public int countCameraPoint;
     [SerializeField] private int countLevelTrigger;
     [SerializeField] private int countInvisibleWall;
 
-    List<GameObject> cameraPoint = new List<GameObject>();
+    List<LevelManager> levels = new List<LevelManager>();
     List<Identifier<BoxCollider2D>> levelTrigger = new List<Identifier<BoxCollider2D>>();
     List<Identifier<BoxCollider2D>> invisibleWall = new List<Identifier<BoxCollider2D>>();
 
@@ -37,27 +37,17 @@ public class ChapterUtility : MonoBehaviour
     public void LevelScriptInit()
     {
         // Clearing the Lists
-        cameraPoint.Clear();
         levelTrigger.Clear();
         invisibleWall.Clear();
 
         // Get Reference to Camera
         mainCam = Camera.main;
-        // Level Count
-        GameObject[] levels = GameObject.FindGameObjectsWithTag("Level");
 
-        // Get Camera Points and Order them
-        GameObject[] cameraPoints = GameObject.FindGameObjectsWithTag("CameraPoint");
-        for(int i = 1; i <= levels.Length; i++)
+        // Level Count
+        GameObject[] levelsGo = GameObject.FindGameObjectsWithTag("Level");
+        foreach (GameObject go in levelsGo)
         {
-            foreach(GameObject go in cameraPoints)
-            {
-                if (GetIdOf(go.name) == i)
-                {
-                    cameraPoint.Add(go);
-                    break;
-                }
-            }
+            levels.Add(go.GetComponent<LevelManager>());
         }
 
         // Get Level Triggers + Number of the Level Associated
@@ -79,22 +69,38 @@ public class ChapterUtility : MonoBehaviour
         }
 
         // Get Some Infos about the Datas collected (Count)
-        countLevel = levels.Length;
-        countCameraPoint = cameraPoint.Count;
+        countLevel = levels.Count;
+        countCameraPoint = countLevel;
         countLevelTrigger = levelTrigger.Count;
         countInvisibleWall = invisibleWall.Count;
     }
 
-    // Set the Main Camera to the Camera Point
-    public void GoToCameraPoint(int id)
+    // Set the Main Camera to the Camera Point LB
+    public void GoToCameraPointLB(int id)
     {
-        mainCam.transform.position = cameraPoint[id-1].transform.position;
+        LevelManager lm = levels[id].GetComponent<LevelManager>();
+        mainCam.transform.position = lm.cameraLimitLB.position;
     }
 
-    // Set the Camera Point from the Main Camera Position
-    public void SetCameraPoint(int id)
+    // Set the Main Camera to the Camera Point RT
+    public void GoToCameraPointRT(int id)
     {
-        cameraPoint[id-1].transform.position = mainCam.transform.position;
+        LevelManager lm = levels[id].GetComponent<LevelManager>();
+        mainCam.transform.position = lm.cameraLimitRT.position;
+    }
+
+    // Set the Camera Point from the Main Camera Position LB
+    public void SetCameraPointLB(int id)
+    {
+        LevelManager lm = levels[id].GetComponent<LevelManager>();
+        lm.cameraLimitLB = mainCam.transform;
+    }
+
+    // Set the Camera Point from the Main Camera Position RT
+    public void SetCameraPointRT(int id)
+    {
+        LevelManager lm = levels[id].GetComponent<LevelManager>();
+        lm.cameraLimitRT = mainCam.transform;
     }
 
     // Get Id of String, Need to Improve for 9+
@@ -110,12 +116,16 @@ public class ChapterUtility : MonoBehaviour
     {
         // CameraPoints Custom Icons + Number
         int i = 0;
-        foreach(GameObject go in cameraPoint)
+        foreach(LevelManager lm in levels)
         {
             i++;
             GUI.color = Color.black;
-            Handles.Label((Vector2)go.transform.position + 0.6f*Vector2.right, i.ToString());
-            Gizmos.DrawIcon((Vector2)go.transform.position, "Camera.png", true);
+            Vector2 lb = (Vector2)lm.cameraLimitLB.position;
+            Vector2 rt = (Vector2)lm.cameraLimitRT.position;
+            Vector2 mean = (lb + rt) / 2;
+            Gizmos.DrawWireCube(mean, rt-lb);
+            Handles.Label(mean + 0.6f*Vector2.right, i.ToString());
+            Gizmos.DrawIcon(mean, "Camera.png", true);
         }
 
         // LevelTrigger Red Collider + Number
