@@ -13,19 +13,21 @@ public class MovingPlatform : MonoBehaviour, IResetable
 
     public List<Vector2> controlPoints;
     private int cursor = 0;
-    
+
     public float threshold;
     private int orientation = 1;
 
     private SolidController solidController;
 
+    #region In game method
+
     private void Awake()
     {
         solidController = GetComponent<SolidController>();
-        
+
         Reset();
     }
-    
+
     private void FixedUpdate()
     {
         FollowTrajectoryBackAndForth();
@@ -69,7 +71,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
             LeaveBound(target);
         else
             MoveTowardsTarget(target);
-        
+
         UpdateCursor(limit);
     }
 
@@ -78,7 +80,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
     /// </summary>
     private bool IsCursorBounds()
     {
-        return controlPoints[cursor].Equals(controlPoints[0]) || 
+        return controlPoints[cursor].Equals(controlPoints[0]) ||
             controlPoints[cursor].Equals(controlPoints[controlPoints.Count - 1]);
     }
 
@@ -87,7 +89,7 @@ public class MovingPlatform : MonoBehaviour, IResetable
     /// </summary>
     private bool IsTargetBounds()
     {
-        return target.Equals(controlPoints[0]) || 
+        return target.Equals(controlPoints[0]) ||
             target.Equals(controlPoints[controlPoints.Count - 1]);
     }
 
@@ -143,30 +145,37 @@ public class MovingPlatform : MonoBehaviour, IResetable
         limit = endingPoint;
     }
 
-    #region Editor functions
-    
+    #endregion
+
+    #region Editor methods
+
+    [Header("Level building")]
+    public GameObject pathNodePrefab;
+
     /// <summary>
     /// Create GameObjects in edit mode
     /// </summary>
     public void CreateControlPointsGameObjects()
     {
-        GameObject listCP = FetchChild("_Control Points", transform);
-        if (listCP == null)
-            listCP = CreateChild("_Control Points", transform);
+        GameObject sp = FetchChild("Starting Point", transform.parent);
+        if (sp == null)
+            CreateChild("Starting Point", transform.parent, pathNodePrefab);
 
-        GameObject sp = FetchChild("Starting Point", transform);
-        if(sp == null)
-            CreateChild("Starting Point", transform);
-
-        GameObject ep = FetchChild("Ending Point", transform);
+        GameObject ep = FetchChild("Ending Point", transform.parent);
         if (ep == null)
-            CreateChild("Ending Point", transform);
-               
-        for (int i = 1; i < controlPoints.Count - 1; i++)
+            CreateChild("Ending Point", transform.parent, pathNodePrefab);
+
+        if (controlPoints.Count > 2)
         {
-            GameObject cp = FetchChild("CP" + i, listCP.transform);
-            if (cp == null)
-                CreateChild("CP" + i, listCP.transform);
+            GameObject listCP = FetchChild("_Control Points", transform.parent);
+            if (listCP == null)
+                listCP = CreateChild("_Control Points", transform.parent);
+            for (int i = 1; i < controlPoints.Count - 1; i++)
+            {
+                GameObject cp = FetchChild("CP" + i, listCP.transform);
+                if (cp == null)
+                    CreateChild("CP" + i, listCP.transform, pathNodePrefab);
+            }
         }
     }
 
@@ -175,34 +184,34 @@ public class MovingPlatform : MonoBehaviour, IResetable
     /// </summary>
     public void UpdateControlPointsArray()
     {
-        GameObject listCP = FetchChild("_Control Points", transform);
-        GameObject sp = FetchChild("Starting Point", transform);
-        GameObject ep = FetchChild("Ending Point", transform);
+        GameObject listCP = FetchChild("_Control Points", transform.parent);
+        GameObject sp = FetchChild("Starting Point", transform.parent);
+        GameObject ep = FetchChild("Ending Point", transform.parent);
 
-        List<GameObject> toDestroy = new List<GameObject>();
-
-        sp.transform.position = controlPoints[0];
-        for (int i = 1; i <= listCP.transform.childCount; i++)
+        if (listCP != null)
         {
-            GameObject cp = FetchChild("CP" + i, listCP.transform);
-            if(i < controlPoints.Count - 1)
+            List<GameObject> toDestroy = new List<GameObject>();
+            for (int i = 1; i <= listCP.transform.childCount; i++)
             {
-                controlPoints[i] = cp.transform.position;
+                GameObject cp = FetchChild("CP" + i, listCP.transform);
+                if (i < controlPoints.Count - 1)
+                {
+                    controlPoints[i] = cp.transform.position;
+                }
+                else
+                {
+                    toDestroy.Add(cp);
+                }
             }
-            else
-            {
-                toDestroy.Add(cp);
-            }
-        }
-        ep.transform.position = controlPoints[controlPoints.Count - 1];
+            foreach (var go in toDestroy)
+                DestroyImmediate(go);
 
-        foreach (var go in toDestroy)
-        {
-            DestroyImmediate(go);            
+            if (listCP.transform.childCount == 0)
+                DestroyImmediate(listCP);
         }
 
-        if (listCP.transform.childCount == 0)
-            DestroyImmediate(listCP);
+        controlPoints[0] = sp.transform.position;
+        controlPoints[controlPoints.Count - 1] = ep.transform.position;
 
         Reset();
     }
@@ -230,21 +239,23 @@ public class MovingPlatform : MonoBehaviour, IResetable
     /// <param name="name">Name of the new GameObject</param>
     /// <param name="parent">Parent's transform</param>
     /// <returns></returns>
-    private GameObject CreateChild(string name, Transform parent)
+    private GameObject CreateChild(string name, Transform parent, GameObject prefab = null)
     {
-        GameObject go = new GameObject(name);
-        go.transform.parent = parent;
+        GameObject go;
+        if (prefab == null)
+        {
+            go = new GameObject(name);
+            go.transform.parent = parent;
+        }
+        else
+        {
+            go = Instantiate(prefab);
+            go.transform.parent = parent;
+            go.name = name;
+        }
 
         return go;
     }
 
     #endregion
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, controlPoints[cursor]);
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, target);
-    }
 }
