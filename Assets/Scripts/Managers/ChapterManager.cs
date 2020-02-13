@@ -132,11 +132,11 @@ public class ChapterManager : MonoBehaviour
         Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         //Petit zoom de la caméra
         //Animation screen
-        GameObject fadingScreen = (GameObject)Resources.Load("FadeToBlackScreen"); //load le prefab
-        fadingScreen = Instantiate(fadingScreen, gameObject.transform); //l'affiche
+        GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
+        transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
 
         //tant que l'ecran n'a pas fini de fade au noir
-        while (!fadingScreen.GetComponent<FadeToBlackScreen>().finishedFadingIn)
+        while (!transitionScreen.GetComponent<TransitionScreen>().finishedFadingIn)
         {
             yield return null;
         }
@@ -150,7 +150,5 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
-        //on déclenche le fondu au blanc (l'inverse du fondu au noir quoi)
-        fadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true);
     }
 }
