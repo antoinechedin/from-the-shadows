@@ -28,6 +28,11 @@ public class NewPlayer : MonoBehaviour
                 velocity.y = 0;
         }
 
+        if (playerInput.pressJump)
+        {
+            velocity.y = Mathf.Sqrt(2 * settings.jumpHeight * settings.gravity);
+        }
+
         targetVelocity = playerInput.moveAxis.normalized * settings.moveSpeed;
         if (playerInput.moveAxis.x != 0)
         {
@@ -55,7 +60,7 @@ public class NewPlayer : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
-            if (controller.collisions.bellow || controller.collisionsPrevious.bellow)
+            if (controller.collisions.bellow)
             {
                 sr.color = Color.green;
             }

@@ -7,6 +7,7 @@ public class PlayerInput : MonoBehaviour
     public Vector2 moveAxis;
     public bool debugControl;
     public bool pressRight, pressLeft, pressUp, pressDown;
+    public bool pressJump;
 
     private void Update()
     {
@@ -14,6 +15,7 @@ public class PlayerInput : MonoBehaviour
         {
             moveAxis.x = Input.GetAxisRaw("Horizontal_G");
             moveAxis.y = Input.GetAxisRaw("Vertical_G");
+            pressJump = Input.GetButtonDown("A_G");
         }
         else
         {

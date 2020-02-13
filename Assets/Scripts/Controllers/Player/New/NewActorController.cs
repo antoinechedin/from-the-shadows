@@ -50,6 +50,11 @@ public class NewActorController : MonoBehaviour
         if (move.x != 0) MoveX(ref move);
         if (move.y != 0) MoveY(ref move);
 
+        if (collisionsPrevious.move.y < 0 && collisionsPrevious.bellow && !collisions.bellow)
+        {
+            GroundActor(ref move);
+        }
+
 
         body.MovePosition(body.position + move);
         collisions.move = move;
@@ -235,6 +240,42 @@ public class NewActorController : MonoBehaviour
                 collisions.groundNormal = hit.normal;
             }
         }
+    }
+
+    private void GroundActor(ref Vector2 move)
+    {
+        float xSign = Math.Sign(move.x);
+        float rayLength = Mathf.Infinity;
+        float dst2Ground = 0;
+
+        for (int i = 0; i < vRayCount; i++)
+        {
+            Vector2 rayOrigin = (xSign < 0 ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft) + move;
+            rayOrigin += Vector2.right * vRaySpacing * i * xSign;
+
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, rayLength, collisionMask);
+            if (hit)
+            {
+                rayLength = hit.distance;              
+
+                float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+                if(slopeAngle <= maxSlopeAngle)
+                {
+                    float maxDst2Ground = 
+                        Mathf.Sin(collisionsPrevious.slopeAngle * Mathf.Deg2Rad) * move.magnitude
+                        + Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(move.x);
+                    if(rayLength - skinWidth <= maxDst2Ground)
+                    {
+                        dst2Ground = rayLength - skinWidth;
+                        collisions.bellow = true;
+                        collisions.slopeAngle = slopeAngle;
+                        collisions.groundNormal = hit.normal;
+                        if (hit.normal.x != 0 && Mathf.Sign(hit.normal.x) == xSign) collisions.descendingSlope = true;
+                    }
+                }
+            }
+        }
+        move.y -= dst2Ground;
     }
 
     private void UpdateRaycastOrigins()
