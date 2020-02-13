@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     public int id = 1;
 
-    public PlayerSettings settings;
+    public PhysicsSettings settings;
     public bool doubleJump;
 
     [HideInInspector] public PlayerState state;
@@ -35,8 +35,8 @@ public class PlayerController : MonoBehaviour
         canStopJump = false;
         canDoubleJump = doubleJump;
 
-        controller.maxClimbAngle = settings.maxClimbAngle;
-        controller.maxDescendAngle = settings.maxDescendAngle;
+        controller.maxClimbAngle = settings.maxSlopeAngle;
+        controller.maxDescendAngle = settings.maxSlopeAngle;
     }
 
     public void HandleInput()
