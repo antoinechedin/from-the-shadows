@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "Default Player", menuName = "Settings/Player", order = 1)]
-public class PlayerSettings : ScriptableObject
+[CreateAssetMenu(fileName = "Default Player", menuName = "Settings/Physics", order = 1)]
+public class PhysicsSettings : ScriptableObject
 {
     /// <summary>
     /// Maximum speed in unit/second that the character can moves.
@@ -19,15 +19,15 @@ public class PlayerSettings : ScriptableObject
     /// Gravity in unit*unit/second
     /// </summary>
     public float gravity = 40;
+    /// <summary>
+    /// Max fall speed in unit/second that the player can fall
+    /// </summary>
+    public float maxFallSpeed = 15;
 
     /// <summary>
     /// Max angle in degree the player can walk on
     /// </summary>
-    public float maxClimbAngle = 60;
-    /// <summary>
-    /// Max angle in degree the player can descend
-    /// </summary>
-    public float maxDescendAngle = 60;
+    public float maxSlopeAngle = 60;
 
     /// <summary>
     /// Time in second needed for the player to reach max speed on the ground
