@@ -141,7 +141,7 @@ public class ChapterManager : MonoBehaviour
     IEnumerator ResetLevelAsync(int playerId)
     {
         //déplacement de la camera à l'endroit de la mort
-        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        // Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         //Petit zoom de la caméra
         //Animation screen
         GameObject fadingScreen = (GameObject)Resources.Load("FadeToBlackScreen"); //load le prefab
@@ -157,7 +157,7 @@ public class ChapterManager : MonoBehaviour
         //Teleporte les joueurs au début du jeu
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
         //téléporte la camera à sa position de départ
-        Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        // Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
         //Incrémente la meta donnée du joueur mort
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
         //Reset tous les objets Resetables
