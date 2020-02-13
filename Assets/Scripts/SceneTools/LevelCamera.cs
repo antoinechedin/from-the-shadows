@@ -9,16 +9,20 @@ public class LevelCamera : MonoBehaviour
     private Vector3 posToMoveTo;
     private bool moving = false;
     private bool smooth = true;
+    private bool inLimits = true;
 
     // Update is called once per frame
     void Update()
     {
         if (moving == true) //si on a dit à la caméra de bouger (aka moving est vrai) alors on bouge
         {
-            if (posToMoveTo.x < limitLB.x) posToMoveTo.x = limitLB.x;
-            if (posToMoveTo.x > limitRT.x) posToMoveTo.x = limitRT.x;
-            if (posToMoveTo.y < limitLB.y) posToMoveTo.y = limitLB.y;
-            if (posToMoveTo.y > limitRT.y) posToMoveTo.y = limitRT.y;
+            if (inLimits)
+            {
+                if (posToMoveTo.x < limitLB.x) posToMoveTo.x = limitLB.x;
+                if (posToMoveTo.x > limitRT.x) posToMoveTo.x = limitRT.x;
+                if (posToMoveTo.y < limitLB.y) posToMoveTo.y = limitLB.y;
+                if (posToMoveTo.y > limitRT.y) posToMoveTo.y = limitRT.y;
+            }
 
             //déplacement de la caméra
             Vector3 velocity = Vector3.zero;
@@ -43,11 +47,12 @@ public class LevelCamera : MonoBehaviour
         limitRT = RT.position;
     }
 
-    public void MoveTo(Vector3 pos, bool isSmooth = true)
+    public void MoveTo(Vector3 pos, bool isSmooth = true, bool stayInLimites = true)
     {
         posToMoveTo = pos;
         moving = true;
         smooth = isSmooth;
+        inLimits = stayInLimites;
     }
 
 }
