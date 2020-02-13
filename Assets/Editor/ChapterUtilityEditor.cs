@@ -22,7 +22,7 @@ public class LevelScriptEditor : Editor
 
         for(int i = 0; i < myScript.countCameraPoint; i++)
         {
-            GUILayout.Label("-> Camera Point " + i);
+            GUILayout.Label("> Camera Point " + i);
             if (GUILayout.Button("Go To CameraPoint LB " + i))
                 myScript.GoToCameraPointLB(i) ;
             if (GUILayout.Button("Go To CameraPoint RT " + i))

@@ -4,6 +4,30 @@ using UnityEngine;
 using System;
 using UnityEditor;
 
+public class ReadOnlyAttribute : PropertyAttribute
+{
+
+}
+
+[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+public class ReadOnlyDrawer : PropertyDrawer
+{
+    public override float GetPropertyHeight(SerializedProperty property,
+                                            GUIContent label)
+    {
+        return EditorGUI.GetPropertyHeight(property, label, true);
+    }
+
+    public override void OnGUI(Rect position,
+                               SerializedProperty property,
+                               GUIContent label)
+    {
+        GUI.enabled = false;
+        EditorGUI.PropertyField(position, property, label, true);
+        GUI.enabled = true;
+    }
+}
+
 public class ChapterUtility : MonoBehaviour
 {
     /// <summary>
@@ -21,11 +45,11 @@ public class ChapterUtility : MonoBehaviour
         }
     }
 
-    Camera mainCam;
-    [SerializeField] private int countLevel;
-    [SerializeField] public int countCameraPoint;
-    [SerializeField] private int countLevelTrigger;
-    [SerializeField] private int countInvisibleWall;
+    [ReadOnly] public Camera mainCam;
+    [ReadOnly] public int countLevel;
+    [ReadOnly] public int countCameraPoint;
+    [ReadOnly] public int countLevelTrigger;
+    [ReadOnly] public int countInvisibleWall;
 
     List<LevelManager> levels = new List<LevelManager>();
     List<Identifier<BoxCollider2D>> levelTrigger = new List<Identifier<BoxCollider2D>>();
@@ -39,6 +63,7 @@ public class ChapterUtility : MonoBehaviour
         // Clearing the Lists
         levelTrigger.Clear();
         invisibleWall.Clear();
+        levels.Clear();
 
         // Get Reference to Camera
         mainCam = Camera.main;
@@ -56,7 +81,7 @@ public class ChapterUtility : MonoBehaviour
         {
             BoxCollider2D[] lvlTrigger = go.transform.GetComponentsInChildren<BoxCollider2D>();
             foreach (BoxCollider2D trigger in lvlTrigger)
-                levelTrigger.Add(new Identifier<BoxCollider2D>(trigger, GetIdOf(go.name)));
+                levelTrigger.Add(new Identifier<BoxCollider2D>(trigger, GetIdOf(go.transform.parent.name)));
         }
 
         // Get Invisible Walls + Number of the Level Associated
@@ -65,7 +90,7 @@ public class ChapterUtility : MonoBehaviour
         {
             BoxCollider2D[] invWalls = go.transform.GetComponentsInChildren<BoxCollider2D>();
             foreach (BoxCollider2D wall in invWalls)
-                invisibleWall.Add(new Identifier<BoxCollider2D>(wall, GetIdOf(go.name)));
+                invisibleWall.Add(new Identifier<BoxCollider2D>(wall, GetIdOf(go.transform.parent.name)));
         }
 
         // Get Some Infos about the Datas collected (Count)
@@ -112,6 +137,7 @@ public class ChapterUtility : MonoBehaviour
     /// <summary>
     /// Display Custom Icons for CameraPoints & Colors for LevelTriggers / InvisibleWalls
     /// </summary>
+    #if UNITY_EDITOR
     void OnDrawGizmos()
     {
         // CameraPoints Custom Icons + Number
@@ -119,13 +145,13 @@ public class ChapterUtility : MonoBehaviour
         foreach(LevelManager lm in levels)
         {
             i++;
-            GUI.color = Color.black;
+            GUI.color = Color.white;
             Vector3 lb = lm.cameraLimitLB.position;
             Vector3 rt = lm.cameraLimitRT.position;
             Vector3 mean = (lb + rt) / 2;
             Gizmos.DrawWireCube(mean, rt-lb);
             Handles.Label(mean + 0.6f*Vector3.right, i.ToString());
-            Gizmos.DrawIcon(mean, "Camera.png", true);
+            Gizmos.DrawIcon(mean, "Camera2.png", true);
         }
 
         // LevelTrigger Red Collider + Number
@@ -137,8 +163,8 @@ public class ChapterUtility : MonoBehaviour
             GUI.color = Color.red;
             Handles.Label(boxCollider.bounds.center, box.id.ToString());
 
-            Gizmos.DrawWireCube((Vector2)boxCollider.bounds.center,
-                                (Vector2)boxCollider.bounds.extents*2);
+            Gizmos.DrawWireCube(boxCollider.bounds.center,
+                                boxCollider.bounds.extents*2);
         }
 
         // InvisibleWalls Blue Collider + Number
@@ -150,8 +176,9 @@ public class ChapterUtility : MonoBehaviour
             GUI.color = Color.blue;
             Handles.Label(boxCollider.bounds.center, box.id.ToString());        
 
-            Gizmos.DrawWireCube((Vector2)boxCollider.bounds.center,
-                                (Vector2)boxCollider.bounds.extents * 2);
+            Gizmos.DrawWireCube(boxCollider.bounds.center,
+                                boxCollider.bounds.extents * 2);
         }
     }
+    #endif
 }
