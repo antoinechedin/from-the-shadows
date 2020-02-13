@@ -22,6 +22,8 @@ public class LevelCamera : MonoBehaviour
                 if (posToMoveTo.x > limitRT.x) posToMoveTo.x = limitRT.x;
                 if (posToMoveTo.y < limitLB.y) posToMoveTo.y = limitLB.y;
                 if (posToMoveTo.y > limitRT.y) posToMoveTo.y = limitRT.y;
+                if (posToMoveTo.z < limitLB.z) posToMoveTo.z = limitLB.z;
+                if (posToMoveTo.z > limitRT.z) posToMoveTo.z = limitRT.z;
             }
 
             //déplacement de la caméra
@@ -47,12 +49,17 @@ public class LevelCamera : MonoBehaviour
         limitRT = RT.position;
     }
 
-    public void MoveTo(Vector3 pos, bool isSmooth = true, bool stayInLimites = true)
+    public void MoveTo(Vector3 pos, bool isSmooth = true)
     {
         posToMoveTo = pos;
         moving = true;
         smooth = isSmooth;
-        inLimits = stayInLimites;
+    }
+
+    public bool StayInLimits
+    {
+        get { return inLimits; }
+        set { inLimits = value; }
     }
 
 }
