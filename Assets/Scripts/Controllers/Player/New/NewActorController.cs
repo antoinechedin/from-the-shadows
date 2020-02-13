@@ -250,8 +250,8 @@ public class NewActorController : MonoBehaviour
 
         for (int i = 0; i < vRayCount; i++)
         {
-            Vector2 rayOrigin = (xSign < 0 ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft) + move;
-            rayOrigin += Vector2.right * vRaySpacing * i * xSign;
+            Vector2 rayOrigin = raycastOrigins.bottomLeft + move;
+            rayOrigin += Vector2.right * vRaySpacing * i;
 
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, rayLength, collisionMask);
             if (hit)
