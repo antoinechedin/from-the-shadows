@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public Transform cameraPoint;
+    public Transform cameraLimitLB;
+    public Transform cameraLimitRT;
 
     public Transform playerSpawn; // mutual spawn point
     public Transform lightSpawn;

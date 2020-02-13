@@ -20,14 +20,17 @@ public class LevelScriptEditor : Editor
 
         DrawDefaultInspector();
 
-        for(int i = 1; i <= myScript.countCameraPoint; i++)
+        for(int i = 0; i < myScript.countCameraPoint; i++)
         {
-            GUILayout.Label("-> Camera Point " + i);
-            if (GUILayout.Button("Go To CameraPoint " + i))
-                myScript.GoToCameraPoint(i) ;
-
-            if (GUILayout.Button("Set CameraPoint " + i))
-                myScript.SetCameraPoint(i);
+            GUILayout.Label("> Camera Point " + i);
+            if (GUILayout.Button("Go To CameraPoint LB " + i))
+                myScript.GoToCameraPointLB(i) ;
+            if (GUILayout.Button("Go To CameraPoint RT " + i))
+                myScript.GoToCameraPointRT(i) ;
+            if (GUILayout.Button("Set CameraPoint LB " + i))
+                myScript.SetCameraPointLB(i);
+            if (GUILayout.Button("Set CameraPoint RT " + i))
+                myScript.SetCameraPointRT(i);
         }  
     }
 }
