@@ -93,14 +93,14 @@ public class ChapterUtility : MonoBehaviour
     public void SetCameraPointLB(int id)
     {
         LevelManager lm = levels[id].GetComponent<LevelManager>();
-        lm.cameraLimitLB = mainCam.transform;
+        lm.cameraLimitLB.position = mainCam.transform.position;
     }
 
     // Set the Camera Point from the Main Camera Position RT
     public void SetCameraPointRT(int id)
     {
         LevelManager lm = levels[id].GetComponent<LevelManager>();
-        lm.cameraLimitRT = mainCam.transform;
+        lm.cameraLimitRT.position = mainCam.transform.position;
     }
 
     // Get Id of String, Need to Improve for 9+
@@ -120,11 +120,11 @@ public class ChapterUtility : MonoBehaviour
         {
             i++;
             GUI.color = Color.black;
-            Vector2 lb = (Vector2)lm.cameraLimitLB.position;
-            Vector2 rt = (Vector2)lm.cameraLimitRT.position;
-            Vector2 mean = (lb + rt) / 2;
+            Vector3 lb = lm.cameraLimitLB.position;
+            Vector3 rt = lm.cameraLimitRT.position;
+            Vector3 mean = (lb + rt) / 2;
             Gizmos.DrawWireCube(mean, rt-lb);
-            Handles.Label(mean + 0.6f*Vector2.right, i.ToString());
+            Handles.Label(mean + 0.6f*Vector3.right, i.ToString());
             Gizmos.DrawIcon(mean, "Camera.png", true);
         }
 
