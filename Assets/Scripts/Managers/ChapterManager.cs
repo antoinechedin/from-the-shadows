@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +20,7 @@ public class ChapterManager : MonoBehaviour
 
         levelCamera = Camera.main.GetComponent<LevelCamera>();
         levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
-        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position+levels[currentLevel].cameraLimitLB.position)/2, false);
+        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2, false);
 
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
 
@@ -33,11 +33,13 @@ public class ChapterManager : MonoBehaviour
 
         // Position moyenne des deux joueurs
 
-        Vector3 meanPosition = new Vector3();
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        meanPosition = (players[0].transform.position + players[1].transform.position) / 2;
-        meanPosition.z = Camera.main.transform.position.z;
-        Camera.main.GetComponent<LevelCamera>().MoveTo(meanPosition);
+        if (levelCamera.StayInLimits)
+        {
+            Vector3 meanPosition = new Vector3();
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            meanPosition = (players[0].transform.position + players[1].transform.position) / 2;
+            Camera.main.GetComponent<LevelCamera>().MoveTo(meanPosition);
+        }
 
         if (Input.GetButtonDown("Start_G"))
         {
@@ -69,7 +71,7 @@ public class ChapterManager : MonoBehaviour
         //Activation du niveau courant et désactivation des autres
         UpdateEnabledLevels();
 
-        if(currentLevel >= 0) //on bouge la cam dans le tableau précédent
+        if (currentLevel >= 0) //on bouge la cam dans le tableau précédent
         {
             levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
@@ -141,7 +143,8 @@ public class ChapterManager : MonoBehaviour
     IEnumerator ResetLevelAsync(int playerId)
     {
         //déplacement de la camera à l'endroit de la mort
-        // Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        levelCamera.StayInLimits = false;
+        levelCamera.MoveTo(GameObject.Find("Player" + playerId).transform.position);
         //Petit zoom de la caméra
         //Animation screen
         GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
@@ -157,7 +160,8 @@ public class ChapterManager : MonoBehaviour
         //Teleporte les joueurs au début du jeu
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
         //téléporte la camera à sa position de départ
-        // Camera.main.GetComponent<LevelCamera>().MoveTo(levels[currentLevel].cameraPoint.position);
+        levelCamera.StayInLimits = true;
+        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2);
         //Incrémente la meta donnée du joueur mort
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
         //Reset tous les objets Resetables
