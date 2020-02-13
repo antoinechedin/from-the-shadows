@@ -13,7 +13,7 @@ public class Lever : Activator, IResetable
     public float timer;
     public bool activeAtStart;
 
-    private bool active;
+
     private bool canBeActivated;
     private SoundPlayer soundPlayer;
     private GameObject child;
@@ -64,10 +64,10 @@ public class Lever : Activator, IResetable
     /// <param name="ignoreTimer"> Ignore timer reset (when the lever is active at the beginning of the level</param>
     protected void On(bool ignoreTimer)
     {
-        if (Activate != null)
+        if (TryActivate != null)
         {
-            Activate();
             active = true;
+            TryActivate();
             if (soundPlayer != null && !isMute)
                 soundPlayer.PlaySoundAtLocation(soundOn, 1f);
             if (child != null)
@@ -83,10 +83,10 @@ public class Lever : Activator, IResetable
     /// </summary>
     protected void Off()
     {
-        if (Deactivate != null)
+        if (TryDeactivate != null)
         {
-            Deactivate();
             active = false;
+            TryDeactivate();            
             if (soundPlayer != null && !isMute)
                 soundPlayer.PlaySoundAtLocation(soundOff, 1f);
             if (child != null)

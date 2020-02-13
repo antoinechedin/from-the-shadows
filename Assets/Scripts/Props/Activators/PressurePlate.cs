@@ -10,6 +10,7 @@ public class PressurePlate : Activator
     public Material inactiveMat;
     public bool hasTimer;
     public float timer;
+    public int nbObjectsOnPlate;
 
     private GameObject child;
     private SoundPlayer soundPlayer;
@@ -28,9 +29,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
         {
-            On();
-            if (soundPlayer != null)
-                soundPlayer.PlaySoundAtLocation(sound, 1f);
+            updateNbObjectsOnPlate(+1);
         }            
     }
 
@@ -41,10 +40,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
         {
-            if (hasTimer)
-                Invoke("Off", timer);
-            else
-                Off();
+            updateNbObjectsOnPlate(-1);
         }
     }
 
@@ -53,9 +49,12 @@ public class PressurePlate : Activator
     /// </summary>
     protected void On()
     {
-        if (Activate != null)
+        if (TryActivate != null)
         {
-            Activate();
+            active = true;
+            TryActivate();            
+            if (soundPlayer != null)
+                soundPlayer.PlaySoundAtLocation(sound, 1f);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
         }
@@ -66,11 +65,27 @@ public class PressurePlate : Activator
     /// </summary>
     protected void Off()
     {
-        if (Deactivate != null)
+        if (TryDeactivate != null)
         {
-            Deactivate();
+            active = false;
+            TryDeactivate();            
             if (child != null)            
                 child.GetComponent<MeshRenderer>().material = inactiveMat;            
         }
     }
+
+    void updateNbObjectsOnPlate(int i)
+    {
+        nbObjectsOnPlate += i;
+
+        if(nbObjectsOnPlate == 1)
+            On();
+        if(nbObjectsOnPlate == 0)
+        {
+            if (hasTimer)
+                Invoke("Off", timer);
+            else
+                Off();
+        }
+    }    
 }
