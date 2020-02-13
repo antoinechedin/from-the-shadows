@@ -19,8 +19,8 @@ public class ChapterManager : MonoBehaviour
         }
 
         levelCamera = Camera.main.GetComponent<LevelCamera>();
-        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position+levels[currentLevel].cameraLimitLB.position)/2, false);
         levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
+        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position+levels[currentLevel].cameraLimitLB.position)/2, false);
 
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
 
