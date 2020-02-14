@@ -27,15 +27,20 @@ public class PlayerStanding : IPlayerControllerState
         if (playerInput.pressedJump)
         {
             player.state = new PlayerAirborne(true, player);
-            
+
             player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
-            player.grounded = false;
+            player.controller.collisions.bellow = false;
         }
     }
 
     public void Update(NewPlayerController player)
     {
-        if (!player.grounded)
+        if (player.controller.collisions.right || player.controller.collisions.left)
+        {
+            player.velocity.x = 0;
+        }
+
+        if (!player.controller.collisions.bellow)
         {
             player.state = new PlayerAirborne(false, player);
         }
@@ -46,14 +51,18 @@ public class PlayerAirborne : IPlayerControllerState
 {
     public bool canJump;
     public bool canDoubleJump;
+    public bool canStopJump;
     public float coyoteTimer;
-    public float coyoteDuration = 0.3f;
+    public float coyoteDuration = 0.07f;
+    float stopJumpSpeed;
 
     public PlayerAirborne(bool jump, NewPlayerController playerController)
     {
         canJump = !jump;
-        canDoubleJump = playerController.settings.doubleJumpHeight > 0;
+        canDoubleJump = playerController.playerInput.doubleJump;
+        canStopJump = jump;
         coyoteTimer = 0;
+        stopJumpSpeed = playerController.settings.gravity / 9f;
     }
 
     public void HandleInput(NewPlayerController player, PlayerInput playerInput)
@@ -70,11 +79,34 @@ public class PlayerAirborne : IPlayerControllerState
             player.velocity.x = Mathf.MoveTowards(player.velocity.x, player.targetVelocity.x, deceleration * Time.deltaTime);
         }
 
-        if (playerInput.pressedJump && canJump)
+        if (playerInput.pressedJump)
         {
-            canJump = false;
-            player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
+            if (canJump)
+            {
+                player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
+                
+                canJump = false;
+                canStopJump = true;
+            } 
+            else if(canDoubleJump)
+            {
+                player.velocity.y = Mathf.Sqrt(2 * player.settings.doubleJumpHeight * player.settings.gravity);
+
+                canDoubleJump = false;
+                canStopJump = true;
+            }
         }
+
+        if (canStopJump && player.velocity.y > stopJumpSpeed)
+        {
+            if (playerInput.releasedJump)
+            {
+                canStopJump = false;
+                player.velocity.y = stopJumpSpeed;
+            }
+        }
+        else canStopJump = false;
+
     }
 
     public void Update(NewPlayerController playerController)
@@ -85,7 +117,12 @@ public class PlayerAirborne : IPlayerControllerState
             if (coyoteTimer > coyoteDuration) canJump = false;
         }
 
-        if (playerController.grounded)
+        if (playerController.controller.collisions.right || playerController.controller.collisions.left)
+        {
+            playerController.velocity.x = 0;
+        }
+
+        if (playerController.controller.collisions.bellow)
         {
             playerController.state = new PlayerStanding();
         }

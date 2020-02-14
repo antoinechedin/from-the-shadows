@@ -4,21 +4,26 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
+    [Range(1, 2)]
+    public int id;
+    public bool doubleJump;
+
+    public bool debugControl;
+    
     public Vector2 moveAxis;
     public bool pressedJump;
     public bool releasedJump;
 
-    public bool debugControl;
     public bool pressRight, pressLeft, pressUp, pressDown;
 
     private void Update()
     {
         if (!debugControl)
         {
-            moveAxis.x = Input.GetAxisRaw("Horizontal_G");
-            moveAxis.y = Input.GetAxisRaw("Vertical_G");
-            pressedJump = Input.GetButtonDown("A_G");
-            releasedJump = Input.GetButtonUp("A_G");
+            moveAxis.x = Input.GetAxisRaw("Horizontal_" + id);
+            moveAxis.y = Input.GetAxisRaw("Vertical_" + id);
+            pressedJump = Input.GetButtonDown("A_" + id);
+            releasedJump = Input.GetButtonUp("A_" + id);
         }
         else
         {

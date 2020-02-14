@@ -9,12 +9,11 @@ public class NewPlayerController : MonoBehaviour
     public PhysicsSettings settings;
 
     public NewActorController controller;
-    private PlayerInput playerInput;
+    public PlayerInput playerInput;
 
     public IPlayerControllerState state;
     public Vector2 targetVelocity;
     public Vector2 velocity;
-    public bool grounded;
 
     private void Awake()
     {
@@ -41,7 +40,6 @@ public class NewPlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         controller.Move(velocity, Time.fixedDeltaTime);
-        grounded = controller.collisions.bellow;
         UpdateSpriteColor();
     }
 
@@ -50,7 +48,7 @@ public class NewPlayerController : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
-            if (grounded)
+            if (controller.collisions.bellow)
             {
                 sr.color = Color.green;
             }
