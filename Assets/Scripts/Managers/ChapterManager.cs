@@ -101,7 +101,8 @@ public class ChapterManager : MonoBehaviour
         }
         else //on transfert le joueur dans le tableau suivant
         {
-            //appel de la fonction pour faire bouger la cam
+            CollectMetaData();
+            SaveManager.Instance.WriteSaveFile();
             CreateEmptyCameraPoints();
             levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
@@ -140,7 +141,7 @@ public class ChapterManager : MonoBehaviour
         }
     }
 
-    private void CollectMetaData()
+    public void CollectMetaData()
     {
         GameManager.Instance.AddMetaFloat("totalTimePlayed", timeSinceBegin); //collecte du temps de jeu
         timeSinceBegin = 0;
