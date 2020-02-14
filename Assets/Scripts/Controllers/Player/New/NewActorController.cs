@@ -185,15 +185,7 @@ public class NewActorController : MonoBehaviour
 
     private void DescendSlope(ref Vector2 move)
     {
-        RaycastHit2D maxSlopeHitLeft = Physics2D.Raycast(raycastOrigins.bottomLeft, Vector2.down,
-            Mathf.Abs(move.y) + skinWidth, collisionMask
-        );
-        RaycastHit2D maxSlopeHitRight = Physics2D.Raycast(raycastOrigins.bottomRight, Vector2.down,
-            Mathf.Abs(move.y) + skinWidth, collisionMask
-        );
-
-        SlideDown(maxSlopeHitLeft, ref move);
-        SlideDown(maxSlopeHitRight, ref move);
+        TrySlideDown(ref move);
 
         if (!collisions.slidingSlope)
         {
@@ -226,20 +218,56 @@ public class NewActorController : MonoBehaviour
         }
     }
 
-    private void SlideDown(RaycastHit2D hit, ref Vector2 move)
+    private void TrySlideDown(ref Vector2 move)
     {
-        if (hit)
-        {
-            float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            if (slopeAngle > maxSlopeAngle)
-            {
-                move.x = hit.normal.x * (Mathf.Abs(move.y) - hit.distance) / Mathf.Tan(slopeAngle * Mathf.Deg2Rad);
+        bool slidingLeft = false;
+        bool slidingRight = false;
 
-                collisions.slopeAngle = slopeAngle;
-                collisions.slidingSlope = true;
-                collisions.groundNormal = hit.normal;
+        RaycastHit2D hitLeft = Physics2D.Raycast(raycastOrigins.bottomLeft, Vector2.down,
+            Mathf.Abs(move.y) + skinWidth, collisionMask
+        );
+        RaycastHit2D hitRight = Physics2D.Raycast(raycastOrigins.bottomRight, Vector2.down,
+            Mathf.Abs(move.y) + skinWidth, collisionMask
+        );
+
+        if (hitLeft)
+        {
+            float slopeAngle = Vector2.Angle(hitLeft.normal, Vector2.up);
+            if (slopeAngle > maxSlopeAngle) slidingLeft = true;
+        }
+
+        if (hitRight)
+        {
+            float slopeAngle = Vector2.Angle(hitRight.normal, Vector2.up);
+            if (slopeAngle > maxSlopeAngle) slidingRight = true;
+        }
+
+        if (slidingLeft && !slidingRight)
+        {
+            if (!hitRight || hitRight.distance > hitLeft.distance)
+            {
+                SlideDown(hitLeft, ref move);
             }
         }
+        else if (slidingRight && !slidingLeft)
+        {
+            if (!hitLeft || hitLeft.distance > hitRight.distance)
+            {
+                SlideDown(hitRight, ref move);
+            }
+        }
+    }
+
+    private void SlideDown(RaycastHit2D hit, ref Vector2 move)
+    {
+        float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+        move.x = hit.normal.x * (Mathf.Abs(move.y) - hit.distance) / Mathf.Tan(slopeAngle * Mathf.Deg2Rad);
+
+        collisions.slopeAngle = slopeAngle;
+        collisions.slidingSlope = true;
+        collisions.bellow = true;
+        collisions.groundNormal = hit.normal;
     }
 
     private void GroundActor(ref Vector2 move)
@@ -256,15 +284,15 @@ public class NewActorController : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, rayLength, collisionMask);
             if (hit)
             {
-                rayLength = hit.distance;              
+                rayLength = hit.distance;
 
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-                if(slopeAngle <= maxSlopeAngle)
+                if (slopeAngle <= maxSlopeAngle)
                 {
-                    float maxDst2Ground = 
+                    float maxDst2Ground =
                         Mathf.Sin(collisionsPrevious.slopeAngle * Mathf.Deg2Rad) * move.magnitude
                         + Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(move.x);
-                    if(rayLength - skinWidth <= maxDst2Ground)
+                    if (rayLength - skinWidth <= maxDst2Ground)
                     {
                         dst2Ground = rayLength - skinWidth;
                         collisions.bellow = true;
