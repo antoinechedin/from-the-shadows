@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelCamera : MonoBehaviour
 {
+    public float offsetX = 0, offsetY = 0;
     private Vector3 limitLB;
     private Vector3 limitRT;
     private Vector3 posToMoveTo;
@@ -25,6 +26,9 @@ public class LevelCamera : MonoBehaviour
                 if (posToMoveTo.z < limitLB.z) posToMoveTo.z = limitLB.z;
                 if (posToMoveTo.z > limitRT.z) posToMoveTo.z = limitRT.z;
             }
+
+            posToMoveTo.x += offsetX;
+            posToMoveTo.y += offsetY;
 
             //déplacement de la caméra
             Vector3 velocity = Vector3.zero;
