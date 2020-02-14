@@ -67,6 +67,6 @@ public class FallingPlatform : MonoBehaviour, IResetable
         fallingPosition = startingPosition;
         child.GetComponent<Collider2D>().enabled = true;
         targetColor = startingColor;
-
+        CancelInvoke();
     }
 }
