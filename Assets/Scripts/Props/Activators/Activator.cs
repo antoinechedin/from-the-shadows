@@ -5,20 +5,21 @@ using UnityEngine;
 public class Activator : MonoBehaviour
 {
     public List<ActivatorListener> listeners = new List<ActivatorListener>();
+    public bool active;
 
     /// <summary>
     /// Activate delegate. Don't forget to test if(Activate != null) before
     /// calling it.
     /// </summary>
-    public OnActivate Activate;
-    public delegate void OnActivate();
+    public TryOnActivate TryActivate;
+    public delegate void TryOnActivate();
 
     /// <summary>
     /// Deactivate delegate. Don't forget to test if(Deactivate != null) before
     /// calling it.
     /// </summary>
-    public OnDeactivate Deactivate;
-    public delegate void OnDeactivate();
+    public TryOnDeactivate TryDeactivate;
+    public delegate void TryOnDeactivate();
 
     /// <summary>
     /// Used by the ActivatorEditor class to update Listeners references.
@@ -32,15 +33,15 @@ public class Activator : MonoBehaviour
             if (allListeners[i].activators.Contains(this) && !listeners.Contains(allListeners[i]))
             {
                 allListeners[i].activators.Remove(this);
-                Activate -= allListeners[i].OnActivate;
-                Deactivate -= allListeners[i].OnDeactivate;
+                TryActivate -= allListeners[i].TryOnActivate;
+                TryDeactivate -= allListeners[i].TryOnDeactivate;
             }
 
             if (listeners.Contains(allListeners[i]) && !allListeners[i].activators.Contains(this))
             {
                 allListeners[i].activators.Add(this);
-                Activate += allListeners[i].OnActivate;
-                Deactivate += allListeners[i].OnDeactivate;
+                TryActivate += allListeners[i].TryOnActivate;
+                TryDeactivate += allListeners[i].TryOnDeactivate;
             }
         }
     }
@@ -51,8 +52,8 @@ public class Activator : MonoBehaviour
         {
             if (listeners[i] != null)
             {
-                Activate += listeners[i].OnActivate;
-                Deactivate += listeners[i].OnDeactivate;
+                TryActivate += listeners[i].TryOnActivate;
+                TryDeactivate += listeners[i].TryOnDeactivate;
             }
         }
     }
@@ -63,8 +64,8 @@ public class Activator : MonoBehaviour
         {
             if (listeners[i] != null)
             {
-                Activate -= listeners[i].OnActivate;
-                Deactivate -= listeners[i].OnDeactivate;
+                TryActivate -= listeners[i].TryOnActivate;
+                TryDeactivate -= listeners[i].TryOnDeactivate;
             }
         }
      }
