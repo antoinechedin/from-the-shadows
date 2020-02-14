@@ -8,7 +8,7 @@ public class PlayerDebugPanel : MonoBehaviour
     private TextMeshProUGUI playerInfos;
     private string playerInfosTemplate;
 
-    private NewPlayerController player;
+    private PlayerController player;
 
     private void Awake()
     {
@@ -16,8 +16,7 @@ public class PlayerDebugPanel : MonoBehaviour
         playerInfos = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         if (playerInfos != null) playerInfosTemplate = playerInfos.text;
         
-
-        player = transform.parent.parent.GetComponent<NewPlayerController>();
+        player = transform.parent.parent.GetComponent<PlayerController>();
     }
 
     private void Update()
@@ -32,7 +31,7 @@ public class PlayerDebugPanel : MonoBehaviour
                     player.velocity.y,
                     player.targetVelocity.x,
                     player.targetVelocity.y,
-                    player.controller.collisions.bellow ? "X" : "_",
+                    player.actor.collisions.bellow ? "X" : "_",
                     player.state
                 );
             }
