@@ -57,6 +57,8 @@ public class PressurePlate : Activator
                 soundPlayer.PlaySoundAtLocation(sound, 1f);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
+
+            CancelInvoke();
         }
     }
 
