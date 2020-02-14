@@ -7,11 +7,13 @@ using System;
 
 public class MenuOptions : MonoBehaviour
 {
+    public MenuManager menuManager;
+
     public Selectable volumeGO;
 
     Dictionary<int, int> resolutions;
     List<int> keysResolution;
-    public int cursorResolution;
+    int cursorResolution;
 
     private void Awake()
     {
@@ -58,6 +60,6 @@ public class MenuOptions : MonoBehaviour
 
     public void Return()
     {
-        throw new NotImplementedException();
+        menuManager.OpenStartMenu();
     }
 }
