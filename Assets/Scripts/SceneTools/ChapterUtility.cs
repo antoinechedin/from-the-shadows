@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 using UnityEditor;
 
+#if UNITY_EDITOR
+
 public class ReadOnlyAttribute : PropertyAttribute
 {
 
@@ -137,7 +139,7 @@ public class ChapterUtility : MonoBehaviour
     /// <summary>
     /// Display Custom Icons for CameraPoints & Colors for LevelTriggers / InvisibleWalls
     /// </summary>
-    #if UNITY_EDITOR
+    
     void OnDrawGizmos()
     {
         // CameraPoints Custom Icons + Number
@@ -179,6 +181,6 @@ public class ChapterUtility : MonoBehaviour
             Gizmos.DrawWireCube(boxCollider.bounds.center,
                                 boxCollider.bounds.extents * 2);
         }
-    }
-    #endif
+    }   
 }
+#endif
