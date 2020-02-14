@@ -166,7 +166,7 @@ public class ChapterManager : MonoBehaviour
         //levelCamera.MoveTo(GameObject.Find("Player" + playerId).transform.position);
         //Petit zoom de la caméra
         //Animation screen
-        GameObject transitionScreen = (GameObject)Resources.Load("FallingTransition"); //load le prefab
+        GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
         transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
 
         //tant que l'ecran n'a pas fini de fade au noir
