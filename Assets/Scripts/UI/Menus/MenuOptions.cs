@@ -13,7 +13,7 @@ public class MenuOptions : MonoBehaviour
 
     Dictionary<int, int> resolutions;
     List<int> keysResolution;
-    public int cursorResolution;
+    int cursorResolution;
 
     private void Awake()
     {
