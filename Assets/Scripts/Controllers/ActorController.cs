@@ -7,7 +7,7 @@ using UnityEngine;
 public class ActorController : MonoBehaviour
 {
     public LayerMask collisionMask = 1 << 9;
-    public float maxSlopeAngle = 60;
+    [HideInInspector]public float maxSlopeAngle = 60;
 
     private const float skinWidth = 0.021f;
 

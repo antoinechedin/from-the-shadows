@@ -16,7 +16,6 @@ public class PlayerDebugPanel : MonoBehaviour
         playerInfos = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         if (playerInfos != null) playerInfosTemplate = playerInfos.text;
         
-
         player = transform.parent.parent.GetComponent<PlayerController>();
     }
 

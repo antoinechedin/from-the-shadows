@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     [Range(1, 2)]
-    public int id;
+    public int id = 1;
     public bool doubleJump;
 
     public bool debugControl;
