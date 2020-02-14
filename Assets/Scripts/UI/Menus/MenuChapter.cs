@@ -22,6 +22,7 @@ public class MenuChapter : MonoBehaviour
     private Animator menuChapterAnimator;
     private Animator metaDataPanelAnimator;
     private bool chapterMenuIsOpen = false;
+    private bool statsOpen = false;
     private int localIndexCurrentChapter;
 
     private List<string> chaptersName;
@@ -49,11 +50,16 @@ public class MenuChapter : MonoBehaviour
         // Cancel
         if (Input.GetButtonDown("B_G"))
         {
+            if (statsOpen)
+            {
+                DisplayStatistics();
+            }
             // Close the chapter
-            if (chapterMenuIsOpen)
+            else if (chapterMenuIsOpen)
             {
                 chapterMenuIsOpen = false;
                 chapterButtonsPanel.SetActive(true);
+                metaDataIcon.gameObject.SetActive(true);
                 EventSystem.current.SetSelectedGameObject(chapterButtons[localIndexCurrentChapter].gameObject);
                 if (menuChapterAnimator != null)
                 {
@@ -72,13 +78,19 @@ public class MenuChapter : MonoBehaviour
 
         if (Input.GetButtonDown("Start_G") && !chapterMenuIsOpen)
         {
-            EventSystem.current.SetSelectedGameObject(null);
-            chapterButtonsPanel.SetActive(!chapterButtonsPanel.activeSelf);
-            menuCamera.cursor.gameObject.SetActive(!menuCamera.cursor.gameObject.activeSelf);
-            metaDataIcon.gameObject.SetActive(!metaDataIcon.gameObject.activeSelf);
-            EventSystem.current.SetSelectedGameObject(chapterButtons[localIndexCurrentChapter].gameObject);
-            metaDataPanelAnimator.SetBool("open", !metaDataPanelAnimator.GetBool("open"));
+            DisplayStatistics();
         }
+    }
+
+    public void DisplayStatistics()
+    {
+        statsOpen = !statsOpen;
+        EventSystem.current.SetSelectedGameObject(null);
+        chapterButtonsPanel.SetActive(!chapterButtonsPanel.activeSelf);
+        menuCamera.cursor.gameObject.SetActive(!menuCamera.cursor.gameObject.activeSelf);
+        metaDataIcon.gameObject.SetActive(!metaDataIcon.gameObject.activeSelf);
+        EventSystem.current.SetSelectedGameObject(chapterButtons[localIndexCurrentChapter].gameObject);
+        metaDataPanelAnimator.SetBool("open", !metaDataPanelAnimator.GetBool("open"));
     }
 
     public void OpenChapterMenu()
@@ -88,6 +100,7 @@ public class MenuChapter : MonoBehaviour
         {
             chapterMenuIsOpen = true;
             chapterButtonsPanel.SetActive(false);
+            metaDataIcon.gameObject.SetActive(false);
             if (menuChapterAnimator != null)
             {
                 int nbCollectibleTaken = 0;
