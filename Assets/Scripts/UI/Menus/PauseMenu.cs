@@ -30,6 +30,7 @@ public class PauseMenu : MonoBehaviour
     public void Home()
     {
         Time.timeScale = 1;
+        SaveManager.Instance.WriteSaveFile();
         GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
     }
 
@@ -44,6 +45,7 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1;
         GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen");
         loadingScreen = Instantiate(loadingScreen, transform.parent);
+        SaveManager.Instance.WriteSaveFile();
         StartCoroutine(Fade());
     }
 
