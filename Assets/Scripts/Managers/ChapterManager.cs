@@ -19,6 +19,7 @@ public class ChapterManager : MonoBehaviour
         }
 
         levelCamera = Camera.main.GetComponent<LevelCamera>();
+        CreateEmptyCameraPoints();
         levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2, false);
 
@@ -73,6 +74,7 @@ public class ChapterManager : MonoBehaviour
 
         if (currentLevel >= 0) //on bouge la cam dans le tableau précédent
         {
+            CreateEmptyCameraPoints();
             levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
     }
@@ -100,10 +102,27 @@ public class ChapterManager : MonoBehaviour
         else //on transfert le joueur dans le tableau suivant
         {
             //appel de la fonction pour faire bouger la cam
+            CreateEmptyCameraPoints();
             levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
 
         SaveManager.Instance.WriteSaveFile();
+    }
+
+    public void CreateEmptyCameraPoints()
+    {
+        if (levels[currentLevel].cameraLimitLB == null)
+        {
+            GameObject emptyPoint = new GameObject();
+            emptyPoint.transform.position = new Vector3(-5f, 5f, -10f);
+            levels[currentLevel].cameraLimitLB = emptyPoint.transform;
+        }
+        if (levels[currentLevel].cameraLimitRT == null)
+        {
+            GameObject emptyPoint = new GameObject();
+            emptyPoint.transform.position = new Vector3(-5f, 5f, -10f);
+            levels[currentLevel].cameraLimitRT = emptyPoint.transform;
+        }
     }
 
     public void UpdateEnabledLevels()
