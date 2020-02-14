@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     public Vector2 moveAxis;
+    public bool pressedJump;
+    public bool releasedJump;
+
     public bool debugControl;
     public bool pressRight, pressLeft, pressUp, pressDown;
-    public bool pressJump;
 
     private void Update()
     {
@@ -15,7 +17,8 @@ public class PlayerInput : MonoBehaviour
         {
             moveAxis.x = Input.GetAxisRaw("Horizontal_G");
             moveAxis.y = Input.GetAxisRaw("Vertical_G");
-            pressJump = Input.GetButtonDown("A_G");
+            pressedJump = Input.GetButtonDown("A_G");
+            releasedJump = Input.GetButtonUp("A_G");
         }
         else
         {
