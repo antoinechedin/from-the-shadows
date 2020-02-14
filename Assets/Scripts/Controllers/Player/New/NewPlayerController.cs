@@ -24,9 +24,7 @@ public class NewPlayerController : MonoBehaviour
     }
 
     private void Update()
-    {
-        grounded = controller.collisions.bellow;
-        
+    {        
         state.HandleInput(this, playerInput);
         state.Update(this);
 
@@ -36,24 +34,6 @@ public class NewPlayerController : MonoBehaviour
                 velocity.y = 0;
         }
 
-        //if (playerInput.pressJump)
-        // {
-        //     velocity.y = Mathf.Sqrt(2 * settings.jumpHeight * settings.gravity);
-        //     controller.collisions.bellow = false;
-        // }
-
-        // targetVelocity = playerInput.moveAxis.normalized * settings.moveSpeed;
-        // if (playerInput.moveAxis.x != 0)
-        // {
-        //     float acceleration = settings.moveSpeed / settings.groundAccelerationTime;
-        //     velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, acceleration * Time.deltaTime);
-        // }
-        // else
-        // {
-        //     float deceleration = settings.moveSpeed / settings.groundDecelerationTime;
-        //     velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, deceleration * Time.deltaTime);
-        // }
-
         velocity.y -= settings.gravity * Time.deltaTime;
         velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
     }
@@ -61,17 +41,8 @@ public class NewPlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         controller.Move(velocity, Time.fixedDeltaTime);
+        grounded = controller.collisions.bellow;
         UpdateSpriteColor();
-    }
-
-    private void HandleInput()
-    {
-
-    }
-
-    private void UpdateState()
-    {
-
     }
 
     private void UpdateSpriteColor()
