@@ -9,6 +9,7 @@ public class Torch : ActivatorListener, IResetable
     public AudioClip soundOn;
     public AudioClip soundOff;
     public bool activeAtStart;
+    public float lightRadius;
 
     private bool isMute = true;
     public bool active;
@@ -24,6 +25,7 @@ public class Torch : ActivatorListener, IResetable
         }
         isMute = false;
         active = activeAtStart;
+        transform.Find("LightSource").transform.Find("Script").gameObject.GetComponent<LightSource>().lightRadius = lightRadius;
     }
 
     private void Update()

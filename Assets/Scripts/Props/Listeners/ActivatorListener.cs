@@ -3,7 +3,9 @@ using UnityEngine;
 
 public abstract class ActivatorListener : MonoBehaviour
 {
+    public enum Operator { Or, And };
     public List<Activator> activators = new List<Activator>();
+    public Operator logic;
     public Color gizmoColor;
   
     /// <summary>
@@ -28,17 +30,55 @@ public abstract class ActivatorListener : MonoBehaviour
             if (allActivators[i].listeners.Contains(this) && !activators.Contains(allActivators[i]))
             {
                 allActivators[i].listeners.Remove(this);
-                allActivators[i].Activate -= OnActivate;
-                allActivators[i].Deactivate -= OnDeactivate;
+                allActivators[i].TryActivate -= TryOnActivate;
+                allActivators[i].TryDeactivate -= TryOnDeactivate;
             }
 
             if (activators.Contains(allActivators[i]) && !allActivators[i].listeners.Contains(this))
             {
                 allActivators[i].listeners.Add(this);
-                allActivators[i].Activate += OnActivate;
-                allActivators[i].Deactivate += OnDeactivate;
+                allActivators[i].TryActivate += TryOnActivate;
+                allActivators[i].TryDeactivate += TryOnDeactivate;
             }
         }
+    }
+
+    public void TryOnActivate()
+    {
+        if (logic == Operator.Or)
+            OnActivate();
+        else if (logic == Operator.And && AllActivatorsActive())
+            OnActivate();
+    }
+
+    public void TryOnDeactivate()
+    {
+        if (logic == Operator.And)
+            OnDeactivate();
+        if (logic == Operator.Or && AllActivatorsInactive())
+            OnDeactivate();
+    }
+
+    public bool AllActivatorsActive()
+    {
+        bool res = true;
+        foreach (Activator activator in activators)
+        {
+            if (!activator.active)
+                res = false;
+        }
+        return res;
+    }
+
+    public bool AllActivatorsInactive()
+    {
+        bool res = true;
+        foreach (Activator activator in activators)
+        {
+            if (activator.active)
+                res = false;
+        }
+        return res;
     }
 
     private void OnDrawGizmos()
