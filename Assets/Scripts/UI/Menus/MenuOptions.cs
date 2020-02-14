@@ -7,11 +7,23 @@ using System;
 
 public class MenuOptions : MonoBehaviour
 {
+    public MenuManager menuManager;
+
     public Selectable volumeGO;
+
+    Dictionary<int, int> resolutions;
+    List<int> keysResolution;
+    int cursorResolution;
 
     private void Awake()
     {
-        
+        keysResolution = new List<int>();
+        keysResolution.Add(1280);
+        keysResolution.Add(1920);
+
+        resolutions = new Dictionary<int, int>();
+        resolutions[1280] = 720;
+        resolutions[1920] = 1080;
     }
 
     public void OpenOptionsMenu()
@@ -27,17 +39,27 @@ public class MenuOptions : MonoBehaviour
         }
     }
 
-    public void ChangeResolution()
+    public void ChangeVolume(float value)
     {
-        //Screen.SetResolution();
+        AudioListener.volume = Mathf.Clamp(AudioListener.volume + value, 0, 1);
+    }
+
+    public void ChangeResolution(float value)
+    {
+        cursorResolution = (cursorResolution + (int)value) % (keysResolution.Count - 1);
+        int width = keysResolution[cursorResolution];
+        int height = resolutions[keysResolution[cursorResolution]];
+
+        Screen.SetResolution(width, height, Screen.fullScreen);
     }
 
     public void ToggleFullscreen()
     {
         Screen.fullScreen = !Screen.fullScreen;
     }
+
     public void Return()
     {
-        throw new NotImplementedException();
+        menuManager.OpenStartMenu();
     }
 }

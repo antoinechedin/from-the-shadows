@@ -101,7 +101,8 @@ public class ChapterManager : MonoBehaviour
         }
         else //on transfert le joueur dans le tableau suivant
         {
-            //appel de la fonction pour faire bouger la cam
+            CollectMetaData();
+            SaveManager.Instance.WriteSaveFile();
             CreateEmptyCameraPoints();
             levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
@@ -140,7 +141,7 @@ public class ChapterManager : MonoBehaviour
         }
     }
 
-    private void CollectMetaData()
+    public void CollectMetaData()
     {
         GameManager.Instance.AddMetaFloat("totalTimePlayed", timeSinceBegin); //collecte du temps de jeu
         timeSinceBegin = 0;
@@ -161,11 +162,6 @@ public class ChapterManager : MonoBehaviour
     /// <param name="playerId"></param>
     IEnumerator ResetLevelAsync(int playerId)
     {
-        //déplacement de la camera à l'endroit de la mort
-        //levelCamera.StayInLimits = false;
-        //levelCamera.MoveTo(GameObject.Find("Player" + playerId).transform.position);
-        //Petit zoom de la caméra
-        //Animation screen
         GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
         transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
 
@@ -179,8 +175,6 @@ public class ChapterManager : MonoBehaviour
         //Teleporte les joueurs au début du jeu
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
         //téléporte la camera à sa position de départ
-        //levelCamera.StayInLimits = true;
-        //levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2);
         //Incrémente la meta donnée du joueur mort
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
         //Reset tous les objets Resetables
