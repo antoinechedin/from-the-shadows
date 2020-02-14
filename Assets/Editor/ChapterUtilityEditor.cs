@@ -16,7 +16,11 @@ public class LevelScriptEditor : Editor
         ChapterUtility myScript = (ChapterUtility)target;
 
         if (GUILayout.Button("Init ChapterUtility"))
+        {
             myScript.LevelScriptInit();
+            EditorWindow.GetWindow<SceneView>().Repaint();
+        }
+
 
         DrawDefaultInspector();
 

@@ -15,6 +15,7 @@ public class Lever : Activator, IResetable
 
 
     private bool canBeActivated;
+    private int idPlayer = 0;
     private SoundPlayer soundPlayer;
     private GameObject child;
     private bool isMute = true;
@@ -35,7 +36,10 @@ public class Lever : Activator, IResetable
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
+        {
             canBeActivated = true;
+            idPlayer = collision.gameObject.GetComponent<PlayerController>().id;
+        }
     }
 
     public void OnTriggerExit2D(Collider2D collision)
@@ -49,12 +53,19 @@ public class Lever : Activator, IResetable
     /// </summary>
     public void Update()
     {
-        if (canBeActivated && Input.GetButtonDown("X_G"))
+        if (canBeActivated && Input.GetButtonDown("X_1") && idPlayer == 1)
         {
             if (!active)
                 On(false);
             else
                 Off();                
+        }
+        if (canBeActivated && Input.GetButtonDown("X_2") && idPlayer == 2)
+        {
+            if (!active)
+                On(false);
+            else
+                Off();
         }
     }
 
