@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class OptionsArrowButtons : MonoBehaviour, ISelectHandler
 {
+    public MenuOptions menuOptions;
+
     public Selectable origin;
     public float value;
 
@@ -26,8 +28,21 @@ public class OptionsArrowButtons : MonoBehaviour, ISelectHandler
         {
             yield return null;
         }
-        
-        AudioListener.volume = Mathf.Clamp(AudioListener.volume + value, 0, 1);
+
+        menuOptions.ChangeVolume(value);
+
         EventSystem.current.SetSelectedGameObject(origin.gameObject);        
+    }
+
+    private IEnumerator ChangeResolution()
+    {
+        while (!done)
+        {
+            yield return null;
+        }
+
+        menuOptions.ChangeResolution(value);
+
+        EventSystem.current.SetSelectedGameObject(origin.gameObject);
     }
 }
