@@ -131,7 +131,7 @@ public class ChapterUtility : MonoBehaviour
     // Get Id of String, Need to Improve for 9+
     int GetIdOf(string s)
     {
-        return Int16.Parse(s.Substring(s.Length - 1));
+        return int.Parse(s.Substring(s.Length - 1));
     }
 
     /// <summary>
