@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Slide : ActivatorListener
 {
-    public enum Direction { Up, Down, Left, Right, Depth};
+    public enum Direction {Up, Down, Left, Right, Depth};
     private bool open;
     private Vector3 stopPosition;
     private Vector3 startPosition;
@@ -14,6 +14,7 @@ public class Slide : ActivatorListener
     [Range(0,10)]
     public float speed;
     public float distance;
+
 
     public void Start()
     {
@@ -43,7 +44,7 @@ public class Slide : ActivatorListener
     {
         open = true;
         targetPosition = stopPosition;
-        if(direction == Direction.Depth)
+        if (direction == Direction.Depth)
         {
             GetComponent<Collider2D>().enabled = false;
         }
