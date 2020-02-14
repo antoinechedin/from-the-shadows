@@ -8,28 +8,28 @@ public class PlayerController : MonoBehaviour
 {
     public PhysicsSettings settings;
 
-    public ActorController controller;
-    public PlayerInput playerInput;
+    public ActorController actor;
+    public PlayerInput input;
 
-    public IPlayerControllerState state;
+    public IPlayerState state;
     public Vector2 targetVelocity;
     public Vector2 velocity;
 
     private void Awake()
     {
-        controller = GetComponent<ActorController>();
-        playerInput = GetComponent<PlayerInput>();
+        actor = GetComponent<ActorController>();
+        input = GetComponent<PlayerInput>();
         state = new PlayerStanding();
     }
 
     private void Update()
     {        
-        state.HandleInput(this, playerInput);
+        state.HandleInput(this, input);
         state.Update(this);
 
-        if (controller.collisions.bellow || controller.collisions.above)
+        if (actor.collisions.bellow || actor.collisions.above)
         {
-            if (!controller.collisions.slidingSlope)
+            if (!actor.collisions.slidingSlope)
                 velocity.y = 0;
         }
 
@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        controller.Move(velocity, Time.fixedDeltaTime);
+        actor.Move(velocity, Time.fixedDeltaTime);
         UpdateSpriteColor();
     }
 
@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
-            if (controller.collisions.bellow)
+            if (actor.collisions.bellow)
             {
                 sr.color = Color.green;
             }

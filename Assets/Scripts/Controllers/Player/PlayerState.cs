@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPlayerControllerState
+public interface IPlayerState
 {
-    void HandleInput(PlayerController playerController, PlayerInput playerInput);
+    void HandleInput(PlayerController player, PlayerInput input);
     void Update(PlayerController playerController);
 }
 
-public class PlayerStanding : IPlayerControllerState
+public class PlayerStanding : IPlayerState
 {
-    public void HandleInput(PlayerController player, PlayerInput playerInput)
+    public void HandleInput(PlayerController player, PlayerInput input)
     {
-        player.targetVelocity = playerInput.moveAxis.normalized * player.settings.moveSpeed;
-        if (playerInput.moveAxis.x != 0)
+        player.targetVelocity = input.moveAxis.normalized * player.settings.moveSpeed;
+        if (input.moveAxis.x != 0)
         {
             float acceleration = player.settings.moveSpeed / player.settings.groundAccelerationTime;
             player.velocity.x = Mathf.MoveTowards(player.velocity.x, player.targetVelocity.x, acceleration * Time.deltaTime);
@@ -24,30 +24,30 @@ public class PlayerStanding : IPlayerControllerState
             player.velocity.x = Mathf.MoveTowards(player.velocity.x, player.targetVelocity.x, deceleration * Time.deltaTime);
         }
 
-        if (playerInput.pressedJump)
+        if (input.pressedJump)
         {
             player.state = new PlayerAirborne(true, player);
 
             player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
-            player.controller.collisions.bellow = false;
+            player.actor.collisions.bellow = false;
         }
     }
 
     public void Update(PlayerController player)
     {
-        if (player.controller.collisions.right || player.controller.collisions.left)
+        if (player.actor.collisions.right || player.actor.collisions.left)
         {
             player.velocity.x = 0;
         }
 
-        if (!player.controller.collisions.bellow)
+        if (!player.actor.collisions.bellow)
         {
             player.state = new PlayerAirborne(false, player);
         }
     }
 }
 
-public class PlayerAirborne : IPlayerControllerState
+public class PlayerAirborne : IPlayerState
 {
     public bool canJump;
     public bool canDoubleJump;
@@ -56,19 +56,19 @@ public class PlayerAirborne : IPlayerControllerState
     public float coyoteDuration = 0.07f;
     float stopJumpSpeed;
 
-    public PlayerAirborne(bool jump, PlayerController playerController)
+    public PlayerAirborne(bool jump, PlayerController player)
     {
         canJump = !jump;
-        canDoubleJump = playerController.playerInput.doubleJump;
+        canDoubleJump = player.input.doubleJump;
         canStopJump = jump;
         coyoteTimer = 0;
-        stopJumpSpeed = playerController.settings.gravity / 9f;
+        stopJumpSpeed = player.settings.gravity / 9f;
     }
 
-    public void HandleInput(PlayerController player, PlayerInput playerInput)
+    public void HandleInput(PlayerController player, PlayerInput input)
     {
-        player.targetVelocity = playerInput.moveAxis.normalized * player.settings.moveSpeed;
-        if (playerInput.moveAxis.x != 0)
+        player.targetVelocity = input.moveAxis.normalized * player.settings.moveSpeed;
+        if (input.moveAxis.x != 0)
         {
             float acceleration = player.settings.moveSpeed / player.settings.airAccelerationTime;
             player.velocity.x = Mathf.MoveTowards(player.velocity.x, player.targetVelocity.x, acceleration * Time.deltaTime);
@@ -79,7 +79,7 @@ public class PlayerAirborne : IPlayerControllerState
             player.velocity.x = Mathf.MoveTowards(player.velocity.x, player.targetVelocity.x, deceleration * Time.deltaTime);
         }
 
-        if (playerInput.pressedJump)
+        if (input.pressedJump)
         {
             if (canJump)
             {
@@ -99,7 +99,7 @@ public class PlayerAirborne : IPlayerControllerState
 
         if (canStopJump && player.velocity.y > stopJumpSpeed)
         {
-            if (playerInput.releasedJump)
+            if (input.releasedJump)
             {
                 canStopJump = false;
                 player.velocity.y = stopJumpSpeed;
@@ -109,7 +109,7 @@ public class PlayerAirborne : IPlayerControllerState
 
     }
 
-    public void Update(PlayerController playerController)
+    public void Update(PlayerController player)
     {
         if (canJump)
         {
@@ -117,14 +117,14 @@ public class PlayerAirborne : IPlayerControllerState
             if (coyoteTimer > coyoteDuration) canJump = false;
         }
 
-        if (playerController.controller.collisions.right || playerController.controller.collisions.left)
+        if (player.actor.collisions.right || player.actor.collisions.left)
         {
-            playerController.velocity.x = 0;
+            player.velocity.x = 0;
         }
 
-        if (playerController.controller.collisions.bellow)
+        if (player.actor.collisions.bellow)
         {
-            playerController.state = new PlayerStanding();
+            player.state = new PlayerStanding();
         }
     }
 }

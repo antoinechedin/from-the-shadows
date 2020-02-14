@@ -32,7 +32,7 @@ public class PlayerDebugPanel : MonoBehaviour
                     player.velocity.y,
                     player.targetVelocity.x,
                     player.targetVelocity.y,
-                    player.controller.collisions.bellow ? "X" : "_",
+                    player.actor.collisions.bellow ? "X" : "_",
                     player.state
                 );
             }

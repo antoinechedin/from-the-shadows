@@ -37,7 +37,7 @@ public class Lever : Activator, IResetable
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            int idPlayer = collision.gameObject.GetComponent<PlayerController>().playerInput.id;
+            int idPlayer = collision.gameObject.GetComponent<PlayerController>().input.id;
             if (idPlayer == 1)
                 canPlayer1Activate = true;
             else if (idPlayer == 2)
@@ -49,7 +49,7 @@ public class Lever : Activator, IResetable
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            int idPlayer = collision.gameObject.GetComponent<PlayerController>().playerInput.id;
+            int idPlayer = collision.gameObject.GetComponent<PlayerController>().input.id;
             if (idPlayer == 1)
                 canPlayer1Activate = false;
             else if (idPlayer == 2)
