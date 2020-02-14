@@ -8,7 +8,7 @@ public class PlayerDebugPanel : MonoBehaviour
     private TextMeshProUGUI playerInfos;
     private string playerInfosTemplate;
 
-    private NewPlayerController player;
+    private PlayerController player;
 
     private void Awake()
     {
@@ -17,7 +17,7 @@ public class PlayerDebugPanel : MonoBehaviour
         if (playerInfos != null) playerInfosTemplate = playerInfos.text;
         
 
-        player = transform.parent.parent.GetComponent<NewPlayerController>();
+        player = transform.parent.parent.GetComponent<PlayerController>();
     }
 
     private void Update()

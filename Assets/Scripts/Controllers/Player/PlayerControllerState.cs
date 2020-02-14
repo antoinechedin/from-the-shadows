@@ -4,13 +4,13 @@ using UnityEngine;
 
 public interface IPlayerControllerState
 {
-    void HandleInput(NewPlayerController playerController, PlayerInput playerInput);
-    void Update(NewPlayerController playerController);
+    void HandleInput(PlayerController playerController, PlayerInput playerInput);
+    void Update(PlayerController playerController);
 }
 
 public class PlayerStanding : IPlayerControllerState
 {
-    public void HandleInput(NewPlayerController player, PlayerInput playerInput)
+    public void HandleInput(PlayerController player, PlayerInput playerInput)
     {
         player.targetVelocity = playerInput.moveAxis.normalized * player.settings.moveSpeed;
         if (playerInput.moveAxis.x != 0)
@@ -33,7 +33,7 @@ public class PlayerStanding : IPlayerControllerState
         }
     }
 
-    public void Update(NewPlayerController player)
+    public void Update(PlayerController player)
     {
         if (player.controller.collisions.right || player.controller.collisions.left)
         {
@@ -56,7 +56,7 @@ public class PlayerAirborne : IPlayerControllerState
     public float coyoteDuration = 0.07f;
     float stopJumpSpeed;
 
-    public PlayerAirborne(bool jump, NewPlayerController playerController)
+    public PlayerAirborne(bool jump, PlayerController playerController)
     {
         canJump = !jump;
         canDoubleJump = playerController.playerInput.doubleJump;
@@ -65,7 +65,7 @@ public class PlayerAirborne : IPlayerControllerState
         stopJumpSpeed = playerController.settings.gravity / 9f;
     }
 
-    public void HandleInput(NewPlayerController player, PlayerInput playerInput)
+    public void HandleInput(PlayerController player, PlayerInput playerInput)
     {
         player.targetVelocity = playerInput.moveAxis.normalized * player.settings.moveSpeed;
         if (playerInput.moveAxis.x != 0)
@@ -109,7 +109,7 @@ public class PlayerAirborne : IPlayerControllerState
 
     }
 
-    public void Update(NewPlayerController playerController)
+    public void Update(PlayerController playerController)
     {
         if (canJump)
         {

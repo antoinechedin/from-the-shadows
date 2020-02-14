@@ -10,7 +10,7 @@ public class ActorControllerDebugPanel : MonoBehaviour
     private TextMeshProUGUI collisionInfos;
     private string collisionInfosTemplate;
 
-    private NewActorController actorController;
+    private ActorController actorController;
 
     private void Awake()
     {
@@ -20,7 +20,7 @@ public class ActorControllerDebugPanel : MonoBehaviour
         collisionInfos = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         if (collisionInfos != null) collisionInfosTemplate = collisionInfos.text;
 
-        actorController = transform.parent.parent.GetComponent<NewActorController>();
+        actorController = transform.parent.parent.GetComponent<ActorController>();
     }
 
     private void Update()
