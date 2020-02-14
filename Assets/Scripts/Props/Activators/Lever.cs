@@ -14,8 +14,8 @@ public class Lever : Activator, IResetable
     public bool activeAtStart;
 
 
-    private bool canBeActivated;
-    private int idPlayer = 0;
+    private bool canPlayer1Activate = false;
+    private bool canPlayer2Activate = false;
     private SoundPlayer soundPlayer;
     private GameObject child;
     private bool isMute = true;
@@ -37,15 +37,24 @@ public class Lever : Activator, IResetable
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            canBeActivated = true;
-            idPlayer = collision.gameObject.GetComponent<PlayerController>().id;
+            int idPlayer = collision.gameObject.GetComponent<PlayerController>().id;
+            if (idPlayer == 1)
+                canPlayer1Activate = true;
+            else if (idPlayer == 2)
+                canPlayer2Activate = true;
         }
     }
 
     public void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
-            canBeActivated = false;
+        {
+            int idPlayer = collision.gameObject.GetComponent<PlayerController>().id;
+            if (idPlayer == 1)
+                canPlayer1Activate = true;
+            else if (idPlayer == 2)
+                canPlayer2Activate = true;
+        }
     }
 
     /// <summary>
@@ -53,14 +62,14 @@ public class Lever : Activator, IResetable
     /// </summary>
     public void Update()
     {
-        if (canBeActivated && Input.GetButtonDown("X_1") && idPlayer == 1)
+        if (canPlayer1Activate && Input.GetButtonDown("X_1"))
         {
             if (!active)
                 On(false);
             else
                 Off();                
         }
-        if (canBeActivated && Input.GetButtonDown("X_2") && idPlayer == 2)
+        if (canPlayer2Activate && Input.GetButtonDown("X_2"))
         {
             if (!active)
                 On(false);
@@ -84,6 +93,7 @@ public class Lever : Activator, IResetable
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
+            CancelInvoke();
             if (hasTimer && !ignoreTimer)
                 Invoke("Off", timer);
         }
