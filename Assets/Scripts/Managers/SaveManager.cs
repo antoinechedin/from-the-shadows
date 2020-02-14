@@ -157,18 +157,21 @@ public class SaveManager : Singleton<SaveManager>
         mFloat.Add("totalTimePlayed", 0);
 
         //On créer une structure de données vide, puis on l'écrit sur le nouveau fichier (en gros on créer une save vide)
+        List<Level> lvlChap0 = new List<Level>();
+        lvlChap0.Add(new Level(false, new bool[] { false }));
+        lvlChap0.Add(new Level(false, new bool[] { false }));
+        lvlChap0.Add(new Level(false, new bool[] { false }));
+
         List<Level> lvlChap1 = new List<Level>();
         lvlChap1.Add(new Level(false, new bool[] { false }));
-        lvlChap1.Add(new Level(false, new bool[] { false }));
-        lvlChap1.Add(new Level(false, new bool[] { false }));
+
 
         List<Chapter> chapters = new List<Chapter>();
+        chapters.Add(new Chapter(lvlChap0));
         chapters.Add(new Chapter(lvlChap1));
-
-        List<Level> lvlChap2 = new List<Level>();
-        lvlChap2.Add(new Level(false, new bool[] { false }));
-
-        chapters.Add(new Chapter(lvlChap2));
+        chapters.Add(new Chapter(lvlChap1));
+        chapters.Add(new Chapter(lvlChap1));
+        chapters.Add(new Chapter(lvlChap1));
 
         Save createdSave = new Save(chapters, nbPlayer, mInt, mFloat, new SerializableDate(DateTime.Now));
 
