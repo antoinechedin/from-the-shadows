@@ -3,32 +3,29 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ActorControllerDebugCanvas : MonoBehaviour
+public class ActorControllerDebugPanel : MonoBehaviour
 {
-    // private TextMeshProUGUI playerInfos;
-    private Transform panel;
     private TextMeshProUGUI controllerInfos;
     private string controllerInfosTemplate;
     private TextMeshProUGUI collisionInfos;
     private string collisionInfosTemplate;
 
-    private NewActorController actorController;
+    private ActorController actorController;
 
     private void Awake()
     {
         // playerInfos = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
-        panel = transform.GetChild(0);
-        controllerInfos = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+        controllerInfos = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         if (controllerInfos != null) controllerInfosTemplate = controllerInfos.text;
-        collisionInfos = transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
+        collisionInfos = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         if (collisionInfos != null) collisionInfosTemplate = collisionInfos.text;
 
-        actorController = transform.parent.GetComponent<NewActorController>();
+        actorController = transform.parent.parent.GetComponent<ActorController>();
     }
 
     private void Update()
     {
-        if (actorController != null && panel != null)
+        if (actorController != null)
         {
             if (controllerInfos != null)
             {
