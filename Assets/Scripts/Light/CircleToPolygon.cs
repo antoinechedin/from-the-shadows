@@ -34,13 +34,11 @@ struct Segment
 [RequireComponent(typeof(PolygonCollider2D))]
 public class CircleToPolygon : MonoBehaviour
 {
-    public enum Choice { smooth, rough }
-
+    public bool debug = false;
     private SortedSet<Vector2> points = new SortedSet<Vector2>(new VectorComparer());
     public float vectorModifier = 0.01f;
     public int numberPoints;
     public LayerMask type;
-    public Choice choice;
 
     // Start is called before the first frame update
     void Awake()
@@ -55,7 +53,7 @@ public class CircleToPolygon : MonoBehaviour
         List<Vector2> circlePolygon = new List<Vector2>();
         
         for (int i = 0; i < numberPoints; i++)
-            circlePolygon.Add(new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2);
+            circlePolygon.Add(new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)));
 
         GetComponent<PolygonCollider2D>().SetPath(0, circlePolygon.ToArray());
     }
@@ -88,17 +86,17 @@ public class CircleToPolygon : MonoBehaviour
 
         for (int i = 0; i < numberPoints; i++)
         {
-            Vector2 prec = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
+            Vector2 prec = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) /2) + (Vector2)transform.position;
             Vector2 suiv = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * (i+1) * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * (i + 1) * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
 
-            Debug.DrawLine(prec, suiv, Color.red);
+            if(debug) Debug.DrawLine(prec, suiv, Color.red);
             listPolyBase.Add(new Segment(prec, suiv));
 
             Add1Point((Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position);
         }
             
 
-        Collider2D[] tabColliders = Physics2D.OverlapCircleAll((Vector2)transform.position, radius * 1.5f, type);
+        Collider2D[] tabColliders = Physics2D.OverlapCircleAll((Vector2)transform.position, radius, type);
 
         foreach (Collider2D col in tabColliders)
         {
@@ -113,10 +111,10 @@ public class CircleToPolygon : MonoBehaviour
                 Vector2 corner3 = (Vector2)box.bounds.center + new Vector2(box.bounds.extents.x, -box.bounds.extents.y);
                 Vector2 corner4 = (Vector2)box.bounds.center + new Vector2(-box.bounds.extents.x, +box.bounds.extents.y);
 
-                Debug.DrawLine(corner1, corner3, Color.red);
-                Debug.DrawLine(corner1, corner4, Color.red);
-                Debug.DrawLine(corner2, corner3, Color.red);
-                Debug.DrawLine(corner2, corner4, Color.red);
+                if (debug) Debug.DrawLine(corner1, corner3, Color.red);
+                if (debug) Debug.DrawLine(corner1, corner4, Color.red);
+                if (debug) Debug.DrawLine(corner2, corner3, Color.red);
+                if (debug) Debug.DrawLine(corner2, corner4, Color.red);
 
                 listColliderCol.Add(new Segment(corner1, corner3));
                 listColliderCol.Add(new Segment(corner1, corner4));
@@ -136,10 +134,9 @@ public class CircleToPolygon : MonoBehaviour
 
                     Vector2 prec = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[i]) + (Vector2)col.transform.position;
                     Vector2 suiv = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[(i+1)% col.GetComponent<PolygonCollider2D>().points.Length]) + (Vector2)col.transform.position;
-                    Debug.DrawLine(prec, suiv, Color.red);
+                    if (debug) Debug.DrawLine(prec, suiv, Color.red);
                     listColliderCol.Add(new Segment(prec, suiv));
-                }
-                    
+                }    
             }
             listSegments.Add(listColliderCol);
         }
@@ -153,7 +150,7 @@ public class CircleToPolygon : MonoBehaviour
                 foreach (Segment s2 in listSegments[listSegments.Count-1])
                 {
                     Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
-                    if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius * 1.5f) Add2Points(vec);
+                    if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius) Add2Points(vec);
                 }
             }
 
@@ -164,7 +161,7 @@ public class CircleToPolygon : MonoBehaviour
                     foreach (Segment s2 in listSegments[j])
                     {
                         Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
-                        if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius * 1.5f) Add2Points(vec);
+                        if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius) Add2Points(vec);
                     }
                 }      
             }    
@@ -174,57 +171,11 @@ public class CircleToPolygon : MonoBehaviour
 
         foreach (Vector2 pt in points)
         {
-            RaycastHit2D ray = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius * 1.5f, type);
+            RaycastHit2D ray = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius, type);
             if (ray)
                 circlePolygon.Add(transform.worldToLocalMatrix * (ray.point - (Vector2)transform.position));
             else
-                circlePolygon.Add(transform.worldToLocalMatrix * (((Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius * 1.5f) - (Vector2)transform.position));
-        }
-
-        GetComponent<PolygonCollider2D>().SetPath(0, circlePolygon.ToArray());
-    }
-
-
-    // Set the Collider of the GameObject from raycast Circle to Polygon and surronding plateforms
-    public void SetColliderOnOverlap()
-    {
-        // Todo : 2 points per points, tri when added
-        points.Clear();
-
-        float radius = GetComponent<NewLightSource>().lightRadius;
-        for (int i = 0; i < numberPoints; i++)
-            Add1Point((Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position);
-
-        Collider2D[] tabColliders = Physics2D.OverlapCircleAll((Vector2)transform.position, radius * 1.5f, type);
-
-        foreach (Collider2D col in tabColliders)
-        {
-            if (col.GetComponent<BoxCollider2D>() != null)
-            {
-                BoxCollider2D box = col.GetComponent<BoxCollider2D>();
-                Add2Points((Vector2)(box.bounds.center + box.bounds.extents));
-                Add2Points((Vector2)(box.bounds.center - box.bounds.extents));
-                Add2Points((Vector2)box.bounds.center + new Vector2(box.bounds.extents.x, -box.bounds.extents.y));
-                Add2Points((Vector2)box.bounds.center + new Vector2(-box.bounds.extents.x, +box.bounds.extents.y));
-            }
-            else if (col.GetComponent<PolygonCollider2D>() != null)
-            {
-                for (int i = 0; i < col.GetComponent<PolygonCollider2D>().points.Length; i++)
-                {
-                    Add2Points((Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[i]) + (Vector2)col.transform.position);
-                }  
-            }     
-        }
-
-        List<Vector2> circlePolygon = new List<Vector2>();
-
-        foreach (Vector2 pt in points)
-        {
-            RaycastHit2D ray = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius * 1.5f, type);
-            if (ray)
-                circlePolygon.Add(transform.worldToLocalMatrix * (ray.point - (Vector2)transform.position));
-            else
-                circlePolygon.Add(transform.worldToLocalMatrix * (((Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius * 1.5f) - (Vector2)transform.position));
+                circlePolygon.Add(transform.worldToLocalMatrix * (((Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius) - (Vector2)transform.position));
         }
 
         GetComponent<PolygonCollider2D>().SetPath(0, circlePolygon.ToArray());
@@ -239,18 +190,15 @@ public class CircleToPolygon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (choice == Choice.smooth)
-            SetColliderOnOverlap2();
-        else if (choice == Choice.rough)
-            SetColliderOnOverlap();
+        SetColliderOnOverlap2();
     }
 
     // Gizmos for Debug
     #if UNITY_EDITOR
-    /*
+    
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, GetComponent<NewLightSource>().lightRadius * 1.5f);
+        Gizmos.DrawWireSphere(transform.position, GetComponent<NewLightSource>().lightRadius);
         int i = 0;
         foreach (Vector2 pt in points)
         {
@@ -259,7 +207,7 @@ public class CircleToPolygon : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(transform.position, GetPosFromPoint(pt));
 
-            RaycastHit2D ray2 = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius * 1.5f, type);
+            RaycastHit2D ray2 = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius, type);
             if (ray2)
             {
                 Gizmos.color = Color.green;
@@ -268,11 +216,11 @@ public class CircleToPolygon : MonoBehaviour
             else
             {
                 Gizmos.color = Color.blue;
-                Gizmos.DrawLine(transform.position, (Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius * 1.5f);
+                Gizmos.DrawLine(transform.position, (Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius);
             }
         }
     }
-    */
+    
     #endif
 }
 
