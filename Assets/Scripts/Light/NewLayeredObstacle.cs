@@ -93,21 +93,31 @@ public class NewLayeredObstacle : MonoBehaviour
     /// <param name="clippers">list of Polygons to intersect/difference the baseCollider</param>
     void SetColliderAs(ClipType ct, List<PolygonCollider2D> clippers)
     {
+        List<List<IntPoint>> solution = new List<List<IntPoint>>();
+        Clipper clipper = new Clipper();
+
+
         List<IntPoint> subj = new List<IntPoint>();
         for (int j = 0; j < baseCollider.Count; j++)
             subj.Add(ConvertToIntPoint(transform.localToWorldMatrix * baseCollider[j] + (Vector4)transform.position));       
 
-        List<IntPoint> clip = new List<IntPoint>();
         foreach (PolygonCollider2D cl in clippers)
+        {
+            List<IntPoint> clip = new List<IntPoint>();
             for (int j = 0; j < cl.points.Length; j++)
+            {
                 clip.Add(ConvertToIntPoint(cl.transform.localToWorldMatrix * cl.points[j] + (Vector4)cl.transform.position));
-
-        List<List<IntPoint>> solution = new List<List<IntPoint>>();
-        Clipper clipper = new Clipper();
-
+            }
+            clipper.AddPath(clip, PolyType.ptClip, true);
+        }      
+ 
         clipper.AddPath(subj, PolyType.ptSubject, true);
-        clipper.AddPath(clip, PolyType.ptClip, true);
-        clipper.Execute(ct, solution, PolyFillType.pftEvenOdd, PolyFillType.pftEvenOdd);
+
+        if(ct == ClipType.ctDifference)
+            clipper.Execute(ct, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
+
+        if (ct == ClipType.ctIntersection)
+            clipper.Execute(ct, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
 
         polyCollider.pathCount = solution.Count;
 

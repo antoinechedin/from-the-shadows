@@ -25,7 +25,7 @@ public class Torch : ActivatorListener, IResetable
         }
         isMute = false;
         active = activeAtStart;
-        transform.Find("LightSource").transform.Find("Script").gameObject.GetComponent<LightSource>().lightRadius = lightRadius;
+        transform.Find("LightSource").transform.Find("Script").gameObject.GetComponent<NewLightSource>().lightRadius = lightRadius;
     }
 
     private void Update()

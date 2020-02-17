@@ -9,8 +9,35 @@ struct Segment
 
     public Segment(Vector2 p1, Vector2 p2)
     {
-        pt1 = p1;
-        pt2 = p2;
+        if(p1.x < p2.x)
+        {
+            pt1 = p1;
+            pt2 = p2;
+        }
+        else if (p1.x > p2.x)
+        {
+            pt1 = p2;
+            pt2 = p1;
+        }
+        else
+        {
+            if (p1.y < p2.y)
+            {
+                pt1 = p1;
+                pt2 = p2;
+            }
+            else if(p1.y > p2.y)
+            {
+                pt1 = p2;
+                pt2 = p1;
+            }
+            else
+            {
+                pt1 = p1;
+                pt2 = p2;
+            }
+        }
+        
     }
 
     public Vector2 GetIntersectionPointCoordinates(Segment s2)
@@ -86,15 +113,14 @@ public class CircleToPolygon : MonoBehaviour
 
         for (int i = 0; i < numberPoints; i++)
         {
-            Vector2 prec = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) /2) + (Vector2)transform.position;
-            Vector2 suiv = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * (i+1) * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * (i + 1) * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
+            Vector2 prec = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
+            Vector2 suiv = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * (i + 1) * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * (i + 1) * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
 
-            if(debug) Debug.DrawLine(prec, suiv, Color.red);
+            if (debug) Debug.DrawLine(prec, suiv, Color.red);
             listPolyBase.Add(new Segment(prec, suiv));
 
             Add1Point((Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position);
-        }
-            
+        }   
 
         Collider2D[] tabColliders = Physics2D.OverlapCircleAll((Vector2)transform.position, radius, type);
 
@@ -134,7 +160,8 @@ public class CircleToPolygon : MonoBehaviour
 
                     Vector2 prec = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[i]) + (Vector2)col.transform.position;
                     Vector2 suiv = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[(i+1)% col.GetComponent<PolygonCollider2D>().points.Length]) + (Vector2)col.transform.position;
-                    if (debug) Debug.DrawLine(prec, suiv, Color.red);
+
+                    if (debug) Debug.DrawLine(prec, suiv, Color.blue);
                     listColliderCol.Add(new Segment(prec, suiv));
                 }    
             }
@@ -150,20 +177,27 @@ public class CircleToPolygon : MonoBehaviour
                 foreach (Segment s2 in listSegments[listSegments.Count-1])
                 {
                     Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
-                    if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius) Add2Points(vec);
+                    if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius)
+                    {
+                        if (vec.x >= s1.pt1.x  && vec.x <= s1.pt2.x && vec.y >= s1.pt1.y && vec.y <= s1.pt2.y)
+                            Add2Points(vec);
+                    }
                 }
             }
 
             for (int j = 0; j < tabColliders.Length; j++)
             {
-                foreach (Segment s1 in listSegments[i])
+                if (i != j)
                 {
-                    foreach (Segment s2 in listSegments[j])
+                    foreach (Segment s1 in listSegments[i])
                     {
-                        Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
-                        if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius) Add2Points(vec);
+                        foreach (Segment s2 in listSegments[j])
+                        {
+                            Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
+                            if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius) Add2Points(vec);
+                        }
                     }
-                }      
+                }
             }    
         }
 
