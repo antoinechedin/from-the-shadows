@@ -73,7 +73,9 @@ public class MenuManager : MonoBehaviour
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
-        EventSystem.current.SetSelectedGameObject(firstSave.gameObject);
+        int lastSaveSelected = savesMenu.gameObject.GetComponent<SaveMenu>().LastSelected;
+        Button lastButtonSelected = savesMenu.gameObject.GetComponent<SaveMenu>().buttons[lastSaveSelected];
+        EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
     }
 
     public void OpenChaptersMenu(int chapterIndex)
