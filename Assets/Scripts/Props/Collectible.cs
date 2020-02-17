@@ -15,7 +15,7 @@ public class Collectible : MonoBehaviour, IResetable
     public bool isPickedUp;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         child = transform.Find("Child").gameObject;
     }
@@ -44,7 +44,6 @@ public class Collectible : MonoBehaviour, IResetable
 
     private void PickUp()
     {
-        Debug.Log("plop");
         isPickedUp = true;
         child.SetActive(false);
     }
