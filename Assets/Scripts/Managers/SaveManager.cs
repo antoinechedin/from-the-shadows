@@ -158,7 +158,7 @@ public class SaveManager : Singleton<SaveManager>
 
         //On créer une structure de données vide, puis on l'écrit sur le nouveau fichier (en gros on créer une save vide)
         List<Level> lvlChap0 = new List<Level>();
-        lvlChap0.Add(new Level(false, new bool[] { false }));
+        lvlChap0.Add(new Level(false, new bool[] { false, false, false }));
         lvlChap0.Add(new Level(false, new bool[] { false }));
         lvlChap0.Add(new Level(false, new bool[] { false }));
 
