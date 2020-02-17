@@ -17,6 +17,7 @@ public class SaveMenu : MonoBehaviour
     private Canvas actionChoiceCanvas;
     private Canvas newGameChoiceCanvas;
     private MenuManager menuManager;
+    private int lastSelected = 0;
 
     void Start()
     {
@@ -38,12 +39,12 @@ public class SaveMenu : MonoBehaviour
             if (actionChoiceCanvas.gameObject.activeSelf)
             {
                 actionChoiceCanvas.gameObject.SetActive(false);
-                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[0].gameObject);
+                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[lastSelected].gameObject);
             }
             else if (newGameChoiceCanvas.gameObject.activeSelf)
             {
                 newGameChoiceCanvas.gameObject.SetActive(false);
-                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[0].gameObject);
+                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[lastSelected].gameObject);
             }
             else
             {
@@ -98,6 +99,8 @@ public class SaveMenu : MonoBehaviour
     /// <param name="index"> Index of the button clicked </param>
     public void ChooseAction(int index)
     {
+        lastSelected = index;
+
         Button playButton = actionChoiceCanvas.transform.Find("PlayButton").GetComponent<Button>();
         Button deleteButton = actionChoiceCanvas.transform.Find("DeleteButton").GetComponent<Button>();
         Button soloButton = newGameChoiceCanvas.transform.Find("SoloButton").GetComponent<Button>();
