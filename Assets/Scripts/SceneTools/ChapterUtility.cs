@@ -57,6 +57,10 @@ public class ChapterUtility : MonoBehaviour
     List<Identifier<BoxCollider2D>> levelTrigger = new List<Identifier<BoxCollider2D>>();
     List<Identifier<BoxCollider2D>> invisibleWall = new List<Identifier<BoxCollider2D>>();
 
+    static int SortByName(LevelManager lm1, LevelManager lm2)
+    {
+        return lm1.gameObject.name.CompareTo(lm2.gameObject.name);
+    }
     /// <summary>
     /// Fill the list of Transform for CameraPoints / LevelTriggers / Invisible Walls
     /// </summary>
@@ -75,7 +79,9 @@ public class ChapterUtility : MonoBehaviour
         foreach (GameObject go in levelsGo)
         {
             levels.Add(go.GetComponent<LevelManager>());
+
         }
+        levels.Sort(SortByName);
 
         // Get Level Triggers + Number of the Level Associated
         GameObject[] levelTriggers = GameObject.FindGameObjectsWithTag("Triggers");
