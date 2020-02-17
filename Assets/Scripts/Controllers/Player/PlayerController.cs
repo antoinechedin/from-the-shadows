@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public Vector2 targetVelocity;
     public Vector2 velocity;
 
+    public bool dead = false;
+
     private void Awake()
     {
         actor = GetComponent<ActorController>();
@@ -58,5 +60,10 @@ public class PlayerController : MonoBehaviour
                 sr.color = Color.blue;
             }
         }
+    }
+
+    public void Die()
+    {
+        //lancer l'animation de mort. C'est l'animnation que settera dead = true toute seule comme une grande
     }
 }

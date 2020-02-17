@@ -162,6 +162,27 @@ public class ChapterManager : MonoBehaviour
     /// <param name="playerId"></param>
     IEnumerator ResetLevelAsync(int playerId)
     {
+        //on récupère le joueur concerné
+        PlayerController[] players = GameObject.FindObjectsOfType<PlayerController>();
+        PlayerController player = null;
+        foreach (PlayerController p in players)
+        {
+            if (p.input.id == playerId)
+            {
+                player = p;
+            }
+        }
+
+        //on le fait mourir
+        player.Die();
+
+        //on attend que le joueur soit mort. ie : que l'animation soit terminée
+        while (!player.GetComponent<PlayerController>().dead)
+        {
+            yield return null;
+        }
+
+        //on affiche l'écran de transition de mort
         GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
         transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
 
@@ -179,5 +200,7 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
+        //on remet Player.dead à false
+        player.dead = false;  
     }
 }
