@@ -201,6 +201,7 @@ public class ChapterManager : MonoBehaviour
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
         //on remet Player.dead à false
-        player.dead = false;  
+        player.dead = false;
+        player.dying = false;
     }
 }
