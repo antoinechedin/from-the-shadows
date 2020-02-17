@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 velocity;
 
     public bool dead = false;
+    public bool dying = false;
 
     private void Awake()
     {
@@ -64,6 +65,7 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        //lancer l'animation de mort. C'est l'animnation que settera dead = true toute seule comme une grande
+        dying = true;
+        //lancer l'animation de mort. C'est l'animnation qui settera dead = true toute seule comme une grande
     }
 }

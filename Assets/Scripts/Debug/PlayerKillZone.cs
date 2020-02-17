@@ -10,7 +10,7 @@ public class PlayerKillZone : MonoBehaviour
         if (collision.tag == "Player")
         {
             PlayerController player = collision.GetComponent<PlayerController>();
-            if (!player.dead)
+            if (!player.dying)
             {
                 int pId = player.input.id;
                 Debug.Log("Le joueur " + pId + " est mort");
