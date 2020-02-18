@@ -61,9 +61,9 @@ public class Save
         set { metaFloat = value; }
     }
 
-    public string Print()
+    public override string ToString()
     {
-        return "nb player : " + nbPlayer + ". nb chapters : " + chapters.Count;
+        return (nbPlayer == 1 ? "solo " : "duo ") + chapters.Count + " chap";
     }
 
 

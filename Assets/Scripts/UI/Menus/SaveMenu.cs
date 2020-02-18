@@ -14,8 +14,8 @@ public class SaveMenu : MonoBehaviour
     public Button[] buttons;
     private Save[] saves;
 
-    private Canvas actionChoiceCanvas;
-    private Canvas newGameChoiceCanvas;
+    private RectTransform actionChoicePanel;
+    private RectTransform newGameChoicePanel;
     private MenuManager menuManager;
     private int lastSelected = 0;
 
@@ -23,9 +23,9 @@ public class SaveMenu : MonoBehaviour
     {
         saves = GameManager.Instance.Saves;
         UpdateButtons();
-        actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
-        newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
-        menuManager = GameObject.Find("MenuManager").gameObject.GetComponent<MenuManager>();
+        actionChoicePanel = gameObject.transform.Find("Action Choice").gameObject.GetComponent<RectTransform>();
+        newGameChoicePanel = gameObject.transform.Find("New Game Choice").gameObject.GetComponent<RectTransform>();
+        menuManager = GameObject.Find("Menu Manager").gameObject.GetComponent<MenuManager>();
         if (buttons.Length > 0)
         {
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[0].gameObject);
@@ -36,14 +36,14 @@ public class SaveMenu : MonoBehaviour
     {
         if (Input.GetButtonDown("B_G"))
         {
-            if (actionChoiceCanvas.gameObject.activeSelf)
+            if (actionChoicePanel.gameObject.activeSelf)
             {
-                actionChoiceCanvas.gameObject.SetActive(false);
+                actionChoicePanel.gameObject.SetActive(false);
                 EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[lastSelected].gameObject);
             }
-            else if (newGameChoiceCanvas.gameObject.activeSelf)
+            else if (newGameChoicePanel.gameObject.activeSelf)
             {
-                newGameChoiceCanvas.gameObject.SetActive(false);
+                newGameChoicePanel.gameObject.SetActive(false);
                 EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[lastSelected].gameObject);
             }
             else
@@ -101,10 +101,12 @@ public class SaveMenu : MonoBehaviour
     {
         lastSelected = index;
 
-        Button playButton = actionChoiceCanvas.transform.Find("PlayButton").GetComponent<Button>();
-        Button deleteButton = actionChoiceCanvas.transform.Find("DeleteButton").GetComponent<Button>();
-        Button soloButton = newGameChoiceCanvas.transform.Find("SoloButton").GetComponent<Button>();
-        Button duoButton = newGameChoiceCanvas.transform.Find("DuoButton").GetComponent<Button>();
+        Debug.Log(actionChoicePanel);
+
+        Button playButton = actionChoicePanel.transform.Find("Play Button").GetComponent<Button>();
+        Button deleteButton = actionChoicePanel.transform.Find("Delete Button").GetComponent<Button>();
+        Button soloButton = newGameChoicePanel.transform.Find("Solo Button").GetComponent<Button>();
+        Button duoButton = newGameChoicePanel.transform.Find("Duo Button").GetComponent<Button>();
 
         playButton.onClick.RemoveAllListeners();
         deleteButton.onClick.RemoveAllListeners();
@@ -113,10 +115,10 @@ public class SaveMenu : MonoBehaviour
 
         if (currentState == State.Loading && saves[index] != null)
         {
-            actionChoiceCanvas = gameObject.transform.Find("ActionChoice").gameObject.GetComponent<Canvas>();
+            actionChoicePanel = gameObject.transform.Find("Action Choice").gameObject.GetComponent<RectTransform>();
 
 
-            actionChoiceCanvas.gameObject.SetActive(true);
+            actionChoicePanel.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(playButton.gameObject);
 
             playButton.onClick.AddListener(delegate { Launch(index); });
@@ -125,10 +127,10 @@ public class SaveMenu : MonoBehaviour
         }
         else if (saves[index] == null)
         {
-            newGameChoiceCanvas = gameObject.transform.Find("NewGameChoice").gameObject.GetComponent<Canvas>();
+            newGameChoicePanel = gameObject.transform.Find("New Game Choice").gameObject.GetComponent<RectTransform>();
 
 
-            newGameChoiceCanvas.gameObject.SetActive(true);
+            newGameChoicePanel.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(duoButton.gameObject);
 
             soloButton.onClick.AddListener(delegate { NewGame(1, index); });
@@ -143,8 +145,8 @@ public class SaveMenu : MonoBehaviour
     public void Launch(int indexSave)
     {
         GameManager.Instance.CurrentSave = indexSave;
-        actionChoiceCanvas.gameObject.SetActive(false);
-        newGameChoiceCanvas.gameObject.SetActive(false);
+        actionChoicePanel.gameObject.SetActive(false);
+        newGameChoicePanel.gameObject.SetActive(false);
         List<Chapter> chapters = GameManager.Instance.GetChapters();
         GameManager.Instance.CurrentChapter = 0;
         for (int i = 0; i < chapters.Count - 1; i++)
@@ -166,7 +168,7 @@ public class SaveMenu : MonoBehaviour
         SaveManager.Instance.DeleteSaveFile(indexSave);
         Debug.Log("Delete save number " + indexSave);
 
-        gameObject.transform.Find("ActionChoice").gameObject.SetActive(false);
+        gameObject.transform.Find("Action Choice").gameObject.SetActive(false);
         EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[indexSave].gameObject);
 
         saves[indexSave] = null;
@@ -185,5 +187,11 @@ public class SaveMenu : MonoBehaviour
         UpdateButtons();
         Debug.Log("Create save number " + indexSave + " (" + nbPlayer + " players).");
         Launch(indexSave);
+    }
+
+    public int LastSelected
+    {
+        get => lastSelected;
+        set => lastSelected = value;
     }
 }

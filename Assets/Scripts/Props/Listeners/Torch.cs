@@ -14,7 +14,7 @@ public class Torch : ActivatorListener, IResetable
     private bool isMute = true;
     public bool active;
     private SoundPlayer soundPlayer;
-    private Vector3 targetScale = Vector3.zero;
+    private Vector3 targetScale = new Vector3(0.01f, 0.01f, 0.01f);
 
     void Start()
     {
@@ -43,7 +43,7 @@ public class Torch : ActivatorListener, IResetable
 
     public override void OnDeactivate()
     {
-        targetScale = Vector3.zero;
+        targetScale = new Vector3(0.01f, 0.01f, 0.01f);
         active = false;
         if (soundPlayer != null && !isMute)
             soundPlayer.PlaySoundAtLocation(soundOff, 1);

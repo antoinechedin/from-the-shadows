@@ -74,7 +74,7 @@ public class SaveManager : Singleton<SaveManager>
             FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json");
             createdSave.LastOpenDate = new SerializableDate(fileInfo.LastWriteTime);
             GameManager.Instance.Saves[saveIndex] = createdSave;
-            Debug.Log("Save " + saveIndex + " loaded : " + createdSave.Print());
+            Debug.Log("Save " + saveIndex + " loaded : " + createdSave);
 
             finished = true;
         }
@@ -99,6 +99,7 @@ public class SaveManager : Singleton<SaveManager>
     private IEnumerator WriteSaveFileAsync()
     {
         bool finished = false;
+        GameManager.Instance.Loading = true;
 
         if (GameManager.Instance.CurrentSave != -1)
         {
@@ -120,6 +121,8 @@ public class SaveManager : Singleton<SaveManager>
         {
             Debug.LogWarning("WARN : SaveManager.WriteSaveFile: GameManager.CurrentSave is not set. Not saving.");
         }
+
+        GameManager.Instance.Loading = false;
     }
     #endregion
 
@@ -156,9 +159,9 @@ public class SaveManager : Singleton<SaveManager>
         mFloat.Add("distance2", 0);
         mFloat.Add("totalTimePlayed", 0);
 
-        //On créer une structure de données vide, puis on l'écrit sur le nouveau fichier (en gros on créer une save vide)
+        //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
         List<Level> lvlChap0 = new List<Level>();
-        lvlChap0.Add(new Level(false, new bool[] { false }));
+        lvlChap0.Add(new Level(false, new bool[] { false, false, false }));
         lvlChap0.Add(new Level(false, new bool[] { false }));
         lvlChap0.Add(new Level(false, new bool[] { false }));
 
@@ -173,6 +176,7 @@ public class SaveManager : Singleton<SaveManager>
         chapters.Add(new Chapter(lvlChap1));
         chapters.Add(new Chapter(lvlChap1));
 
+        //enfin, on créer la save qui contient toutes les informations
         Save createdSave = new Save(chapters, nbPlayer, mInt, mFloat, new SerializableDate(DateTime.Now));
 
 

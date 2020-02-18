@@ -12,8 +12,8 @@ public class MenuChapter : MonoBehaviour
     public Text collectiblesNumber;
     public Text completedNumber;
     public GameObject chapterButtonsPanel;
-    public Canvas canvas;
-    public Canvas saveMenu;
+    public RectTransform thisPanel;
+    public RectTransform saveMenu;
     public MenuManager menuManager;
     public Image metaDataPanel;
     public Image metaDataIcon;
