@@ -6,10 +6,11 @@ public class Collectible : MonoBehaviour, IResetable
 {
     public enum Type { Light, Shadow };
     public Type type;
-    public int index;
+    public Material lightMaterial;
+    public Material shadowMaterial;
 
     private GameObject child;
-    //[HideInInspector]
+    [HideInInspector]
     public bool isValidated;
     [HideInInspector]
     public bool isPickedUp;
@@ -18,12 +19,10 @@ public class Collectible : MonoBehaviour, IResetable
     void Awake()
     {
         child = transform.Find("Child").gameObject;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (type == Type.Light && child != null)
+            child.GetComponent<MeshRenderer>().material = lightMaterial;
+        else if (type == Type.Shadow && child != null)
+            child.GetComponent<MeshRenderer>().material = shadowMaterial;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
