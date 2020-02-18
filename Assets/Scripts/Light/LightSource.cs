@@ -23,7 +23,7 @@ public class LightSource : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "LayeredObstacle")
+        if (other.tag == "LayeredSolid")
         {
             other.GetComponent<LayeredObstacle>().AddLightSource(this);
         }
@@ -31,7 +31,7 @@ public class LightSource : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "LayeredObstacle")
+        if (other.tag == "LayeredSolid")
         {
             other.GetComponent<LayeredObstacle>().RemoveLightSource(this);
         }
