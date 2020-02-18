@@ -23,7 +23,7 @@ public class ChapterManager : MonoBehaviour
         levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2, false);
 
-        SpawnPlayer(levels[currentLevel].playerSpawn.position);
+        //SpawnPlayer(levels[currentLevel].playerSpawn.position); TODO : changer pour prendre en compte plusieurs spawn points
         if(GameManager.Instance.CurrentChapter != -1)
             levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
 
@@ -212,7 +212,7 @@ public class ChapterManager : MonoBehaviour
         //On fait ci dessous tout ce qui intervient pendant que l'écran est noir
 
         //Teleporte les joueurs au début du jeu
-        SpawnPlayer(levels[currentLevel].playerSpawn.position);
+        //SpawnPlayer(levels[currentLevel].playerSpawn.position); TODO : changer pour prendre en compte plusieurs spawn points
         //téléporte la camera à sa position de départ
         //Incrémente la meta donnée du joueur mort
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
