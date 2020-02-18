@@ -11,6 +11,7 @@ public class PressurePlate : Activator
     public bool hasTimer;
     public float timer;
     public int nbObjectsOnPlate;
+    public string tagInteractObject;
 
     private GameObject child;
     private SoundPlayer soundPlayer;
@@ -27,7 +28,7 @@ public class PressurePlate : Activator
     /// </summary>
     public void OnTriggerEnter2D(Collider2D collision)
     {        
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
         {
             updateNbObjectsOnPlate(+1);
         }            
@@ -38,7 +39,7 @@ public class PressurePlate : Activator
     /// </summary>
     public void OnTriggerExit2D(Collider2D collision)
     {        
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Object"))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
         {
             updateNbObjectsOnPlate(-1);
         }
