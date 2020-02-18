@@ -71,14 +71,14 @@ public class ChapterUtility : MonoBehaviour
         mainCam = Camera.main;
 
         // Level Count
-        GameObject[] levelsGo = GameObject.FindGameObjectsWithTag("Level");
+        GameObject[] levelsGo = GameObject.FindGameObjectsWithTag("CU Level");
         foreach (GameObject go in levelsGo)
         {
             levels.Add(go.GetComponent<LevelManager>());
         }
 
         // Get Level Triggers + Number of the Level Associated
-        GameObject[] levelTriggers = GameObject.FindGameObjectsWithTag("Triggers");
+        GameObject[] levelTriggers = GameObject.FindGameObjectsWithTag("CU Triggers");
         foreach (GameObject go in levelTriggers)
         {
             BoxCollider2D[] lvlTrigger = go.transform.GetComponentsInChildren<BoxCollider2D>();
@@ -87,7 +87,7 @@ public class ChapterUtility : MonoBehaviour
         }
 
         // Get Invisible Walls + Number of the Level Associated
-        GameObject[] invisibleWalls = GameObject.FindGameObjectsWithTag("InvisibleWalls");
+        GameObject[] invisibleWalls = GameObject.FindGameObjectsWithTag("CU InvisibleWalls");
         foreach (GameObject go in invisibleWalls)
         {
             BoxCollider2D[] invWalls = go.transform.GetComponentsInChildren<BoxCollider2D>();

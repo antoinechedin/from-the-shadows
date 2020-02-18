@@ -18,7 +18,7 @@ public class NewLightSource : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "LayeredObstacle")
+        if (other.gameObject.layer == LayerMask.NameToLayer("LayeredObstacle"))
         {
             other.GetComponent<NewLayeredObstacle>().AddLightSource(this);
         }
@@ -26,7 +26,7 @@ public class NewLightSource : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "LayeredObstacle")
+        if (other.gameObject.layer == LayerMask.NameToLayer("LayeredObstacle"))
         {
             other.GetComponent<NewLayeredObstacle>().RemoveLightSource(this);
         }

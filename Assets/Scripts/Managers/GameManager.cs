@@ -15,7 +15,7 @@ public class GameManager : Singleton<GameManager>
 
     private Save[] saves = new Save[3]; //store all saves of the game
     private int currentSave = -1; //l'indice de la save courante
-    private int currentChapter = -1;
+    private int currentChapter = -1; //indice du chapitre courant
 
     //info about the state of the game
     private bool debuging = false;
