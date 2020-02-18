@@ -189,7 +189,7 @@ public class NewLayeredObstacle : MonoBehaviour
     }
     private void UpdateMesh()
     {
-        Mesh m = Utils.CreateMesh2DFromPolyCollider(transform.GetChild(0).GetComponent<PolygonCollider2D>());
+        Mesh m = Utils.CreateMesh3DFromPolyCollider(transform.GetChild(0).GetComponent<PolygonCollider2D>(), -0.5f, +0.5f);
         GetComponentInChildren<MeshFilter>().sharedMesh = m;
         GetComponentInChildren<MeshRenderer>().material = mat;
     }

@@ -14,7 +14,6 @@ public class NewLightSource : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.localScale = new Vector3(lightRadius * 2, lightRadius * 2, 1);
         UpdateMesh();
     }
 
