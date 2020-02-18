@@ -12,7 +12,8 @@ public class MenuCamera : MonoBehaviour
     public List<GameObject> cursorPositions;
     public float cameraSpeed;
 
-    public Canvas chapterCanvas;
+    public RectTransform chapterMenu;
+    public Canvas canvas;
 
     private int chapterSelected;
     private bool isMoving = false;
@@ -71,8 +72,8 @@ public class MenuCamera : MonoBehaviour
             // Cursor on UI follow world points
             cursor.gameObject.SetActive(cursorPositions[chapterSelected].GetComponent<Renderer>().isVisible);
             Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
-            Vector2 canvasSizeDelta = chapterCanvas.GetComponent<RectTransform>().sizeDelta / 2f;
-            float canvasScaleFactor = chapterCanvas.scaleFactor;
+            Vector2 canvasSizeDelta = canvas.GetComponent<RectTransform>().sizeDelta / 2f;
+            float canvasScaleFactor = canvas.scaleFactor;
             cursor.GetComponent<RectTransform>().anchoredPosition = screenPoint / canvasScaleFactor - canvasSizeDelta;
         }
     }

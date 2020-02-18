@@ -9,9 +9,13 @@ public class PlayerKillZone : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            int pId = collision.GetComponent<PlayerController>().input.id;
-            Debug.Log("Le joueur " + pId + " est mort");
-            GameObject.FindObjectOfType<ChapterManager>().ResetLevel(pId);
+            PlayerController player = collision.GetComponent<PlayerController>();
+            if (!player.dying)
+            {
+                int pId = player.input.id;
+                Debug.Log("Le joueur " + pId + " est mort");
+                GameObject.FindObjectOfType<ChapterManager>().ResetLevel(pId);
+            }
         }
     }
 }

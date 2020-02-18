@@ -39,7 +39,7 @@ public class NewLayeredObstacle : MonoBehaviour
         GameObject go = Instantiate(RealCollider, transform.position, Quaternion.identity);
         go.name = "RealCollider";
         go.transform.parent = transform;
-        go.layer = LayerMask.NameToLayer("Obstacle");
+        go.layer = LayerMask.NameToLayer("LayeredObstacle");
 
         // Setting up Gizmos Color
         DrawPolygonGizmos dpg = go.GetComponent<DrawPolygonGizmos>();
@@ -176,7 +176,7 @@ public class NewLayeredObstacle : MonoBehaviour
         if (spriteRenderer != null)
         {
             Color newColor = spriteRenderer.color;
-            if (gameObject.layer == LayerMask.NameToLayer("Obstacle")) newColor.a = 1f;
+            if (gameObject.layer == LayerMask.NameToLayer("LayeredObstacle")) newColor.a = 1f;
             if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle")) newColor.a = 0.1f;
             spriteRenderer.color = newColor;
         }

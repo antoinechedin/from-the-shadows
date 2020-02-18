@@ -6,10 +6,10 @@ using UnityEngine.EventSystems;
 
 public class MenuManager : MonoBehaviour
 {
-    public Canvas startMenu;
-    public Canvas saveMenu;
-    public Canvas chaptersMenu;
-    public Canvas optionsMenu;
+    public RectTransform startMenu;
+    public RectTransform savesMenu;
+    public RectTransform optionsMenu;
+    public RectTransform chaptersMenu;
 
     public MenuChapter menuChapter;
     public MenuCamera menuCamera;
@@ -59,7 +59,7 @@ public class MenuManager : MonoBehaviour
     public void OpenStartMenu()
     {
         startMenu.gameObject.SetActive(true);
-        saveMenu.gameObject.SetActive(false);
+        savesMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
@@ -68,18 +68,20 @@ public class MenuManager : MonoBehaviour
 
     public void OpenSaveMenu()
     {
-        saveMenu.gameObject.SetActive(true);
+        savesMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
-        EventSystem.current.SetSelectedGameObject(firstSave.gameObject);
+        int lastSaveSelected = savesMenu.gameObject.GetComponent<SaveMenu>().LastSelected;
+        Button lastButtonSelected = savesMenu.gameObject.GetComponent<SaveMenu>().buttons[lastSaveSelected];
+        EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
     }
 
     public void OpenChaptersMenu(int chapterIndex)
     {
         chaptersMenu.gameObject.SetActive(true);
-        saveMenu.gameObject.SetActive(false);
+        savesMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
@@ -93,7 +95,7 @@ public class MenuManager : MonoBehaviour
     {
         optionsMenu.gameObject.SetActive(true);
         chaptersMenu.gameObject.SetActive(false);
-        saveMenu.gameObject.SetActive(false);
+        savesMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
 
         optionsMenu.GetComponent<MenuOptions>().OpenOptionsMenu();

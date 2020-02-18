@@ -10,9 +10,19 @@ public class LevelManager : MonoBehaviour
     public Transform playerSpawn; // mutual spawn point
     public Transform lightSpawn;
     public Transform shadowSpawn;
+    public List<GameObject> collectibles;
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
 
+    public void Start()
+    {
+        // Fetch collectibles
+        Transform parentCollectibles = transform.Find("Collectibles").transform;
+        for (int i = 0; i < parentCollectibles.childCount; i++)
+        {
+            collectibles.Add(parentCollectibles.GetChild(i).gameObject);
+        }
+    }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
     /// </summary>
@@ -40,6 +50,15 @@ public class LevelManager : MonoBehaviour
         foreach (IResetable resetable in GetComponentsInChildren<IResetable>())
         {
             resetable.Reset();
+        }
+    }
+
+    public void SetCollectibles(bool[] collectiblesTaken)
+    {
+        for (int i = 0; i < collectibles.Count; i++)
+        {
+            collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
+            collectibles[i].GetComponent<Collectible>().UpdateState();
         }
     }
 }

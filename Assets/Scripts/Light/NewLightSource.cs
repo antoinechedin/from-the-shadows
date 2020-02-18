@@ -8,7 +8,7 @@ public class NewLightSource : MonoBehaviour
 
     private void Awake()
     {
-        
+        QualitySettings.vSyncCount = 0;
     }
 
     private void Update()
