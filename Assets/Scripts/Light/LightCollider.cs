@@ -231,7 +231,6 @@ public class LightCollider : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, GetComponent<NewLightSource>().lightRadius);
-
         if (debug)
         {
             int i = 0;

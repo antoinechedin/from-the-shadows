@@ -41,7 +41,7 @@ public class NewLayeredObstacle : MonoBehaviour
         go.AddComponent<MeshFilter>();
         go.AddComponent<DrawPolygonGizmos>();
         go.name = "RealCollider";
-        go.layer = LayerMask.NameToLayer("LayeredObstacle");
+        go.layer = LayerMask.NameToLayer("LayeredSolid");
         go.transform.SetParent(this.transform, false);
 
         // Setting up Gizmos Color
@@ -59,7 +59,7 @@ public class NewLayeredObstacle : MonoBehaviour
             baseCollider.Add(GetComponent<PolygonCollider2D>().GetPath(0)[i]);
 
         // This Object is Transparent, his Child is the real Collider
-        gameObject.layer = LayerMask.NameToLayer("TransparentObstacle");
+        gameObject.layer = LayerMask.NameToLayer("DisLayeredSolid");
 
         // Initialize LightSource & SpriteRenderer
         lightSources = new List<NewLightSource>();
