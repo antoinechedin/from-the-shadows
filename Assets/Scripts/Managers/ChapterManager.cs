@@ -86,8 +86,9 @@ public class ChapterManager : MonoBehaviour
     /// </summary>
     public void NextLevel()
     {
+        Debug.Log("next level");
         //Mise àjour des infos concernant le niveau courant
-        ValidateCollectibles();
+        //ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
         currentLevel++;
 

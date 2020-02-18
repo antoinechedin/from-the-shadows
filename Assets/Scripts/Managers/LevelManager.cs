@@ -7,7 +7,7 @@ public class LevelManager : MonoBehaviour
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
-    public Transform playerSpawn; // mutual spawn point
+    public Transform playerSpawn;
     public Transform lightSpawn;
     public Transform shadowSpawn;
     public List<GameObject> collectibles;
