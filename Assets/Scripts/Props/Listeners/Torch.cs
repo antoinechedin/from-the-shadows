@@ -16,6 +16,11 @@ public class Torch : ActivatorListener, IResetable
     private SoundPlayer soundPlayer;
     private Vector3 targetScale = new Vector3(0.01f, 0.01f, 0.01f);
 
+    private void Awake()
+    {
+        lightSource = transform.Find("LightSource").gameObject;
+    }
+
     void Start()
     {
         soundPlayer = GetComponent<SoundPlayer>();
@@ -25,7 +30,7 @@ public class Torch : ActivatorListener, IResetable
         }
         isMute = false;
         active = activeAtStart;
-        transform.Find("LightSource").transform.Find("Script").gameObject.GetComponent<LightSource>().lightRadius = lightRadius;
+        transform.Find("LightSource").gameObject.GetComponent<LightSource>().lightRadius = lightRadius;
     }
 
     private void Update()

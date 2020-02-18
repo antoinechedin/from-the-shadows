@@ -25,21 +25,24 @@ public class NewLayeredObstacle : MonoBehaviour
     //---------------------------------------------------------------------------------------------
 
     public PolygonCollider2D polyCollider;
+    public Material mat;
 
     public NewLayeredObstacleType type;
     [HideInInspector] public List<NewLightSource> lightSources;
-    public GameObject RealCollider;
-
     private List<Vector2> baseCollider;
     private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         // Add Real Collider to Children
-        GameObject go = Instantiate(RealCollider, transform.position, Quaternion.identity);
+        GameObject go = new GameObject();
+        go.AddComponent<PolygonCollider2D>();
+        go.AddComponent<MeshRenderer>();
+        go.AddComponent<MeshFilter>();
+        go.AddComponent<DrawPolygonGizmos>();
         go.name = "RealCollider";
-        go.transform.parent = transform;
-        go.layer = LayerMask.NameToLayer("LayeredObstacle");
+        go.layer = LayerMask.NameToLayer("LayeredSolid");
+        go.transform.SetParent(this.transform, false);
 
         // Setting up Gizmos Color
         DrawPolygonGizmos dpg = go.GetComponent<DrawPolygonGizmos>();
@@ -56,7 +59,7 @@ public class NewLayeredObstacle : MonoBehaviour
             baseCollider.Add(GetComponent<PolygonCollider2D>().GetPath(0)[i]);
 
         // This Object is Transparent, his Child is the real Collider
-        gameObject.layer = LayerMask.NameToLayer("TransparentObstacle");
+        gameObject.layer = LayerMask.NameToLayer("DisLayeredSolid");
 
         // Initialize LightSource & SpriteRenderer
         lightSources = new List<NewLightSource>();
@@ -70,7 +73,7 @@ public class NewLayeredObstacle : MonoBehaviour
 
     private void Update()
     {
-        if(lightSources.Count > 0)
+        if (lightSources.Count > 0)
             UpdateCollider();
     }
 
@@ -93,21 +96,30 @@ public class NewLayeredObstacle : MonoBehaviour
     /// <param name="clippers">list of Polygons to intersect/difference the baseCollider</param>
     void SetColliderAs(ClipType ct, List<PolygonCollider2D> clippers)
     {
+        List<List<IntPoint>> solution = new List<List<IntPoint>>();
+        Clipper clipper = new Clipper();
+
         List<IntPoint> subj = new List<IntPoint>();
         for (int j = 0; j < baseCollider.Count; j++)
             subj.Add(ConvertToIntPoint(transform.localToWorldMatrix * baseCollider[j] + (Vector4)transform.position));       
 
-        List<IntPoint> clip = new List<IntPoint>();
         foreach (PolygonCollider2D cl in clippers)
+        {
+            List<IntPoint> clip = new List<IntPoint>();
             for (int j = 0; j < cl.points.Length; j++)
+            {
                 clip.Add(ConvertToIntPoint(cl.transform.localToWorldMatrix * cl.points[j] + (Vector4)cl.transform.position));
-
-        List<List<IntPoint>> solution = new List<List<IntPoint>>();
-        Clipper clipper = new Clipper();
-
+            }
+            clipper.AddPath(clip, PolyType.ptClip, true);
+        }      
+ 
         clipper.AddPath(subj, PolyType.ptSubject, true);
-        clipper.AddPath(clip, PolyType.ptClip, true);
-        clipper.Execute(ct, solution, PolyFillType.pftEvenOdd, PolyFillType.pftEvenOdd);
+
+        if(ct == ClipType.ctDifference)
+            clipper.Execute(ct, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
+
+        if (ct == ClipType.ctIntersection)
+            clipper.Execute(ct, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
 
         polyCollider.pathCount = solution.Count;
 
@@ -173,13 +185,13 @@ public class NewLayeredObstacle : MonoBehaviour
                 break;
         }
 
-        if (spriteRenderer != null)
-        {
-            Color newColor = spriteRenderer.color;
-            if (gameObject.layer == LayerMask.NameToLayer("LayeredObstacle")) newColor.a = 1f;
-            if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle")) newColor.a = 0.1f;
-            spriteRenderer.color = newColor;
-        }
+        UpdateMesh();
+    }
+    private void UpdateMesh()
+    {
+        Mesh m = Utils.CreateMesh2DFromPolyCollider(transform.GetChild(0).GetComponent<PolygonCollider2D>());
+        GetComponentInChildren<MeshFilter>().sharedMesh = m;
+        GetComponentInChildren<MeshRenderer>().material = mat;
     }
 }
 
