@@ -41,25 +41,25 @@ public class LayeredObstacle : MonoBehaviour
             case LayeredObstacleType.Light:
                 if (lightSources.Count == 0)
                 {
-                    gameObject.layer = LayerMask.NameToLayer("TransparentObstacle");
+                    gameObject.layer = LayerMask.NameToLayer("DisLayeredSolid");
                 }
-                else gameObject.layer = LayerMask.NameToLayer("Obstacle");
+                else gameObject.layer = LayerMask.NameToLayer("Solid");
                 break;
 
             case LayeredObstacleType.Shadow:
                 if (lightSources.Count == 0)
                 {
-                    gameObject.layer = LayerMask.NameToLayer("Obstacle");
+                    gameObject.layer = LayerMask.NameToLayer("Solid");
                 }
-                else gameObject.layer = LayerMask.NameToLayer("TransparentObstacle");
+                else gameObject.layer = LayerMask.NameToLayer("DisLayeredSolid");
                 break;
         }
 
         if (meshRenderer != null)
         {
-            if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+            if (gameObject.layer == LayerMask.NameToLayer("Solid"))
                 meshRenderer.enabled = true;
-            else if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle"))
+            else if (gameObject.layer == LayerMask.NameToLayer("DisLayeredSolid"))
                 meshRenderer.enabled = false;
         }
     }
