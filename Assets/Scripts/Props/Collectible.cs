@@ -29,7 +29,7 @@ public class Collectible : MonoBehaviour, IResetable
     {
         if (collision.gameObject.CompareTag("Player") && !isValidated)
         {
-            int idPlayer = collision.gameObject.GetComponent<PlayerController>().input.id;
+            int idPlayer = collision.gameObject.GetComponent<PlayerInput>().id;
             if (type == Type.Light && idPlayer == 1)
             {
                 PickUp();
