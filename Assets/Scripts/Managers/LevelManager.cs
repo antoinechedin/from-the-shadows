@@ -17,10 +17,13 @@ public class LevelManager : MonoBehaviour
     public void Start()
     {
         // Fetch collectibles
-        Transform parentCollectibles = transform.Find("Collectibles").transform;
-        for (int i = 0; i < parentCollectibles.childCount; i++)
+        Transform parentCollectibles = transform.Find("Collectibles");
+        if (parentCollectibles != null)
         {
-            collectibles.Add(parentCollectibles.GetChild(i).gameObject);
+            for (int i = 0; i < parentCollectibles.childCount; i++)
+            {
+                collectibles.Add(parentCollectibles.GetChild(i).gameObject);
+            }
         }
     }
     /// <summary>
