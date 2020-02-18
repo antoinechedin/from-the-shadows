@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DebugCanvas : MonoBehaviour
 {
-
     void Update()
     {
         foreach (Transform child in transform)
