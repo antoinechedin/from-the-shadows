@@ -56,15 +56,13 @@ struct Segment
     }
 }
 
-
-
 [RequireComponent(typeof(PolygonCollider2D))]
-public class CircleToPolygon : MonoBehaviour
+public class LightCollider : MonoBehaviour
 {
     public bool debug = false;
     private SortedSet<Vector2> points = new SortedSet<Vector2>(new VectorComparer());
-    public float vectorModifier = 0.01f;
-    public int numberPoints;
+    public float vectorModifier = 0.001f;
+    public int numberPoints = 16;
     public LayerMask type;
 
     // Start is called before the first frame update
@@ -233,24 +231,28 @@ public class CircleToPolygon : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, GetComponent<NewLightSource>().lightRadius);
-        int i = 0;
-        foreach (Vector2 pt in points)
-        {
-            i++;
-            //Gizmos.color = new Color((float)i / (float)points.Count, (float)i / (float)points.Count, (float)i / (float)points.Count, 1);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(transform.position, GetPosFromPoint(pt));
 
-            RaycastHit2D ray2 = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius, type);
-            if (ray2)
+        if (debug)
+        {
+            int i = 0;
+            foreach (Vector2 pt in points)
             {
-                Gizmos.color = Color.green;
-                Gizmos.DrawLine(transform.position, ray2.point);
-            }
-            else
-            {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawLine(transform.position, (Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius);
+                i++;
+                //Gizmos.color = new Color((float)i / (float)points.Count, (float)i / (float)points.Count, (float)i / (float)points.Count, 1);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(transform.position, GetPosFromPoint(pt));
+
+                RaycastHit2D ray2 = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius, type);
+                if (ray2)
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(transform.position, ray2.point);
+                }
+                else
+                {
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(transform.position, (Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius);
+                }
             }
         }
     }

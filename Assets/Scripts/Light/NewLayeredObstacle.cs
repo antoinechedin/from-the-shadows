@@ -25,6 +25,7 @@ public class NewLayeredObstacle : MonoBehaviour
     //---------------------------------------------------------------------------------------------
 
     public PolygonCollider2D polyCollider;
+    public Material mat;
 
     public NewLayeredObstacleType type;
     [HideInInspector] public List<NewLightSource> lightSources;
@@ -36,6 +37,8 @@ public class NewLayeredObstacle : MonoBehaviour
         // Add Real Collider to Children
         GameObject go = new GameObject();
         go.AddComponent<PolygonCollider2D>();
+        go.AddComponent<MeshRenderer>();
+        go.AddComponent<MeshFilter>();
         go.AddComponent<DrawPolygonGizmos>();
         go.name = "RealCollider";
         go.layer = LayerMask.NameToLayer("LayeredObstacle");
@@ -70,7 +73,7 @@ public class NewLayeredObstacle : MonoBehaviour
 
     private void Update()
     {
-        if(lightSources.Count > 0)
+        if (lightSources.Count > 0)
             UpdateCollider();
     }
 
@@ -95,7 +98,6 @@ public class NewLayeredObstacle : MonoBehaviour
     {
         List<List<IntPoint>> solution = new List<List<IntPoint>>();
         Clipper clipper = new Clipper();
-
 
         List<IntPoint> subj = new List<IntPoint>();
         for (int j = 0; j < baseCollider.Count; j++)
@@ -183,13 +185,13 @@ public class NewLayeredObstacle : MonoBehaviour
                 break;
         }
 
-        if (spriteRenderer != null)
-        {
-            Color newColor = spriteRenderer.color;
-            if (gameObject.layer == LayerMask.NameToLayer("Obstacle")) newColor.a = 1f;
-            if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle")) newColor.a = 0.1f;
-            spriteRenderer.color = newColor;
-        }
+        UpdateMesh();
+    }
+    private void UpdateMesh()
+    {
+        Mesh m = Utils.CreateMesh2DFromPolyCollider(transform.GetChild(0).GetComponent<PolygonCollider2D>());
+        GetComponentInChildren<MeshFilter>().sharedMesh = m;
+        GetComponentInChildren<MeshRenderer>().material = mat;
     }
 }
 
