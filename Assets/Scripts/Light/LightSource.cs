@@ -25,7 +25,6 @@ public class LightSource : MonoBehaviour
     {
         if (other.tag == "LayeredObstacle")
         {
-            Debug.Log(other.gameObject.name);
             other.GetComponent<LayeredObstacle>().AddLightSource(this);
         }
     }
