@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(CircleCollider2D), typeof(Rigidbody2D))]
 public class LightSource : MonoBehaviour
 {
     public float lightRadius = 3.5f;
