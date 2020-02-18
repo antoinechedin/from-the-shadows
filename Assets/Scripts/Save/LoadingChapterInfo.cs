@@ -16,8 +16,8 @@ public class LoadingChapterInfo
         get { return startLevelIndex; }
     }
 
-    public string Print()
+    public override string ToString()
     {
-        return "startLevelIndex : " + startLevelIndex;
+        return "startLevelIndex: " + startLevelIndex;
     }
 }

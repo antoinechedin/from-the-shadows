@@ -74,7 +74,7 @@ public class SaveManager : Singleton<SaveManager>
             FileInfo fileInfo = new FileInfo(Application.persistentDataPath + "/Saves/SaveFile" + saveIndex + ".json");
             createdSave.LastOpenDate = new SerializableDate(fileInfo.LastWriteTime);
             GameManager.Instance.Saves[saveIndex] = createdSave;
-            Debug.Log("Save " + saveIndex + " loaded : " + createdSave.Print());
+            Debug.Log("Save " + saveIndex + " loaded : " + createdSave);
 
             finished = true;
         }

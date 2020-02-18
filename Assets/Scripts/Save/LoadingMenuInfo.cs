@@ -16,8 +16,8 @@ public class LoadingMenuInfo
         get { return startingMenuScene; }
     }
 
-    public string Print()
+    public override string ToString()
     {
-        return "startingMenuScene : " +startingMenuScene;
+        return "startingMenuScene: " +startingMenuScene;
     }
 }
