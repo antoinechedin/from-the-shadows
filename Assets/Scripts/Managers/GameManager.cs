@@ -130,8 +130,8 @@ public class GameManager : Singleton<GameManager>
 
     public void SetCollectibleTaken(int chap, int lvl, int index)
     {
-        Debug.Log(chap+" "+lvl+" "+index);
-        saves[currentSave].Chapters[chap].GetLevels()[lvl].Collectibles[index] = true;
+        if (CurrentChapter != -1)
+            saves[currentSave].Chapters[chap].GetLevels()[lvl].Collectibles[index] = true;
     }
     #endregion
 
