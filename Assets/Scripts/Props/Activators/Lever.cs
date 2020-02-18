@@ -12,7 +12,7 @@ public class Lever : Activator, IResetable
     public bool hasTimer;
     public float timer;
     public bool activeAtStart;
-
+    public bool doNotReset = false;
 
     private bool canPlayer1Activate = false;
     private bool canPlayer2Activate = false;
@@ -117,14 +117,17 @@ public class Lever : Activator, IResetable
 
     public void Reset()
     {
-        isMute = true;
-        if (active && !activeAtStart)
-            Off();
-        else if (!active && activeAtStart)
-            On(true);
-        isMute = false;
+        if (!doNotReset)
+        {
+            isMute = true;
+            if (active && !activeAtStart)
+                Off();
+            else if (!active && activeAtStart)
+                On(true);
+            isMute = false;
 
-        canPlayer1Activate = false;
-        canPlayer2Activate = false;
+            canPlayer1Activate = false;
+            canPlayer2Activate = false;
+        }
     }
 }
