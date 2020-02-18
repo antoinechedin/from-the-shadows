@@ -10,6 +10,7 @@ public class LightSource : MonoBehaviour
 
     private void Awake()
     {
+        
         circleCollider = GetComponent<CircleCollider2D>();
         circleCollider.isTrigger = true;
         circleCollider.radius = 0.5f;
