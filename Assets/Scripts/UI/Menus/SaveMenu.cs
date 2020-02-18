@@ -188,4 +188,10 @@ public class SaveMenu : MonoBehaviour
         Debug.Log("Create save number " + indexSave + " (" + nbPlayer + " players).");
         Launch(indexSave);
     }
+
+    public int LastSelected
+    {
+        get => lastSelected;
+        set => lastSelected = value;
+    }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -99,6 +99,11 @@ public class GameManager : Singleton<GameManager>
         get { return currentSave; }
         set { currentSave = value; }
     }
+
+    public Chapter GetCurrentChapter()
+    {
+        return GetChapters()[currentChapter];
+    }
     #endregion
 
     #region Save data manipulation
@@ -117,6 +122,12 @@ public class GameManager : Singleton<GameManager>
         {
             Debug.LogWarning("WARN GameManager.SetCompleted : CurrentSAve not set. Doing nothing>" + e.StackTrace);
         }
+    }
+
+    public void SetCollectibleTaken(int chap, int lvl, int index)
+    {
+        Debug.Log(chap+" "+lvl+" "+index);
+        saves[currentSave].Chapters[chap].GetLevels()[lvl].Collectibles[index] = true;
     }
     #endregion
 
