@@ -5,6 +5,7 @@ using UnityEngine;
 public class Activator : MonoBehaviour
 {
     public List<ActivatorListener> listeners = new List<ActivatorListener>();
+    [HideInInspector]
     public bool active;
 
     /// <summary>
