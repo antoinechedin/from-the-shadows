@@ -88,7 +88,8 @@ public class ChapterManager : MonoBehaviour
     {
         Debug.Log("next level");
         //Mise àjour des infos concernant le niveau courant
-        //ValidateCollectibles();
+        if(GameManager.Instance.CurrentChapter != -1)
+            ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
         currentLevel++;
 
@@ -124,7 +125,7 @@ public class ChapterManager : MonoBehaviour
             if (collectible.isPickedUp)
             {
                 collectible.isValidated = true;
-                GameManager.Instance.SetCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, go.transform.GetSiblingIndex());
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, go.transform.GetSiblingIndex());
             }
         }
     }

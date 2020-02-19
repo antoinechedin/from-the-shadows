@@ -10,7 +10,7 @@ public class LevelManager : MonoBehaviour
     public Transform playerSpawn;
     public Transform lightSpawn;
     public Transform shadowSpawn;
-    public List<GameObject> collectibles;
+    public List<GameObject> collectibles = new List<GameObject>();
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
 
@@ -60,8 +60,11 @@ public class LevelManager : MonoBehaviour
     {
         for (int i = 0; i < collectibles.Count; i++)
         {
-            collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
-            collectibles[i].GetComponent<Collectible>().UpdateState();
+            if (i < collectiblesTaken.Length)
+            {
+                collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
+                collectibles[i].GetComponent<Collectible>().UpdateState();
+            }
         }
     }
 }
