@@ -10,9 +10,9 @@ public class Collectible : MonoBehaviour, IResetable
     public Material shadowMaterial;
 
     private List<GameObject> childs;
-    [HideInInspector]
+    //[HideInInspector]
     public bool isValidated;
-    [HideInInspector]
+    //[HideInInspector]
     public bool isPickedUp;
 
     // Start is called before the first frame update
