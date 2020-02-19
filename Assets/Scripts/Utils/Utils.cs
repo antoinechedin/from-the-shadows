@@ -117,8 +117,6 @@ public class Utils
             offset += polygonCollider.GetPath(j).Length * 6;
         }
 
-        foreach (Vector3 ver in vertix) Debug.Log(ver);
-
         m.vertices = vertix.ToArray();
         m.triangles = trix.ToArray();
 
