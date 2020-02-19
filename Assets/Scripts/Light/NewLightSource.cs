@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter), typeof(Rigidbody2D))]
+[RequireComponent(typeof(LightCollider))]
 public class NewLightSource : MonoBehaviour
 {
     public float lightRadius = 3.5f;
@@ -19,7 +20,7 @@ public class NewLightSource : MonoBehaviour
 
     private void UpdateMesh()
     {
-        Mesh m = Utils.CreateMesh2DFromPolyCollider(GetComponent<PolygonCollider2D>());
+        Mesh m = GetComponent<LightCollider>().CreateMeshFromCollider();
         GetComponent<MeshFilter>().sharedMesh = m;
         GetComponent<MeshRenderer>().material = lightMaterial;
     }
