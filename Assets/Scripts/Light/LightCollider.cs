@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-struct Segment
+public struct Segment
 {
     public Vector2 pt1;
     public Vector2 pt2;
@@ -64,11 +64,12 @@ public class LightCollider : MonoBehaviour
     public float vectorModifier = 0.001f;
     public int numberPoints = 16;
     public LayerMask type;
+    public bool isStatic = false;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-
+        SetColliderOnOverlap2();
     }
 
     public void SetPolygonFromCircle()
@@ -118,12 +119,13 @@ public class LightCollider : MonoBehaviour
             listPolyBase.Add(new Segment(prec, suiv));
 
             Add1Point((Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position);
-        }   
+        }
 
         Collider2D[] tabColliders = Physics2D.OverlapCircleAll((Vector2)transform.position, radius, type);
 
         foreach (Collider2D col in tabColliders)
         {
+            if (debug) Debug.Log(col.gameObject.name);
             List<Segment> listColliderCol = new List<Segment>();
 
             if (col.GetComponent<BoxCollider2D>() != null)
@@ -159,10 +161,11 @@ public class LightCollider : MonoBehaviour
                     Vector2 prec = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[i]) + (Vector2)col.transform.position;
                     Vector2 suiv = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[(i+1)% col.GetComponent<PolygonCollider2D>().points.Length]) + (Vector2)col.transform.position;
 
-                    if (debug) Debug.DrawLine(prec, suiv, Color.blue);
+                    if (debug) Debug.DrawLine(prec, suiv, Color.red);
                     listColliderCol.Add(new Segment(prec, suiv));
                 }    
             }
+
             listSegments.Add(listColliderCol);
         }
 
@@ -257,7 +260,10 @@ public class LightCollider : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetColliderOnOverlap2();
+        if(!isStatic)
+        {
+            SetColliderOnOverlap2();
+        }    
     }
 
     // Gizmos for Debug
@@ -273,7 +279,7 @@ public class LightCollider : MonoBehaviour
             {
                 i++;
                 //Gizmos.color = new Color((float)i / (float)points.Count, (float)i / (float)points.Count, (float)i / (float)points.Count, 1);
-                Gizmos.color = Color.yellow;
+                //Gizmos.color = Color.yellow;
                 Gizmos.DrawLine(transform.position, GetPosFromPoint(pt));
 
                 RaycastHit2D ray2 = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius, type);
@@ -288,6 +294,7 @@ public class LightCollider : MonoBehaviour
                     Gizmos.DrawLine(transform.position, (Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius);
                 }
             }
+            Debug.Log(i);
         }
     }
     
