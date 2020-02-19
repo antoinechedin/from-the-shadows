@@ -163,7 +163,7 @@ public class ChapterManager : MonoBehaviour
 
     public void CollectMetaData()
     {
-        GameManager.Instance.AddMetaFloat("totalTimePlayed", timeSinceBegin); //collecte du temps de jeu
+        GameManager.Instance.AddMetaFloat(MetaTag.TOTAL_TIME_PLAYED, timeSinceBegin); //collecte du temps de jeu
         timeSinceBegin = 0;
     }
 
@@ -217,7 +217,7 @@ public class ChapterManager : MonoBehaviour
         SpawnPlayer(levels[currentLevel].playerSpawn.position);
         //téléporte la camera à sa position de départ
         //Incrémente la meta donnée du joueur mort
-        GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);
+        GameManager.Instance.AddMetaInt(playerId == 1 ? MetaTag.PLAYER_1_DEATH : MetaTag.PLAYER_2_DEATH, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
         //on remet Player.dead à false
