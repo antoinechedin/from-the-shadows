@@ -12,6 +12,12 @@ public class ChapterManager : MonoBehaviour
     private LevelCamera levelCamera;
     private GameObject currentSpawns;
 
+    public GameObject CurrentSpawns
+    {
+        get { return currentSpawns; }
+        set { currentSpawns = value; }
+    }
+
     // Update is called once per frame
     void Start()
     {
@@ -25,7 +31,7 @@ public class ChapterManager : MonoBehaviour
         levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2, false);
 
-        currentSpawns = levels[currentLevel].startSpawns;
+        currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
 
         if(GameManager.Instance.CurrentChapter != -1)
@@ -102,9 +108,6 @@ public class ChapterManager : MonoBehaviour
             CreateEmptyCameraPoints();
             levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         }
-
-        //On set le nouveau spawn point à la fin du nouveau niveau
-        currentSpawns = levels[currentLevel].endSpawns;
     }
 
     /// <summary>
@@ -138,9 +141,6 @@ public class ChapterManager : MonoBehaviour
             if (GameManager.Instance.CurrentChapter != -1)
                 levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
         }
-
-        //On set le nouveau spawn point au début du nouveau niveau
-        currentSpawns = levels[currentLevel].startSpawns;
 
         SaveManager.Instance.WriteSaveFile();
     }

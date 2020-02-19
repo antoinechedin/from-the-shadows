@@ -7,8 +7,7 @@ public class LevelManager : MonoBehaviour
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
-    public GameObject startSpawns;
-    public GameObject endSpawns;
+    public List<GameObject> playerSpawns;
 
     public List<GameObject> collectibles;
 
@@ -18,22 +17,19 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         //Handle spawn points potential problems
-        if (startSpawns == null)
+        if (playerSpawns == null || playerSpawns.Count == 0)
         {
-            Debug.LogWarning(name + " : StartSpawns is not set. Pass the parent GameObject that contains the spawnPoints for the start of the level");
+            Debug.LogWarning("playerSpawns list is not set");
         }
-        else if (startSpawns.transform.childCount != 2)
+        else
         {
-            Debug.LogWarning(name + ".StartSpawns has to have 2 children.");
-        }
-
-        if (endSpawns == null)
-        {
-            Debug.LogWarning(name + " : EndSpawns is not set. Pass the parent GameObject that contains the spawnPoints for the end of the level");
-        }
-        else if (endSpawns.transform.childCount != 2)
-        {
-            Debug.LogWarning(name + ".EndSpawns has to have 2 children.");
+            foreach (GameObject go in playerSpawns)
+            {
+                if (go.transform.childCount != 2)
+                {
+                    Debug.LogWarning("playerSpawns." + go.name + " : needs to have 2 children.");
+                }
+            }
         }
     }
     public void Start()
