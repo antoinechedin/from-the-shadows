@@ -189,9 +189,20 @@ public class NewLayeredObstacle : MonoBehaviour
     }
     private void UpdateMesh()
     {
-        Mesh m = Utils.CreateMesh2DFromPolyCollider(transform.GetChild(0).GetComponent<PolygonCollider2D>());
+        Mesh m = Utils.CreateMesh3DFromPolyCollider(transform.GetChild(0).GetComponent<PolygonCollider2D>(), -0.5f, +0.5f);
         GetComponentInChildren<MeshFilter>().sharedMesh = m;
         GetComponentInChildren<MeshRenderer>().material = mat;
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        if (type == NewLayeredObstacleType.Light)
+            Gizmos.color = new Color(1, 0.9f, 0.4f, 1f);
+        else if (type == NewLayeredObstacleType.Shadow)
+            Gizmos.color = new Color(0.045f, 0.045f, 0.12f, 1f);
+
+        Gizmos.DrawCube(GetComponent<PolygonCollider2D>().bounds.center, GetComponent<PolygonCollider2D>().bounds.size + 3*Vector3.forward);
     }
 }
 

@@ -7,9 +7,8 @@ public class LevelManager : MonoBehaviour
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
+    public List<GameObject> collectibles = new List<GameObject>();
     public List<GameObject> playerSpawns;
-
-    public List<GameObject> collectibles;
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
 
@@ -80,8 +79,11 @@ public class LevelManager : MonoBehaviour
     {
         for (int i = 0; i < collectibles.Count; i++)
         {
-            collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
-            collectibles[i].GetComponent<Collectible>().UpdateState();
+            if (i < collectiblesTaken.Length)
+            {
+                collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
+                collectibles[i].GetComponent<Collectible>().UpdateState();
+            }
         }
     }
 

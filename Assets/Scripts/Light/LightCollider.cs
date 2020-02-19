@@ -111,8 +111,8 @@ public class LightCollider : MonoBehaviour
 
         for (int i = 0; i < numberPoints; i++)
         {
-            Vector2 prec = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
-            Vector2 suiv = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * (i + 1) * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * (i + 1) * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
+            Vector2 prec = (Vector2)(radius * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints))) + (Vector2)transform.position;
+            Vector2 suiv = (Vector2)(radius * new Vector2(Mathf.Cos(2 * (i + 1) * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * (i + 1) * Mathf.PI / (float)numberPoints))) + (Vector2)transform.position;
 
             if (debug) Debug.DrawLine(prec, suiv, Color.red);
             listPolyBase.Add(new Segment(prec, suiv));
@@ -177,8 +177,7 @@ public class LightCollider : MonoBehaviour
                     Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
                     if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius)
                     {
-                        if (vec.x >= s1.pt1.x  && vec.x <= s1.pt2.x && vec.y >= s1.pt1.y && vec.y <= s1.pt2.y)
-                            Add2Points(vec);
+                        Add2Points(vec);
                     }
                 }
             }
@@ -212,6 +211,42 @@ public class LightCollider : MonoBehaviour
 
         GetComponent<PolygonCollider2D>().SetPath(0, circlePolygon.ToArray());
     }
+
+    public Mesh CreateMeshFromCollider()
+    {
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        PolygonCollider2D poly = GetComponent<PolygonCollider2D>();
+
+
+        for (int i = 0; i < poly.points.Length; i++)
+            vertices.Add(poly.points[i]);
+
+        vertices.Add(Vector3.zero);
+
+        for (int i = 0; i < vertices.Count - 1; i++)
+        {
+            triangles.Add(i + 1);
+            triangles.Add(i);
+            triangles.Add(vertices.Count - 1);
+        }
+
+        triangles.Add(vertices.Count - 2);
+        triangles.Add(vertices.Count - 1);
+        triangles.Add(0);
+
+        // Create the mesh
+        var mesh = new Mesh
+        {
+            vertices = vertices.ToArray(),
+            triangles = triangles.ToArray()
+        };
+
+        mesh.RecalculateNormals();
+
+        return mesh;
+    }
+
 
     // Use to get a point from the sorted list
     Vector2 GetPosFromPoint(Vector2 pt)

@@ -128,7 +128,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void SetCollectibleTaken(int chap, int lvl, int index)
+    public void SaveCollectibleTaken(int chap, int lvl, int index)
     {
         if (CurrentChapter != -1)
             saves[currentSave].Chapters[chap].GetLevels()[lvl].Collectibles[index] = true;
