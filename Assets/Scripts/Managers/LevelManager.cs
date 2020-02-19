@@ -7,6 +7,8 @@ public class LevelManager : MonoBehaviour
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
+    public List<Transform> spawnPoints;
+
     public Transform lightSpawn;
     public Transform shadowSpawn;
     public List<GameObject> collectibles;
@@ -39,6 +41,16 @@ public class LevelManager : MonoBehaviour
         if (shadowSpawn == null)
         {
             Debug.LogWarning(name + " : shadowSpawn is not set. Spawning at (0, 0, 0) by defaut.");
+
+            GameObject defaultShadowSpawn = new GameObject("defaultShadowPoint");
+            defaultShadowSpawn.AddComponent<Transform>();
+            defaultShadowSpawn.transform.position = Vector3.zero;
+            shadowSpawn = defaultShadowSpawn.transform;
+        }
+
+        if (shadowSpawn == lightSpawn)
+        {
+            Debug.LogWarning(name + " : Light and Shadow spawns are the same. There is no problem but you might want to set different ones.");
 
             GameObject defaultShadowSpawn = new GameObject("defaultShadowPoint");
             defaultShadowSpawn.AddComponent<Transform>();
