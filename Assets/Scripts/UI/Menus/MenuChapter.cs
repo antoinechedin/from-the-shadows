@@ -70,7 +70,7 @@ public class MenuChapter : MonoBehaviour
             }
             else if (!chapterMenuIsOpen)
             {
-                menuCamera.SetReturnToMainMenu(true);
+                menuCamera.SetReturnToSavesMenu(true);
                 gameObject.transform.position += new Vector3(605, 0, 0);
                 menuManager.OpenSaveMenu();
             }
