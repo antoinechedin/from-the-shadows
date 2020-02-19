@@ -112,6 +112,7 @@ public class MenuManager : MonoBehaviour
         optionsMenu.gameObject.SetActive(false);
 
         backgroundAnimator.SetBool("fade", false);
+        startMenuBackgroundAnimator.SetBool("fade", false);
 
         menuCamera.SetReturnToSavesMenu(false);
         menuChapter.ResetInteractablesChaptersButtons();
@@ -127,6 +128,7 @@ public class MenuManager : MonoBehaviour
         startMenu.gameObject.SetActive(false);
 
         backgroundAnimator.SetBool("fade", true);
+        startMenuBackgroundAnimator.SetBool("fade", false);
 
         optionsMenu.GetComponent<MenuOptions>().OpenOptionsMenu();
     }
