@@ -111,8 +111,8 @@ public class LightCollider : MonoBehaviour
 
         for (int i = 0; i < numberPoints; i++)
         {
-            Vector2 prec = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
-            Vector2 suiv = (Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * (i + 1) * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * (i + 1) * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position;
+            Vector2 prec = (Vector2)(radius * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints))) + (Vector2)transform.position;
+            Vector2 suiv = (Vector2)(radius * new Vector2(Mathf.Cos(2 * (i + 1) * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * (i + 1) * Mathf.PI / (float)numberPoints))) + (Vector2)transform.position;
 
             if (debug) Debug.DrawLine(prec, suiv, Color.red);
             listPolyBase.Add(new Segment(prec, suiv));
@@ -175,7 +175,7 @@ public class LightCollider : MonoBehaviour
                 foreach (Segment s2 in listSegments[listSegments.Count-1])
                 {
                     Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
-                    if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) <= GetComponent<NewLightSource>().lightRadius)
+                    if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius)
                     {
                         Add2Points(vec);
                     }
@@ -191,7 +191,7 @@ public class LightCollider : MonoBehaviour
                         foreach (Segment s2 in listSegments[j])
                         {
                             Vector2 vec = s1.GetIntersectionPointCoordinates(s2);
-                            if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) <GetComponent<NewLightSource>().lightRadius) Add2Points(vec);
+                            if (vec != Vector2.zero && Vector2.Distance((Vector2)transform.position, vec) < GetComponent<NewLightSource>().lightRadius) Add2Points(vec);
                         }
                     }
                 }
