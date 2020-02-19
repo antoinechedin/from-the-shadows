@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class MenuManager : MonoBehaviour
 {
@@ -111,7 +114,11 @@ public class MenuManager : MonoBehaviour
     IEnumerator Fade()
     {
         yield return new WaitForSeconds(1f);
-        Application.Quit();
+        #if UNITY_EDITOR 
+		EditorApplication.isPlaying = false;
+		#else 
+		Application.Quit();
+		#endif
     }
 
 }
