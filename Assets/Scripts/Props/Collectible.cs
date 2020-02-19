@@ -9,7 +9,7 @@ public class Collectible : MonoBehaviour, IResetable
     public Material lightMaterial;
     public Material shadowMaterial;
 
-    private GameObject child;
+    private List<GameObject> childs;
     [HideInInspector]
     public bool isValidated;
     [HideInInspector]
@@ -18,11 +18,15 @@ public class Collectible : MonoBehaviour, IResetable
     // Start is called before the first frame update
     void Awake()
     {
-        child = transform.Find("Child").gameObject;
-        if (type == Type.Light && child != null)
-            child.GetComponent<MeshRenderer>().material = lightMaterial;
-        else if (type == Type.Shadow && child != null)
-            child.GetComponent<MeshRenderer>().material = shadowMaterial;
+        int nbChildren = transform.childCount;
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+        foreach(MeshRenderer renderer in renderers)
+        {
+            if (type == Type.Light)
+                renderer.material = lightMaterial;
+            if (type == Type.Shadow)
+                renderer.material = shadowMaterial;
+        }            
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -44,7 +48,16 @@ public class Collectible : MonoBehaviour, IResetable
     private void PickUp()
     {
         isPickedUp = true;
-        child.SetActive(false);
+        SetVisible(false);
+    }
+
+    public void SetVisible(bool isVisible)
+    {
+        int nbChildren = transform.childCount;
+        for (int i = 0; i < nbChildren; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(isVisible);
+        }
     }
 
     public void Reset()
@@ -52,15 +65,13 @@ public class Collectible : MonoBehaviour, IResetable
         if (!isValidated)
         {
             isPickedUp = false;
-            child.SetActive(true);
+            SetVisible(true);
         }
     }
 
     public void UpdateState()
     {
-        if (isValidated && child != null)
-        {
-            child.SetActive(false);
-        }
+        if (isValidated)
+            SetVisible(false);
     }
 }
