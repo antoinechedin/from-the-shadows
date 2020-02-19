@@ -24,6 +24,27 @@ public class LevelManager : MonoBehaviour
                 collectibles.Add(parentCollectibles.GetChild(i).gameObject);
             }
         }
+
+        //Handle spawn points not set
+        if (lightSpawn == null)
+        {
+            Debug.LogWarning(name +" : lightSpawn is not set. Spawning at (0, 0, 0) by defaut.");
+
+            GameObject defaultLightSpawn =  new GameObject("defaultLightSpawn");
+            defaultLightSpawn.AddComponent<Transform>();
+            defaultLightSpawn.transform.position = Vector3.zero;
+            lightSpawn = defaultLightSpawn.transform;
+        }
+
+        if (shadowSpawn == null)
+        {
+            Debug.LogWarning(name + " : shadowSpawn is not set. Spawning at (0, 0, 0) by defaut.");
+
+            GameObject defaultShadowSpawn = new GameObject("defaultShadowPoint");
+            defaultShadowSpawn.AddComponent<Transform>();
+            defaultShadowSpawn.transform.position = Vector3.zero;
+            shadowSpawn = defaultShadowSpawn.transform;
+        }
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level

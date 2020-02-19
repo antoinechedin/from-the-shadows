@@ -61,14 +61,9 @@ public class ChapterManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             if (player.GetComponent<PlayerInput>().id == 1)
-            {
                 player.transform.position = pos1;
-            }
             else if (player.GetComponent<PlayerInput>().id == 2)
-            {
                 player.transform.position = pos2;
-            }
-
         }
     }
 
