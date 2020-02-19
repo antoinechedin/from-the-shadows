@@ -79,7 +79,6 @@ public class ChapterUtility : MonoBehaviour
         foreach (GameObject go in levelsGo)
         {
             levels.Add(go.GetComponent<LevelManager>());
-
         }
         levels.Sort(SortByName);
 
