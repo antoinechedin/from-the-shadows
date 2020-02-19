@@ -7,8 +7,16 @@ public class ChapterManager : MonoBehaviour
     public List<LevelManager> levels;
     public PauseMenu pauseMenu;
     private int currentLevel = 0; //indice du niveau actuel
+
     private float timeSinceBegin = 0;
     private LevelCamera levelCamera;
+    private GameObject currentSpawns;
+
+    public GameObject CurrentSpawns
+    {
+        get { return currentSpawns; }
+        set { currentSpawns = value; }
+    }
 
     // Update is called once per frame
     void Start()
@@ -23,7 +31,9 @@ public class ChapterManager : MonoBehaviour
         levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
         levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2, false);
 
-        SpawnPlayer(levels[currentLevel].playerSpawn.position);
+        currentSpawns = levels[currentLevel].playerSpawns[0];
+        SpawnPlayers();
+
         if(GameManager.Instance.CurrentChapter != -1)
             levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
 
@@ -53,14 +63,33 @@ public class ChapterManager : MonoBehaviour
         {
             NextLevel();
         }
+
+
+        //debug
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            SpawnPlayers();
+        }
     }
 
-    public void SpawnPlayer(Vector3 pos)
+    /// <summary>
+    /// Tps the players to the currentSpawn position. The spawn position is set in Next et PreviousLevel() so it changes at run time.
+    /// </summary>
+    /// <param name="spawns"></param>
+    public void SpawnPlayers()
     {
+        //Find the spawns positions in the children
+        Vector3 lightSpawnPos = currentSpawns.transform.GetChild(0).transform.position;
+        Vector3 shadowSpawnPos = currentSpawns.transform.GetChild(1).transform.position;
+
+        //Find the players
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
-            player.transform.position = pos;
+            if (player.GetComponent<PlayerInput>().id == 1) //Light
+                player.transform.position = lightSpawnPos;
+            else if (player.GetComponent<PlayerInput>().id == 2)//shadow
+                player.transform.position = shadowSpawnPos;
         }
     }
 
@@ -214,7 +243,7 @@ public class ChapterManager : MonoBehaviour
         //On fait ci dessous tout ce qui intervient pendant que l'écran est noir
 
         //Teleporte les joueurs au début du jeu
-        SpawnPlayer(levels[currentLevel].playerSpawn.position);
+        SpawnPlayers();
         //téléporte la camera à sa position de départ
         //Incrémente la meta donnée du joueur mort
         GameManager.Instance.AddMetaInt("playerDeath" + playerId, 1);

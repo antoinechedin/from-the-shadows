@@ -8,6 +8,7 @@ public class ChangeLevelTrigger : MonoBehaviour
 
     public Type type;
     public int nbNecessaryPlayers;
+    public GameObject newPlayerSpawns;
 
     private ChapterManager chapterManager;
     private int nbPlayerInTheTrigger = 0;
@@ -33,6 +34,16 @@ public class ChangeLevelTrigger : MonoBehaviour
                 {
                     chapterManager.PreviousLevel();
                 }
+
+                if (newPlayerSpawns != null)
+                {
+                    chapterManager.CurrentSpawns = newPlayerSpawns;
+                }
+                else
+                {
+                    Debug.Log("Aucun spawnPoint assigné à ce trigger. Le spawn des joueurs n'a pas changé");
+                }
+
             }
 
         }

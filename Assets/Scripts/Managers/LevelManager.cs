@@ -7,13 +7,30 @@ public class LevelManager : MonoBehaviour
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
-    public Transform playerSpawn;
-    public Transform lightSpawn;
-    public Transform shadowSpawn;
     public List<GameObject> collectibles = new List<GameObject>();
+    public List<GameObject> playerSpawns;
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
 
+
+    private void Awake()
+    {
+        //Handle spawn points potential problems
+        if (playerSpawns == null || playerSpawns.Count == 0)
+        {
+            Debug.LogWarning("playerSpawns list is not set");
+        }
+        else
+        {
+            foreach (GameObject go in playerSpawns)
+            {
+                if (go.transform.childCount != 2)
+                {
+                    Debug.LogWarning("playerSpawns." + go.name + " : needs to have 2 children.");
+                }
+            }
+        }
+    }
     public void Start()
     {
         // Fetch collectibles
@@ -25,6 +42,8 @@ public class LevelManager : MonoBehaviour
                 collectibles.Add(parentCollectibles.GetChild(i).gameObject);
             }
         }
+
+
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
@@ -67,4 +86,6 @@ public class LevelManager : MonoBehaviour
             }
         }
     }
+
+
 }
