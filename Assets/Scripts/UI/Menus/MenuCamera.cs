@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class MenuCamera : MonoBehaviour
 {
-    public GameObject startPosition;
+    public Transform startPosition;
+    public Transform savesPosition;
     public List<GameObject> cameraPositions;
     public List<GameObject> cameraPositionsZoom;
     public Image cursor;
@@ -18,7 +19,8 @@ public class MenuCamera : MonoBehaviour
     private int chapterSelected;
     private bool isMoving = false;
     private bool zoom = false;
-    private bool returnToMainMenu = false;
+    private bool returnToStartMenu = false;
+    private bool returnToSavesMenu = false;
     private bool smoothTransition = true;
 
     // Update is called once per frame
@@ -30,10 +32,15 @@ public class MenuCamera : MonoBehaviour
             Vector3 targetPosition;
             Transform targetRotation;
 
-            if (returnToMainMenu)
+            if (returnToStartMenu)
             {
-                targetPosition = startPosition.transform.position;
-                targetRotation = startPosition.transform;
+                targetPosition = startPosition.position;
+                targetRotation = startPosition;
+            }
+            else if (returnToSavesMenu)
+            {
+                targetPosition = savesPosition.position;
+                targetRotation = savesPosition;
             }
             else if (!zoom)
             {
@@ -90,9 +97,18 @@ public class MenuCamera : MonoBehaviour
     /// <summary>
     /// Set if the camera must return to its start position.
     /// </summary>
-    public void SetReturnToMainMenu(bool var)
+    public void SetReturnToStartMenu(bool var)
     {
-        returnToMainMenu = var;
+        returnToStartMenu = var;
+        isMoving = true;
+    }
+
+    /// <summary>
+    /// Set if the camera must return to its position in saves menu.
+    /// </summary>
+    public void SetReturnToSavesMenu(bool var)
+    {
+        returnToSavesMenu = var;
         isMoving = true;
     }
 

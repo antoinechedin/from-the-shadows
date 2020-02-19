@@ -101,8 +101,6 @@ public class SaveMenu : MonoBehaviour
     {
         lastSelected = index;
 
-        Debug.Log(actionChoicePanel);
-
         Button playButton = actionChoicePanel.transform.Find("Play Button").GetComponent<Button>();
         Button deleteButton = actionChoicePanel.transform.Find("Delete Button").GetComponent<Button>();
         Button soloButton = newGameChoicePanel.transform.Find("Solo Button").GetComponent<Button>();
