@@ -14,7 +14,7 @@ public class Torch : ActivatorListener, IResetable
     private bool isMute = true;
     public bool active;
     private SoundPlayer soundPlayer;
-    private Vector3 targetScale = new Vector3(0.01f, 0.01f, 0.01f);
+    private float targetRadius = 0.01f;
 
     private void Awake()
     {
@@ -30,17 +30,17 @@ public class Torch : ActivatorListener, IResetable
         }
         isMute = false;
         active = activeAtStart;
-        transform.Find("LightSource").Find("Script").GetComponent<LightSource>().lightRadius = lightRadius;
+        lightSource.GetComponent<NewLightSource>().lightRadius = 0;
     }
 
     private void Update()
     {
-        lightSource.transform.localScale = Vector3.Lerp(lightSource.transform.localScale, targetScale, Time.deltaTime * 10);
+        lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime * 10);
     }
 
     public override void OnActivate()
     {
-        targetScale = Vector3.one;
+        targetRadius = lightRadius;
         active = true;
         if (soundPlayer != null && !isMute)
             soundPlayer.PlaySoundAtLocation(soundOn, 1);
@@ -48,7 +48,7 @@ public class Torch : ActivatorListener, IResetable
 
     public override void OnDeactivate()
     {
-        targetScale = new Vector3(0.01f, 0.01f, 0.01f);
+        targetRadius = 0.01f;
         active = false;
         if (soundPlayer != null && !isMute)
             soundPlayer.PlaySoundAtLocation(soundOff, 1);
