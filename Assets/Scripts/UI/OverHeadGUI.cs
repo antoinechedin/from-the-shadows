@@ -1,117 +1,55 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class OverHeadGUI : MonoBehaviour
 {
-    GameObject canvasGO;
+    GameObject canvas;
+    GameObject panel;
     GameObject textGO;
     GameObject imageGO;
-
-    Canvas canvas;
-    TextMeshPro text;
+    Text text;
     Image image;
 
-    public bool drawDebugPosition;
     public Transform target;
-    [Header("Content")]
     public Sprite displayedSprite;
     public string displayedText;
-    [Header("Position and Size")]
     public Vector3 offSet;
-    public Vector3 size;
-    public bool faceCamera;
 
-    private bool UIActive = true;
+    public bool drawDebugPosition;
 
     private void Start()
     {
-        CreateCanvas();
-        AddText();
-        AddImage();
-        ToggleUI();
+        canvas = GameObject.Find("GUI");
+
+        panel = new GameObject(target.name + " GUI");
+        panel.transform.parent = canvas.transform;
+
+        textGO = new GameObject("Text");
+        textGO.transform.parent = panel.transform;
+
+        text = textGO.AddComponent<Text>();
+        text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        text.alignment = TextAnchor.MiddleCenter;
+        text.text = displayedText;
+
+        imageGO = new GameObject("Image");
+        imageGO.transform.parent = panel.transform;
+
+        image = imageGO.AddComponent<Image>();
+        image.sprite = displayedSprite;
     }
 
     private void Update()
-    {
-        if (UIActive)
-        {
-            canvasGO.transform.position = target.position + offSet;
-            if (faceCamera)
-                canvasGO.transform.LookAt(canvasGO.transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-            ToggleUI();
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-            ToggleUI();
-    }
-
-    private void ToggleUI()
-    {
-        UIActive = !UIActive;
-        canvasGO.SetActive(UIActive);
-    }
-
-    private void CreateCanvas()
-    {
-        canvasGO = new GameObject("GUI Canvas");
-        canvasGO.transform.parent = transform;
-        canvas = canvasGO.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.WorldSpace;
-        canvas.worldCamera = Camera.main;
-        canvasGO.AddComponent<CanvasScaler>();
-        canvasGO.AddComponent<GraphicRaycaster>();
-        canvasGO.GetComponent<RectTransform>().sizeDelta = size;
-    }
-
-    private void AddImage()
-    {
-        imageGO = new GameObject("Image");
-        imageGO.transform.parent = canvasGO.transform;
-        image = imageGO.AddComponent<Image>();
-        image.sprite = displayedSprite;
-        image.useSpriteMesh = true;
-        image.preserveAspect = true;
-        RectTransform imageRT = imageGO.GetComponent<RectTransform>();
-        imageRT.anchorMin = Vector2.zero;
-        imageRT.anchorMax = new Vector2(1f, 0.66f);
-        imageRT.sizeDelta = Vector2.zero;
-        imageRT.position += new Vector3(0, 0, 0.7f);
-    }
-
-    private void AddText()
-    {
-        textGO = new GameObject("Text");
-        textGO.transform.parent = canvasGO.transform;
-        text = textGO.AddComponent<TextMeshPro>();
-        text.font = TMP_FontAsset.CreateFontAsset(Resources.GetBuiltinResource<Font>("Arial.ttf"));
-        text.enableAutoSizing = true;
-        text.fontSizeMin = 0;
-        text.alignment = TextAlignmentOptions.Center;
-        text.text = displayedText;
-        RectTransform textRT = textGO.GetComponent<RectTransform>();
-        textRT.anchorMin = new Vector2(0, 0.66f);
-        textRT.anchorMax = Vector2.one;
-        textRT.sizeDelta = Vector2.zero;
-        textRT.position += new Vector3(0, 0, 0.7f);
+    {        
+        textGO.transform.position = Camera.main.WorldToScreenPoint(target.position + offSet +  offSet);
+        imageGO.transform.position = Camera.main.WorldToScreenPoint(target.position + offSet);
     }
 
     private void OnDrawGizmos()
     {
-        if (drawDebugPosition)
-        {
-            Gizmos.DrawWireCube(target.position + offSet, size);
-        }
+        if(drawDebugPosition)
+            Gizmos.DrawWireSphere(target.position + offSet, 1);
     }
 }
