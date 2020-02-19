@@ -18,7 +18,6 @@ public class Torch : ActivatorListener, IResetable
 
     private void Awake()
     {
-        QualitySettings.vSyncCount = 0;
         lightSource = transform.Find("LightSource").gameObject;
         lightSource.GetComponent<NewLightSource>().lightRadius = 0f;    
     }
