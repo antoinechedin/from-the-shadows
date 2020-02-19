@@ -64,11 +64,12 @@ public class LightCollider : MonoBehaviour
     public float vectorModifier = 0.001f;
     public int numberPoints = 16;
     public LayerMask type;
+    public bool isStatic = false;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-
+        SetColliderOnOverlap2();
     }
 
     public void SetPolygonFromCircle()
@@ -257,7 +258,10 @@ public class LightCollider : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetColliderOnOverlap2();
+        if(!isStatic)
+        {
+            SetColliderOnOverlap2();
+        }    
     }
 
     // Gizmos for Debug
