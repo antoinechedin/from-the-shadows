@@ -30,6 +30,8 @@ public class PlayerStanding : IPlayerState
 
             player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
             player.actor.collisions.bellow = false;
+
+            GameManager.Instance.AddMetaInt(input.id == 1 ? MetaTag.PLAYER_1_JUMP : MetaTag.PLAYER_2_JUMP, 1);
         }
     }
 

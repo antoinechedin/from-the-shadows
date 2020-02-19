@@ -33,7 +33,7 @@ public class ActorController : MonoBehaviour
         InitRaySpacing();
     }
 
-    public Vector2 Move(Vector2 velocity, float deltaTime)
+    public void Move(Vector2 velocity, float deltaTime)
     {
         UpdateRaycastOrigins();
         collisionsPrevious = collisions;
@@ -58,7 +58,6 @@ public class ActorController : MonoBehaviour
 
         body.MovePosition(body.position + move);
         collisions.move = move;
-        return move / deltaTime;
     }
 
     private void MoveX(ref Vector2 move)

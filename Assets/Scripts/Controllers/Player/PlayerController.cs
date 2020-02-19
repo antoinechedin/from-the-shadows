@@ -45,6 +45,11 @@ public class PlayerController : MonoBehaviour
     {
         actor.Move(velocity, Time.fixedDeltaTime);
         UpdateSpriteColor();
+
+        GameManager.Instance.AddMetaFloat(
+            input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
+            actor.collisions.move.magnitude
+        );
     }
 
     private void UpdateSpriteColor()
