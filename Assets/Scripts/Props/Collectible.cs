@@ -8,6 +8,8 @@ public class Collectible : MonoBehaviour, IResetable
     public Type type;
     public Material lightMaterial;
     public Material shadowMaterial;
+    [Range(0, 1)]
+    public float animationOffset;
 
     private List<GameObject> childs;
     //[HideInInspector]
@@ -27,6 +29,13 @@ public class Collectible : MonoBehaviour, IResetable
             if (type == Type.Shadow)
                 renderer.material = shadowMaterial;
         }            
+    }
+
+    private void Start()
+    {
+        Animator animator = GetComponent<Animator>();
+        if (animator != null)
+            animator.Play("Default", 0, animationOffset);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
