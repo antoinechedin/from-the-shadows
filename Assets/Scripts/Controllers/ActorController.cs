@@ -7,7 +7,7 @@ using UnityEngine;
 public class ActorController : MonoBehaviour
 {
     public LayerMask collisionMask = 1 << 9;
-    [HideInInspector]public float maxSlopeAngle = 60;
+    [HideInInspector] public float maxSlopeAngle = 60;
 
     private const float skinWidth = 0.021f;
 
@@ -185,7 +185,8 @@ public class ActorController : MonoBehaviour
 
     private void DescendSlope(ref Vector2 move)
     {
-        TrySlideDown(ref move);
+        if (collisionsPrevious.bellow)
+            TrySlideDown(ref move);
 
         if (!collisions.slidingSlope)
         {
