@@ -28,6 +28,11 @@ public class Utils
             return GetFullName(obj.parent) + "/" + obj.name;
     }
 
+    /// <summary>
+    /// Create a 3D Mesh from a PolygonCollider2D
+    /// </summary>
+    /// <param name="polygonCollider">PolygonCollider to Mesherize</param>
+    /// <returns></returns>
     public static Mesh CreateMesh3DFromPolyCollider(PolygonCollider2D polygonCollider, float frontDistance = -10, float backDistance = 10)
     {
         frontDistance = Mathf.Min(frontDistance, 0);
@@ -124,5 +129,59 @@ public class Utils
         m.RecalculateBounds();
 
         return m;
+    }
+}
+
+public struct Segment
+{
+    public Vector2 pt1;
+    public Vector2 pt2;
+
+    public Segment(Vector2 p1, Vector2 p2)
+    {
+        if (p1.x < p2.x)
+        {
+            pt1 = p1;
+            pt2 = p2;
+        }
+        else if (p1.x > p2.x)
+        {
+            pt1 = p2;
+            pt2 = p1;
+        }
+        else
+        {
+            if (p1.y < p2.y)
+            {
+                pt1 = p1;
+                pt2 = p2;
+            }
+            else if (p1.y > p2.y)
+            {
+                pt1 = p2;
+                pt2 = p1;
+            }
+            else
+            {
+                pt1 = p1;
+                pt2 = p2;
+            }
+        }
+
+    }
+
+    public Vector2 GetIntersectionPointCoordinates(Segment s2)
+    {
+        float tmp = (s2.pt2.x - s2.pt1.x) * (pt2.y - pt1.y) - (s2.pt2.y - s2.pt1.y) * (pt2.x - pt1.x);
+
+        if (tmp == 0)
+            return Vector2.zero;
+
+        float mu = ((pt1.x - s2.pt1.x) * (pt2.y - pt1.y) - (pt1.y - s2.pt1.y) * (pt2.x - pt1.x)) / tmp;
+
+        return new Vector2(
+            s2.pt1.x + (s2.pt2.x - s2.pt1.x) * mu,
+            s2.pt1.y + (s2.pt2.y - s2.pt1.y) * mu
+        );
     }
 }
