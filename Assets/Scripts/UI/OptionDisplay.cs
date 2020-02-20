@@ -21,6 +21,6 @@ public class OptionDisplay : MonoBehaviour
 
     private void DisplayResolution()
     {
-        text.text = Screen.currentResolution.width + "x" + Screen.currentResolution.height;
+        text.text = Screen.currentResolution.width + "x" + Screen.currentResolution.height + " @ " + Screen.currentResolution.refreshRate;
     }
 }
