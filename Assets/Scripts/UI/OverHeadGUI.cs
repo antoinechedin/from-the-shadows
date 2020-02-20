@@ -118,7 +118,7 @@ public class OverHeadGUI : MonoBehaviour
         {
             if (target == null)
             {
-                Debug.LogError("Can't find target for " + gameObject.name);
+                Debug.LogError("Can't find target Gameobject of " + gameObject.name);
                 drawDebugCanvas = false;
                 return;
             }
