@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Ghost : PatrolUnit
 {
-    private GameObject target = null;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
         state = PatrolState.Patrol;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -28,30 +30,12 @@ public class Ghost : PatrolUnit
                 moveDir.Normalize();
                 transform.position += moveDir * patrolSpeed * Time.deltaTime;
 
-                //détection de cible
-                List<GameObject> possibleTargets = new List<GameObject>();
-
-                //TODO : vers le overlapCircle que sur le layer Player quand il sera mis en place
-                Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, perceptionRadius);
-                for (int i = 0; i < colliders.Length; i++)
-                {
-                    if (colliders[i].CompareTag("Player"))
-                    {
-                        possibleTargets.Add(colliders[i].gameObject);
-                    }
-                }
-
-                foreach (GameObject go in possibleTargets)
-                {
-                    if (target == null || Vector3.Distance(transform.position, go.transform.position) < Vector3.Distance(transform.position, target.transform.position))
-                    {
-                        target = go;
-                    }
-                }
+                ScanForPlayers();
 
                 if (target != null)
                 {
-                    state = PatrolState.Chase;
+                    state = PatrolState.PlayerDetection;
+                    animator.SetBool("PlayerDetected", true);
                 }
                 break;
 
@@ -76,7 +60,8 @@ public class Ghost : PatrolUnit
                 break;
 
 
-
+            case PatrolState.PlayerDetection:
+                break;
 
 
             default:
@@ -84,4 +69,49 @@ public class Ghost : PatrolUnit
                 break;
         }
     }
+
+    /// <summary>
+    /// Scans around for players and put the closest (if any) in the target variable.
+    /// </summary>
+    public void ScanForPlayers()
+    {
+        //détection de cible
+        List<GameObject> possibleTargets = new List<GameObject>();
+
+        //TODO : vers le overlapCircle que sur le layer Player quand il sera mis en place
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, perceptionRadius);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].CompareTag("Player"))
+            {
+                possibleTargets.Add(colliders[i].gameObject);
+            }
+        }
+
+        foreach (GameObject go in possibleTargets)
+        {
+            if (target == null || Vector3.Distance(transform.position, go.transform.position) < Vector3.Distance(transform.position, target.transform.position))
+            {
+                target = go;
+            }
+        }
+    }
+
+    #region AnimatorFunctions   
+    public void SetChaseState()
+    {
+        ScanForPlayers();
+
+        if (target != null)
+        {
+            state = PatrolState.Chase;
+        }
+        else
+        {
+            state = PatrolState.Patrol;
+        }
+        animator.SetBool("PlayerDetected", false);
+    }
+    #endregion
+
 }

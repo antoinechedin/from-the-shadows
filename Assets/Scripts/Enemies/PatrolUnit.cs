@@ -17,6 +17,7 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
     protected Vector3[] checkPoints;
     [SerializeField]
     protected PatrolState state;
+    protected GameObject target = null;
 
     /// <summary>
     /// returns the next position the Unit should go. It it reaches the limits (whether it is mion or max) the behavior depends on if the 
@@ -57,6 +58,7 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
         sens = 1;
         currentCheckPoint = 0;
         state = PatrolState.Patrol;
+        target = null;
     }
 
 
@@ -121,4 +123,4 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
 }
 
-public enum PatrolState { Patrol, Chase, Attack }
+public enum PatrolState { Patrol, Chase, Attack, PlayerDetection}
