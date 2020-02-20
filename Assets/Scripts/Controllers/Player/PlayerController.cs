@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public ActorController actor;
     [HideInInspector] public PlayerInput input;
-
+    [HideInInspector] public Animator animator;
     public IPlayerState state;
     public Vector2 targetVelocity;
     public Vector2 velocity;
@@ -20,10 +20,14 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        QualitySettings.vSyncCount = 0;
+
         actor = GetComponent<ActorController>();
         actor.maxSlopeAngle = settings.maxSlopeAngle;
         input = GetComponent<PlayerInput>();
         state = new PlayerStanding();
+        animator = GetComponentInChildren<Animator>();
+        //animator.SetBool("Light", input.doubleJump);
     }
 
     private void Update()
