@@ -15,14 +15,14 @@ public class OverHeadGUI : MonoBehaviour
     TextMeshPro text;
     Image image;
 
-    public bool drawDebugPosition;
+    public bool drawDebugCanvas = true;
     public Transform target;
     [Header("Content")]
     public Sprite displayedSprite;
     public string displayedText;
     [Header("Position and Size")]
     public Vector3 offSet;
-    public Vector3 size;
+    public Vector3 size = new Vector3(3f, 1f, 0f);
     public bool faceCamera;
 
     private bool UIActive = true;
@@ -114,8 +114,14 @@ public class OverHeadGUI : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (drawDebugPosition)
+        if (drawDebugCanvas)
         {
+            if (target == null)
+            {
+                Debug.LogError("Can't find target for " + gameObject.name);
+                drawDebugCanvas = false;
+                return;
+            }
             Gizmos.DrawWireCube(target.position + offSet, size);
         }
     }
