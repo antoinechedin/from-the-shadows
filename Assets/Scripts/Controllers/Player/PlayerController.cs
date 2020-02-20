@@ -20,8 +20,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        QualitySettings.vSyncCount = 0;
-
         actor = GetComponent<ActorController>();
         actor.maxSlopeAngle = settings.maxSlopeAngle;
         input = GetComponent<PlayerInput>();
