@@ -9,6 +9,7 @@ public class Lever : Activator, IResetable
     public AudioClip soundOff;
     public Material activeMat;
     public Material inactiveMat;
+    public Material timerMat;
     public bool hasTimer;
     public float timer;
     public bool activeAtStart;
@@ -94,8 +95,12 @@ public class Lever : Activator, IResetable
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
             CancelInvoke();
+            StopCoroutine("Flash");
             if (hasTimer && !ignoreTimer)
+            {
                 Invoke("Off", timer);
+                StartCoroutine("Flash");
+            }
         }
     }
 
@@ -107,6 +112,7 @@ public class Lever : Activator, IResetable
         if (TryDeactivate != null)
         {
             active = false;
+            StopCoroutine("Flash");
             TryDeactivate();            
             if (soundPlayer != null && !isMute)
                 soundPlayer.PlaySoundAtLocation(soundOff, 1f);
@@ -128,6 +134,20 @@ public class Lever : Activator, IResetable
 
             canPlayer1Activate = false;
             canPlayer2Activate = false;
+        }
+    }
+
+    private IEnumerator Flash()
+    {
+        if (child != null)
+        {
+            while (true)
+            {
+                child.GetComponent<MeshRenderer>().material = activeMat;
+                yield return new WaitForSeconds(0.2f);
+                child.GetComponent<MeshRenderer>().material = timerMat;
+                yield return new WaitForSeconds(0.2f);
+            }
         }
     }
 }

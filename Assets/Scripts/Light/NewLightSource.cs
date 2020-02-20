@@ -13,9 +13,15 @@ public class NewLightSource : MonoBehaviour
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
     }
 
-    private void LateUpdate()
+    private void Start()
     {
         UpdateMesh();
+    }
+
+    private void LateUpdate()
+    {
+        if(!GetComponent<LightCollider>().isStatic)
+            UpdateMesh();
     }
 
     private void UpdateMesh()

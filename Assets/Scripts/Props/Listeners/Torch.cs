@@ -19,27 +19,37 @@ public class Torch : ActivatorListener, IResetable
     private void Awake()
     {
         lightSource = transform.Find("LightSource").gameObject;
+        lightSource.GetComponent<NewLightSource>().lightRadius = 0f;    
     }
 
     void Start()
     {
+        if (transform.parent.GetComponentInChildren<Lever>() != null) transform.parent.GetComponentInChildren<Lever>().activeAtStart = activeAtStart;
+
         soundPlayer = GetComponent<SoundPlayer>();
+
         if (activeAtStart)
         {
+            lightSource.GetComponent<NewLightSource>().lightRadius = targetRadius;
             OnActivate();
-        }
+        }     
+
         isMute = false;
         active = activeAtStart;
-        lightSource.GetComponent<NewLightSource>().lightRadius = 0;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime * 10);
+        if (Mathf.Abs(targetRadius - lightSource.GetComponent<NewLightSource>().lightRadius) < 0.001f)
+            lightSource.GetComponent<LightCollider>().isStatic = true;
+
+        lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime*10); 
     }
 
     public override void OnActivate()
     {
+        lightSource.GetComponent<LightCollider>().isStatic = false;
+
         targetRadius = lightRadius;
         active = true;
         if (soundPlayer != null && !isMute)
@@ -48,6 +58,8 @@ public class Torch : ActivatorListener, IResetable
 
     public override void OnDeactivate()
     {
+        lightSource.GetComponent<LightCollider>().isStatic = false;
+
         targetRadius = 0.01f;
         active = false;
         if (soundPlayer != null && !isMute)
@@ -56,6 +68,8 @@ public class Torch : ActivatorListener, IResetable
 
     public void Reset()
     {
+        lightSource.GetComponent<LightCollider>().isStatic = false;
+
         isMute = true;
         if (active && !activeAtStart)
             OnDeactivate();

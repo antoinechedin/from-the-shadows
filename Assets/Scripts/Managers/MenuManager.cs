@@ -77,9 +77,10 @@ public class MenuManager : MonoBehaviour
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
+        startMenuBackground.gameObject.SetActive(true);
         startMenuBackgroundAnimator.SetBool("fade", true);
         backgroundAnimator.SetBool("fade", false);
-        version.text = "v" + Application.version + "\n2020 © Spooky Team";
+        version.text = "v" + Application.version + "\n2020 © " + Application.companyName;
 
         menuCamera.SetReturnToStartMenu(true);
 
@@ -88,13 +89,16 @@ public class MenuManager : MonoBehaviour
 
     public void OpenSaveMenu()
     {
+        if (startMenu.gameObject.activeSelf)
+        {
+            startMenuBackgroundAnimator.SetBool("fade", false);
+        }
+        backgroundAnimator.SetBool("fade", true);
+
         savesMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
-
-        startMenuBackgroundAnimator.SetBool("fade", false);
-        backgroundAnimator.SetBool("fade", true);
 
         menuCamera.SetReturnToStartMenu(false);
         menuCamera.SetReturnToSavesMenu(true);
@@ -127,6 +131,7 @@ public class MenuManager : MonoBehaviour
         startMenu.gameObject.SetActive(false);
 
         backgroundAnimator.SetBool("fade", true);
+        startMenuBackgroundAnimator.SetBool("fade", false);
 
         optionsMenu.GetComponent<MenuOptions>().OpenOptionsMenu();
     }
