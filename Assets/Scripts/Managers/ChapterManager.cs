@@ -222,9 +222,6 @@ public class ChapterManager : MonoBehaviour
             }
         }
 
-        //on le fait mourir
-        player.Die();
-
         //on attend que le joueur soit mort. ie : que l'animation soit terminée
         while (!player.GetComponent<PlayerController>().dead)
         {

@@ -70,8 +70,11 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        dying = true;
-        dead = true; //enlever quand t'auras mis l'animation à la place
-        //lancer l'animation de mort. C'est l'animnation qui settera dead = true toute seule comme une grande
+        if (!dying)
+        {
+            dying = true;
+            dead = true;
+            GameObject.FindObjectOfType<ChapterManager>().ResetLevel(input.id);
+        }
     }
 }
