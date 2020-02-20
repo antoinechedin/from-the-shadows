@@ -35,7 +35,6 @@ public class Ghost : PatrolUnit
                 if (target != null)
                 {
                     state = PatrolState.PlayerDetection;
-                    animator.SetBool("PlayerDetected", true);
                 }
                 break;
 
@@ -61,6 +60,7 @@ public class Ghost : PatrolUnit
 
 
             case PatrolState.PlayerDetection:
+                animator.SetBool("PlayerDetected", true);
                 break;
 
 
