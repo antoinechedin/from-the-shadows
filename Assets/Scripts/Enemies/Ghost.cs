@@ -2,30 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ghost : MonoBehaviour
+public class Ghost : PatrolUnit
 {
-    public int nbCheckPoint;
-    public bool loopPatrol;
-    public float patrolSpeed;
-    public float chaseSpeed;
-    public float perceptionRadius;
-    public float keepFocusRadius;
-
-    [SerializeField]
-    private Vector3[] checkPoints;
-    private List<GameObject> players;
     private GameObject target = null;
-    [SerializeField]
-    private GhostState state;
-    private int currentCheckPoint = 0;
-    private int sens = 1; //1 = droite, -1 = gauche
-
-    private int oldNbCheckPoints;
 
     // Start is called before the first frame update
     void Start()
     {
-        state = GhostState.Patrol;
+        state = PatrolState.Patrol;
     }
 
     // Update is called once per frame
@@ -33,7 +17,7 @@ public class Ghost : MonoBehaviour
     {
         switch (state)
         {
-            case GhostState.Patrol:
+            case PatrolState.Patrol:
                 //mouvement de vas et vient
                 if (Vector3.Distance(transform.position, checkPoints[currentCheckPoint]) < 0.1f) //on est arrivé au checkPoint
                 {
@@ -43,10 +27,6 @@ public class Ghost : MonoBehaviour
                 Vector3 moveDir = checkPoints[currentCheckPoint] - transform.position;
                 moveDir.Normalize();
                 transform.position += moveDir * patrolSpeed * Time.deltaTime;
-
-
-
-
 
                 //détection de cible
                 List<GameObject> possibleTargets = new List<GameObject>();
@@ -71,15 +51,19 @@ public class Ghost : MonoBehaviour
 
                 if (target != null)
                 {
-                    state = GhostState.Chase;
+                    state = PatrolState.Chase;
                 }
                 break;
-            case GhostState.Chase:
+
+
+
+
+            case PatrolState.Chase:
                 //si la target va trop loin, on perd le focus
                 if (target == null || Vector3.Distance(transform.position, target.transform.position) > keepFocusRadius)
                 {
                     target = null;
-                    state = GhostState.Patrol;
+                    state = PatrolState.Patrol;
                 }
 
                 //on se dirige vers la target
@@ -90,92 +74,14 @@ public class Ghost : MonoBehaviour
                     transform.position += dir * chaseSpeed * Time.deltaTime;
                 }
                 break;
+
+
+
+
+
             default:
+                Debug.LogWarning(name + " : PatrolState not set.");
                 break;
         }
     }
-
-    public void GetNextCheckPoint()
-    {
-        if (loopPatrol)
-        {
-            if (currentCheckPoint + sens > checkPoints.Length - 1)
-            {
-                currentCheckPoint = 0;
-            }
-            else
-            {
-                currentCheckPoint += sens;
-            }
-
-        }
-        else
-        {
-            if (currentCheckPoint + sens > checkPoints.Length - 1 || currentCheckPoint + sens < 0)
-            {
-                sens *= -1;
-            }
-            currentCheckPoint += sens;
-        }
-    }
-
-
-
-    #if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        UnityEditor.Handles.color = Color.red;
-        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, perceptionRadius);
-        UnityEditor.Handles.color = Color.white;
-        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, keepFocusRadius);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        int cpt = 0;
-        for (int i = 0; i < checkPoints.Length -1; i++)
-        {
-            Gizmos.DrawLine(checkPoints[i], checkPoints[i+1]);
-            UnityEditor.Handles.Label((checkPoints[i] + checkPoints[i + 1]) / 2, i.ToString());
-            cpt++;
-        }
-        if (loopPatrol)
-        {
-            Gizmos.DrawLine(checkPoints[0], checkPoints[checkPoints.Length - 1]);
-            UnityEditor.Handles.Label((checkPoints[0] + checkPoints[checkPoints.Length - 1]) / 2, cpt.ToString());
-        }
-    }
-#endif
-
-    #region Editor
-    public void GoToCheckPoint(int i)
-    {
-        transform.position = checkPoints[i];
-    }
-
-    public void SetCheckPoint(int i)
-    {
-        checkPoints[i] = transform.position;
-    }
-
-    public void InitCheckPoints()
-    {
-        checkPoints = new Vector3[nbCheckPoint];
-    }
-
-    public void OnValidate()
-    {
-        if (!Application.isPlaying  && PlayerPrefs.GetInt("oldNbCheckPoint", 0) != nbCheckPoint)
-        {
-            PlayerPrefs.SetInt("oldNbCheckPoint", nbCheckPoint);
-            InitCheckPoints();
-        }
-
-    }
-    #endregion
-
-
-
 }
-
-public enum GhostState {Patrol, Chase}

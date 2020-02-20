@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(Ghost))]
+[CustomEditor(typeof(PatrolUnit), true)]
 public class GhostEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        Ghost ghost = (Ghost)target;
+        PatrolUnit ghost = (PatrolUnit)target;
 
         for (int i = 0; i < ghost.nbCheckPoint; i++)
         {
