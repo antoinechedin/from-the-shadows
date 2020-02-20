@@ -9,7 +9,7 @@ public class MenuCamera : MonoBehaviour
     public Transform savesPosition;
     public List<GameObject> cameraPositions;
     public List<GameObject> cameraPositionsZoom;
-    public Image cursor;
+    public RectTransform cursor;
     public List<GameObject> cursorPositions;
     public float cameraSpeed;
 
