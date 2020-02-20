@@ -2,60 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Segment
-{
-    public Vector2 pt1;
-    public Vector2 pt2;
-
-    public Segment(Vector2 p1, Vector2 p2)
-    {
-        if(p1.x < p2.x)
-        {
-            pt1 = p1;
-            pt2 = p2;
-        }
-        else if (p1.x > p2.x)
-        {
-            pt1 = p2;
-            pt2 = p1;
-        }
-        else
-        {
-            if (p1.y < p2.y)
-            {
-                pt1 = p1;
-                pt2 = p2;
-            }
-            else if(p1.y > p2.y)
-            {
-                pt1 = p2;
-                pt2 = p1;
-            }
-            else
-            {
-                pt1 = p1;
-                pt2 = p2;
-            }
-        }
-        
-    }
-
-    public Vector2 GetIntersectionPointCoordinates(Segment s2)
-    {
-        float tmp = (s2.pt2.x - s2.pt1.x) * (pt2.y - pt1.y) - (s2.pt2.y - s2.pt1.y) * (pt2.x - pt1.x);
-
-        if (tmp == 0)
-            return Vector2.zero;
-
-        float mu = ((pt1.x - s2.pt1.x) * (pt2.y - pt1.y) - (pt1.y - s2.pt1.y) * (pt2.x - pt1.x)) / tmp;
-
-        return new Vector2(
-            s2.pt1.x + (s2.pt2.x - s2.pt1.x) * mu,
-            s2.pt1.y + (s2.pt2.y - s2.pt1.y) * mu
-        );
-    }
-}
-
 [RequireComponent(typeof(PolygonCollider2D))]
 public class LightCollider : MonoBehaviour
 {
@@ -75,7 +21,6 @@ public class LightCollider : MonoBehaviour
     public void SetPolygonFromCircle()
     {
         GetComponent<PolygonCollider2D>().pathCount = 1;
-        float radius = GetComponent<NewLightSource>().lightRadius;
         List<Vector2> circlePolygon = new List<Vector2>();
         
         for (int i = 0; i < numberPoints; i++)
@@ -267,8 +212,7 @@ public class LightCollider : MonoBehaviour
     }
 
     // Gizmos for Debug
-    #if UNITY_EDITOR
-    
+    #if UNITY_EDITOR  
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, GetComponent<NewLightSource>().lightRadius);
@@ -297,7 +241,6 @@ public class LightCollider : MonoBehaviour
             Debug.Log(i);
         }
     }
-    
     #endif
 }
 
