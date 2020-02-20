@@ -31,7 +31,10 @@ public class OverHeadGUI : MonoBehaviour
     {
         CreateCanvas();
         AddText();
-        AddImage();
+        if (displayedSprite == null)
+            Debug.LogWarning("Can't find sprite to display over " + gameObject.name);
+        else
+            AddImage();
         ToggleUI();
     }
 
@@ -85,7 +88,7 @@ public class OverHeadGUI : MonoBehaviour
         image.preserveAspect = true;
         RectTransform imageRT = imageGO.GetComponent<RectTransform>();
         imageRT.anchorMin = Vector2.zero;
-        imageRT.anchorMax = new Vector2(1f, 0.66f);
+        imageRT.anchorMax = new Vector2(1f, 0.6f);
         imageRT.sizeDelta = Vector2.zero;
         imageRT.position += new Vector3(0, 0, 0.7f);
     }
@@ -98,10 +101,12 @@ public class OverHeadGUI : MonoBehaviour
         text.font = TMP_FontAsset.CreateFontAsset(Resources.GetBuiltinResource<Font>("Arial.ttf"));
         text.enableAutoSizing = true;
         text.fontSizeMin = 0;
+        text.fontSizeMax = 50;
+        text.enableWordWrapping = false;
         text.alignment = TextAlignmentOptions.Center;
         text.text = displayedText;
         RectTransform textRT = textGO.GetComponent<RectTransform>();
-        textRT.anchorMin = new Vector2(0, 0.66f);
+        textRT.anchorMin = new Vector2(0, 0.6f);
         textRT.anchorMax = Vector2.one;
         textRT.sizeDelta = Vector2.zero;
         textRT.position += new Vector3(0, 0, 0.7f);
