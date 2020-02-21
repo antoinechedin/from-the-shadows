@@ -25,6 +25,7 @@ public class SwingMovement : MonoBehaviour, IResetable
 
         Transform child = swingingObject.transform.Find("Child").transform;
         child.Translate(new Vector3(0, -ropeLength, 0));
+        if (swingingObject.GetComponentInChildren<Torch>() != null) swingingObject.GetComponentInChildren<Torch>().swinging = true;
     }
 
     // Update is called once per frame
@@ -32,12 +33,6 @@ public class SwingMovement : MonoBehaviour, IResetable
     {
         currentTime += Time.deltaTime;
         swingingObject.transform.rotation = Quaternion.Lerp(start, end, (Mathf.Sin( currentTime * speed + Mathf.PI / 2) + 1f) / 2f);
-    }
-
-    void LateUpdate()
-    {
-        if(swingingObject.GetComponentInChildren<LightCollider>() != null)
-            swingingObject.GetComponentInChildren<LightCollider>().isStatic = false;
     }
 
     Quaternion RotationPoint(float angle)

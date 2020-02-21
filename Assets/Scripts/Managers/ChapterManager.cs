@@ -141,10 +141,11 @@ public class ChapterManager : MonoBehaviour
 
 
         //On active la nouvelle room et ses voisins
-        levels[currentLevel].EnableLevel();
+        if (newCurrentLevel != 1000)
+            levels[currentLevel].EnableLevel();
 
 
-        if (currentLevel == levels.Count) //Le chapitre est terminé
+        if (currentLevel == levels.Count || newCurrentLevel == 1000) //Le chapitre est terminé
         {
             //Save the metaData
             CollectMetaData();
