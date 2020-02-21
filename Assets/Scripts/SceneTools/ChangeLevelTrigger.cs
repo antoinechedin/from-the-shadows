@@ -9,7 +9,7 @@ public class ChangeLevelTrigger : MonoBehaviour
     public Type type;
     public int nbNecessaryPlayers;
     public GameObject newPlayerSpawns;
-    [Header("(OPTIONAL. -1 by default)")]
+    [Header("(OPTIONAL. -1 by default. Set it to 1000 to finish the chapter)")]
     public int newCurrentLevel = -1;
 
     private ChapterManager chapterManager;

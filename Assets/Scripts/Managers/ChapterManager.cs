@@ -144,7 +144,7 @@ public class ChapterManager : MonoBehaviour
         levels[currentLevel].EnableLevel();
 
 
-        if (currentLevel == levels.Count) //Le chapitre est terminé
+        if (currentLevel == levels.Count || newCurrentLevel == 1000) //Le chapitre est terminé
         {
             //Save the metaData
             CollectMetaData();
