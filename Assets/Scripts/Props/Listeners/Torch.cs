@@ -6,6 +6,7 @@ public class Torch : ActivatorListener, IResetable
 {
 
     public GameObject lightSource;
+    public GameObject pointLight;
     public AudioClip soundOn;
     public AudioClip soundOff;
     public bool activeAtStart;
@@ -19,7 +20,8 @@ public class Torch : ActivatorListener, IResetable
     private void Awake()
     {
         lightSource = transform.Find("LightSource").gameObject;
-        lightSource.GetComponent<NewLightSource>().lightRadius = 0f;    
+        lightSource.GetComponent<NewLightSource>().lightRadius = 0f;
+        pointLight = lightSource.transform.Find("PointLight").gameObject;
     }
 
     void Start()
@@ -43,7 +45,8 @@ public class Torch : ActivatorListener, IResetable
         if (Mathf.Abs(targetRadius - lightSource.GetComponent<NewLightSource>().lightRadius) < 0.001f)
             lightSource.GetComponent<LightCollider>().isStatic = true;
 
-        lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime*10); 
+        lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime*10);
+        pointLight.GetComponent<Light>().range = lightSource.GetComponent<NewLightSource>().lightRadius * 8;
     }
 
     public override void OnActivate()
