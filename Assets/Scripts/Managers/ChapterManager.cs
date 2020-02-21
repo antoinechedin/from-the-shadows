@@ -6,7 +6,6 @@ public class ChapterManager : MonoBehaviour
 {
     public List<LevelManager> levels;
     public PauseMenu pauseMenu;
-    [SerializeField]
     private int currentLevel = 0; //indice du niveau actuel
 
     private float timeSinceBegin = 0;
@@ -65,11 +64,9 @@ public class ChapterManager : MonoBehaviour
             NextLevel();
         }
 
-
-        //debug
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K))
         {
-            SpawnPlayers();
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }
     }
 
@@ -185,20 +182,57 @@ public class ChapterManager : MonoBehaviour
         }
     }
 
+
+
+
+
+
+
     public void UpdateEnabledLevels()
     {
-        for (int i = 0; i < levels.Count; i++)
+        //on active le niveau courant;
+        levels[currentLevel].gameObject.SetActive(true);
+        levels[currentLevel].EnableLevel();
+
+        //on désactive tous les n-2 et moins
+        int index = currentLevel - 1;
+        while (index >= 0)
         {
-            if (i == currentLevel)
+            if (Mathf.Abs(index - currentLevel) == 1)
             {
-                levels[i].EnableLevel();
+                levels[index].gameObject.SetActive(true);
+                levels[index].DisableLevel();
             }
             else
             {
-                levels[i].DisableLevel();
+                levels[index].gameObject.SetActive(false);
             }
+            index--;
+        }
+
+        //on désactive tous les n+2 et plus
+        index = currentLevel + 1;
+        while (index <= levels.Count - 1)
+        {
+            if (Mathf.Abs(index - currentLevel) == 1)
+            {
+                levels[index].gameObject.SetActive(true);
+                levels[index].DisableLevel();
+            }
+            else
+            {
+                levels[index].gameObject.SetActive(false);
+            }
+            index++;
         }
     }
+
+
+
+
+
+
+
 
     public void CollectMetaData()
     {
