@@ -98,8 +98,11 @@ public class LevelManager : MonoBehaviour
         {
             if (i < collectiblesTaken.Length)
             {
-                collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
-                collectibles[i].GetComponent<Collectible>().UpdateState();
+                if (collectibles[i].GetComponent<Collectible>() != null)
+                {
+                    collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
+                    collectibles[i].GetComponent<Collectible>().UpdateState();
+                }
             }
         }
     }
