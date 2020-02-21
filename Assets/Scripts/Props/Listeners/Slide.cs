@@ -5,19 +5,22 @@ using UnityEngine;
 public class Slide : ActivatorListener
 {
     public enum Direction {Up, Down, Left, Right, Depth};
-    private bool open;
+    private bool open = false;
     private Vector3 stopPosition;
     private Vector3 startPosition;
     private Vector3 targetPosition;
+    private AudioSource audioSource;
+    private bool isMute = true;
 
     public Direction direction;
     [Range(0,10)]
     public float speed;
     public float distance;
-
+    public AudioClip sound;
 
     public void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         startPosition = transform.position;
         targetPosition = startPosition;
         switch (direction)
@@ -38,15 +41,19 @@ public class Slide : ActivatorListener
                 stopPosition = startPosition + (Vector3.forward * distance); 
                 break;
         }
+        isMute = false;
     }
 
     public override void OnActivate()
     {
-        open = true;
-        targetPosition = stopPosition;
-        if (direction == Direction.Depth)
+        if (!open)
         {
-            GetComponent<Collider2D>().enabled = false;
+            open = true;
+            targetPosition = stopPosition;
+            if (direction == Direction.Depth)
+                GetComponent<Collider2D>().enabled = false;
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(sound);
         }
     }
 
@@ -60,6 +67,8 @@ public class Slide : ActivatorListener
             {
                 GetComponent<Collider2D>().enabled = true;
             }
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(sound);
         }
     }
 

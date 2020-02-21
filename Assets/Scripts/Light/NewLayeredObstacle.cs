@@ -6,40 +6,25 @@ using ClipperLib;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class NewLayeredObstacle : MonoBehaviour
 {
+    public Material mat;
+    public NewLayeredObstacleType type;
+    private List<Vector2> baseCollider;
     private const long ClipperScale = 10000;
 
-    private Vector2 ConvertToVector2(IntPoint value)
-    {
-        var x = (float)value.X / ClipperScale;
-        var y = (float)value.Y / ClipperScale;
-        return new Vector2(x, y);
-    }
-
-    private IntPoint ConvertToIntPoint(Vector2 value)
-    {
-        var x = (long)((double)value.x * ClipperScale);
-        var y = (long)((double)value.y * ClipperScale);
-        return new IntPoint(x, y);
-    }
-
-    //---------------------------------------------------------------------------------------------
-
-    public PolygonCollider2D polyCollider;
-
-    public NewLayeredObstacleType type;
+    [HideInInspector] public PolygonCollider2D childPolyCollider;
     [HideInInspector] public List<NewLightSource> lightSources;
-    public GameObject RealCollider;
-
-    private List<Vector2> baseCollider;
-    private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         // Add Real Collider to Children
-        GameObject go = Instantiate(RealCollider, transform.position, Quaternion.identity);
+        GameObject go = new GameObject();
+        go.AddComponent<PolygonCollider2D>();
+        go.AddComponent<MeshRenderer>();
+        go.AddComponent<MeshFilter>();
+        go.AddComponent<DrawPolygonGizmos>();
         go.name = "RealCollider";
-        go.transform.parent = transform;
-        go.layer = LayerMask.NameToLayer("Obstacle");
+        go.layer = LayerMask.NameToLayer("LayeredSolid");
+        go.transform.SetParent(this.transform, false);
 
         // Setting up Gizmos Color
         DrawPolygonGizmos dpg = go.GetComponent<DrawPolygonGizmos>();
@@ -50,17 +35,16 @@ public class NewLayeredObstacle : MonoBehaviour
 
         // Initialize BaseCollider
         baseCollider = new List<Vector2>();
-        polyCollider = transform.GetChild(0).GetComponent<PolygonCollider2D>();
-        polyCollider.SetPath(0, new List<Vector2>().ToArray());
+        childPolyCollider = transform.GetChild(0).GetComponent<PolygonCollider2D>();
+        childPolyCollider.SetPath(0, new List<Vector2>().ToArray());
         for (int i = 0; i < GetComponent<PolygonCollider2D>().GetPath(0).Length; i++)
             baseCollider.Add(GetComponent<PolygonCollider2D>().GetPath(0)[i]);
 
         // This Object is Transparent, his Child is the real Collider
-        gameObject.layer = LayerMask.NameToLayer("TransparentObstacle");
+        gameObject.layer = LayerMask.NameToLayer("DisLayeredSolid");
 
         // Initialize LightSource & SpriteRenderer
         lightSources = new List<NewLightSource>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Start() 
@@ -70,8 +54,14 @@ public class NewLayeredObstacle : MonoBehaviour
 
     private void Update()
     {
-        if(lightSources.Count > 0)
-            UpdateCollider();
+        foreach(NewLightSource nls in lightSources)
+        {
+            if (!nls.GetComponent<LightCollider>().isStatic)
+            {
+                UpdateCollider();
+                break;
+            }
+        }
     }
 
     public void AddLightSource(NewLightSource lightSource)
@@ -93,23 +83,32 @@ public class NewLayeredObstacle : MonoBehaviour
     /// <param name="clippers">list of Polygons to intersect/difference the baseCollider</param>
     void SetColliderAs(ClipType ct, List<PolygonCollider2D> clippers)
     {
+        List<List<IntPoint>> solution = new List<List<IntPoint>>();
+        Clipper clipper = new Clipper();
+
         List<IntPoint> subj = new List<IntPoint>();
         for (int j = 0; j < baseCollider.Count; j++)
             subj.Add(ConvertToIntPoint(transform.localToWorldMatrix * baseCollider[j] + (Vector4)transform.position));       
 
-        List<IntPoint> clip = new List<IntPoint>();
         foreach (PolygonCollider2D cl in clippers)
+        {
+            List<IntPoint> clip = new List<IntPoint>();
             for (int j = 0; j < cl.points.Length; j++)
+            {
                 clip.Add(ConvertToIntPoint(cl.transform.localToWorldMatrix * cl.points[j] + (Vector4)cl.transform.position));
-
-        List<List<IntPoint>> solution = new List<List<IntPoint>>();
-        Clipper clipper = new Clipper();
-
+            }
+            clipper.AddPath(clip, PolyType.ptClip, true);
+        }      
+ 
         clipper.AddPath(subj, PolyType.ptSubject, true);
-        clipper.AddPath(clip, PolyType.ptClip, true);
-        clipper.Execute(ct, solution, PolyFillType.pftEvenOdd, PolyFillType.pftEvenOdd);
 
-        polyCollider.pathCount = solution.Count;
+        if(ct == ClipType.ctDifference)
+            clipper.Execute(ct, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
+
+        if (ct == ClipType.ctIntersection)
+            clipper.Execute(ct, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
+
+        childPolyCollider.pathCount = solution.Count;
 
         for (int i = 0; i < solution.Count; i++)
         {
@@ -118,7 +117,7 @@ public class NewLayeredObstacle : MonoBehaviour
             foreach (IntPoint point in solution[i])
                 unitedPolygon.Add(transform.worldToLocalMatrix * (ConvertToVector2(point) - (Vector2)transform.position));
 
-            polyCollider.SetPath(i, unitedPolygon.ToArray());
+            childPolyCollider.SetPath(i, unitedPolygon.ToArray());
         }
     }
 
@@ -132,15 +131,15 @@ public class NewLayeredObstacle : MonoBehaviour
                 if (lightSources.Count == 0)
                 {
                     // No Collider
-                    polyCollider.pathCount = 0;
-                    polyCollider.SetPath(0, new List<Vector2>().ToArray());
+                    childPolyCollider.pathCount = 0;
+                    childPolyCollider.SetPath(0, new List<Vector2>().ToArray());
                 }
                 // If there is Light
                 else
                 {
                     // Collider is Intersection between Light & baseCollider
-                    polyCollider.pathCount = 1;
-                    polyCollider.SetPath(0, baseCollider.ToArray());
+                    childPolyCollider.pathCount = 1;
+                    childPolyCollider.SetPath(0, baseCollider.ToArray());
 
                     List<PolygonCollider2D> listLight = new List<PolygonCollider2D>();
                     foreach (NewLightSource nls in lightSources)
@@ -155,15 +154,15 @@ public class NewLayeredObstacle : MonoBehaviour
                 if (lightSources.Count == 0)
                 {
                     // Collider is baseCollider
-                    polyCollider.pathCount = 1;
-                    polyCollider.SetPath(0, baseCollider.ToArray());
+                    childPolyCollider.pathCount = 1;
+                    childPolyCollider.SetPath(0, baseCollider.ToArray());
                 }
                 // If there is Light
                 else
                 {
                     // Collider is Difference between baseCollider & Light
-                    polyCollider.pathCount = 0;
-                    polyCollider.SetPath(0, new List<Vector2>().ToArray());
+                    childPolyCollider.pathCount = 0;
+                    childPolyCollider.SetPath(0, new List<Vector2>().ToArray());
 
                     List<PolygonCollider2D> listLight = new List<PolygonCollider2D>();
                     foreach (NewLightSource nls in lightSources)
@@ -173,13 +172,39 @@ public class NewLayeredObstacle : MonoBehaviour
                 break;
         }
 
-        if (spriteRenderer != null)
-        {
-            Color newColor = spriteRenderer.color;
-            if (gameObject.layer == LayerMask.NameToLayer("Obstacle")) newColor.a = 1f;
-            if (gameObject.layer == LayerMask.NameToLayer("TransparentObstacle")) newColor.a = 0.1f;
-            spriteRenderer.color = newColor;
-        }
+        UpdateMesh();
+    }
+    private void UpdateMesh()
+    {
+        Mesh m = Utils.CreateMesh3DFromPolyCollider(transform.GetChild(0).GetComponent<PolygonCollider2D>(), -0.5f, +0.5f);
+        GetComponentInChildren<MeshFilter>().sharedMesh = m;
+        GetComponentInChildren<MeshRenderer>().material = mat;
+    }
+
+    #if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (type == NewLayeredObstacleType.Light)
+            Gizmos.color = new Color(1, 0.9f, 0.4f, 1f);
+        else if (type == NewLayeredObstacleType.Shadow)
+            Gizmos.color = new Color(0.045f, 0.045f, 0.12f, 1f);
+
+        Gizmos.DrawCube(GetComponent<PolygonCollider2D>().bounds.center, GetComponent<PolygonCollider2D>().bounds.size + 3*Vector3.forward);
+    }
+    #endif
+
+    private Vector2 ConvertToVector2(IntPoint value)
+    {
+        var x = (float)value.X / ClipperScale;
+        var y = (float)value.Y / ClipperScale;
+        return new Vector2(x, y);
+    }
+
+    private IntPoint ConvertToIntPoint(Vector2 value)
+    {
+        var x = (long)((double)value.x * ClipperScale);
+        var y = (long)((double)value.y * ClipperScale);
+        return new IntPoint(x, y);
     }
 }
 

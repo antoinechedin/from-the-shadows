@@ -57,6 +57,10 @@ public class ChapterUtility : MonoBehaviour
     List<Identifier<BoxCollider2D>> levelTrigger = new List<Identifier<BoxCollider2D>>();
     List<Identifier<BoxCollider2D>> invisibleWall = new List<Identifier<BoxCollider2D>>();
 
+    static int SortByName(LevelManager lm1, LevelManager lm2)
+    {
+        return lm1.id.CompareTo(lm2.id);
+    }
     /// <summary>
     /// Fill the list of Transform for CameraPoints / LevelTriggers / Invisible Walls
     /// </summary>
@@ -71,28 +75,29 @@ public class ChapterUtility : MonoBehaviour
         mainCam = Camera.main;
 
         // Level Count
-        GameObject[] levelsGo = GameObject.FindGameObjectsWithTag("Level");
+        GameObject[] levelsGo = GameObject.FindGameObjectsWithTag("CU Level");
         foreach (GameObject go in levelsGo)
         {
             levels.Add(go.GetComponent<LevelManager>());
         }
+        levels.Sort(SortByName);
 
         // Get Level Triggers + Number of the Level Associated
-        GameObject[] levelTriggers = GameObject.FindGameObjectsWithTag("Triggers");
+        GameObject[] levelTriggers = GameObject.FindGameObjectsWithTag("CU Triggers");
         foreach (GameObject go in levelTriggers)
         {
             BoxCollider2D[] lvlTrigger = go.transform.GetComponentsInChildren<BoxCollider2D>();
             foreach (BoxCollider2D trigger in lvlTrigger)
-                levelTrigger.Add(new Identifier<BoxCollider2D>(trigger, GetIdOf(go.transform.parent.name)));
+                levelTrigger.Add(new Identifier<BoxCollider2D>(trigger, go.transform.parent.GetComponent<LevelManager>().id));
         }
 
         // Get Invisible Walls + Number of the Level Associated
-        GameObject[] invisibleWalls = GameObject.FindGameObjectsWithTag("InvisibleWalls");
+        GameObject[] invisibleWalls = GameObject.FindGameObjectsWithTag("CU InvisibleWalls");
         foreach (GameObject go in invisibleWalls)
         {
             BoxCollider2D[] invWalls = go.transform.GetComponentsInChildren<BoxCollider2D>();
             foreach (BoxCollider2D wall in invWalls)
-                invisibleWall.Add(new Identifier<BoxCollider2D>(wall, GetIdOf(go.transform.parent.name)));
+                invisibleWall.Add(new Identifier<BoxCollider2D>(wall, go.transform.parent.GetComponent<LevelManager>().id));
         }
 
         // Get Some Infos about the Datas collected (Count)
@@ -128,12 +133,6 @@ public class ChapterUtility : MonoBehaviour
     {
         LevelManager lm = levels[id].GetComponent<LevelManager>();
         lm.cameraLimitRT.position = mainCam.transform.position;
-    }
-
-    // Get Id of String, Need to Improve for 9+
-    int GetIdOf(string s)
-    {
-        return int.Parse(s.Substring(s.Length - 1));
     }
 
     /// <summary>

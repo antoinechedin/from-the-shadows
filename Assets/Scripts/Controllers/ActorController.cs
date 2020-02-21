@@ -7,7 +7,7 @@ using UnityEngine;
 public class ActorController : MonoBehaviour
 {
     public LayerMask collisionMask = 1 << 9;
-    [HideInInspector]public float maxSlopeAngle = 60;
+    [HideInInspector] public float maxSlopeAngle = 60;
 
     private const float skinWidth = 0.021f;
 
@@ -28,12 +28,12 @@ public class ActorController : MonoBehaviour
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
-        body.bodyType = RigidbodyType2D.Kinematic;
+        body.bodyType = RigidbodyType2D.Dynamic;
         boxCollider = GetComponent<BoxCollider2D>();
         InitRaySpacing();
     }
 
-    public Vector2 Move(Vector2 velocity, float deltaTime)
+    public void Move(Vector2 velocity, float deltaTime)
     {
         UpdateRaycastOrigins();
         collisionsPrevious = collisions;
@@ -58,7 +58,6 @@ public class ActorController : MonoBehaviour
 
         body.MovePosition(body.position + move);
         collisions.move = move;
-        return move / deltaTime;
     }
 
     private void MoveX(ref Vector2 move)
@@ -86,7 +85,8 @@ public class ActorController : MonoBehaviour
                     float dstToSlope = 0;
                     if (slopeAngle != collisionsPrevious.slopeAngle)
                     {
-                        dstToSlope = hit.distance - skinWidth;
+                        
+                        dstToSlope = Mathf.Clamp(hit.distance - skinWidth, 0, Mathf.Infinity);
                         move.x -= dstToSlope * xSign;
                     }
                     ClimbSlope(ref move, slopeAngle, hit.normal);
@@ -96,7 +96,7 @@ public class ActorController : MonoBehaviour
 
                 if (!collisions.climbingSlope || slopeAngle > maxSlopeAngle)
                 {
-                    move.x = (hit.distance - skinWidth) * xSign;
+                    move.x = (Mathf.Clamp(hit.distance - skinWidth, 0, Mathf.Infinity)) * xSign;
                     rayLength = hit.distance;
                     if (collisions.climbingSlope)
                     {
@@ -125,7 +125,7 @@ public class ActorController : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * ySign, rayLength, collisionMask);
             if (hit)
             {
-                move.y = (hit.distance - skinWidth) * ySign;
+                move.y = (Mathf.Clamp(hit.distance - skinWidth, 0, Mathf.Infinity)) * ySign;
                 rayLength = hit.distance;
 
                 if (collisions.climbingSlope)
@@ -160,7 +160,7 @@ public class ActorController : MonoBehaviour
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
                 if (slopeAngle != collisions.slopeAngle)
                 {
-                    move.x = (hit.distance - skinWidth) * xSign;
+                    move.x = (Mathf.Clamp(hit.distance - skinWidth, 0, Mathf.Infinity)) * xSign;
                     collisions.slopeAngle = slopeAngle;
                     collisions.groundNormal = hit.normal;
                 }
@@ -185,7 +185,8 @@ public class ActorController : MonoBehaviour
 
     private void DescendSlope(ref Vector2 move)
     {
-        TrySlideDown(ref move);
+        if (collisionsPrevious.bellow)
+            TrySlideDown(ref move);
 
         if (!collisions.slidingSlope)
         {
@@ -200,7 +201,7 @@ public class ActorController : MonoBehaviour
                 {
                     if (move.x != 0 && Mathf.Sign(hit.normal.x) == xSign)
                     {
-                        if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(move.x))
+                        if (Mathf.Clamp(hit.distance - skinWidth, 0, Mathf.Infinity) <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(move.x))
                         {
                             float moveDistance = Mathf.Abs(move.x);
                             float descendMoveY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;

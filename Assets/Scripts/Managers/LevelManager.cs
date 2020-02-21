@@ -4,23 +4,60 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+    public int id;
+
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
-    public Transform playerSpawn; // mutual spawn point
-    public Transform lightSpawn;
-    public Transform shadowSpawn;
+    public List<GameObject> collectibles = new List<GameObject>();
+    public List<GameObject> playerSpawns;
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
+    [Header("Put in roomsToEnable all the neighbors of the room")]
+    public List<LevelManager> roomsToEnable;
 
+
+    private void Awake()
+    {
+        //Handle spawn points potential problems
+        if (playerSpawns == null || playerSpawns.Count == 0)
+        {
+            Debug.LogWarning("playerSpawns list is not set");
+        }
+        else
+        {
+            foreach (GameObject go in playerSpawns)
+            {
+                if (go.transform.childCount != 2)
+                {
+                    Debug.LogWarning("playerSpawns." + go.name + " : needs to have 2 children.");
+                }
+            }
+        }
+    }
+    public void Start()
+    {
+        // Fetch collectibles
+        Transform parentCollectibles = transform.Find("Collectibles");
+        if (parentCollectibles != null)
+        {
+            for (int i = 0; i < parentCollectibles.childCount; i++)
+            {
+                collectibles.Add(parentCollectibles.GetChild(i).gameObject);
+            }
+        }
+
+
+    }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
     /// </summary>
     public void DisableLevel()
     {
-        foreach (GameObject go in objectsToDisable)
+        gameObject.SetActive(false);
+        foreach (LevelManager level in roomsToEnable)
         {
-            go.SetActive(false);
+            level.gameObject.SetActive(false);
         }
     }
 
@@ -29,9 +66,21 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void EnableLevel()
     {
+        gameObject.SetActive(true);
+        this.SetObjectToDisable(true);
+
+        foreach (LevelManager level in roomsToEnable)
+        {
+            level.gameObject.SetActive(true);
+            level.SetObjectToDisable(false);
+        }
+    }
+
+    public void SetObjectToDisable(bool b)
+    {
         foreach (GameObject go in objectsToDisable)
         {
-            go.SetActive(true);
+            go.SetActive(b);
         }
     }
 
@@ -42,4 +91,21 @@ public class LevelManager : MonoBehaviour
             resetable.Reset();
         }
     }
+
+    public void SetCollectibles(bool[] collectiblesTaken)
+    {
+        for (int i = 0; i < collectibles.Count; i++)
+        {
+            if (i < collectiblesTaken.Length)
+            {
+                if (collectibles[i].GetComponent<Collectible>() != null)
+                {
+                    collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
+                    collectibles[i].GetComponent<Collectible>().UpdateState();
+                }
+            }
+        }
+    }
+
+
 }

@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 3526289807557171349}
   - component: {fileID: 3526289807557171348}
   - component: {fileID: 7262841886504947639}
-  - component: {fileID: 1897851079042631789}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: PressurePlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,11 +74,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   listeners: []
   active: 0
-  hasTimer: 0
-  timer: 0
+  sound: {fileID: 8300000, guid: c1641233877895240a9270365839e01c, type: 3}
   activeMat: {fileID: 2100000, guid: 099a43ec3a28fca47a26b744e2f91270, type: 2}
   inactiveMat: {fileID: 2100000, guid: c25219404ba2c4c44bac839d978b476b, type: 2}
-  sound: {fileID: 8300000, guid: c1641233877895240a9270365839e01c, type: 3}
+  hasTimer: 0
+  timer: 0
+  nbObjectsOnPlate: 0
+  tagInteractObject: Player
 --- !u!82 &7262841886504947639
 AudioSource:
   m_ObjectHideFlags: 0
@@ -91,8 +92,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -176,18 +177,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1897851079042631789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3526289807557171347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27d0b6bffbc5f2940a85cdc204640fb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3526289809005255386
 GameObject:
   m_ObjectHideFlags: 0

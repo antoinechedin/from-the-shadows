@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class PauseMenu : MonoBehaviour
 {
@@ -50,11 +53,15 @@ public class PauseMenu : MonoBehaviour
         SaveManager.Instance.WriteSaveFile();
         StartCoroutine(Fade());
     }
-
+  
     IEnumerator Fade()
     {
         yield return new WaitForSeconds(1f);
-        Application.Quit();
+        #if UNITY_EDITOR 
+		EditorApplication.isPlaying = false;
+		#else 
+		Application.Quit();
+		#endif
     }
 
 }

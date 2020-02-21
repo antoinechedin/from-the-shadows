@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(CircleCollider2D), typeof(Rigidbody2D))]
 public class LightSource : MonoBehaviour
 {
     public float lightRadius = 3.5f;
@@ -10,6 +10,7 @@ public class LightSource : MonoBehaviour
 
     private void Awake()
     {
+        
         circleCollider = GetComponent<CircleCollider2D>();
         circleCollider.isTrigger = true;
         circleCollider.radius = 0.5f;
@@ -22,7 +23,7 @@ public class LightSource : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "LayeredObstacle")
+        if (other.gameObject.layer == LayerMask.NameToLayer("LayeredSolid") || other.gameObject.layer == LayerMask.NameToLayer("DisLayeredSolid"))
         {
             other.GetComponent<LayeredObstacle>().AddLightSource(this);
         }
@@ -30,7 +31,7 @@ public class LightSource : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "LayeredObstacle")
+        if (other.gameObject.layer == LayerMask.NameToLayer("LayeredSolid") || other.gameObject.layer == LayerMask.NameToLayer("DisLayeredSolid"))
         {
             other.GetComponent<LayeredObstacle>().RemoveLightSource(this);
         }

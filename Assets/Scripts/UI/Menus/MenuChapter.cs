@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class MenuChapter : MonoBehaviour
 {
@@ -12,8 +13,8 @@ public class MenuChapter : MonoBehaviour
     public Text collectiblesNumber;
     public Text completedNumber;
     public GameObject chapterButtonsPanel;
-    public Canvas canvas;
-    public Canvas saveMenu;
+    public RectTransform thisPanel;
+    public RectTransform saveMenu;
     public MenuManager menuManager;
     public Image metaDataPanel;
     public Image metaDataIcon;
@@ -24,6 +25,7 @@ public class MenuChapter : MonoBehaviour
     private bool chapterMenuIsOpen = false;
     private bool statsOpen = false;
     private int localIndexCurrentChapter;
+    private TextMeshProUGUI currentChapterName;
 
     private List<string> chaptersName;
 
@@ -42,10 +44,12 @@ public class MenuChapter : MonoBehaviour
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
+        currentChapterName = menuCamera.cursor.transform.Find("Chapter Label").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
     {
+        currentChapterName.text = chaptersName[localIndexCurrentChapter];
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
@@ -70,7 +74,7 @@ public class MenuChapter : MonoBehaviour
             }
             else if (!chapterMenuIsOpen)
             {
-                menuCamera.SetReturnToMainMenu(true);
+                menuCamera.SetReturnToSavesMenu(true);
                 gameObject.transform.position += new Vector3(605, 0, 0);
                 menuManager.OpenSaveMenu();
             }

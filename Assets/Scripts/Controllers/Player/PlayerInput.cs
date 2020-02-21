@@ -9,6 +9,7 @@ public class PlayerInput : MonoBehaviour
     public bool doubleJump;
 
     public bool debugControl;
+    public bool active = true;
     
     public Vector2 moveAxis;
     public bool pressedJump;
@@ -18,12 +19,19 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
-        if (!debugControl)
+        if (!active)
+        {
+            moveAxis = Vector2.zero;
+            pressedJump = false;
+            releasedJump = false;
+        }
+        else if (!debugControl)
         {
             moveAxis.x = Input.GetAxisRaw("Horizontal_" + id);
             moveAxis.y = Input.GetAxisRaw("Vertical_" + id);
             pressedJump = Input.GetButtonDown("A_" + id);
             releasedJump = Input.GetButtonUp("A_" + id);
+            if (moveAxis.magnitude > 1) moveAxis.Normalize();
         }
         else
         {

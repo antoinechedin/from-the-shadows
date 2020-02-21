@@ -21,6 +21,14 @@ public class OptionDisplay : MonoBehaviour
 
     private void DisplayResolution()
     {
-        text.text = Screen.currentResolution.width + "x" + Screen.currentResolution.height;
+        text.text = Screen.width + "x" + Screen.height + " @ " + Screen.currentResolution.refreshRate;
+    }
+
+    private void DisplayFullscreen()
+    {
+        if (Screen.fullScreen)        
+            text.text = "Fullscreen : on";
+        else
+            text.text = "Fullscreen : off";
     }
 }

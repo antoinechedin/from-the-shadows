@@ -10,10 +10,13 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public ActorController actor;
     [HideInInspector] public PlayerInput input;
-
+    [HideInInspector] public Animator animator;
     public IPlayerState state;
     public Vector2 targetVelocity;
     public Vector2 velocity;
+
+    public bool dead = false;
+    public bool dying = false;
 
     private void Awake()
     {
@@ -21,13 +24,18 @@ public class PlayerController : MonoBehaviour
         actor.maxSlopeAngle = settings.maxSlopeAngle;
         input = GetComponent<PlayerInput>();
         state = new PlayerStanding();
+        animator = GetComponentInChildren<Animator>();
+        animator.SetBool("Light", input.doubleJump);
     }
 
     private void Update()
     {
         state.HandleInput(this, input);
         state.Update(this);
+    }
 
+    private void FixedUpdate()
+    {
         if (actor.collisions.bellow || actor.collisions.above)
         {
             if (!actor.collisions.slidingSlope)
@@ -36,12 +44,14 @@ public class PlayerController : MonoBehaviour
 
         velocity.y -= settings.gravity * Time.deltaTime;
         velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
-    }
 
-    private void FixedUpdate()
-    {
         actor.Move(velocity, Time.fixedDeltaTime);
         UpdateSpriteColor();
+
+        GameManager.Instance.AddMetaFloat(
+            input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
+            actor.collisions.move.magnitude
+        );
     }
 
     private void UpdateSpriteColor()
@@ -57,6 +67,17 @@ public class PlayerController : MonoBehaviour
             {
                 sr.color = Color.blue;
             }
+        }
+    }
+
+    public void Die()
+    {
+        if (!dying)
+        {
+            input.active = false;
+            dying = true;
+            dead = true;
+            GameObject.FindObjectOfType<ChapterManager>().ResetLevel(input.id);
         }
     }
 }

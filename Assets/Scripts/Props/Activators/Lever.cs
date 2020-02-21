@@ -9,20 +9,21 @@ public class Lever : Activator, IResetable
     public AudioClip soundOff;
     public Material activeMat;
     public Material inactiveMat;
+    public Material timerMat;
     public bool hasTimer;
     public float timer;
     public bool activeAtStart;
-
+    public bool doNotReset = false;
 
     private bool canPlayer1Activate = false;
     private bool canPlayer2Activate = false;
-    private SoundPlayer soundPlayer;
+    private AudioSource audioSource;
     private GameObject child;
     private bool isMute = true;
 
     private void Start()
     {
-        soundPlayer = GetComponent<SoundPlayer>();
+        audioSource = GetComponent<AudioSource>();
         child = transform.Find("Child").gameObject;
         active = activeAtStart;
         if (activeAtStart)
@@ -37,7 +38,7 @@ public class Lever : Activator, IResetable
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            int idPlayer = collision.gameObject.GetComponent<PlayerController>().input.id;
+            int idPlayer = collision.gameObject.GetComponent<PlayerInput>().id;
             if (idPlayer == 1)
                 canPlayer1Activate = true;
             else if (idPlayer == 2)
@@ -49,7 +50,7 @@ public class Lever : Activator, IResetable
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            int idPlayer = collision.gameObject.GetComponent<PlayerController>().input.id;
+            int idPlayer = collision.gameObject.GetComponent<PlayerInput>().id;
             if (idPlayer == 1)
                 canPlayer1Activate = false;
             else if (idPlayer == 2)
@@ -88,14 +89,18 @@ public class Lever : Activator, IResetable
         {
             active = true;
             TryActivate();
-            if (soundPlayer != null && !isMute)
-                soundPlayer.PlaySoundAtLocation(soundOn, 1f);
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(soundOn);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
             CancelInvoke();
+            StopCoroutine("Flash");
             if (hasTimer && !ignoreTimer)
+            {
                 Invoke("Off", timer);
+                StartCoroutine("Flash");
+            }
         }
     }
 
@@ -107,9 +112,10 @@ public class Lever : Activator, IResetable
         if (TryDeactivate != null)
         {
             active = false;
+            StopCoroutine("Flash");
             TryDeactivate();            
-            if (soundPlayer != null && !isMute)
-                soundPlayer.PlaySoundAtLocation(soundOff, 1f);
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(soundOff);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = inactiveMat;
         }
@@ -117,14 +123,31 @@ public class Lever : Activator, IResetable
 
     public void Reset()
     {
-        isMute = true;
-        if (active && !activeAtStart)
-            Off();
-        else if (!active && activeAtStart)
-            On(true);
-        isMute = false;
+        if (!doNotReset)
+        {
+            isMute = true;
+            if (active && !activeAtStart)
+                Off();
+            else if (!active && activeAtStart)
+                On(true);
+            isMute = false;
 
-        canPlayer1Activate = false;
-        canPlayer2Activate = false;
+            canPlayer1Activate = false;
+            canPlayer2Activate = false;
+        }
+    }
+
+    private IEnumerator Flash()
+    {
+        if (child != null)
+        {
+            while (true)
+            {
+                child.GetComponent<MeshRenderer>().material = activeMat;
+                yield return new WaitForSeconds(0.2f);
+                child.GetComponent<MeshRenderer>().material = timerMat;
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
     }
 }

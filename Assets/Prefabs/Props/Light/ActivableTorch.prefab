@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2098799663797550069}
   - component: {fileID: 2098799663797550067}
   - component: {fileID: 2098799663797550068}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,12 +74,15 @@ MonoBehaviour:
   listeners:
   - {fileID: 987349689398373333}
   active: 0
-  hasTimer: 0
-  timer: 0
-  activeMat: {fileID: 2100000, guid: 099a43ec3a28fca47a26b744e2f91270, type: 2}
-  inactiveMat: {fileID: 2100000, guid: c25219404ba2c4c44bac839d978b476b, type: 2}
   soundOn: {fileID: 0}
   soundOff: {fileID: 0}
+  activeMat: {fileID: 2100000, guid: 099a43ec3a28fca47a26b744e2f91270, type: 2}
+  inactiveMat: {fileID: 2100000, guid: c25219404ba2c4c44bac839d978b476b, type: 2}
+  timerMat: {fileID: 0}
+  hasTimer: 0
+  timer: 0
+  activeAtStart: 0
+  doNotReset: 0
 --- !u!1 &2098799663994194154
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +305,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6246700027616215755}
     m_Modifications:
+    - target: {fileID: 789482383991327650, guid: bf001611541281c42b736814e6ff5b4d,
+        type: 3}
+      propertyPath: isStatic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956141279316049642, guid: bf001611541281c42b736814e6ff5b4d,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956141279316049642, guid: bf001611541281c42b736814e6ff5b4d,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5114597125591400561, guid: bf001611541281c42b736814e6ff5b4d,
         type: 3}
       propertyPath: m_IsActive
@@ -317,6 +335,16 @@ PrefabInstance:
       propertyPath: activators.Array.data[0]
       value: 
       objectReference: {fileID: 2098799663797550068}
+    - target: {fileID: 8074212197376439309, guid: bf001611541281c42b736814e6ff5b4d,
+        type: 3}
+      propertyPath: active
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8074212197376439309, guid: bf001611541281c42b736814e6ff5b4d,
+        type: 3}
+      propertyPath: activeAtStart
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8074212197376439310, guid: bf001611541281c42b736814e6ff5b4d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -377,7 +405,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Torch
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4924185607916686731, guid: bf001611541281c42b736814e6ff5b4d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bf001611541281c42b736814e6ff5b4d, type: 3}
 --- !u!4 &987349689398373334 stripped
 Transform:

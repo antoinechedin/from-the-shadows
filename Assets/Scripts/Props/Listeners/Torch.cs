@@ -6,51 +6,74 @@ public class Torch : ActivatorListener, IResetable
 {
 
     public GameObject lightSource;
+    public GameObject pointLight;
     public AudioClip soundOn;
     public AudioClip soundOff;
     public bool activeAtStart;
     public float lightRadius;
+    public bool swinging = false;
 
     private bool isMute = true;
     public bool active;
-    private SoundPlayer soundPlayer;
-    private Vector3 targetScale = Vector3.zero;
+    private AudioSource audioSource;
+    private float targetRadius = 0.01f;
+
+    private void Awake()
+    {
+        lightSource = transform.Find("LightSource").gameObject;
+        lightSource.GetComponent<NewLightSource>().lightRadius = 0f;
+        pointLight = lightSource.transform.Find("PointLight").gameObject;
+    }
 
     void Start()
     {
-        soundPlayer = GetComponent<SoundPlayer>();
+        if (transform.parent.GetComponentInChildren<Lever>() != null) transform.parent.GetComponentInChildren<Lever>().activeAtStart = activeAtStart;
+
+        audioSource = GetComponent<AudioSource>();
+
         if (activeAtStart)
         {
+            lightSource.GetComponent<NewLightSource>().lightRadius = targetRadius;
             OnActivate();
-        }
+        }     
+
         isMute = false;
         active = activeAtStart;
-        transform.Find("LightSource").transform.Find("Script").gameObject.GetComponent<LightSource>().lightRadius = lightRadius;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        lightSource.transform.localScale = Vector3.Lerp(lightSource.transform.localScale, targetScale, Time.deltaTime * 10);
+        if (Mathf.Abs(targetRadius - lightSource.GetComponent<NewLightSource>().lightRadius) < 0.001f && !swinging)
+            lightSource.GetComponent<LightCollider>().isStatic = true;
+
+        lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime*10);
+        pointLight.GetComponent<Light>().range = lightSource.GetComponent<NewLightSource>().lightRadius * 4;
     }
 
     public override void OnActivate()
     {
-        targetScale = Vector3.one;
+        lightSource.GetComponent<LightCollider>().isStatic = false;
+
+        targetRadius = lightRadius;
         active = true;
-        if (soundPlayer != null && !isMute)
-            soundPlayer.PlaySoundAtLocation(soundOn, 1);
+        if (audioSource != null && !isMute)
+            audioSource.PlayOneShot(soundOn);
     }
 
     public override void OnDeactivate()
     {
-        targetScale = Vector3.zero;
+        lightSource.GetComponent<LightCollider>().isStatic = false;
+
+        targetRadius = 0.01f;
         active = false;
-        if (soundPlayer != null && !isMute)
-            soundPlayer.PlaySoundAtLocation(soundOff, 1);
+        if (audioSource != null && !isMute)
+            audioSource.PlayOneShot(soundOff);
     }
 
     public void Reset()
     {
+        lightSource.GetComponent<LightCollider>().isStatic = false;
+
         isMute = true;
         if (active && !activeAtStart)
             OnDeactivate();
