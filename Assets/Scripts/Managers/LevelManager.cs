@@ -55,7 +55,6 @@ public class LevelManager : MonoBehaviour
     public void DisableLevel()
     {
         gameObject.SetActive(false);
-        Debug.Log("disable " + gameObject.name);
         foreach (LevelManager level in roomsToEnable)
         {
             level.gameObject.SetActive(false);
@@ -67,22 +66,21 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void EnableLevel()
     {
-        Debug.Log("enable " +gameObject.name);
         gameObject.SetActive(true);
+        this.SetObjectToDisable(true);
 
         foreach (LevelManager level in roomsToEnable)
         {
-            Debug.Log("enable " +level.gameObject.name);
             level.gameObject.SetActive(true);
-            level.DisableObjectToDisable();
+            level.SetObjectToDisable(false);
         }
     }
 
-    public void DisableObjectToDisable()
+    public void SetObjectToDisable(bool b)
     {
         foreach (GameObject go in objectsToDisable)
         {
-            go.SetActive(false);
+            go.SetActive(b);
         }
     }
 
