@@ -80,7 +80,7 @@ public class MenuManager : MonoBehaviour
         startMenuBackground.gameObject.SetActive(true);
         startMenuBackgroundAnimator.SetBool("fade", true);
         backgroundAnimator.SetBool("fade", false);
-        version.text = "v" + Application.version + "\n2020 © " + Application.companyName;
+        version.text = Application.version + "\n2020 © " + Application.companyName;
 
         menuCamera.SetReturnToStartMenu(true);
 
