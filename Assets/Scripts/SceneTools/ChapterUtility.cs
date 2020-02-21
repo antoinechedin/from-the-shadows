@@ -59,7 +59,7 @@ public class ChapterUtility : MonoBehaviour
 
     static int SortByName(LevelManager lm1, LevelManager lm2)
     {
-        return lm1.gameObject.name.CompareTo(lm2.gameObject.name);
+        return lm1.id.CompareTo(lm2.id);
     }
     /// <summary>
     /// Fill the list of Transform for CameraPoints / LevelTriggers / Invisible Walls
@@ -88,7 +88,7 @@ public class ChapterUtility : MonoBehaviour
         {
             BoxCollider2D[] lvlTrigger = go.transform.GetComponentsInChildren<BoxCollider2D>();
             foreach (BoxCollider2D trigger in lvlTrigger)
-                levelTrigger.Add(new Identifier<BoxCollider2D>(trigger, GetIdOf(go.transform.parent.name)));
+                levelTrigger.Add(new Identifier<BoxCollider2D>(trigger, go.transform.parent.GetComponent<LevelManager>().id));
         }
 
         // Get Invisible Walls + Number of the Level Associated
@@ -97,7 +97,7 @@ public class ChapterUtility : MonoBehaviour
         {
             BoxCollider2D[] invWalls = go.transform.GetComponentsInChildren<BoxCollider2D>();
             foreach (BoxCollider2D wall in invWalls)
-                invisibleWall.Add(new Identifier<BoxCollider2D>(wall, GetIdOf(go.transform.parent.name)));
+                invisibleWall.Add(new Identifier<BoxCollider2D>(wall, go.transform.parent.GetComponent<LevelManager>().id));
         }
 
         // Get Some Infos about the Datas collected (Count)
@@ -133,12 +133,6 @@ public class ChapterUtility : MonoBehaviour
     {
         LevelManager lm = levels[id].GetComponent<LevelManager>();
         lm.cameraLimitRT.position = mainCam.transform.position;
-    }
-
-    // Get Id of String, Need to Improve for 9+
-    int GetIdOf(string s)
-    {
-        return int.Parse(s.Substring(s.Length - 1));
     }
 
     /// <summary>
