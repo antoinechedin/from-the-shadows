@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
         input = GetComponent<PlayerInput>();
         state = new PlayerStanding();
         animator = GetComponentInChildren<Animator>();
-        //animator.SetBool("Light", input.doubleJump);
+        animator.SetBool("Light", input.doubleJump);
     }
 
     private void Update()

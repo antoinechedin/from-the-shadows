@@ -59,7 +59,7 @@ public class PlayerStanding : IPlayerState
         }
 
         // Animator Run Idle
-        if (Mathf.Abs(player.velocity.x) < 1.5f)
+        if (Mathf.Abs(player.targetVelocity.x) < 1.5f && player.input.moveAxis.x == 0)
         {
             player.animator.SetBool("Idle", true);
             player.animator.SetBool("Running", false);
@@ -71,9 +71,9 @@ public class PlayerStanding : IPlayerState
         }
 
         // Orient Player
-        if (player.velocity.x < 0)
+        if (player.targetVelocity.x < 0)
             player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
+        else if (player.targetVelocity.x > 0)
             player.animator.transform.eulerAngles = Vector3.up * 90;
     }
 }
