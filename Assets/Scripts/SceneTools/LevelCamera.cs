@@ -17,6 +17,9 @@ public class LevelCamera : MonoBehaviour
     {
         if (moving == true) //si on a dit à la caméra de bouger (aka moving est vrai) alors on bouge
         {
+            posToMoveTo.x += offsetX;
+            posToMoveTo.y += offsetY;
+
             if (inLimits)
             {
                 if (posToMoveTo.x < limitLB.x) posToMoveTo.x = limitLB.x;
@@ -26,9 +29,6 @@ public class LevelCamera : MonoBehaviour
                 if (posToMoveTo.z < limitLB.z) posToMoveTo.z = limitLB.z;
                 if (posToMoveTo.z > limitRT.z) posToMoveTo.z = limitRT.z;
             }
-
-            posToMoveTo.x += offsetX;
-            posToMoveTo.y += offsetY;
 
             //déplacement de la caméra
             Vector3 velocity = Vector3.zero;
