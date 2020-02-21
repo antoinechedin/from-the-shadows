@@ -12,7 +12,7 @@ public class PlayerStanding : IPlayerState
 {
     public void HandleInput(PlayerController player, PlayerInput input)
     {
-        player.targetVelocity = input.moveAxis.normalized * player.settings.moveSpeed;
+        player.targetVelocity = input.moveAxis * player.settings.moveSpeed;
         if (input.moveAxis.x != 0)
         {
             float acceleration = player.settings.moveSpeed / player.settings.groundAccelerationTime;
@@ -71,10 +71,13 @@ public class PlayerStanding : IPlayerState
         }
 
         // Orient Player
-        if (player.targetVelocity.x < 0)
+        if (player.velocity.x < 0)
             player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.targetVelocity.x > 0)
+        else if (player.velocity.x > 0)
             player.animator.transform.eulerAngles = Vector3.up * 90;
+
+        // Speed Animation
+        player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x));
     }
 }
 
@@ -98,7 +101,7 @@ public class PlayerAirborne : IPlayerState
 
     public void HandleInput(PlayerController player, PlayerInput input)
     {
-        player.targetVelocity = input.moveAxis.normalized * player.settings.moveSpeed;
+        player.targetVelocity = input.moveAxis * player.settings.moveSpeed;
         if (input.moveAxis.x != 0)
         {
             float acceleration = player.settings.moveSpeed / player.settings.airAccelerationTime;
