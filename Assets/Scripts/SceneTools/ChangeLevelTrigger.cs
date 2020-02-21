@@ -9,6 +9,8 @@ public class ChangeLevelTrigger : MonoBehaviour
     public Type type;
     public int nbNecessaryPlayers;
     public GameObject newPlayerSpawns;
+    [Header("(OPTIONAL. -1 by default)")]
+    public int newCurrentLevel = -1;
 
     private ChapterManager chapterManager;
     private int nbPlayerInTheTrigger = 0;
@@ -28,11 +30,18 @@ public class ChangeLevelTrigger : MonoBehaviour
             {
                 if (type == Type.Next)
                 {
-                    chapterManager.NextLevel();
+                    if (newCurrentLevel == -1)
+                        chapterManager.NextLevel();
+                    else
+                        chapterManager.NextLevel(newCurrentLevel);
+
                 }
                 else if (type == Type.Previous)
                 {
-                    chapterManager.PreviousLevel();
+                    if (newCurrentLevel == -1)
+                        chapterManager.PreviousLevel();
+                    else
+                        chapterManager.PreviousLevel(newCurrentLevel);
                 }
 
                 if (newPlayerSpawns != null)

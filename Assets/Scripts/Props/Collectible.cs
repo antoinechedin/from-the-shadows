@@ -6,40 +6,30 @@ public class Collectible : MonoBehaviour, IResetable
 {
     public enum Type { Light, Shadow };
     public Type type;
-    public Material lightMaterial;
-    public Material shadowMaterial;
     [Range(0, 1)]
     public float animationOffset;
+    public GameObject flash;
 
-    private List<GameObject> childs;
+    private GameObject child;
     //[HideInInspector]
     public bool isValidated;
     //[HideInInspector]
     public bool isPickedUp;
+    private bool isVisible;
 
     // Start is called before the first frame update
-    void Awake()
-    {
-        int nbChildren = transform.childCount;
-        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
-        foreach(MeshRenderer renderer in renderers)
-        {
-            if (type == Type.Light)
-                renderer.material = lightMaterial;
-            if (type == Type.Shadow)
-                renderer.material = shadowMaterial;
-        }            
-    }
 
     private void Start()
     {
         Animator animator = GetComponent<Animator>();
         if (animator != null)
             animator.Play("Default", 0, animationOffset);
+        child = transform.Find("Sphere").gameObject;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("collision");
         if (collision.gameObject.CompareTag("Player") && !isValidated)
         {
             int idPlayer = collision.gameObject.GetComponent<PlayerInput>().id;
@@ -56,17 +46,19 @@ public class Collectible : MonoBehaviour, IResetable
 
     private void PickUp()
     {
-        isPickedUp = true;
-        SetVisible(false);
+        if (child != null && !isPickedUp && !isValidated)
+        {
+            isPickedUp = true;
+            Instantiate(flash, child.transform.position, child.transform.rotation);
+            isVisible = false;
+            Invoke("UpdateVisible", 0.3f);
+        }
     }
 
-    public void SetVisible(bool isVisible)
+    public void UpdateVisible()
     {
-        int nbChildren = transform.childCount;
-        for (int i = 0; i < nbChildren; i++)
-        {
-            transform.GetChild(i).gameObject.SetActive(isVisible);
-        }
+        if (child != null)
+            child.SetActive(isVisible);
     }
 
     public void Reset()
@@ -74,13 +66,17 @@ public class Collectible : MonoBehaviour, IResetable
         if (!isValidated)
         {
             isPickedUp = false;
-            SetVisible(true);
+            isVisible = true;
+            UpdateVisible();
         }
     }
 
     public void UpdateState()
     {
         if (isValidated)
-            SetVisible(false);
+        {
+            isVisible = false;
+            UpdateVisible();
+        }
     }
 }

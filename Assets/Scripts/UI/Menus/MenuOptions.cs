@@ -11,19 +11,14 @@ public class MenuOptions : MonoBehaviour
 
     public Selectable volumeGO;
 
-    Dictionary<int, int> resolutions;
-    List<int> keysResolution;
+    List<Resolution> resolutions;
     int cursorResolution;
 
     private void Awake()
     {
-        keysResolution = new List<int>();
-        keysResolution.Add(1280);
-        keysResolution.Add(1920);
-
-        resolutions = new Dictionary<int, int>();
-        resolutions[1280] = 720;
-        resolutions[1920] = 1080;
+        resolutions = new List<Resolution>();
+        resolutions.AddRange(Screen.resolutions);
+        cursorResolution = resolutions.FindIndex(p => p.Equals(Screen.currentResolution));
     }
 
     public void OpenOptionsMenu()
@@ -46,11 +41,13 @@ public class MenuOptions : MonoBehaviour
 
     public void ChangeResolution(float value)
     {
-        cursorResolution = (cursorResolution + (int)value) % (keysResolution.Count - 1);
-        int width = keysResolution[cursorResolution];
-        int height = resolutions[keysResolution[cursorResolution]];
+        cursorResolution = Mathf.Clamp(cursorResolution + (int)value, 0, resolutions.Count - 1);       
 
-        Screen.SetResolution(width, height, Screen.fullScreen);
+        Screen.SetResolution(resolutions[cursorResolution].width, resolutions[cursorResolution].height, Screen.fullScreen);
+        
+        Debug.Log("---------------------------------" + cursorResolution + "---------------------------------");
+        Debug.Log(Screen.currentResolution);
+        Debug.Log(resolutions[cursorResolution]); ;
     }
 
     public void ToggleFullscreen()
@@ -60,6 +57,9 @@ public class MenuOptions : MonoBehaviour
 
     public void Return()
     {
-        menuManager.OpenStartMenu();
+        if (menuManager != null)
+            menuManager.OpenStartMenu();
+        else
+            gameObject.SetActive(false);
     }
 }
