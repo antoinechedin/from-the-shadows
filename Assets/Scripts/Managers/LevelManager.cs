@@ -13,6 +13,8 @@ public class LevelManager : MonoBehaviour
     public List<GameObject> playerSpawns;
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
+    [Header("Put in roomsToEnable all the neighbors of the room")]
+    public List<LevelManager> roomsToEnable;
 
 
     private void Awake()
@@ -52,9 +54,10 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void DisableLevel()
     {
-        foreach (GameObject go in objectsToDisable)
+        gameObject.SetActive(false);
+        foreach (LevelManager level in roomsToEnable)
         {
-            go.SetActive(false);
+            level.gameObject.SetActive(false);
         }
     }
 
@@ -63,9 +66,21 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void EnableLevel()
     {
+        gameObject.SetActive(true);
+        this.SetObjectToDisable(true);
+
+        foreach (LevelManager level in roomsToEnable)
+        {
+            level.gameObject.SetActive(true);
+            level.SetObjectToDisable(false);
+        }
+    }
+
+    public void SetObjectToDisable(bool b)
+    {
         foreach (GameObject go in objectsToDisable)
         {
-            go.SetActive(true);
+            go.SetActive(b);
         }
     }
 
