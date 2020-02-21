@@ -31,6 +31,7 @@ public class PlayerInput : MonoBehaviour
             moveAxis.y = Input.GetAxisRaw("Vertical_" + id);
             pressedJump = Input.GetButtonDown("A_" + id);
             releasedJump = Input.GetButtonUp("A_" + id);
+            if (moveAxis.magnitude > 1) moveAxis.Normalize();
         }
         else
         {
