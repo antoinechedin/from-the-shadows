@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+    public int id;
+
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
