@@ -37,7 +37,12 @@ public class ChapterManager : MonoBehaviour
         if(GameManager.Instance.CurrentChapter != -1)
             levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
 
-        UpdateEnabledLevels();
+        //UpdateEnabledLevels();
+        foreach (LevelManager level in levels)
+        {
+            level.DisableLevel();
+        }
+        levels[currentLevel].EnableLevel();
     }
 
     private void Update()
@@ -96,14 +101,18 @@ public class ChapterManager : MonoBehaviour
     /// </summary>
     public void PreviousLevel(int newCurrentLevel = -1)
     {
+        //on désactive la room actuelle et ses voisins
+        levels[currentLevel].DisableLevel();
+
+        //on décrémente l'indice de la room actuelle
         if (newCurrentLevel != -1)
             currentLevel = newCurrentLevel;
         else
             currentLevel--;
 
 
-        //Activation du niveau courant et désactivation des autres
-        UpdateEnabledLevels();
+        //On active la nouvelle room et ses voisins
+        levels[currentLevel].EnableLevel();
 
         if (currentLevel >= 0) //on bouge la cam dans le tableau précédent
         {
@@ -122,15 +131,17 @@ public class ChapterManager : MonoBehaviour
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
-        Debug.Log(newCurrentLevel);
+        //on désactive le nouveau actuel et ses voisins
+        levels[currentLevel].DisableLevel();
+
         if (newCurrentLevel != -1)
             currentLevel = newCurrentLevel;
         else
             currentLevel++;
 
 
-        //Activation du niveau courant et désactivation des autres
-        UpdateEnabledLevels();
+        //On active la nouvelle room et ses voisins
+        levels[currentLevel].EnableLevel();
 
 
         if (currentLevel == levels.Count) //Le chapitre est terminé
@@ -181,58 +192,6 @@ public class ChapterManager : MonoBehaviour
             levels[currentLevel].cameraLimitRT = emptyPoint.transform;
         }
     }
-
-
-
-
-
-
-
-    public void UpdateEnabledLevels()
-    {
-        //on active le niveau courant;
-        levels[currentLevel].gameObject.SetActive(true);
-        levels[currentLevel].EnableLevel();
-
-        //on désactive tous les n-2 et moins
-        int index = currentLevel - 1;
-        while (index >= 0)
-        {
-            if (Mathf.Abs(index - currentLevel) == 1)
-            {
-                levels[index].gameObject.SetActive(true);
-                levels[index].DisableLevel();
-            }
-            else
-            {
-                levels[index].gameObject.SetActive(false);
-            }
-            index--;
-        }
-
-        //on désactive tous les n+2 et plus
-        index = currentLevel + 1;
-        while (index <= levels.Count - 1)
-        {
-            if (Mathf.Abs(index - currentLevel) == 1)
-            {
-                levels[index].gameObject.SetActive(true);
-                levels[index].DisableLevel();
-            }
-            else
-            {
-                levels[index].gameObject.SetActive(false);
-            }
-            index++;
-        }
-    }
-
-
-
-
-
-
-
 
     public void CollectMetaData()
     {
