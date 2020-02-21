@@ -9,7 +9,9 @@ public class Collectible : MonoBehaviour, IResetable
     [Range(0, 1)]
     public float animationOffset;
     public GameObject flash;
+    public AudioClip pickUpSound;
 
+    private SoundPlayer soundPlayer;
     private GameObject child;
     //[HideInInspector]
     public bool isValidated;
@@ -21,6 +23,7 @@ public class Collectible : MonoBehaviour, IResetable
 
     private void Start()
     {
+        soundPlayer = GetComponent<SoundPlayer>();
         Animator animator = GetComponent<Animator>();
         if (animator != null)
             animator.Play("Default", 0, animationOffset);
@@ -49,6 +52,8 @@ public class Collectible : MonoBehaviour, IResetable
         if (child != null && !isPickedUp && !isValidated)
         {
             isPickedUp = true;
+            if (soundPlayer != null)
+                soundPlayer.PlaySoundAtLocation(pickUpSound, 1f);
             Instantiate(flash, child.transform.position, child.transform.rotation);
             isVisible = false;
             Invoke("UpdateVisible", 0.3f);
