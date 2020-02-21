@@ -6,6 +6,7 @@ public class ChapterManager : MonoBehaviour
 {
     public List<LevelManager> levels;
     public PauseMenu pauseMenu;
+    [SerializeField]
     private int currentLevel = 0; //indice du niveau actuel
 
     private float timeSinceBegin = 0;
@@ -96,9 +97,13 @@ public class ChapterManager : MonoBehaviour
     /// <summary>
     /// decrease the current level index and teleports the cameara to the position avec the previous level
     /// </summary>
-    public void PreviousLevel()
+    public void PreviousLevel(int newCurrentLevel = -1)
     {
-        currentLevel--;
+        if (newCurrentLevel != -1)
+            currentLevel = newCurrentLevel;
+        else
+            currentLevel--;
+
 
         //Activation du niveau courant et désactivation des autres
         UpdateEnabledLevels();
@@ -113,14 +118,19 @@ public class ChapterManager : MonoBehaviour
     /// <summary>
     /// increase the current level index and teleports the cameara to the position avec the next level
     /// </summary>
-    public void NextLevel()
+    public void NextLevel(int newCurrentLevel = -1)
     {
-        Debug.Log("next level");
         //Mise àjour des infos concernant le niveau courant
         if(GameManager.Instance.CurrentChapter != -1)
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
-        currentLevel++;
+
+        Debug.Log(newCurrentLevel);
+        if (newCurrentLevel != -1)
+            currentLevel = newCurrentLevel;
+        else
+            currentLevel++;
+
 
         //Activation du niveau courant et désactivation des autres
         UpdateEnabledLevels();
