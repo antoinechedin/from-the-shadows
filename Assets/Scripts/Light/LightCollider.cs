@@ -2,60 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-struct Segment
-{
-    public Vector2 pt1;
-    public Vector2 pt2;
-
-    public Segment(Vector2 p1, Vector2 p2)
-    {
-        if(p1.x < p2.x)
-        {
-            pt1 = p1;
-            pt2 = p2;
-        }
-        else if (p1.x > p2.x)
-        {
-            pt1 = p2;
-            pt2 = p1;
-        }
-        else
-        {
-            if (p1.y < p2.y)
-            {
-                pt1 = p1;
-                pt2 = p2;
-            }
-            else if(p1.y > p2.y)
-            {
-                pt1 = p2;
-                pt2 = p1;
-            }
-            else
-            {
-                pt1 = p1;
-                pt2 = p2;
-            }
-        }
-        
-    }
-
-    public Vector2 GetIntersectionPointCoordinates(Segment s2)
-    {
-        float tmp = (s2.pt2.x - s2.pt1.x) * (pt2.y - pt1.y) - (s2.pt2.y - s2.pt1.y) * (pt2.x - pt1.x);
-
-        if (tmp == 0)
-            return Vector2.zero;
-
-        float mu = ((pt1.x - s2.pt1.x) * (pt2.y - pt1.y) - (pt1.y - s2.pt1.y) * (pt2.x - pt1.x)) / tmp;
-
-        return new Vector2(
-            s2.pt1.x + (s2.pt2.x - s2.pt1.x) * mu,
-            s2.pt1.y + (s2.pt2.y - s2.pt1.y) * mu
-        );
-    }
-}
-
 [RequireComponent(typeof(PolygonCollider2D))]
 public class LightCollider : MonoBehaviour
 {
@@ -64,17 +10,17 @@ public class LightCollider : MonoBehaviour
     public float vectorModifier = 0.001f;
     public int numberPoints = 16;
     public LayerMask type;
+    public bool isStatic = false;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-
+        SetColliderOnOverlap2();
     }
 
     public void SetPolygonFromCircle()
     {
         GetComponent<PolygonCollider2D>().pathCount = 1;
-        float radius = GetComponent<NewLightSource>().lightRadius;
         List<Vector2> circlePolygon = new List<Vector2>();
         
         for (int i = 0; i < numberPoints; i++)
@@ -118,12 +64,13 @@ public class LightCollider : MonoBehaviour
             listPolyBase.Add(new Segment(prec, suiv));
 
             Add1Point((Vector2)(transform.localToWorldMatrix * new Vector2(Mathf.Cos(2 * i * Mathf.PI / (float)numberPoints), Mathf.Sin(2 * i * Mathf.PI / (float)numberPoints)) / 2) + (Vector2)transform.position);
-        }   
+        }
 
         Collider2D[] tabColliders = Physics2D.OverlapCircleAll((Vector2)transform.position, radius, type);
 
         foreach (Collider2D col in tabColliders)
         {
+            if (debug) Debug.Log(col.gameObject.name);
             List<Segment> listColliderCol = new List<Segment>();
 
             if (col.GetComponent<BoxCollider2D>() != null)
@@ -159,10 +106,11 @@ public class LightCollider : MonoBehaviour
                     Vector2 prec = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[i]) + (Vector2)col.transform.position;
                     Vector2 suiv = (Vector2)(col.transform.localToWorldMatrix * col.GetComponent<PolygonCollider2D>().points[(i+1)% col.GetComponent<PolygonCollider2D>().points.Length]) + (Vector2)col.transform.position;
 
-                    if (debug) Debug.DrawLine(prec, suiv, Color.blue);
+                    if (debug) Debug.DrawLine(prec, suiv, Color.red);
                     listColliderCol.Add(new Segment(prec, suiv));
                 }    
             }
+
             listSegments.Add(listColliderCol);
         }
 
@@ -257,12 +205,14 @@ public class LightCollider : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetColliderOnOverlap2();
+        if(!isStatic)
+        {
+            SetColliderOnOverlap2();
+        }    
     }
 
     // Gizmos for Debug
-    #if UNITY_EDITOR
-    
+    #if UNITY_EDITOR  
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, GetComponent<NewLightSource>().lightRadius);
@@ -273,7 +223,7 @@ public class LightCollider : MonoBehaviour
             {
                 i++;
                 //Gizmos.color = new Color((float)i / (float)points.Count, (float)i / (float)points.Count, (float)i / (float)points.Count, 1);
-                Gizmos.color = Color.yellow;
+                //Gizmos.color = Color.yellow;
                 Gizmos.DrawLine(transform.position, GetPosFromPoint(pt));
 
                 RaycastHit2D ray2 = Physics2D.Raycast(transform.position, (GetPosFromPoint(pt) - (Vector2)transform.position).normalized, GetComponent<NewLightSource>().lightRadius, type);
@@ -288,9 +238,9 @@ public class LightCollider : MonoBehaviour
                     Gizmos.DrawLine(transform.position, (Vector2)transform.position + (GetPosFromPoint(pt) - (Vector2)transform.position).normalized * GetComponent<NewLightSource>().lightRadius);
                 }
             }
+            Debug.Log(i);
         }
     }
-    
     #endif
 }
 

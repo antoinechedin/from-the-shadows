@@ -30,7 +30,10 @@ public class PlayerController : MonoBehaviour
     {
         state.HandleInput(this, input);
         state.Update(this);
+    }
 
+    private void FixedUpdate()
+    {
         if (actor.collisions.bellow || actor.collisions.above)
         {
             if (!actor.collisions.slidingSlope)
@@ -39,10 +42,7 @@ public class PlayerController : MonoBehaviour
 
         velocity.y -= settings.gravity * Time.deltaTime;
         velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
-    }
 
-    private void FixedUpdate()
-    {
         actor.Move(velocity, Time.fixedDeltaTime);
         UpdateSpriteColor();
 

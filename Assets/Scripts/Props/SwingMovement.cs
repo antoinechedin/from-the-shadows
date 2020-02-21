@@ -34,6 +34,12 @@ public class SwingMovement : MonoBehaviour, IResetable
         swingingObject.transform.rotation = Quaternion.Lerp(start, end, (Mathf.Sin( currentTime * speed + Mathf.PI / 2) + 1f) / 2f);
     }
 
+    void LateUpdate()
+    {
+        if(swingingObject.GetComponentInChildren<LightCollider>() != null)
+            swingingObject.GetComponentInChildren<LightCollider>().isStatic = false;
+    }
+
     Quaternion RotationPoint(float angle)
     {
         Quaternion rotation = transform.rotation;
