@@ -44,7 +44,7 @@ public class MenuOptions : MonoBehaviour
         cursorResolution = Mathf.Clamp(cursorResolution + (int)value, 0, resolutions.Count - 1);       
 
         Screen.SetResolution(resolutions[cursorResolution].width, resolutions[cursorResolution].height, Screen.fullScreen);
-
+        
         Debug.Log("---------------------------------" + cursorResolution + "---------------------------------");
         Debug.Log(Screen.currentResolution);
         Debug.Log(resolutions[cursorResolution]); ;
