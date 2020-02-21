@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!dying)
         {
+            input.active = false;
             dying = true;
             dead = true;
             GameObject.FindObjectOfType<ChapterManager>().ResetLevel(input.id);

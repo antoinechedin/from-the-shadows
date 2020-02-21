@@ -22,7 +22,7 @@ public class TransitionScreen : MonoBehaviour
             animator.SetBool("finishedFadingIn", true);
             if (finished)
             {
-                Destroy(gameObject);
+                Destroy(gameObject, 1f);
             }
         }
     }

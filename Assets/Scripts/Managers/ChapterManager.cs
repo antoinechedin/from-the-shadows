@@ -249,5 +249,13 @@ public class ChapterManager : MonoBehaviour
         //on remet Player.dead à false
         player.dead = false;
         player.dying = false;
+
+        //tant que l'ecran n'a pas fini de fade au noir
+        while (!transitionScreen.GetComponent<TransitionScreen>().finished)
+        {
+            yield return null;
+        }
+
+        player.input.active = true;
     }
 }
