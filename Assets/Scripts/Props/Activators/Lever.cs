@@ -17,13 +17,13 @@ public class Lever : Activator, IResetable
 
     private bool canPlayer1Activate = false;
     private bool canPlayer2Activate = false;
-    private SoundPlayer soundPlayer;
+    private AudioSource audioSource;
     private GameObject child;
     private bool isMute = true;
 
     private void Start()
     {
-        soundPlayer = GetComponent<SoundPlayer>();
+        audioSource = GetComponent<AudioSource>();
         child = transform.Find("Child").gameObject;
         active = activeAtStart;
         if (activeAtStart)
@@ -89,8 +89,8 @@ public class Lever : Activator, IResetable
         {
             active = true;
             TryActivate();
-            if (soundPlayer != null && !isMute)
-                soundPlayer.PlaySoundAtLocation(soundOn, 1f);
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(soundOn);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
@@ -114,8 +114,8 @@ public class Lever : Activator, IResetable
             active = false;
             StopCoroutine("Flash");
             TryDeactivate();            
-            if (soundPlayer != null && !isMute)
-                soundPlayer.PlaySoundAtLocation(soundOff, 1f);
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(soundOff);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = inactiveMat;
         }

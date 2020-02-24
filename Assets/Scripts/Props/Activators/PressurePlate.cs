@@ -14,11 +14,11 @@ public class PressurePlate : Activator
     public string tagInteractObject;
 
     private GameObject child;
-    private SoundPlayer soundPlayer;
+    private AudioSource audioSource;
 
     private void Start()
     {
-        soundPlayer = GetComponent<SoundPlayer>();       
+        audioSource = GetComponent<AudioSource>();       
         child = transform.Find("Child").gameObject;
         Off();
     }
@@ -54,8 +54,8 @@ public class PressurePlate : Activator
         {
             active = true;
             TryActivate();            
-            if (soundPlayer != null)
-                soundPlayer.PlaySoundAtLocation(sound, 1f);
+            if (audioSource != null)
+                audioSource.PlayOneShot(sound);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 

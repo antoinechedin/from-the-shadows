@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class LevelCamera : MonoBehaviour
 {
-    public float offsetX = 0, offsetY = 0;
+    public float maxOffsetY = 0;
+    public float distanceMaxOffset = 10;
+    public float distanceMinOffset = 4;
+    private GameObject[] players = new GameObject[2];
+
+    public float offsetY;
+
     private Vector3 limitLB;
     private Vector3 limitRT;
     private Vector3 posToMoveTo;
@@ -12,12 +18,21 @@ public class LevelCamera : MonoBehaviour
     private bool smooth = true;
     private bool inLimits = true;
 
+    private void Start()
+    {
+        players = GameObject.FindGameObjectsWithTag("Player");
+    }
+
     // Update is called once per frame
     void Update()
     {
+        float distancePlayerY = Mathf.Abs(players[0].transform.position.y - players[1].transform.position.y); // Distance entre les joueurs
+
+        offsetY = Mathf.Abs(distancePlayerY - distanceMaxOffset) / distanceMaxOffset * maxOffsetY;
+
+
         if (moving == true) //si on a dit à la caméra de bouger (aka moving est vrai) alors on bouge
         {
-            posToMoveTo.x += offsetX;
             posToMoveTo.y += offsetY;
 
             if (inLimits)

@@ -9,7 +9,7 @@ public class Slide : ActivatorListener
     private Vector3 stopPosition;
     private Vector3 startPosition;
     private Vector3 targetPosition;
-    private SoundPlayer soundPlayer;
+    private AudioSource audioSource;
     private bool isMute = true;
 
     public Direction direction;
@@ -20,7 +20,7 @@ public class Slide : ActivatorListener
 
     public void Start()
     {
-        soundPlayer = GetComponent<SoundPlayer>();
+        audioSource = GetComponent<AudioSource>();
         startPosition = transform.position;
         targetPosition = startPosition;
         switch (direction)
@@ -52,8 +52,8 @@ public class Slide : ActivatorListener
             targetPosition = stopPosition;
             if (direction == Direction.Depth)
                 GetComponent<Collider2D>().enabled = false;
-            if (soundPlayer != null && !isMute)
-                soundPlayer.PlaySoundAtLocation(sound, 1f);
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(sound);
         }
     }
 
@@ -67,8 +67,8 @@ public class Slide : ActivatorListener
             {
                 GetComponent<Collider2D>().enabled = true;
             }
-            if (soundPlayer != null && !isMute)
-                soundPlayer.PlaySoundAtLocation(sound, 1f);
+            if (audioSource != null && !isMute)
+                audioSource.PlayOneShot(sound);
         }
     }
 
