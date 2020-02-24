@@ -87,7 +87,7 @@ public class PlayerAirborne : IPlayerState
     public bool canDoubleJump;
     public bool canStopJump;
     public float coyoteTimer;
-    public float coyoteDuration = 0.07f;
+    public float coyoteDuration = 0.087f;
     float stopJumpSpeed;
 
     public PlayerAirborne(bool jump, PlayerController player)

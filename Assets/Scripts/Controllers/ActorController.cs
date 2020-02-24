@@ -9,7 +9,7 @@ public class ActorController : MonoBehaviour
     public LayerMask collisionMask = 1 << 9;
     [HideInInspector] public float maxSlopeAngle = 60;
 
-    private const float skinWidth = 0.021f;
+    private const float skinWidth = 0.04f;
 
     private const float maxRaySpacing = 0.05f;
 
