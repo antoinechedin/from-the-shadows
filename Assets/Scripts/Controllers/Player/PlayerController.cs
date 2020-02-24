@@ -43,10 +43,17 @@ public class PlayerController : MonoBehaviour
                 velocity.y = 0;
         }
 
-        velocity.y -= settings.gravity * Time.deltaTime;
-        velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
-        
-        if(velocity.x > 0) facing = 1;
+        if (state is PlayerLedgeGrab)
+        {
+            velocity.y = 0;
+        }
+        else
+        {
+            velocity.y -= settings.gravity * Time.deltaTime;
+            velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
+        }
+
+        if (velocity.x > 0) facing = 1;
         else if (velocity.x < 0) facing = -1;
 
         actor.Move(velocity, Time.fixedDeltaTime);
