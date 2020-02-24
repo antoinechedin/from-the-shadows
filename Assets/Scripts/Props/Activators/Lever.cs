@@ -27,9 +27,15 @@ public class Lever : Activator, IResetable
         child = transform.Find("Child").gameObject;
         active = activeAtStart;
         if (activeAtStart)
+        {
             On(true);
+            GetComponentInChildren<Animator>().SetBool("OFF", false);
+        }
         else
+        {
             Off();
+            GetComponentInChildren<Animator>().SetBool("OFF", true);
+        }
 
         isMute = false;
     }
@@ -87,6 +93,8 @@ public class Lever : Activator, IResetable
     {
         if (TryActivate != null)
         {
+            GetComponentInChildren<Animator>().SetBool("OFF", false);
+
             active = true;
             TryActivate();
             if (audioSource != null && !isMute)
@@ -111,13 +119,18 @@ public class Lever : Activator, IResetable
     {
         if (TryDeactivate != null)
         {
+            GetComponentInChildren<Animator>().SetBool("OFF", true);
+
             active = false;
             StopCoroutine("Flash");
             TryDeactivate();            
             if (audioSource != null && !isMute)
                 audioSource.PlayOneShot(soundOff);
             if (child != null)
+            {
                 child.GetComponent<MeshRenderer>().material = inactiveMat;
+            }
+                
         }
     }
 
