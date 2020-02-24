@@ -57,7 +57,10 @@ public class LevelManager : MonoBehaviour
         gameObject.SetActive(false);
         foreach (LevelManager level in roomsToEnable)
         {
-            level.gameObject.SetActive(false);
+            if (level != null)
+            {
+                level.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -71,8 +74,11 @@ public class LevelManager : MonoBehaviour
 
         foreach (LevelManager level in roomsToEnable)
         {
-            level.gameObject.SetActive(true);
-            level.SetObjectToDisable(false);
+            if (level != null)
+            {
+                level.gameObject.SetActive(true);
+                level.SetObjectToDisable(false);
+            }
         }
     }
 
