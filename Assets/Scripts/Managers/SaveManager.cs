@@ -161,10 +161,40 @@ public class SaveManager : Singleton<SaveManager>
 
         //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
         List<Level> lvlChap0 = new List<Level>();
-        for (int i = 0; i < 34; i++)
-        {
-            lvlChap0.Add(new Level(false, new bool[] { false, false, false }));
-        }
+        lvlChap0.Add(new Level(false, new bool[] { }, true));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, true));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, true));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, true));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, true));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, true));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false, false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, false));
+        lvlChap0.Add(new Level(false, new bool[] { false }, false));
         // List<Level> lvlChap1 = new List<Level>();
         // lvlChap1.Add(new Level(false, new bool[] { false }));
 
@@ -193,7 +223,7 @@ public class SaveManager : Singleton<SaveManager>
     public void TestLoad()
     {
         List<Level> levels = new List<Level>();
-        Level lvl = new Level(true, new bool[] { false, false });
+        Level lvl = new Level(true, new bool[] { false, false }, true);
         levels.Add(lvl);
         levels.Add(lvl);
 
