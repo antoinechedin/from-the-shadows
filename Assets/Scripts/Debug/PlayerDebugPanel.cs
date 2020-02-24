@@ -31,7 +31,8 @@ public class PlayerDebugPanel : MonoBehaviour
                     player.velocity.y,
                     player.targetVelocity.x,
                     player.targetVelocity.y,
-                    player.actor.collisions.bellow ? "X" : "_",
+                    player.actor.collisions.bellow ? "X" : " ",
+                    player.facing < 0 ? "<-" : "->",
                     player.state
                 );
             }

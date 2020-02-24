@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public IPlayerState state;
     public Vector2 targetVelocity;
     public Vector2 velocity;
+    public int facing;
 
     public bool dead = false;
     public bool dying = false;
@@ -44,30 +45,16 @@ public class PlayerController : MonoBehaviour
 
         velocity.y -= settings.gravity * Time.deltaTime;
         velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
+        
+        if(velocity.x > 0) facing = 1;
+        else if (velocity.x < 0) facing = -1;
 
         actor.Move(velocity, Time.fixedDeltaTime);
-        UpdateSpriteColor();
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
             actor.collisions.move.magnitude
         );
-    }
-
-    private void UpdateSpriteColor()
-    {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            if (actor.collisions.bellow)
-            {
-                sr.color = Color.green;
-            }
-            else
-            {
-                sr.color = Color.blue;
-            }
-        }
     }
 
     public void Die()

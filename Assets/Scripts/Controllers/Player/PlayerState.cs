@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -118,15 +118,15 @@ public class PlayerAirborne : IPlayerState
             if (canJump)
             {
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
-                
+
                 canJump = false;
                 canStopJump = true;
 
                 // Set Animator Jump -> Simple Jump
                 player.animator.SetTrigger("Jump");
                 player.animator.SetBool("Airborne", true);
-            } 
-            else if(canDoubleJump)
+            }
+            else if (canDoubleJump)
             {
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.doubleJumpHeight * player.settings.gravity);
 
@@ -173,6 +173,11 @@ public class PlayerAirborne : IPlayerState
             player.animator.SetBool("Idle", true);
             player.animator.SetBool("Running", false);
 
+        }
+
+        if (player.velocity.y < 0)
+        {
+            player.actor.LedgeGrab(player.facing);
         }
 
         // Animator Run Idle
