@@ -61,6 +61,10 @@ public class LevelManager : MonoBehaviour
             {
                 level.gameObject.SetActive(false);
             }
+            else
+            {
+                Debug.LogWarning("WARN : roomsToEnable list contains a null variable");
+            }
         }
     }
 
@@ -78,6 +82,10 @@ public class LevelManager : MonoBehaviour
             {
                 level.gameObject.SetActive(true);
                 level.SetObjectToDisable(false);
+            }
+            else
+            {
+                Debug.LogWarning("WARN : roomsToEnable list contains a null variable");
             }
         }
     }
