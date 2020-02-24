@@ -161,20 +161,20 @@ public class SaveManager : Singleton<SaveManager>
 
         //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
         List<Level> lvlChap0 = new List<Level>();
-        lvlChap0.Add(new Level(false, new bool[] { false, false, false }));
-        lvlChap0.Add(new Level(false, new bool[] { false }));
-        lvlChap0.Add(new Level(false, new bool[] { false }));
-
-        List<Level> lvlChap1 = new List<Level>();
-        lvlChap1.Add(new Level(false, new bool[] { false }));
+        for (int i = 0; i < 34; i++)
+        {
+            lvlChap0.Add(new Level(false, new bool[] { false, false, false }));
+        }
+        // List<Level> lvlChap1 = new List<Level>();
+        // lvlChap1.Add(new Level(false, new bool[] { false }));
 
 
         List<Chapter> chapters = new List<Chapter>();
         chapters.Add(new Chapter(lvlChap0));
-        chapters.Add(new Chapter(lvlChap1));
-        chapters.Add(new Chapter(lvlChap1));
-        chapters.Add(new Chapter(lvlChap1));
-        chapters.Add(new Chapter(lvlChap1));
+        // chapters.Add(new Chapter(lvlChap1));
+        // chapters.Add(new Chapter(lvlChap1));
+        // chapters.Add(new Chapter(lvlChap1));
+        // chapters.Add(new Chapter(lvlChap1));
 
         //enfin, on créer la save qui contient toutes les informations
         Save createdSave = new Save(chapters, nbPlayer, mInt, mFloat, new SerializableDate(DateTime.Now));
