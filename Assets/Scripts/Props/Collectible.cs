@@ -32,7 +32,6 @@ public class Collectible : MonoBehaviour, IResetable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("collision");
         if (collision.gameObject.CompareTag("Player") && !isValidated)
         {
             int idPlayer = collision.gameObject.GetComponent<PlayerInput>().id;

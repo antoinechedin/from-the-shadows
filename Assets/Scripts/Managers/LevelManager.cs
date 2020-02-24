@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+    [ReadOnly]
+    [Header("The id will automatically be set by the ChapterManager")]
     public int id;
-
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
@@ -46,8 +47,6 @@ public class LevelManager : MonoBehaviour
                 collectibles.Add(parentCollectibles.GetChild(i).gameObject);
             }
         }
-
-
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level

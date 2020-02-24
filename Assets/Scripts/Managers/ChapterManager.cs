@@ -21,6 +21,8 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
+        SetLevelsId();
+
         if (GameManager.Instance.LoadingChapterInfo != null)
         {
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
@@ -66,12 +68,25 @@ public class ChapterManager : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
         {
-            NextLevel();
+            NextLevel(currentLevel + 1);
+            currentSpawns = levels[currentLevel].playerSpawns[0];
+            SpawnPlayers();
         }
 
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K))
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
+        }
+    }
+
+    /// <summary>
+    /// Sets the LevelManager.id value according to the position of the level in the ChapterManager.levels list.
+    /// </summary>
+    public void SetLevelsId()
+    {
+        for (int i = 0; i < levels.Count; i++)
+        {
+            levels[i].id = i;
         }
     }
 
@@ -99,17 +114,13 @@ public class ChapterManager : MonoBehaviour
     /// <summary>
     /// decrease the current level index and teleports the cameara to the position avec the previous level
     /// </summary>
-    public void PreviousLevel(int newCurrentLevel = -1)
+    public void PreviousLevel(int newCurrentLevel)
     {
         //on désactive la room actuelle et ses voisins
         levels[currentLevel].DisableLevel();
 
         //on décrémente l'indice de la room actuelle
-        if (newCurrentLevel != -1)
-            currentLevel = newCurrentLevel;
-        else
-            currentLevel--;
-
+        currentLevel = newCurrentLevel;
 
         //On active la nouvelle room et ses voisins
         levels[currentLevel].EnableLevel();
@@ -124,7 +135,7 @@ public class ChapterManager : MonoBehaviour
     /// <summary>
     /// increase the current level index and teleports the cameara to the position avec the next level
     /// </summary>
-    public void NextLevel(int newCurrentLevel = -1)
+    public void NextLevel(int newCurrentLevel)
     {
         //Mise àjour des infos concernant le niveau courant
         if(GameManager.Instance.CurrentChapter != -1)
@@ -134,35 +145,29 @@ public class ChapterManager : MonoBehaviour
         //on désactive le nouveau actuel et ses voisins
         levels[currentLevel].DisableLevel();
 
-        if (newCurrentLevel != -1)
-            currentLevel = newCurrentLevel;
-        else
-            currentLevel++;
-
+        currentLevel = newCurrentLevel;
 
         //On active la nouvelle room et ses voisins
-        if (newCurrentLevel != 1000)
-            levels[currentLevel].EnableLevel();
+        levels[currentLevel].EnableLevel();
 
+        CollectMetaData();
+        CreateEmptyCameraPoints();
+        levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
+        if (GameManager.Instance.CurrentChapter != -1)
+        {
+            levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
+        }
 
-        if (currentLevel == levels.Count || newCurrentLevel == 1000) //Le chapitre est terminé
-        {
-            //Save the metaData
-            CollectMetaData();
-            SaveManager.Instance.WriteSaveFile();
-            GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
-        }
-        else //on transfert le joueur dans le tableau suivant
-        {
-            CollectMetaData();
-            SaveManager.Instance.WriteSaveFile();
-            CreateEmptyCameraPoints();
-            levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
-            if (GameManager.Instance.CurrentChapter != -1)
-                levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
-        }
 
         SaveManager.Instance.WriteSaveFile();
+    }
+
+    public void FinishChapter()
+    {
+        //Save the metaData
+        CollectMetaData();
+        SaveManager.Instance.WriteSaveFile();
+        GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
     }
 
     public void ValidateCollectibles()
