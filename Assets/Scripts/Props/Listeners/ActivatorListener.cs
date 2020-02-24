@@ -75,7 +75,7 @@ public abstract class ActivatorListener : MonoBehaviour
         bool res = true;
         foreach (Activator activator in activators)
         {
-            if (activator.active)
+            if (activator != null && activator.active)
                 res = false;
         }
         return res;
