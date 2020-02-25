@@ -29,4 +29,10 @@ public class SkeletonBossProjectile : MonoBehaviour
     {
         transform.position += direction * speed * Time.deltaTime;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Destroy(this.gameObject);
+    }
+
 }
