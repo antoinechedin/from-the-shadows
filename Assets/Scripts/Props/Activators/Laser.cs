@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
-public class Laser : MonoBehaviour
+public class Laser : ActivatorListener
 {
     private LineRenderer lineRenderer;
     private LayerMask collisionMask;
     private Vector3[] points;
     private Vector3 position;
+    private bool active;
 
     public float range = 100;
     public int maxReflection = 0;
@@ -25,10 +26,13 @@ public class Laser : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        points[0] = transform.position;
+        if(active)
+        {
+            points[0] = transform.position;
 
-        CalculateRays();
-        DrawRays();
+            CalculateRays();
+            DrawRays();
+        }
     }
 
     void DrawRays()
@@ -53,5 +57,25 @@ public class Laser : MonoBehaviour
             else
                 lineRenderer.SetPosition(i, transform.position + (transform.right * range));
         }
+    }
+
+    public override void OnActivate()
+    {
+        if(!active){
+            lineRenderer.positionCount = maxReflection + 2;
+            active = true;
+        }
+    }
+
+    public override void OnDeactivate()
+    {
+        if(active){
+            active = false;
+            ClearLineRenderer();
+        }
+    }
+
+    private void ClearLineRenderer(){;
+        lineRenderer.positionCount = 0;
     }
 }

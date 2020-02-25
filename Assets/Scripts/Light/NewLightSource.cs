@@ -35,7 +35,9 @@ public class NewLightSource : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("LayeredSolid") || other.gameObject.layer == LayerMask.NameToLayer("DisLayeredSolid"))
         {
-            other.GetComponent<NewLayeredObstacle>().AddLightSource(this);
+            NewLayeredObstacle newLayeredObstacle = other.GetComponent<NewLayeredObstacle>();
+            if(newLayeredObstacle != null)
+                newLayeredObstacle.AddLightSource(this);
         }
     }
 
@@ -43,7 +45,9 @@ public class NewLightSource : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("LayeredSolid") || other.gameObject.layer == LayerMask.NameToLayer("DisLayeredSolid"))
         {
-            other.GetComponent<NewLayeredObstacle>().RemoveLightSource(this);
+            NewLayeredObstacle newLayeredObstacle = other.GetComponent<NewLayeredObstacle>();
+            if(newLayeredObstacle != null)
+                newLayeredObstacle.RemoveLightSource(this);
         }
     }
 }
