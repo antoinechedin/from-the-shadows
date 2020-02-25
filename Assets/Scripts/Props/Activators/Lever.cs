@@ -29,12 +29,18 @@ public class Lever : Activator, IResetable
         if (activeAtStart)
         {
             On(true);
-            GetComponentInChildren<Animator>().SetBool("OFF", false);
+            if (GetComponentInChildren<Animator>() != null)
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", false);
+            }
         }
         else
         {
             Off();
-            GetComponentInChildren<Animator>().SetBool("OFF", true);
+            if (GetComponentInChildren<Animator>())
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", true);
+            }
         }
 
         isMute = false;
@@ -93,7 +99,10 @@ public class Lever : Activator, IResetable
     {
         if (TryActivate != null)
         {
-            GetComponentInChildren<Animator>().SetBool("OFF", false);
+            if (GetComponentInChildren<Animator>())
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", false);
+            }
 
             active = true;
             TryActivate();
@@ -119,7 +128,10 @@ public class Lever : Activator, IResetable
     {
         if (TryDeactivate != null)
         {
-            GetComponentInChildren<Animator>().SetBool("OFF", true);
+            if (GetComponentInChildren<Animator>())
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", true);
+            }
 
             active = false;
             StopCoroutine("Flash");
