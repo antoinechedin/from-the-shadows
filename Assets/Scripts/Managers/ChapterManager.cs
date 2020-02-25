@@ -123,9 +123,9 @@ public class ChapterManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             if (player.GetComponent<PlayerInput>().id == 1) //Light
-                player.transform.position = lightSpawnPos;
+                player.GetComponent<PlayerController>().SpawnAt(lightSpawnPos);
             else if (player.GetComponent<PlayerInput>().id == 2)//shadow
-                player.transform.position = shadowSpawnPos;
+                player.GetComponent<PlayerController>().SpawnAt(shadowSpawnPos);
         }
     }
 
