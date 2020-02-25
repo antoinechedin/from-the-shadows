@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         state.HandleInput(this, input);
-        state.Update(this);
     }
 
     private void FixedUpdate()
@@ -56,6 +55,8 @@ public class PlayerController : MonoBehaviour
 
         if (velocity.x > 0) facing = 1;
         else if (velocity.x < 0) facing = -1;
+
+        state.Update(this);
 
         actor.Move(velocity, Time.fixedDeltaTime);
 
