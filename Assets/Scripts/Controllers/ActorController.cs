@@ -8,8 +8,9 @@ public class ActorController : MonoBehaviour
 {
     public LayerMask collisionMask = 1 << 9;
     [HideInInspector] public float maxSlopeAngle = 60;
+    [HideInInspector] public float ledgeGrabDistance = 0.01f;
 
-    private const float skinWidth = 0.021f;
+    private const float skinWidth = 0.04f;
 
     private const float maxRaySpacing = 0.05f;
 
@@ -85,7 +86,7 @@ public class ActorController : MonoBehaviour
                     float dstToSlope = 0;
                     if (slopeAngle != collisionsPrevious.slopeAngle)
                     {
-                        
+
                         dstToSlope = Mathf.Clamp(hit.distance - skinWidth, 0, Mathf.Infinity);
                         move.x -= dstToSlope * xSign;
                     }
@@ -107,8 +108,7 @@ public class ActorController : MonoBehaviour
                     collisions.right = xSign >= 0;
                 }
             }
-
-            Debug.DrawRay(rayOrigin, Vector2.right * xSign * rayLength * 5, Color.red);
+            // Debug.DrawRay(rayOrigin, Vector2.right * xSign * rayLength * 5, Color.red);
         }
     }
 
@@ -143,9 +143,7 @@ public class ActorController : MonoBehaviour
                     collisions.above = ySign >= 0;
                 }
             }
-
-
-            Debug.DrawRay(rayOrigin, Vector2.up * ySign * rayLength * 5, Color.red);
+            // Debug.DrawRay(rayOrigin, Vector2.up * ySign * rayLength * 5, Color.red);
         }
 
         if (collisions.climbingSlope)
@@ -305,6 +303,43 @@ public class ActorController : MonoBehaviour
             }
         }
         move.y -= dst2Ground;
+    }
+
+    public bool LedgeGrab(float facing)
+    {
+        float maxDistanceAboveLedge = 0.2f;
+
+        float distanceAboveLedge = 0;
+        for (int i = 0; i < hRayCount; i++)
+        {
+            Vector2 rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
+            rayOrigin += Vector2.down * (hRaySpacing * i);
+
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, 0.7f, collisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * facing * 0.7f, hit ? Color.blue : Color.yellow);
+
+            if (hit)
+            {
+                if (i == 0) return false;
+
+                if (hit.distance < skinWidth + ledgeGrabDistance)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                distanceAboveLedge += hRaySpacing;
+            }
+
+            if (distanceAboveLedge > maxDistanceAboveLedge) return false;
+        }
+
+        return false;
     }
 
     private void UpdateRaycastOrigins()
