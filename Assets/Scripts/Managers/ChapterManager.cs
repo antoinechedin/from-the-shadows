@@ -78,16 +78,22 @@ public class ChapterManager : MonoBehaviour
         //next level
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
         {
-            ChangeLevel(currentLevel + 1);
-            currentSpawns = levels[currentLevel].playerSpawns[0];
-            SpawnPlayers();
+            if (currentLevel + 1 < levels.Count)
+            {
+                ChangeLevel(currentLevel + 1);
+                currentSpawns = levels[currentLevel].playerSpawns[0];
+                SpawnPlayers();
+            }
         }
         //previous level
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.B))
         {
-            ChangeLevel(currentLevel - 1);
-            currentSpawns = levels[currentLevel].playerSpawns[0];
-            SpawnPlayers();
+            if (currentLevel - 1 >= 0)
+            {
+                ChangeLevel(currentLevel - 1);
+                currentSpawns = levels[currentLevel].playerSpawns[0];
+                SpawnPlayers();
+            }
         }
         //kill players
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K))
