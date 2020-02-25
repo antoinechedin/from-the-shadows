@@ -13,11 +13,14 @@ public class Level
     private bool completed = false; //indicates wether the level as been completed or not
     [SerializeField]
     private bool[] collectibles;
+    [SerializeField]
+    private bool isCheckpoint;
 
-    public Level(bool completed, bool[] collect)
+    public Level(bool completed, bool[] collect, bool isCheckpoint)
     {
         this.completed = completed;
         collectibles = collect;
+        this.isCheckpoint = isCheckpoint;
     }
 
     public bool Completed
@@ -30,6 +33,12 @@ public class Level
     {
         get { return collectibles; }
         set { collectibles = value; }
+    }
+
+    public bool IsCheckpoint
+    {
+        get { return isCheckpoint; }
+        set { isCheckpoint = value; }
     }
 
     public string PrintLevel()

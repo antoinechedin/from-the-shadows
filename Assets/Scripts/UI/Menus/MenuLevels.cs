@@ -31,19 +31,22 @@ public class MenuLevels : MonoBehaviour
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
             int levelNumber = i;
-            GameObject button = Instantiate(levelButtonPrefab.gameObject, buttonsGroup.transform);
-            button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
-            button.GetComponent<Button>().onClick.AddListener(delegate
+            if (levels[i].IsCheckpoint)
             {
-                LevelButtonClicked(new LoadingChapterInfo(levelNumber));
-            });
-            button.GetComponent<LevelButton>().menuLevels = this;
-            button.GetComponent<LevelButton>().levelNumber = levelNumber;
-            if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].Completed)
-            {
-                button.GetComponent<Button>().interactable = false;
+                GameObject button = Instantiate(levelButtonPrefab.gameObject, buttonsGroup.transform);
+                button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
+                button.GetComponent<Button>().onClick.AddListener(delegate
+                {
+                    LevelButtonClicked(new LoadingChapterInfo(levelNumber));
+                });
+                button.GetComponent<LevelButton>().menuLevels = this;
+                button.GetComponent<LevelButton>().levelNumber = levelNumber;
+                if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].Completed)
+                {
+                    button.GetComponent<Button>().interactable = false;
+                }
+                if (i == 0) EventSystem.current.SetSelectedGameObject(button.gameObject);
             }
-            if (i == 0) EventSystem.current.SetSelectedGameObject(button.gameObject);
         }
     }
 
