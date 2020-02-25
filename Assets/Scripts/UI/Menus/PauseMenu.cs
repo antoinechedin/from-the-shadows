@@ -54,7 +54,6 @@ public class PauseMenu : MonoBehaviour
         SaveManager.Instance.WriteSaveFile();
         StartCoroutine(Fade());
     }
-
     IEnumerator Fade()
     {
         yield return new WaitForSeconds(1f);

@@ -69,6 +69,11 @@ public class ChapterManager : MonoBehaviour
             pauseMenu.OpenPauseMenu();
         }
 
+        if (Input.GetButtonDown("Select_G"))
+        {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
+        }
+
         #region CheatCodes
         //next level
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
