@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+    #if UNITY_EDITOR
     [ReadOnly]
+    #endif
     [Header("The id will automatically be set by the ChapterManager")]
     public int id;
     public Transform cameraLimitLB;

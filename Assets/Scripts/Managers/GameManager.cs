@@ -174,23 +174,38 @@ public class GameManager : Singleton<GameManager>
     /// <returns></returns>
     IEnumerator LoadAsyncScene(string sceneName)
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        asyncLoad.allowSceneActivation = false; //permet de ne pas charger la scene directos quand elle est prête
-
+        //étape 1 : On fait un fondu au noir
         GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen"); //load le prefab de l'écran de chargement
         loadingScreen = Instantiate(loadingScreen, gameObject.transform); //l'affiche
 
-        while (!asyncLoad.isDone)
+        //On attend que le fondu au noir soit terminé
+        while (!loadingScreen.GetComponent<LoadingScreen>().finishedFadingIn)
         {
-            //on attend que le loading soit completement noir ET que le scene soit prête à être affichée
-            if (loadingScreen.GetComponent<LoadingScreen>().finishedFadingIn && asyncLoad.progress == 0.9f)
-            {
-                //affichage de la scene
-                asyncLoad.allowSceneActivation = true;
-                loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true); //on fade out le loading screen
-            }
             yield return null;
         }
+
+        //étape 2 : On lance le chargement de la scène
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        asyncLoad.allowSceneActivation = false; //permet de ne pas charger la scene directos quand elle est prête
+
+        //On attend la fin du chargement
+        while (asyncLoad.progress < 0.9f)
+        {
+            Debug.Log(asyncLoad.progress);
+            yield return null;
+        }
+
+        //étape 3 : on affiche la scène. à cette étape, le scène n'est pas encore totalement prête à être révélée.
+        asyncLoad.allowSceneActivation = true;
+
+        //on attend que la scène soit complètement prète à être affichée
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        //étape 4 : On enlève l'écran de chargement
+        loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true); //on fade out le loading screen
     }
     #endregion
 

@@ -16,11 +16,7 @@ public class ChangeLevelTrigger : MonoBehaviour
     {
         chapterManager = GameObject.Find("ChapterManager").GetComponent<ChapterManager>();
 
-        if (newPlayerSpawns != null)
-        {
-            chapterManager.CurrentSpawns = newPlayerSpawns;
-        }
-        else
+        if (newPlayerSpawns == null)
         {
             Debug.Log(name + " : Aucun spawnPoint assigné à ce trigger. Le spawn des joueurs n'a pas changé");
         }
@@ -43,7 +39,7 @@ public class ChangeLevelTrigger : MonoBehaviour
                 //sinon on passe au niveau suivant
                 else
                 {
-                    chapterManager.NextLevel(newPlayerSpawns.GetComponentInParent<LevelManager>().id);
+                    chapterManager.ChangeLevel(newPlayerSpawns.GetComponentInParent<LevelManager>().id);
                     if (newPlayerSpawns != null)
                         chapterManager.CurrentSpawns = newPlayerSpawns;
                 }
