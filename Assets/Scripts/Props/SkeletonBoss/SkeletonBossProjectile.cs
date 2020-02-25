@@ -20,7 +20,7 @@ public class SkeletonBossProjectile : MonoBehaviour
 
     IEnumerator DestroyGameObject()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(10f);
         Destroy(this.gameObject);
     }
     void Update()
