@@ -8,11 +8,13 @@ public class ActorController : MonoBehaviour
 {
     public LayerMask collisionMask = 1 << 9;
     [HideInInspector] public float maxSlopeAngle = 60;
-    [HideInInspector] public float ledgeGrabDistance = 0.01f;
 
     private const float skinWidth = 0.04f;
 
     private const float maxRaySpacing = 0.05f;
+
+    private float ledgeGrabRayLength = 0.15f;
+    private float ledgeGrabContactThreshold = 0.08f;
 
     private int hRayCount;
     private int vRayCount;
@@ -56,8 +58,7 @@ public class ActorController : MonoBehaviour
             GroundActor(ref move);
         }
 
-
-        body.MovePosition(body.position + move);
+        transform.Translate(move);
         collisions.move = move;
     }
 
@@ -305,38 +306,34 @@ public class ActorController : MonoBehaviour
         move.y -= dst2Ground;
     }
 
-    public bool LedgeGrab(float facing)
+    public bool LedgeGrab(float facing, Vector2 e)
     {
-        float maxDistanceAboveLedge = 0.2f;
+        float maxLegdeGrabRaySpacing = 0.05f;
+        float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxLegdeGrabRaySpacing) + 2;
+        float hLedgeGrabRaySpacing = Mathf.Abs(collisions.move.y) / (hLedgeGrabRayCount - 1);
 
         float distanceAboveLedge = 0;
-        for (int i = 0; i < hRayCount; i++)
+        for (int i = 0; i < hLedgeGrabRayCount; i++)
         {
             Vector2 rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
-            rayOrigin += Vector2.down * (hRaySpacing * i);
+            rayOrigin += Vector2.right * collisions.move.x;
+            rayOrigin += Vector2.up * (collisions.move.y - (hLedgeGrabRaySpacing * i));
 
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, 0.7f, collisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.right * facing * 0.7f, hit ? Color.blue : Color.yellow);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, ledgeGrabRayLength, collisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * facing * ledgeGrabRayLength, hit ? Color.blue : Color.yellow);
 
             if (hit)
             {
                 if (i == 0) return false;
 
-                if (hit.distance < skinWidth + ledgeGrabDistance)
+                if (hit.distance - skinWidth < ledgeGrabContactThreshold)
                 {
+                    transform.Translate(Vector2.down * (i - 1) * hLedgeGrabRaySpacing);
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+                else return false;
             }
-            else
-            {
-                distanceAboveLedge += hRaySpacing;
-            }
-
-            if (distanceAboveLedge > maxDistanceAboveLedge) return false;
+            else distanceAboveLedge += hRaySpacing;
         }
 
         return false;
