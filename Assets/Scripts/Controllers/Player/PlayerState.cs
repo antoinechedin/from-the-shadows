@@ -30,7 +30,7 @@ public class PlayerStanding : IPlayerState
 
         if (input.pressedJump)
         {
-            player.state = new PlayerAirborne(true, player);
+            player.state = new PlayerAirborne(true, false, player);
 
             player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
             player.actor.collisions.bellow = false;
@@ -52,7 +52,7 @@ public class PlayerStanding : IPlayerState
 
         if (!player.actor.collisions.bellow)
         {
-            player.state = new PlayerAirborne(false, player);
+            player.state = new PlayerAirborne(false, false, player);
 
             // Set Animator Airborne -> We are falling
             player.animator.SetBool("Airborne", true);
@@ -87,16 +87,27 @@ public class PlayerAirborne : IPlayerState
     public bool canDoubleJump;
     public bool canStopJump;
     public float coyoteTimer;
-    public float coyoteDuration = 0.07f;
+    public float coyoteDuration = 0.087f;
+    public float lastLedgeGrabTimer;
+    public float lastLedgeGrabDuration = 0.1f;
     float stopJumpSpeed;
 
-    public PlayerAirborne(bool jump, PlayerController player)
+    public PlayerAirborne(bool jump, bool dropLedge, PlayerController player)
     {
-        canJump = !jump;
-        canDoubleJump = player.input.doubleJump;
+        canJump = true;
         canStopJump = jump;
+        stopJumpSpeed = player.settings.gravity / 7f;
+        canDoubleJump = player.input.doubleJump;
         coyoteTimer = 0;
-        stopJumpSpeed = player.settings.gravity / 9f;
+
+        if (jump || dropLedge)
+        {
+            canJump = false;
+
+        }
+
+        if (dropLedge) lastLedgeGrabTimer = 0;
+        else lastLedgeGrabTimer = lastLedgeGrabDuration;
     }
 
     public void HandleInput(PlayerController player, PlayerInput input)
@@ -118,15 +129,15 @@ public class PlayerAirborne : IPlayerState
             if (canJump)
             {
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
-                
+
                 canJump = false;
                 canStopJump = true;
 
                 // Set Animator Jump -> Simple Jump
                 player.animator.SetTrigger("Jump");
                 player.animator.SetBool("Airborne", true);
-            } 
-            else if(canDoubleJump)
+            }
+            else if (canDoubleJump)
             {
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.doubleJumpHeight * player.settings.gravity);
 
@@ -175,6 +186,18 @@ public class PlayerAirborne : IPlayerState
 
         }
 
+        if (lastLedgeGrabTimer >= lastLedgeGrabDuration)
+        {
+            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.facing))
+            {
+                player.state = new PlayerLedgeGrab(player);
+            }
+        }
+        else
+        {
+            lastLedgeGrabTimer += Time.deltaTime;
+        }
+
         // Animator Run Idle
         if (Mathf.Abs(player.velocity.x) < 1.1f)
         {
@@ -192,5 +215,40 @@ public class PlayerAirborne : IPlayerState
             player.animator.transform.eulerAngles = Vector3.up * -90;
         else if (player.velocity.x > 0)
             player.animator.transform.eulerAngles = Vector3.up * 90;
+    }
+}
+
+public class PlayerLedgeGrab : IPlayerState
+{
+    public PlayerLedgeGrab(PlayerController player)
+    {
+        player.velocity = Vector2.zero;
+    }
+
+    public void HandleInput(PlayerController player, PlayerInput input)
+    {
+        if (input.moveAxis.y < -0.7f)
+        {
+            player.state = new PlayerAirborne(false, true, player);
+        }
+
+        if (input.pressedJump)
+        {
+            player.state = new PlayerAirborne(true, false, player);
+
+            player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
+            player.actor.collisions.bellow = false;
+
+            GameManager.Instance.AddMetaInt(input.id == 1 ? MetaTag.PLAYER_1_JUMP : MetaTag.PLAYER_2_JUMP, 1);
+
+            // Set Animator Jump
+            player.animator.SetTrigger("Jump");
+            player.animator.SetBool("Airborne", true);
+        }
+    }
+
+    public void Update(PlayerController player)
+    {
+
     }
 }
