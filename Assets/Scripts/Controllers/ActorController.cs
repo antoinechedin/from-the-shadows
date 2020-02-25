@@ -324,7 +324,6 @@ public class ActorController : MonoBehaviour
 
                 if (hit.distance < skinWidth + ledgeGrabDistance)
                 {
-                    Debug.Log("Grab ledge");
                     return true;
                 }
                 else
