@@ -197,9 +197,10 @@ public class PlayerAirborne : IPlayerState
 
         if (lastLedgeGrabTimer >= lastLedgeGrabDuration)
         {
-            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.facing))
+            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.facing, player.velocity* Time.fixedDeltaTime))
             {
                 player.state = new PlayerLedgeGrab(player);
+                player.velocity = Vector2.zero;
 
                 player.animator.SetTrigger("LedgeGrab");
                 player.animator.SetBool("Airborne", false);
