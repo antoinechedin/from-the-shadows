@@ -12,6 +12,7 @@ public class SkeletonBossProjectile : MonoBehaviour
     {
         speed = this.transform.parent.GetComponent<ProjectileSpawner>().projectileSpeed;
         targetPosition = this.transform.parent.GetComponent<ProjectileSpawner>().target.transform.position;
+        targetPosition.y += 1f;
 
         direction = (targetPosition - this.transform.position ).normalized;
 
