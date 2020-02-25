@@ -14,6 +14,7 @@ public class SkeletonBossProjectile : MonoBehaviour
         targetPosition = this.transform.parent.GetComponent<ProjectileSpawner>().target.transform.position;
         targetPosition.y += 1f;
 
+        this.transform.LookAt(targetPosition);
         direction = (targetPosition - this.transform.position ).normalized;
 
         StartCoroutine(DestroyGameObject());
