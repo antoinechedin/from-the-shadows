@@ -12,6 +12,8 @@ public class ChapterManager : MonoBehaviour
     private LevelCamera levelCamera;
     private GameObject currentSpawns;
 
+    private bool resetingLevel = false;
+
     public GameObject CurrentSpawns
     {
         get { return currentSpawns; }
@@ -201,7 +203,11 @@ public class ChapterManager : MonoBehaviour
     /// <param name="playerId"></param>
     public void ResetLevel(int playerId)
     {
-        StartCoroutine(ResetLevelAsync(playerId));
+        if (!resetingLevel)
+        {
+            resetingLevel = true;
+            StartCoroutine(ResetLevelAsync(playerId));
+        }
     }
 
     /// <summary>
@@ -256,5 +262,7 @@ public class ChapterManager : MonoBehaviour
         }
 
         player.input.active = true;
+
+        resetingLevel = false;
     }
 }
