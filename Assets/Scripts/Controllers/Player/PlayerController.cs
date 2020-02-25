@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         state = new PlayerStanding();
         animator = GetComponentInChildren<Animator>();
         animator.SetBool("Light", input.doubleJump);
+        facing = 1;
     }
 
     private void Update()
@@ -73,5 +74,17 @@ public class PlayerController : MonoBehaviour
             dead = true;
             GameObject.FindObjectOfType<ChapterManager>().ResetLevel(input.id);
         }
+    }
+
+    public void SpawnAt(Vector3 position)
+    {
+        transform.position = position;
+        state = new PlayerStanding();
+        velocity = Vector2.zero;
+        targetVelocity = Vector2.zero;
+        facing = 1;
+
+        animator.Rebind();
+        animator.SetBool("Light", input.doubleJump);
     }
 }
