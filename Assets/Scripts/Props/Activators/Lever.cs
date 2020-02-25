@@ -29,6 +29,7 @@ public class Lever : Activator, IResetable
         if (activeAtStart)
         {
             On(true);
+            //RENDYYYYYYYYYYYYYYYYYYYY
             if (GetComponentInChildren<Animator>() != null)
             {
                 GetComponentInChildren<Animator>().SetBool("OFF", false);
@@ -37,6 +38,7 @@ public class Lever : Activator, IResetable
         else
         {
             Off();
+            //RENDYYYYYYYYYYYYYYYYYYYY
             if (GetComponentInChildren<Animator>())
             {
                 GetComponentInChildren<Animator>().SetBool("OFF", true);
@@ -99,6 +101,7 @@ public class Lever : Activator, IResetable
     {
         if (TryActivate != null)
         {
+            //RENDYYYYYYYYYYYYYYYYYYYY
             if (GetComponentInChildren<Animator>())
             {
                 GetComponentInChildren<Animator>().SetBool("OFF", false);
@@ -128,6 +131,7 @@ public class Lever : Activator, IResetable
     {
         if (TryDeactivate != null)
         {
+            //RENDYYYYYYYYYYYYYYYYYYYY
             if (GetComponentInChildren<Animator>())
             {
                 GetComponentInChildren<Animator>().SetBool("OFF", true);
