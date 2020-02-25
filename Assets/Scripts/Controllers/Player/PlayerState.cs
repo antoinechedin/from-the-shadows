@@ -40,6 +40,8 @@ public class PlayerStanding : IPlayerState
             // Set Animator Jump
             player.animator.SetTrigger("Jump");
             player.animator.SetBool("Airborne", true);
+            player.animator.SetBool("Idle", false);
+            player.animator.SetBool("Running", false);
         }
     }
 
@@ -164,6 +166,13 @@ public class PlayerAirborne : IPlayerState
 
     public void Update(PlayerController player)
     {
+        // FIXME: Should not be here. Move it to FixedUpdate instead
+        // Orient Player
+        if (player.velocity.x < 0)
+            player.animator.transform.eulerAngles = Vector3.up * -90;
+        else if (player.velocity.x > 0)
+            player.animator.transform.eulerAngles = Vector3.up * 90;
+
         if (canJump)
         {
             coyoteTimer += Time.deltaTime;
@@ -183,7 +192,7 @@ public class PlayerAirborne : IPlayerState
             player.animator.SetBool("Airborne", false);
             player.animator.SetBool("Idle", true);
             player.animator.SetBool("Running", false);
-
+            return;
         }
 
         if (lastLedgeGrabTimer >= lastLedgeGrabDuration)
@@ -191,6 +200,9 @@ public class PlayerAirborne : IPlayerState
             if (player.velocity.y < 0 && player.actor.LedgeGrab(player.facing))
             {
                 player.state = new PlayerLedgeGrab(player);
+
+                player.animator.SetTrigger("LedgeGrab");
+                player.animator.SetBool("Airborne", false);
             }
         }
         else
@@ -199,22 +211,16 @@ public class PlayerAirborne : IPlayerState
         }
 
         // Animator Run Idle
-        if (Mathf.Abs(player.velocity.x) < 1.1f)
-        {
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
-        }
-        else
-        {
-            player.animator.SetBool("Idle", false);
-            player.animator.SetBool("Running", true);
-        }
-
-        // Orient Player
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;
+        // if (Mathf.Abs(player.velocity.x) < 1.1f)
+        // {
+        //     player.animator.SetBool("Idle", true);
+        //     player.animator.SetBool("Running", false);
+        // }
+        // else
+        // {
+        //     player.animator.SetBool("Idle", false);
+        //     player.animator.SetBool("Running", true);
+        // }
     }
 }
 
@@ -230,6 +236,7 @@ public class PlayerLedgeGrab : IPlayerState
         if (input.moveAxis.y < -0.7f)
         {
             player.state = new PlayerAirborne(false, true, player);
+            player.animator.SetTrigger("LedgeDrop");
         }
 
         if (input.pressedJump)
