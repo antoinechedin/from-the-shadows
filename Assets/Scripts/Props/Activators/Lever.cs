@@ -93,7 +93,7 @@ public class Lever : Activator, IResetable
     {
         if (TryActivate != null)
         {
-            GetComponentInChildren<Animator>().SetBool("OFF", false);
+            //GetComponentInChildren<Animator>().SetBool("OFF", false);
 
             active = true;
             TryActivate();
@@ -119,7 +119,7 @@ public class Lever : Activator, IResetable
     {
         if (TryDeactivate != null)
         {
-            GetComponentInChildren<Animator>().SetBool("OFF", true);
+            //GetComponentInChildren<Animator>().SetBool("OFF", true);
 
             active = false;
             StopCoroutine("Flash");
