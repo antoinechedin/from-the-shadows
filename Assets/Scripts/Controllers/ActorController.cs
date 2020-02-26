@@ -311,6 +311,7 @@ public class ActorController : MonoBehaviour
         float maxLegdeGrabRaySpacing = 0.05f;
         float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxLegdeGrabRaySpacing) + 2;
         float hLedgeGrabRaySpacing = Mathf.Abs(collisions.move.y) / (hLedgeGrabRayCount - 1);
+        hLedgeGrabRayCount += 2;
 
         float distanceAboveLedge = 0;
         for (int i = 0; i < hLedgeGrabRayCount; i++)
