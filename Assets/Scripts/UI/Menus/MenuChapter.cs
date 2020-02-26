@@ -115,13 +115,15 @@ public class MenuChapter : MonoBehaviour
                 List<Level> levels = chapters[localIndexCurrentChapter].GetLevels();
                 foreach (Level l in levels)
                 {
-                    foreach (bool collectible in l.Collectibles)
+                    //ROMAIN TODO : changer pour prendre en compte les nouveaux tableaux pour différencier les collectibles
+                    /*foreach (bool collectible in l.Collectibles)
                     {
                         if (collectible == true) nbCollectibleTaken++;
                     }
                     totalNbCollectible += l.Collectibles.Length;
                     if (l.Completed) nbCompleted++;
                     totalLevel++;
+                    */
                 }
 
                 levelLabel.text = chaptersName[localIndexCurrentChapter];
