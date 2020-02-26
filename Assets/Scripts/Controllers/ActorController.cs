@@ -13,8 +13,8 @@ public class ActorController : MonoBehaviour
 
     private const float maxRaySpacing = 0.05f;
 
-    private float ledgeGrabRayLength = 0.15f;
-    private float ledgeGrabContactThreshold = 0.08f;
+    private float minFloorLength = 0.01f;
+
 
     private int hRayCount;
     private int vRayCount;
@@ -109,7 +109,7 @@ public class ActorController : MonoBehaviour
                     collisions.right = xSign >= 0;
                 }
             }
-            // Debug.DrawRay(rayOrigin, Vector2.right * xSign * rayLength * 5, Color.red);
+            Debug.DrawRay(rayOrigin, Vector2.right * xSign * rayLength * 5, Color.red);
         }
     }
 
@@ -138,13 +138,14 @@ public class ActorController : MonoBehaviour
                 {
                     collisions.bellow = true;
                     collisions.groundNormal = hit.normal;
+                    collisions.riding = hit.collider;
                 }
                 else
                 {
                     collisions.above = ySign >= 0;
                 }
             }
-            // Debug.DrawRay(rayOrigin, Vector2.up * ySign * rayLength * 5, Color.red);
+            Debug.DrawRay(rayOrigin, Vector2.up * ySign * rayLength * 5, Color.red);
         }
 
         if (collisions.climbingSlope)
@@ -179,6 +180,7 @@ public class ActorController : MonoBehaviour
             collisions.climbingSlope = true;
             collisions.slopeAngle = slopeAngle;
             collisions.groundNormal = slopeNormal;
+            collisions.riding = collisionsPrevious.riding;
         }
     }
 
@@ -211,6 +213,7 @@ public class ActorController : MonoBehaviour
                             collisions.descendingSlope = true;
                             collisions.bellow = true;
                             collisions.groundNormal = hit.normal;
+                            collisions.riding = hit.collider;
                         }
                     }
                 }
@@ -268,6 +271,7 @@ public class ActorController : MonoBehaviour
         collisions.slidingSlope = true;
         collisions.bellow = true;
         collisions.groundNormal = hit.normal;
+        collisions.riding = hit.collider;
     }
 
     private void GroundActor(ref Vector2 move)
@@ -298,6 +302,7 @@ public class ActorController : MonoBehaviour
                         collisions.bellow = true;
                         collisions.slopeAngle = slopeAngle;
                         collisions.groundNormal = hit.normal;
+                        collisions.riding = hit.collider;
                         if (hit.normal.x != 0 && Mathf.Sign(hit.normal.x) == xSign) collisions.descendingSlope = true;
                     }
                 }
@@ -306,19 +311,21 @@ public class ActorController : MonoBehaviour
         move.y -= dst2Ground;
     }
 
-    public bool LedgeGrab(float facing, Vector2 e)
+    public bool LedgeGrab(float facing, bool checkOnly)
     {
         float maxLegdeGrabRaySpacing = 0.05f;
+        float floorOffset = 0.08f;
         float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxLegdeGrabRaySpacing) + 2;
-        float hLedgeGrabRaySpacing = Mathf.Abs(collisions.move.y) / (hLedgeGrabRayCount - 1);
+        float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxLegdeGrabRaySpacing, Mathf.Infinity)
+                                     / (hLedgeGrabRayCount - 1);
         hLedgeGrabRayCount += 2;
+        float ledgeGrabRayLength = skinWidth + minFloorLength;
 
-        float distanceAboveLedge = 0;
         for (int i = 0; i < hLedgeGrabRayCount; i++)
         {
             Vector2 rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
-            rayOrigin += Vector2.right * collisions.move.x;
             rayOrigin += Vector2.up * (collisions.move.y - (hLedgeGrabRaySpacing * i));
+            rayOrigin += Vector2.right * collisions.move.x;
 
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, ledgeGrabRayLength, collisionMask);
             Debug.DrawRay(rayOrigin, Vector2.right * facing * ledgeGrabRayLength, hit ? Color.blue : Color.yellow);
@@ -326,15 +333,29 @@ public class ActorController : MonoBehaviour
             if (hit)
             {
                 if (i == 0) return false;
+                //if (hit.normal.y < Mathf.Sin(45f * Mathf.Deg2Rad)) return false;
 
-                if (hit.distance - skinWidth < ledgeGrabContactThreshold)
+                if (hit.distance - skinWidth < minFloorLength)
                 {
-                    transform.Translate(Vector2.down * (i - 1) * hLedgeGrabRaySpacing);
+                    rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
+                    rayOrigin += Vector2.up * (collisions.move.y);
+                    rayOrigin += Vector2.right * collisions.move.x;
+                    rayOrigin += Vector2.right * facing * skinWidth;
+
+                    RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+                    if (!checkOnly && floorHit)
+                    {
+                        if (floorHit.normal.y < Mathf.Sin(45f * Mathf.Deg2Rad)) return false;
+                        if (floorHit.distance < floorOffset) return false;
+                        
+                        transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
+                    }
+
+                    collisions.riding = hit.collider;
                     return true;
                 }
                 else return false;
             }
-            else distanceAboveLedge += hRaySpacing;
         }
 
         return false;
@@ -371,6 +392,7 @@ public class ActorController : MonoBehaviour
         public float slopeAngle;
         public Vector2 move;
         public Vector2 groundNormal;
+        public Collider2D riding;
 
         public void Reset()
         {
@@ -378,6 +400,7 @@ public class ActorController : MonoBehaviour
             climbingSlope = descendingSlope = slidingSlope = false;
             slopeAngle = 0;
             groundNormal = Vector2.zero;
+            riding = null;
         }
     }
 }

@@ -56,9 +56,9 @@ public class PlayerController : MonoBehaviour
         if (velocity.x > 0) facing = 1;
         else if (velocity.x < 0) facing = -1;
 
-        state.Update(this);
 
         actor.Move(velocity, Time.fixedDeltaTime);
+        state.Update(this);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
