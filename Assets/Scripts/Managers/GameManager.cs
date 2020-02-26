@@ -128,10 +128,19 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void SaveCollectibleTaken(int chap, int lvl, int index)
+    public void SaveCollectibleTaken(int chap, int lvl, Collectible.Type type, int index)
     {
         if (CurrentChapter != -1)
-            saves[currentSave].Chapters[chap].GetLevels()[lvl].Collectibles[index] = true;
+        {
+            if (type == Collectible.Type.Light)
+            {
+                saves[currentSave].Chapters[chap].GetLevels()[lvl].LightCollectibles[index] = true;
+            }
+            else if (type == Collectible.Type.Shadow)
+            {
+                saves[currentSave].Chapters[chap].GetLevels()[lvl].ShadowCollectibles[index] = true;
+            }
+        }
     }
     #endregion
 

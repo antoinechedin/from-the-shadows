@@ -38,8 +38,12 @@ public class ChapterManager : MonoBehaviour
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
 
+        //collectibles
         if(GameManager.Instance.CurrentChapter != -1)
-            levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
+        {
+            Level currentLvl = GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel];
+            levels[currentLevel].SetCollectibles(currentLvl.LightCollectibles, currentLvl.ShadowCollectibles);
+        }
 
         //UpdateEnabledLevels();
         foreach (LevelManager level in levels)
@@ -156,9 +160,12 @@ public class ChapterManager : MonoBehaviour
         CollectMetaData();
         CreateEmptyCameraPoints();
         levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
+
+        //collectibles
         if (GameManager.Instance.CurrentChapter != -1)
         {
-            levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
+            Level currentLvl = GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel];
+            levels[currentLevel].SetCollectibles(currentLvl.LightCollectibles, currentLvl.ShadowCollectibles);
         }
 
 
@@ -175,13 +182,25 @@ public class ChapterManager : MonoBehaviour
 
     public void ValidateCollectibles()
     {
-        foreach (GameObject go in levels[currentLevel].collectibles)
+        //Validate light collectibles
+        foreach (GameObject go in levels[currentLevel].lightCollectibles)
         {
             Collectible collectible = go.GetComponent<Collectible>();
             if (collectible.isPickedUp)
             {
                 collectible.isValidated = true;
-                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, go.transform.GetSiblingIndex());
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel,Collectible.Type.Light, go.transform.GetSiblingIndex());
+            }
+        }
+
+        //Validate shadow collectibles
+        foreach (GameObject go in levels[currentLevel].shadowCollectibles)
+        {
+            Collectible collectible = go.GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, go.transform.GetSiblingIndex());
             }
         }
     }

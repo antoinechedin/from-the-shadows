@@ -161,40 +161,40 @@ public class SaveManager : Singleton<SaveManager>
 
         //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
         List<Level> lvlChap0 = new List<Level>();
-        lvlChap0.Add(new Level(false, new bool[] { }, true));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, true));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, true));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, true));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, true));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, true));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false, false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
-        lvlChap0.Add(new Level(false, new bool[] { }, false));
-        lvlChap0.Add(new Level(false, new bool[] { false }, false));
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //1
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //2
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //3
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //4
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //5 
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //6
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //7
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //8
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //9
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //10
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //11
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //12
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //13
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //14
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //15
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //16
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //17
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //18
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //19
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //20
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //21
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //22
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //23
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //24
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //25
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //26
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //27
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, true)); //28
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //29
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //30
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //31
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //32
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //33
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //34
         // List<Level> lvlChap1 = new List<Level>();
         // lvlChap1.Add(new Level(false, new bool[] { false }));
 
@@ -219,35 +219,6 @@ public class SaveManager : Singleton<SaveManager>
         LoadSaveFile(save);
     }
     #endregion
-
-    public void TestLoad()
-    {
-        List<Level> levels = new List<Level>();
-        Level lvl = new Level(true, new bool[] { false, false }, true);
-        levels.Add(lvl);
-        levels.Add(lvl);
-
-        List<Chapter> chaps = new List<Chapter>();
-        Chapter chap = new Chapter(levels);
-        chaps.Add(chap);
-        chaps.Add(chap);
-
-        StringIntDictionary mInt = new StringIntDictionary();
-        mInt.Add("1", 1);
-        mInt.Add("2", 2);
-
-        StringFloatDictionary mFloat = new StringFloatDictionary();
-        mFloat.Add("1", 1.0f);
-        mFloat.Add("2", 2.0f);
-
-        Save save = new Save(chaps, 1, mInt, mFloat, new SerializableDate(DateTime.Now));
-
-        string json = JsonUtility.ToJson(save, true);
-        Debug.Log(json);
-        save = null;
-        save = JsonUtility.FromJson<Save>(json);
-        Debug.Log(save.Chapters[0].GetLevels()[0].Completed);
-    }
 
 
 }
