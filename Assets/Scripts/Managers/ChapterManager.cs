@@ -197,7 +197,6 @@ public class ChapterManager : MonoBehaviour
         foreach (GameObject go in levels[currentLevel].shadowCollectibles)
         {
             Collectible collectible = go.GetComponent<Collectible>();
-            Debug.Log("collectible d'ombre : " + collectible.isPickedUp);
             if (collectible.isPickedUp)
             {
                 collectible.isValidated = true;
