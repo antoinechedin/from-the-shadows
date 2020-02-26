@@ -6,6 +6,7 @@ public interface IPlayerState
 {
     void HandleInput(PlayerController player, PlayerInput input);
     void Update(PlayerController playerController);
+    void FixedUpdate(PlayerController playerController);
 }
 
 public class PlayerStanding : IPlayerState
@@ -51,20 +52,26 @@ public class PlayerStanding : IPlayerState
             player.state = new PlayerAirborne(false, false, player);
 
             // Set Animator Airborne -> We are falling
-            player.animator.SetBool("Airborne", true);
+            player.animator.SetTrigger("Airborne");
         }
 
-        if (player.velocity.x * player.input.moveAxis.x < 0)
-            player.animator.SetTrigger("Turn");
+        if (Mathf.Abs(player.input.moveAxis.x) + 0.1f < 0.7f || player.animator.GetFloat("RunSpeedMultiplier") < 0.3f)
+        {
+            if (player.velocity.x < 0)
+                player.animator.transform.eulerAngles = Vector3.up * -90;
+            else if (player.velocity.x > 0)
+                player.animator.transform.eulerAngles = Vector3.up * 90;
 
-        // Orient Player
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;      
+            player.animator.ResetTrigger("Turn");
+        }
 
         // Speed Animation
         player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
+    }
+
+    public void FixedUpdate(PlayerController player)
+    {
+
     }
 }
 
@@ -90,7 +97,6 @@ public class PlayerAirborne : IPlayerState
         if (jump || dropLedge)
         {
             canJump = false;
-
         }
 
         if (dropLedge) lastLedgeGrabTimer = 0;
@@ -149,12 +155,6 @@ public class PlayerAirborne : IPlayerState
 
     public void Update(PlayerController player)
     {
-        // FIXME: Should not be here. Move it to FixedUpdate instead
-        // Orient Player
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;
 
         if (canJump)
         {
@@ -191,6 +191,15 @@ public class PlayerAirborne : IPlayerState
             lastLedgeGrabTimer += Time.deltaTime;
         }
     }
+
+    public void FixedUpdate(PlayerController player)
+    {
+        // Orient Player
+        if (player.velocity.x < 0)
+            player.animator.transform.eulerAngles = Vector3.up * -90;
+        else if (player.velocity.x > 0)
+            player.animator.transform.eulerAngles = Vector3.up * 90;
+    }
 }
 
 public class PlayerLedgeGrab : IPlayerState
@@ -223,6 +232,11 @@ public class PlayerLedgeGrab : IPlayerState
     }
 
     public void Update(PlayerController player)
+    {
+
+    }
+
+    public void FixedUpdate(PlayerController player)
     {
 
     }
