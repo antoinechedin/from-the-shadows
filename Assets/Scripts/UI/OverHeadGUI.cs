@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce }
+
 public class OverHeadGUI : MonoBehaviour
 {
     GameObject canvasGO;
@@ -15,114 +17,84 @@ public class OverHeadGUI : MonoBehaviour
     TextMeshPro text;
     Image image;
 
-    public bool drawDebugCanvas = true;
+    public float test;
+    public GUIType type;
+
+    [Header("Place in \"content\" the canvas containing all the UI elements you wish to display")]
+    public GameObject content;
+
+    [Space(10)]
+    [Tooltip("the number of player needed to display the content")]
+    public int nbPlayerNeeded;
+
+    [Header("Note : set the target to \"this\" to make it static.")]
+    [Space(-10)]
+    [Header("The GameObject over which the content should be displayed above.")]
     public Transform target;
-    [Header("Content")]
-    public Sprite displayedSprite;
-    public string displayedText;
-    [Header("Position and Size")]
-    public Vector3 offSet;
-    public Vector3 size = new Vector3(3f, 1f, 0f);
     public bool faceCamera;
 
-    private bool UIActive = true;
+    private int currentNbPlayer = 0;
+    private bool UIActive = false;
+
 
     private void Start()
     {
-        CreateCanvas();
-        AddText();
-        if (displayedSprite == null)
-            Debug.LogWarning("Can't find sprite to display over " + gameObject.name);
+        if (type == GUIType.AlwaysDisplayed)
+        {
+            DisplayUI();
+        }
         else
-            AddImage();
-        ToggleUI();
+        {
+            HideUI();
+        }
     }
 
     private void Update()
     {
         if (UIActive)
         {
-            canvasGO.transform.position = target.position + offSet;
+            content.transform.position = target.position;
             if (faceCamera)
-                canvasGO.transform.LookAt(canvasGO.transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+                content.transform.LookAt(content.transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
-            ToggleUI();
+        {
+            currentNbPlayer++;
+        }
+
+        if (currentNbPlayer >= nbPlayerNeeded)
+        {
+            DisplayUI();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
-            ToggleUI();
-    }
-
-    private void ToggleUI()
-    {
-        UIActive = !UIActive;
-        canvasGO.SetActive(UIActive);
-    }
-
-    private void CreateCanvas()
-    {
-        canvasGO = new GameObject("GUI Canvas");
-        canvasGO.transform.parent = transform;
-        canvas = canvasGO.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.WorldSpace;
-        canvas.worldCamera = Camera.main;
-        canvasGO.AddComponent<CanvasScaler>();
-        canvasGO.AddComponent<GraphicRaycaster>();
-        canvasGO.GetComponent<RectTransform>().sizeDelta = size;
-    }
-
-    private void AddImage()
-    {
-        imageGO = new GameObject("Image");
-        imageGO.transform.parent = canvasGO.transform;
-        image = imageGO.AddComponent<Image>();
-        image.sprite = displayedSprite;
-        image.useSpriteMesh = true;
-        image.preserveAspect = true;
-        RectTransform imageRT = imageGO.GetComponent<RectTransform>();
-        imageRT.anchorMin = Vector2.zero;
-        imageRT.anchorMax = new Vector2(1f, 0.6f);
-        imageRT.sizeDelta = Vector2.zero;
-        imageRT.position += new Vector3(0, 0, 0.7f);
-    }
-
-    private void AddText()
-    {
-        textGO = new GameObject("Text");
-        textGO.transform.parent = canvasGO.transform;
-        text = textGO.AddComponent<TextMeshPro>();
-        text.font = TMP_FontAsset.CreateFontAsset(Resources.GetBuiltinResource<Font>("Arial.ttf"));
-        text.enableAutoSizing = true;
-        text.fontSizeMin = 0;
-        text.fontSizeMax = 50;
-        text.enableWordWrapping = false;
-        text.alignment = TextAlignmentOptions.Center;
-        text.text = displayedText;
-        RectTransform textRT = textGO.GetComponent<RectTransform>();
-        textRT.anchorMin = new Vector2(0, 0.6f);
-        textRT.anchorMax = Vector2.one;
-        textRT.sizeDelta = Vector2.zero;
-        textRT.position += new Vector3(0, 0, 0.7f);
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (drawDebugCanvas)
         {
-            if (target == null)
-            {
-                Debug.LogError("Can't find target Gameobject of " + gameObject.name);
-                drawDebugCanvas = false;
-                return;
-            }
-            Gizmos.DrawWireCube(target.position + offSet, size);
+            currentNbPlayer--;
+        }
+
+        if (type == GUIType.DisplayAndHide && currentNbPlayer < nbPlayerNeeded)
+        {
+            HideUI();
         }
     }
+
+    private void DisplayUI()
+    {
+        UIActive = true;
+        content.SetActive(UIActive);
+    }
+
+    private void HideUI()
+    {
+        UIActive = false;
+        content.SetActive(UIActive);
+    }
 }
+
