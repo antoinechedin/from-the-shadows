@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Reflector : MonoBehaviour
+public class Reflector : MonoBehaviour, IResetable
 {
     private bool canPlayer1Activate;
     private bool canPlayer2Activate;
+    private Quaternion startRotation;
+
+    public void Start()
+    {
+        startRotation = transform.parent.rotation;
+    }
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
@@ -53,5 +59,10 @@ public class Reflector : MonoBehaviour
 
     public void Rotate(float angle){
         transform.parent.Rotate(new Vector3 (0, 0, angle));
+    }
+
+    public void Reset()
+    {
+        transform.parent.rotation = startRotation;
     }
 }

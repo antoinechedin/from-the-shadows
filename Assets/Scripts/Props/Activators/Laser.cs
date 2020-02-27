@@ -63,7 +63,7 @@ public class Laser : ActivatorListener
             }
             else if (go.GetComponent<Receptor>() != null)
             {
-                // If it is a receptor : stop
+                // If it is a receptor : stop and activate
                 DrawRays(index + 1);
             }
             else
