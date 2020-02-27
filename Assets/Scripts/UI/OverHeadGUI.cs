@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce }
+public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce, DisplayAfterTime }
 
 public class OverHeadGUI : MonoBehaviour
 {
@@ -17,7 +17,6 @@ public class OverHeadGUI : MonoBehaviour
     TextMeshPro text;
     Image image;
 
-    public float test;
     public GUIType type;
 
     [Header("Place in \"content\" the canvas containing all the UI elements you wish to display")]
@@ -32,13 +31,20 @@ public class OverHeadGUI : MonoBehaviour
     [Header("The GameObject over which the content should be displayed above.")]
     public Transform target;
     public bool faceCamera;
+    [Header("(Active only if the type is set to DisplayAfterTime)")]
+    public float timeBeforeDisplay;
 
     private int currentNbPlayer = 0;
     private bool UIActive = false;
+    private float timeCount = 0;
+
+    private Animator animator;
 
 
     private void Start()
     {
+        animator = GetComponent<Animator>();
+
         if (type == GUIType.AlwaysDisplayed)
         {
             DisplayUI();
@@ -57,6 +63,15 @@ public class OverHeadGUI : MonoBehaviour
             if (faceCamera)
                 content.transform.LookAt(content.transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
         }
+
+        if (type == GUIType.DisplayAfterTime)
+        {
+            timeCount += Time.deltaTime;
+            if (timeCount >= timeBeforeDisplay)
+            {
+                DisplayUI();
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -66,7 +81,7 @@ public class OverHeadGUI : MonoBehaviour
             currentNbPlayer++;
         }
 
-        if (currentNbPlayer >= nbPlayerNeeded)
+        if (currentNbPlayer >= nbPlayerNeeded && type != GUIType.DisplayAfterTime)
         {
             DisplayUI();
         }
@@ -88,13 +103,17 @@ public class OverHeadGUI : MonoBehaviour
     private void DisplayUI()
     {
         UIActive = true;
-        content.SetActive(UIActive);
+        animator.SetBool("display", true);
+        animator.SetBool("hide", false);
+        //content.SetActive(UIActive);
     }
 
     private void HideUI()
     {
         UIActive = false;
-        content.SetActive(UIActive);
+        animator.SetBool("hide", true);
+        animator.SetBool("display", false);
+        //content.SetActive(UIActive);
     }
 }
 
