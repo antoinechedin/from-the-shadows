@@ -57,7 +57,8 @@ public class MenuLevels : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
-        foreach (bool b in localCurrentChapter.GetLevels()[level].Collectibles)
+        //ROMAIN TODO : changer pour prendre en compte les nouveaux tableaux pour différencier les collectibles
+        /*foreach (bool b in localCurrentChapter.GetLevels()[level].Collectibles)
         {
             if (b == true)
             {
@@ -68,6 +69,7 @@ public class MenuLevels : MonoBehaviour
                 Instantiate(collectibleMissing, collectiblesPanel.transform);
             }
         }
+        */
     }
 
     public void DestroyPreviousButtons()

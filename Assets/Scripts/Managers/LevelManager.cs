@@ -12,7 +12,8 @@ public class LevelManager : MonoBehaviour
     public Transform cameraLimitLB;
     public Transform cameraLimitRT;
 
-    public List<GameObject> collectibles = new List<GameObject>();
+    public List<GameObject> lightCollectibles = new List<GameObject>();
+    public List<GameObject> shadowCollectibles = new List<GameObject>();
     public List<GameObject> playerSpawns;
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
@@ -46,7 +47,15 @@ public class LevelManager : MonoBehaviour
         {
             for (int i = 0; i < parentCollectibles.childCount; i++)
             {
-                collectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                if (parentCollectibles.GetChild(i).GetComponent<Collectible>().type == Collectible.Type.Light)
+                {
+                    lightCollectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                }
+                else if (parentCollectibles.GetChild(i).GetComponent<Collectible>().type == Collectible.Type.Shadow)
+                {
+                    shadowCollectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                }
+
             }
         }
     }
@@ -99,16 +108,28 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public void SetCollectibles(bool[] collectiblesTaken)
+    public void SetCollectibles(bool[] lightCollectiblesTaken, bool[] shadowCollectibleTaken)
     {
-        for (int i = 0; i < collectibles.Count; i++)
-        {
-            if (i < collectiblesTaken.Length)
+        for (int i = 0; i < lightCollectibles.Count; i++)
+        { 
+            if (i < lightCollectiblesTaken.Length)
             {
-                if (collectibles[i].GetComponent<Collectible>() != null)
+                if (lightCollectibles[i].GetComponent<Collectible>() != null)
                 {
-                    collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
-                    collectibles[i].GetComponent<Collectible>().UpdateState();
+                    lightCollectibles[i].GetComponent<Collectible>().isValidated = lightCollectiblesTaken[i];
+                    lightCollectibles[i].GetComponent<Collectible>().UpdateState();
+                }
+            }
+        }
+
+        for (int i = 0; i < shadowCollectibles.Count; i++)
+        {
+            if (i < shadowCollectibleTaken.Length)
+            {
+                if (shadowCollectibles[i].GetComponent<Collectible>() != null)
+                {
+                    shadowCollectibles[i].GetComponent<Collectible>().isValidated = shadowCollectibleTaken[i];
+                    shadowCollectibles[i].GetComponent<Collectible>().UpdateState();
                 }
             }
         }

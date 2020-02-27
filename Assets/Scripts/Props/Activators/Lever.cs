@@ -31,17 +31,17 @@ public class Lever : Activator, IResetable
         if (activeAtStart)
         {
             On(true);
-            if (withAnimation)
-            {
-                GetComponentInChildren<Animator>().SetBool("OFF", false);
+            if (withAnimation)
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", false);
             }
         }
         else
         {
             Off();
-            if (withAnimation)
-            {
-                GetComponentInChildren<Animator>().SetBool("OFF", true);
+            if (withAnimation)
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", true);
             }
         }
 
@@ -100,10 +100,10 @@ public class Lever : Activator, IResetable
     protected void On(bool ignoreTimer)
     {
         if (TryActivate != null)
-        {
-            if (withAnimation)
-            {
-                GetComponentInChildren<Animator>().SetBool("OFF", false);
+        {
+            if (withAnimation)
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", false);
             }
 
             active = true;
@@ -129,11 +129,11 @@ public class Lever : Activator, IResetable
     protected void Off()
     {
         if (TryDeactivate != null)
-        {
-            //RENDYYYYYYYYYYYYYYYYYYYY
-            if (withAnimation)
-            {
-                GetComponentInChildren<Animator>().SetBool("OFF", true);
+        {
+            //RENDYYYYYYYYYYYYYYYYYYYY
+            if (withAnimation)
+            {
+                GetComponentInChildren<Animator>().SetBool("OFF", true);
             }
 
             active = false;

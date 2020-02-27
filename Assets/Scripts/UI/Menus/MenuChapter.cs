@@ -10,7 +10,8 @@ public class MenuChapter : MonoBehaviour
     public MenuLevels menuLevels;
     public List<Button> chapterButtons;
     public Text levelLabel;
-    public Text collectiblesNumber;
+    public Text lightCollectibleNumber;
+    public Text shadowCollectibleNumber;
     public Text completedNumber;
     public GameObject chapterButtonsPanel;
     public RectTransform thisPanel;
@@ -107,25 +108,39 @@ public class MenuChapter : MonoBehaviour
             metaDataIcon.gameObject.SetActive(false);
             if (menuChapterAnimator != null)
             {
-                int nbCollectibleTaken = 0;
-                int totalNbCollectible = 0;
+                int nbLightCollectibleTaken = 0;
+                int nbShadowCollectibleTaken = 0;
+
+                int totalNbLightCollectible = 0;
+                int totalNbShadowCollectible = 0;
+
                 int nbCompleted = 0;
                 int totalLevel = 0;
 
                 List<Level> levels = chapters[localIndexCurrentChapter].GetLevels();
                 foreach (Level l in levels)
                 {
-                    foreach (bool collectible in l.Collectibles)
+                    //Light collectibles
+                    foreach (bool collectible in l.LightCollectibles)
                     {
-                        if (collectible == true) nbCollectibleTaken++;
+                        if (collectible == true) nbLightCollectibleTaken++;
                     }
-                    totalNbCollectible += l.Collectibles.Length;
+                    totalNbLightCollectible += l.LightCollectibles.Length;
+
+                    //shadow collectibles
+                    foreach (bool collectible in l.ShadowCollectibles)
+                    {
+                        if (collectible == true) nbShadowCollectibleTaken++;
+                    }
+                    totalNbShadowCollectible += l.ShadowCollectibles.Length;
                     if (l.Completed) nbCompleted++;
                     totalLevel++;
+                    
                 }
 
                 levelLabel.text = chaptersName[localIndexCurrentChapter];
-                collectiblesNumber.text = nbCollectibleTaken + "/" + totalNbCollectible;
+                lightCollectibleNumber.text = nbLightCollectibleTaken + "/" + totalNbLightCollectible;
+                shadowCollectibleNumber.text = nbShadowCollectibleTaken + "/" + totalNbShadowCollectible;
                 completedNumber.text = nbCompleted + "/" + totalLevel;
                 menuChapterAnimator.SetBool("open", true);
                 menuCamera.SetZoom(true);
