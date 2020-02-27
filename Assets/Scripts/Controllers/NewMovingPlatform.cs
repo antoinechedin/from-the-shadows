@@ -8,26 +8,30 @@ public class NewMovingPlatform : MonoBehaviour
     private float timer;
     private Vector2 originalPos;
 
+    public Vector2 direction;
+
     private NewSolidController controller;
 
-    private void Awake() {
+    private void Awake()
+    {
         controller = GetComponent<NewSolidController>();
         originalPos = transform.position;
     }
 
     private float MoveFunc(float x)
     {
-        return Mathf.Sin(Mathf.PI * x / 3f) * 2;
+        return Mathf.Sin(Mathf.PI * x / 3f);
     }
 
-    private void Update() {
-        timer += Time.deltaTime; 
+    private void Update()
+    {
+        timer += Time.deltaTime;
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         Vector2 newPos = originalPos;
-        newPos += Vector2.right * MoveFunc(timer * 3) / 3f;
-        newPos += Vector2.up * MoveFunc(timer / 3f * 3);
+        newPos += direction * MoveFunc(timer);
 
         controller.Move(newPos - (Vector2)transform.position);
     }

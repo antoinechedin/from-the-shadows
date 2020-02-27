@@ -127,7 +127,6 @@ public class ActorController : RaycastController
                 {
                     collisions.bellow = true;
                     collisions.groundNormal = hit.normal;
-                    collisions.riding = hit.collider;
                 }
                 else
                 {
@@ -169,7 +168,6 @@ public class ActorController : RaycastController
             collisions.climbingSlope = true;
             collisions.slopeAngle = slopeAngle;
             collisions.groundNormal = slopeNormal;
-            collisions.riding = collisionsPrevious.riding;
         }
     }
 
@@ -202,7 +200,6 @@ public class ActorController : RaycastController
                             collisions.descendingSlope = true;
                             collisions.bellow = true;
                             collisions.groundNormal = hit.normal;
-                            collisions.riding = hit.collider;
                         }
                     }
                 }
@@ -260,7 +257,6 @@ public class ActorController : RaycastController
         collisions.slidingSlope = true;
         collisions.bellow = true;
         collisions.groundNormal = hit.normal;
-        collisions.riding = hit.collider;
     }
 
     private void GroundActor(ref Vector2 move)
@@ -291,7 +287,6 @@ public class ActorController : RaycastController
                         collisions.bellow = true;
                         collisions.slopeAngle = slopeAngle;
                         collisions.groundNormal = hit.normal;
-                        collisions.riding = hit.collider;
                         if (hit.normal.x != 0 && Mathf.Sign(hit.normal.x) == xSign) collisions.descendingSlope = true;
                     }
                 }
@@ -302,10 +297,9 @@ public class ActorController : RaycastController
 
     public bool LedgeGrab(float facing, bool checkOnly)
     {
-        float maxLegdeGrabRaySpacing = 0.05f;
         float floorOffset = 0.08f;
-        float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxLegdeGrabRaySpacing) + 2;
-        float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxLegdeGrabRaySpacing, Mathf.Infinity)
+        float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxRaySpacing) + 2;
+        float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxRaySpacing, Mathf.Infinity)
                                      / (hLedgeGrabRayCount - 1);
         hLedgeGrabRayCount += 2;
         float ledgeGrabRayLength = skinWidth + minFloorLength;
@@ -343,7 +337,6 @@ public class ActorController : RaycastController
                             transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
                         }
                     }
-                    collisions.riding = hit.collider;
                     return true;
                 }
                 else return false;
@@ -353,11 +346,6 @@ public class ActorController : RaycastController
         return false;
     }
 
-    public bool IsRiding(Collider2D collider)
-    {
-        return collisions.riding == collider;
-    }
-
     public struct CollisionInfo
     {
         public bool above, bellow, left, right;
@@ -365,7 +353,6 @@ public class ActorController : RaycastController
         public float slopeAngle;
         public Vector2 move;
         public Vector2 groundNormal;
-        public Collider2D riding;
 
         public void Reset()
         {
@@ -373,7 +360,6 @@ public class ActorController : RaycastController
             climbingSlope = descendingSlope = slidingSlope = false;
             slopeAngle = 0;
             groundNormal = Vector2.zero;
-            riding = null;
         }
     }
 }
