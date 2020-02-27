@@ -24,7 +24,7 @@ public class MenuLevels : MonoBehaviour
             totalLevels++;
         }
 
-        SetMenuLevelInfo(0);
+        //SetMenuLevelInfo(0);
 
         DestroyPreviousButtons();
 
@@ -50,6 +50,7 @@ public class MenuLevels : MonoBehaviour
         }
     }
 
+    //TODO : faire apparaitre les collectibles pris ou non jusqu'au prochain CP
     public void SetMenuLevelInfo(int level)
     {
         Chapter localCurrentChapter = GameManager.Instance.GetChapters()[GameManager.Instance.CurrentChapter];
@@ -57,10 +58,12 @@ public class MenuLevels : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
-        //ROMAIN TODO : changer pour prendre en compte les nouveaux tableaux pour différencier les collectibles
-        /*foreach (bool b in localCurrentChapter.GetLevels()[level].Collectibles)
+
+        List<KeyValuePair<string, bool>> collectiblesTaken = GetCollectibleToNextCheckPoint(level);
+
+        foreach (KeyValuePair<string, bool> kv in collectiblesTaken)
         {
-            if (b == true)
+            if (kv.Value)
             {
                 Instantiate(collectibleTaken, collectiblesPanel.transform);
             }
@@ -69,7 +72,37 @@ public class MenuLevels : MonoBehaviour
                 Instantiate(collectibleMissing, collectiblesPanel.transform);
             }
         }
-        */
+    }
+
+    /// <summary>
+    /// Returns a Dictionary<string, bool> containing all the collectibles between the current checkpoint and the next check point
+    /// </summary>
+    /// <returns></returns>
+    public List<KeyValuePair<string, bool>> GetCollectibleToNextCheckPoint(int level)
+    {
+        List<KeyValuePair<string, bool>> collectibles = new List<KeyValuePair<string, bool>>();
+        List<Level> ChapterLevels = GameManager.Instance.GetChapters()[GameManager.Instance.CurrentChapter].GetLevels();
+
+        //pour chaque tableau jusqu'au prochain checkpoint
+        do
+        {
+            //tout les colletibles de lumière du tableau
+            bool[] levelLightCollectibles = ChapterLevels[level].LightCollectibles;
+            foreach (bool b in levelLightCollectibles)
+            {
+                collectibles.Add(new KeyValuePair<string, bool>("light", b));
+            }
+
+            //tout les colletibles d'ombre du tableau
+            bool[] levelShadowtCollectibles = ChapterLevels[level].ShadowCollectibles;
+            foreach (bool b in levelShadowtCollectibles)
+            {
+                collectibles.Add(new KeyValuePair<string, bool>("shadow", b));
+            }
+            level++;
+        } while (!ChapterLevels[level].IsCheckpoint);
+
+        return collectibles;
     }
 
     public void DestroyPreviousButtons()
@@ -84,5 +117,4 @@ public class MenuLevels : MonoBehaviour
     {
         GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
     }
-
 }
