@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter), typeof(Rigidbody2D))]
 [RequireComponent(typeof(LightCollider))]
 public class NewLightSource : MonoBehaviour
 {
     public float lightRadius = 3.5f;
-    public Material lightMaterial;
+    private Material lightMaterial;
 
     private void Awake()
     {
@@ -15,6 +16,9 @@ public class NewLightSource : MonoBehaviour
 
     private void Start()
     {
+        lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple"));
+        lightMaterial.SetFloat("Vector1_F2B11630", lightRadius - 0.1f);
+        lightMaterial.SetColor("Color_5FF765E1", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
         UpdateMesh();
     }
 
@@ -26,7 +30,7 @@ public class NewLightSource : MonoBehaviour
 
     private void Update()
     {
-        if(!GetComponent<LightCollider>().GetStatic())
+        if (!GetComponent<LightCollider>().GetStatic())
             UpdateMesh();
     }
 
@@ -35,9 +39,9 @@ public class NewLightSource : MonoBehaviour
         Mesh m = GetComponent<LightCollider>().CreateMeshFromCollider();
         GetComponent<MeshFilter>().sharedMesh = m;
         GetComponent<MeshRenderer>().material = lightMaterial;
-
-        if(GetComponent<MeshRenderer>().material.HasProperty("_RippleDistance"))
-            GetComponent<MeshRenderer>().material.SetFloat("_RippleDistance", lightRadius - 0.1f);
+        lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple"));
+        lightMaterial.SetFloat("Vector1_F2B11630", lightRadius - 0.1f);
+        lightMaterial.SetColor("Color_5FF765E1", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -56,3 +60,4 @@ public class NewLightSource : MonoBehaviour
         }
     }
 }
+
