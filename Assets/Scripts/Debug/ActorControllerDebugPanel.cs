@@ -29,6 +29,13 @@ public class ActorControllerDebugPanel : MonoBehaviour
         {
             if (controllerInfos != null)
             {
+                string riding = "null";
+                if (actorController.collisions.riding != null)
+                    if (actorController.collisions.riding.name.Length > 13)
+                        riding = actorController.collisions.riding.name.Substring(0, 13);
+                    else
+                        riding = actorController.collisions.riding.name;
+
                 controllerInfos.text = string.Format(
                     controllerInfosTemplate,
                     actorController.collisions.move.x,
@@ -41,7 +48,8 @@ public class ActorControllerDebugPanel : MonoBehaviour
                     actorController.collisions.descendingSlope ? "X" : " ",
                     actorController.collisions.slidingSlope ? "X" : " ",
                     actorController.collisions.slopeAngle,
-                    actorController.collisionsPrevious.slopeAngle
+                    actorController.collisionsPrevious.slopeAngle,
+                    riding
                 );
             }
             if (collisionInfos != null)

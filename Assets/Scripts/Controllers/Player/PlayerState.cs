@@ -91,7 +91,7 @@ public class PlayerAirborne : IPlayerState
     public float coyoteTimer;
     public float coyoteDuration = 0.087f;
     public float lastLedgeGrabTimer;
-    public float lastLedgeGrabDuration = 0.1f;
+    public float lastLedgeGrabDuration = 0.07f;
     float stopJumpSpeed;
 
     public PlayerAirborne(bool jump, bool dropLedge, PlayerController player)
@@ -197,7 +197,7 @@ public class PlayerAirborne : IPlayerState
 
         if (lastLedgeGrabTimer >= lastLedgeGrabDuration)
         {
-            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.facing, player.velocity* Time.fixedDeltaTime))
+            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.facing, false))
             {
                 player.state = new PlayerLedgeGrab(player);
                 player.velocity = Vector2.zero;
@@ -257,6 +257,10 @@ public class PlayerLedgeGrab : IPlayerState
 
     public void Update(PlayerController player)
     {
-
+        if(!player.actor.LedgeGrab(player.facing, true))
+        {
+            player.state = new PlayerAirborne(false, true, player);
+            player.animator.SetTrigger("LedgeDrop");
+        }
     }
 }
