@@ -11,7 +11,6 @@ public class LevelManager : MonoBehaviour
     [Header("The id will automatically be set by the ChapterManager")]
     public int id;
     public CinemachineVirtualCamera virtualCamera;
-    public BoxCollider cameraCollider;
     public BoxCollider2D levelLimits;
 
     public List<GameObject> lightCollectibles = new List<GameObject>();
@@ -60,7 +59,26 @@ public class LevelManager : MonoBehaviour
 
             }
         }
-        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraCollider);
+
+        if (virtualCamera == null)
+        {
+            GameObject defaultVirtualCamera = Instantiate(new GameObject("Virtual Camera"), transform);
+            defaultVirtualCamera.AddComponent<CinemachineVirtualCamera>();
+            defaultVirtualCamera.AddComponent<CinemachineConfiner>();
+            virtualCamera = defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>();
+        }
+
+        if (levelLimits == null)
+        {
+            GameObject defaultLevelLimits = Instantiate(new GameObject("Level limits"), transform);
+            defaultLevelLimits.AddComponent<BoxCollider2D>();
+            levelLimits = defaultLevelLimits.GetComponent<BoxCollider2D>();
+        }
+
+        GameObject cameraConfiner = Instantiate(new GameObject("Camera Confiner"), transform);
+        cameraConfiner.AddComponent<BoxCollider>();
+
+        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>());
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
