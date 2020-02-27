@@ -23,12 +23,11 @@ public class Torch : ActivatorListener, IResetable
         lightSource = transform.Find("LightSource").gameObject;
         lightSource.GetComponent<NewLightSource>().lightRadius = 0f;
         pointLight = lightSource.transform.Find("PointLight").gameObject;
+        if (transform.parent.GetComponentInChildren<Lever>() != null) transform.parent.GetComponentInChildren<Lever>().activeAtStart = activeAtStart;
     }
 
     void Start()
     {
-        if (transform.parent.GetComponentInChildren<Lever>() != null) transform.parent.GetComponentInChildren<Lever>().activeAtStart = activeAtStart;
-
         audioSource = GetComponent<AudioSource>();
 
         if (activeAtStart)
