@@ -10,7 +10,8 @@ public class ActorControllerDebugPanel : MonoBehaviour
     private TextMeshProUGUI collisionInfos;
     private string collisionInfosTemplate;
 
-    private ActorController actorController;
+    [HideInInspector] public ActorController actorController;
+    public int playerId;
 
     private void Awake()
     {
@@ -22,6 +23,23 @@ public class ActorControllerDebugPanel : MonoBehaviour
 
         actorController = transform.parent.parent.GetComponent<ActorController>();
     }
+
+    private void OnEnable() {
+        PlayerInput[] players = GameObject.FindObjectsOfType<PlayerInput>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].id == playerId)
+            {
+                actorController = players[i].GetComponent<ActorController>();
+                break;
+            }
+        }
+    }
+
+    private void OnDisable() {
+        actorController = null;
+    }
+
 
     private void Update()
     {
@@ -58,6 +76,11 @@ public class ActorControllerDebugPanel : MonoBehaviour
                     actorController.collisionsPrevious.right ? "X" : "_"
                 );
             }
+        }
+        else
+        {
+            controllerInfos.text = "No actor " + playerId;
+            collisionInfos.text = "";
         }
     }
 }

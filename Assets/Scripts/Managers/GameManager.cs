@@ -38,7 +38,7 @@ public class GameManager : Singleton<GameManager>
 
         if (debuging && !debugCanvasExist)
         {
-            Instantiate((GameObject)Resources.Load("GMDebugCanvas"), Vector3.zero, Quaternion.identity, transform);
+            Instantiate((GameObject)Resources.Load("DebugCanvas"), Vector3.zero, Quaternion.identity, transform);
             debugCanvasExist = true;
         }
     }
