@@ -60,6 +60,7 @@ public class LevelManager : MonoBehaviour
 
             }
         }
+        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraCollider);
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level

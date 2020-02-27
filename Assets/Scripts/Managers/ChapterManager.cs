@@ -10,7 +10,6 @@ public class ChapterManager : MonoBehaviour
     private int currentLevel = 0; // indice du niveau actuel
 
     private float timeSinceBegin = 0;
-    public CameraTarget cameraTarget;
     private GameObject currentSpawns;
 
     private bool resetingLevel = false;
@@ -32,11 +31,6 @@ public class ChapterManager : MonoBehaviour
         }
 
         levels[currentLevel].virtualCamera.gameObject.SetActive(true);
-        cameraTarget.SetCameraLimits(
-            levels[currentLevel].levelLimits,
-            levels[currentLevel].virtualCamera,
-            levels[currentLevel].cameraCollider
-        );
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
@@ -149,12 +143,6 @@ public class ChapterManager : MonoBehaviour
 
         levels[newCurrentLevel].virtualCamera.gameObject.SetActive(true);
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
-
-        cameraTarget.SetCameraLimits(
-            levels[currentLevel].levelLimits,
-            levels[currentLevel].virtualCamera,
-            levels[currentLevel].cameraCollider
-        );
 
         currentLevel = newCurrentLevel;
 
