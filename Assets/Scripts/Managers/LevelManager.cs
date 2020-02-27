@@ -1,16 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class LevelManager : MonoBehaviour
 {
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     [ReadOnly]
-    #endif
+#endif
     [Header("The id will automatically be set by the ChapterManager")]
     public int id;
-    public Transform cameraLimitLB;
-    public Transform cameraLimitRT;
+    public CinemachineVirtualCamera virtualCamera;
+    public BoxCollider cameraCollider;
+    public BoxCollider2D levelLimits;
 
     public List<GameObject> lightCollectibles = new List<GameObject>();
     public List<GameObject> shadowCollectibles = new List<GameObject>();
@@ -111,7 +113,7 @@ public class LevelManager : MonoBehaviour
     public void SetCollectibles(bool[] lightCollectiblesTaken, bool[] shadowCollectibleTaken)
     {
         for (int i = 0; i < lightCollectibles.Count; i++)
-        { 
+        {
             if (i < lightCollectiblesTaken.Length)
             {
                 if (lightCollectibles[i].GetComponent<Collectible>() != null)
