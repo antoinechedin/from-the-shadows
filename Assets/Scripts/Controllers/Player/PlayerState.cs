@@ -55,23 +55,16 @@ public class PlayerStanding : IPlayerState
             player.animator.SetTrigger("Airborne");
         }
 
-        if (Mathf.Abs(player.input.moveAxis.x) + 0.1f < 0.7f || player.animator.GetFloat("RunSpeedMultiplier") < 0.3f)
-        {
-            if (player.velocity.x < 0)
-                player.animator.transform.eulerAngles = Vector3.up * -90;
-            else if (player.velocity.x > 0)
-                player.animator.transform.eulerAngles = Vector3.up * 90;
-
-            player.animator.ResetTrigger("Turn");
-        }
-
         // Speed Animation
         player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
     }
 
     public void FixedUpdate(PlayerController player)
     {
-
+        if (player.velocity.x < 0)
+            player.animator.transform.eulerAngles = Vector3.up * -90;
+        else if (player.velocity.x > 0)
+            player.animator.transform.eulerAngles = Vector3.up * 90;
     }
 }
 
@@ -194,7 +187,6 @@ public class PlayerAirborne : IPlayerState
 
     public void FixedUpdate(PlayerController player)
     {
-        // Orient Player
         if (player.velocity.x < 0)
             player.animator.transform.eulerAngles = Vector3.up * -90;
         else if (player.velocity.x > 0)

@@ -58,8 +58,6 @@ public class PlayerController : MonoBehaviour
             if (facing != 1)
             {
                 facing = 1;
-                animator.SetFloat("Facing", 1);
-                if (state is PlayerStanding) animator.SetTrigger("Turn");
             }
                 
         }
@@ -68,8 +66,6 @@ public class PlayerController : MonoBehaviour
             if (facing != -1)
             {
                 facing = -1;
-                animator.SetFloat("Facing", -1);
-                if (state is PlayerStanding) animator.SetTrigger("Turn");
             } 
         }
 
