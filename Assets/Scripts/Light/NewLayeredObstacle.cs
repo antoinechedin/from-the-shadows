@@ -56,7 +56,7 @@ public class NewLayeredObstacle : MonoBehaviour
     {
         foreach(NewLightSource nls in lightSources)
         {
-            if (!nls.GetComponent<LightCollider>().isStatic)
+            if (!nls.GetComponent<LightCollider>().GetStatic())
             {
                 UpdateCollider();
                 break;

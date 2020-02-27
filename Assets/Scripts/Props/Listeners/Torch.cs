@@ -23,17 +23,16 @@ public class Torch : ActivatorListener, IResetable
         lightSource = transform.Find("LightSource").gameObject;
         lightSource.GetComponent<NewLightSource>().lightRadius = 0f;
         pointLight = lightSource.transform.Find("PointLight").gameObject;
+        if (transform.parent.GetComponentInChildren<Lever>() != null) transform.parent.GetComponentInChildren<Lever>().activeAtStart = activeAtStart;
     }
 
     void Start()
     {
-        if (transform.parent.GetComponentInChildren<Lever>() != null) transform.parent.GetComponentInChildren<Lever>().activeAtStart = activeAtStart;
-
         audioSource = GetComponent<AudioSource>();
 
         if (activeAtStart)
         {
-            lightSource.GetComponent<NewLightSource>().lightRadius = targetRadius;
+            lightSource.GetComponent<NewLightSource>().lightRadius = 0f;
             OnActivate();
         }     
 
@@ -44,7 +43,7 @@ public class Torch : ActivatorListener, IResetable
     private void LateUpdate()
     {
         if (Mathf.Abs(targetRadius - lightSource.GetComponent<NewLightSource>().lightRadius) < 0.001f && !swinging)
-            lightSource.GetComponent<LightCollider>().isStatic = true;
+            lightSource.GetComponent<NewLightSource>().GoStatic();
 
         lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime*10);
         pointLight.GetComponent<Light>().range = lightSource.GetComponent<NewLightSource>().lightRadius * 4;
@@ -52,9 +51,9 @@ public class Torch : ActivatorListener, IResetable
 
     public override void OnActivate()
     {
-        lightSource.GetComponent<LightCollider>().isStatic = false;
-
+        lightSource.GetComponent<LightCollider>().SetStatic(false);
         targetRadius = lightRadius;
+
         active = true;
         if (audioSource != null && !isMute)
             audioSource.PlayOneShot(soundOn);
@@ -62,7 +61,7 @@ public class Torch : ActivatorListener, IResetable
 
     public override void OnDeactivate()
     {
-        lightSource.GetComponent<LightCollider>().isStatic = false;
+        lightSource.GetComponent<LightCollider>().SetStatic(false);
 
         targetRadius = 0.01f;
         active = false;
@@ -72,7 +71,7 @@ public class Torch : ActivatorListener, IResetable
 
     public void Reset()
     {
-        lightSource.GetComponent<LightCollider>().isStatic = false;
+        lightSource.GetComponent<LightCollider>().SetStatic(false);
 
         isMute = true;
         if (active && !activeAtStart)
