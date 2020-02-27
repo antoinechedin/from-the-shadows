@@ -53,12 +53,26 @@ public class PlayerController : MonoBehaviour
             velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
         }
 
-        if (velocity.x > 0) facing = 1;
-        else if (velocity.x < 0) facing = -1;
+        if (velocity.x > 0)
+        {
+            if (facing != 1)
+            {
+                facing = 1;
+            }
+                
+        }
+        else if (velocity.x < 0)
+        {
+            if (facing != -1)
+            {
+                facing = -1;
+            } 
+        }
 
+        state.Update(this);
+        state.FixedUpdate(this);
 
         actor.Move(velocity, Time.fixedDeltaTime);
-        state.Update(this);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,

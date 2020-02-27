@@ -6,6 +6,7 @@ public interface IPlayerState
 {
     void HandleInput(PlayerController player, PlayerInput input);
     void Update(PlayerController playerController);
+    void FixedUpdate(PlayerController playerController);
 }
 
 public class PlayerStanding : IPlayerState
@@ -23,9 +24,6 @@ public class PlayerStanding : IPlayerState
             float deceleration = player.settings.moveSpeed / player.settings.groundDecelerationTime;
             player.velocity.x = Mathf.MoveTowards(player.velocity.x, player.targetVelocity.x, deceleration * Time.deltaTime);
 
-
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
         }
 
         if (input.pressedJump)
@@ -39,9 +37,6 @@ public class PlayerStanding : IPlayerState
 
             // Set Animator Jump
             player.animator.SetTrigger("Jump");
-            player.animator.SetBool("Airborne", true);
-            player.animator.SetBool("Idle", false);
-            player.animator.SetBool("Running", false);
         }
     }
 
@@ -57,29 +52,19 @@ public class PlayerStanding : IPlayerState
             player.state = new PlayerAirborne(false, false, player);
 
             // Set Animator Airborne -> We are falling
-            player.animator.SetBool("Airborne", true);
+            player.animator.SetTrigger("Airborne");
         }
 
-        // Animator Run Idle
-        if (Mathf.Abs(player.targetVelocity.x) < 1.5f && player.input.moveAxis.x == 0)
-        {
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
-        }
-        else
-        {
-            player.animator.SetBool("Idle", false);
-            player.animator.SetBool("Running", true);
-        }
+        // Speed Animation
+        player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
+    }
 
-        // Orient Player
+    public void FixedUpdate(PlayerController player)
+    {
         if (player.velocity.x < 0)
             player.animator.transform.eulerAngles = Vector3.up * -90;
         else if (player.velocity.x > 0)
             player.animator.transform.eulerAngles = Vector3.up * 90;
-
-        // Speed Animation
-        player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x));
     }
 }
 
@@ -105,7 +90,6 @@ public class PlayerAirborne : IPlayerState
         if (jump || dropLedge)
         {
             canJump = false;
-
         }
 
         if (dropLedge) lastLedgeGrabTimer = 0;
@@ -137,7 +121,6 @@ public class PlayerAirborne : IPlayerState
 
                 // Set Animator Jump -> Simple Jump
                 player.animator.SetTrigger("Jump");
-                player.animator.SetBool("Airborne", true);
             }
             else if (canDoubleJump)
             {
@@ -148,7 +131,6 @@ public class PlayerAirborne : IPlayerState
 
                 // Set Animator Jump -> Simple Jump
                 player.animator.SetTrigger("Jump");
-                player.animator.SetBool("Airborne", true);
             }
         }
 
@@ -166,12 +148,6 @@ public class PlayerAirborne : IPlayerState
 
     public void Update(PlayerController player)
     {
-        // FIXME: Should not be here. Move it to FixedUpdate instead
-        // Orient Player
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;
 
         if (canJump)
         {
@@ -188,10 +164,8 @@ public class PlayerAirborne : IPlayerState
         {
             player.state = new PlayerStanding();
 
-            // Set Animator Airborne -> We are Landing
-            player.animator.SetBool("Airborne", false);
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
+            // Landing
+            player.animator.SetTrigger("Land");
             return;
         }
 
@@ -203,25 +177,20 @@ public class PlayerAirborne : IPlayerState
                 player.velocity = Vector2.zero;
 
                 player.animator.SetTrigger("LedgeGrab");
-                player.animator.SetBool("Airborne", false);
             }
         }
         else
         {
             lastLedgeGrabTimer += Time.deltaTime;
         }
+    }
 
-        // Animator Run Idle
-        // if (Mathf.Abs(player.velocity.x) < 1.1f)
-        // {
-        //     player.animator.SetBool("Idle", true);
-        //     player.animator.SetBool("Running", false);
-        // }
-        // else
-        // {
-        //     player.animator.SetBool("Idle", false);
-        //     player.animator.SetBool("Running", true);
-        // }
+    public void FixedUpdate(PlayerController player)
+    {
+        if (player.velocity.x < 0)
+            player.animator.transform.eulerAngles = Vector3.up * -90;
+        else if (player.velocity.x > 0)
+            player.animator.transform.eulerAngles = Vector3.up * 90;
     }
 }
 
@@ -251,7 +220,6 @@ public class PlayerLedgeGrab : IPlayerState
 
             // Set Animator Jump
             player.animator.SetTrigger("Jump");
-            player.animator.SetBool("Airborne", true);
         }
     }
 
@@ -262,5 +230,10 @@ public class PlayerLedgeGrab : IPlayerState
             player.state = new PlayerAirborne(false, true, player);
             player.animator.SetTrigger("LedgeDrop");
         }
+    }
+
+    public void FixedUpdate(PlayerController player)
+    {
+
     }
 }

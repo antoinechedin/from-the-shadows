@@ -18,17 +18,26 @@ public class NewLightSource : MonoBehaviour
         UpdateMesh();
     }
 
-    private void LateUpdate()
+    public void GoStatic()
     {
-        if(!GetComponent<LightCollider>().isStatic)
+        GetComponent<LightCollider>().SetStatic(true);
+        UpdateMesh();
+    }
+
+    private void Update()
+    {
+        if(!GetComponent<LightCollider>().GetStatic())
             UpdateMesh();
     }
 
-    private void UpdateMesh()
+    public void UpdateMesh()
     {
         Mesh m = GetComponent<LightCollider>().CreateMeshFromCollider();
         GetComponent<MeshFilter>().sharedMesh = m;
         GetComponent<MeshRenderer>().material = lightMaterial;
+
+        if(GetComponent<MeshRenderer>().material.HasProperty("_RippleDistance"))
+            GetComponent<MeshRenderer>().material.SetFloat("_RippleDistance", lightRadius - 0.1f);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
