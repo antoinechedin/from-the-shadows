@@ -3,46 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-public class ActorController : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public class ActorController : RaycastController
 {
-    public LayerMask collisionMask = 1 << 9;
+
     [HideInInspector] public float maxSlopeAngle = 60;
-
-    private const float skinWidth = 0.04f;
-
-    private const float maxRaySpacing = 0.05f;
 
     private float minFloorLength = 0.01f;
 
-
-    private int hRayCount;
-    private int vRayCount;
-    private float hRaySpacing;
-    private float vRaySpacing;
-
     private Rigidbody2D body;
-    private BoxCollider2D boxCollider;
-    private RaycastOrigins raycastOrigins;
-
     public CollisionInfo collisions;
     public CollisionInfo collisionsPrevious;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         body = GetComponent<Rigidbody2D>();
         body.bodyType = RigidbodyType2D.Dynamic;
-        boxCollider = GetComponent<BoxCollider2D>();
-        InitRaySpacing();
     }
 
     public void Move(Vector2 velocity, float deltaTime)
     {
+        Move(velocity * deltaTime);
+    }
+
+    public void Move(Vector2 move)
+    {
         UpdateRaycastOrigins();
         collisionsPrevious = collisions;
         collisions.Reset();
-
-        Vector2 move = velocity * deltaTime;
         collisionsPrevious.move = move;
 
         if (move.y < 0)
@@ -57,6 +46,9 @@ public class ActorController : MonoBehaviour
         {
             GroundActor(ref move);
         }
+
+        Transform parent = collisions.riding == null ? null : collisions.riding.transform;
+        transform.SetParent(parent, true);
 
         transform.Translate(move);
         collisions.move = move;
@@ -364,28 +356,9 @@ public class ActorController : MonoBehaviour
         return false;
     }
 
-    private void UpdateRaycastOrigins()
+    public bool IsRiding(Collider2D collider)
     {
-        this.raycastOrigins.bottomLeft = new Vector2(boxCollider.bounds.min.x, boxCollider.bounds.min.y);
-        this.raycastOrigins.bottomRight = new Vector2(boxCollider.bounds.max.x, boxCollider.bounds.min.y);
-        this.raycastOrigins.topLeft = new Vector2(boxCollider.bounds.min.x, boxCollider.bounds.max.y);
-        this.raycastOrigins.topRight = new Vector2(boxCollider.bounds.max.x, boxCollider.bounds.max.y);
-    }
-
-    private void InitRaySpacing()
-    {
-        float width = boxCollider.bounds.size.x;
-        float height = boxCollider.bounds.size.y;
-
-        this.hRayCount = Mathf.FloorToInt(height / maxRaySpacing) + 2;
-        this.vRayCount = Mathf.FloorToInt(width / maxRaySpacing) + 2;
-        this.hRaySpacing = height / (hRayCount - 1);
-        this.vRaySpacing = width / (vRayCount - 1);
-    }
-
-    struct RaycastOrigins
-    {
-        public Vector2 bottomLeft, bottomRight, topLeft, topRight;
+        return collisions.riding == collider;
     }
 
     public struct CollisionInfo
