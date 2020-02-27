@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class LevelManager : MonoBehaviour
 {
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     [ReadOnly]
-    #endif
+#endif
     [Header("The id will automatically be set by the ChapterManager")]
     public int id;
-    public Transform cameraLimitLB;
-    public Transform cameraLimitRT;
+    public CinemachineVirtualCamera virtualCamera;
+    public BoxCollider2D levelLimits;
 
     public List<GameObject> lightCollectibles = new List<GameObject>();
     public List<GameObject> shadowCollectibles = new List<GameObject>();
@@ -58,6 +59,26 @@ public class LevelManager : MonoBehaviour
 
             }
         }
+
+        if (virtualCamera == null)
+        {
+            GameObject defaultVirtualCamera = Instantiate(new GameObject("Virtual Camera"), transform);
+            defaultVirtualCamera.AddComponent<CinemachineVirtualCamera>();
+            defaultVirtualCamera.AddComponent<CinemachineConfiner>();
+            virtualCamera = defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>();
+        }
+
+        if (levelLimits == null)
+        {
+            GameObject defaultLevelLimits = Instantiate(new GameObject("Level limits"), transform);
+            defaultLevelLimits.AddComponent<BoxCollider2D>();
+            levelLimits = defaultLevelLimits.GetComponent<BoxCollider2D>();
+        }
+
+        GameObject cameraConfiner = Instantiate(new GameObject("Camera Confiner"), transform);
+        cameraConfiner.AddComponent<BoxCollider>();
+
+        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>());
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
@@ -111,7 +132,7 @@ public class LevelManager : MonoBehaviour
     public void SetCollectibles(bool[] lightCollectiblesTaken, bool[] shadowCollectibleTaken)
     {
         for (int i = 0; i < lightCollectibles.Count; i++)
-        { 
+        {
             if (i < lightCollectiblesTaken.Length)
             {
                 if (lightCollectibles[i].GetComponent<Collectible>() != null)

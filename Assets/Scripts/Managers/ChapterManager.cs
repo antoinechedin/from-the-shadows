@@ -1,15 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class ChapterManager : MonoBehaviour
 {
     public List<LevelManager> levels;
     public PauseMenu pauseMenu;
-    private int currentLevel = 0; //indice du niveau actuel
+    private int currentLevel = 0; // indice du niveau actuel
 
     private float timeSinceBegin = 0;
-    private LevelCamera levelCamera;
     private GameObject currentSpawns;
 
     private bool resetingLevel = false;
@@ -30,16 +30,13 @@ public class ChapterManager : MonoBehaviour
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
         }
 
-        levelCamera = Camera.main.GetComponent<LevelCamera>();
-        CreateEmptyCameraPoints();
-        levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
-        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2, false);
+        levels[currentLevel].virtualCamera.gameObject.SetActive(true);
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
 
         //collectibles
-        if(GameManager.Instance.CurrentChapter != -1)
+        if (GameManager.Instance.CurrentChapter != -1)
         {
             Level currentLvl = GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel];
             levels[currentLevel].SetCollectibles(currentLvl.LightCollectibles, currentLvl.ShadowCollectibles);
@@ -58,14 +55,6 @@ public class ChapterManager : MonoBehaviour
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
 
         // Position moyenne des deux joueurs
-
-        if (levelCamera.StayInLimits)
-        {
-            Vector3 meanPosition = new Vector3();
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            meanPosition = (players[0].transform.position + players[1].transform.position) / 2;
-            Camera.main.GetComponent<LevelCamera>().MoveTo(meanPosition);
-        }
 
         if (Input.GetButtonDown("Start_G"))
         {
@@ -144,24 +133,24 @@ public class ChapterManager : MonoBehaviour
     /// </summary>
     public void ChangeLevel(int newCurrentLevel)
     {
-        //Mise àjour des infos concernant le niveau courant
-        if(GameManager.Instance.CurrentChapter != -1)
+        // Mise à jour des infos concernant le niveau courant
+        if (GameManager.Instance.CurrentChapter != -1)
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
-        //on désactive le nouveau actuel et ses voisins
+        // On désactive le nouveau actuel et ses voisins
         levels[currentLevel].DisableLevel();
+
+        levels[newCurrentLevel].virtualCamera.gameObject.SetActive(true);
+        levels[currentLevel].virtualCamera.gameObject.SetActive(false);
 
         currentLevel = newCurrentLevel;
 
-        //On active la nouvelle room et ses voisins
+        // On active la nouvelle room et ses voisins
         levels[currentLevel].EnableLevel();
 
         CollectMetaData();
-        CreateEmptyCameraPoints();
-        levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
 
-        //collectibles
         if (GameManager.Instance.CurrentChapter != -1)
         {
             Level currentLvl = GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel];
@@ -189,7 +178,7 @@ public class ChapterManager : MonoBehaviour
             if (collectible.isPickedUp)
             {
                 collectible.isValidated = true;
-                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel,Collectible.Type.Light, go.transform.GetSiblingIndex());
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Light, go.transform.GetSiblingIndex());
             }
         }
 
@@ -202,22 +191,6 @@ public class ChapterManager : MonoBehaviour
                 collectible.isValidated = true;
                 GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, go.transform.GetSiblingIndex());
             }
-        }
-    }
-
-    public void CreateEmptyCameraPoints()
-    {
-        if (levels[currentLevel].cameraLimitLB == null)
-        {
-            GameObject emptyPoint = new GameObject();
-            emptyPoint.transform.position = new Vector3(-5f, 5f, -10f);
-            levels[currentLevel].cameraLimitLB = emptyPoint.transform;
-        }
-        if (levels[currentLevel].cameraLimitRT == null)
-        {
-            GameObject emptyPoint = new GameObject();
-            emptyPoint.transform.position = new Vector3(-5f, 5f, -10f);
-            levels[currentLevel].cameraLimitRT = emptyPoint.transform;
         }
     }
 
