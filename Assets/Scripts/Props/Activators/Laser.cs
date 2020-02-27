@@ -8,19 +8,17 @@ public class Laser : ActivatorListener
     private LineRenderer lineRenderer;
     private LayerMask collisionMask;
     private Vector3[] points;
-    private Vector3 position;
     private bool active;
 
     public float range = 100;
-    public int maxReflection = 0;
+    public int maxReflection = 5;
 
     // Use this for initialization
     void Start()
     {
-        points = new Vector3[maxReflection + 1];
+        points = new Vector3[maxReflection + 2];
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.positionCount = maxReflection + 2;
-        collisionMask = LayerMask.GetMask("LayeredSolid", "Solid", "Player");
+        collisionMask = LayerMask.GetMask("LayeredSolid", "Solid", "Player", "Reflector");
     }
 
     // Update is called once per frame
@@ -29,40 +27,61 @@ public class Laser : ActivatorListener
         if(active)
         {
             points[0] = transform.position;
-
-            CalculateRays();
-            DrawRays();
+            CalculateRays(transform.position, transform.right, 1);
         }
     }
 
-    void DrawRays()
+    void DrawRays(int nbPoints)
     {
-        for (int i=0; i< maxReflection + 1; i ++)
+        lineRenderer.positionCount = nbPoints;
+        for (int i = 0; i< nbPoints; i ++)
         {
-            if( points[i] != null)
+            lineRenderer.SetPosition(i, points[i]);
+        }
+    }
+
+    void CalculateRays(Vector3 point, Vector3 direction, int index)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(point, direction, range, collisionMask);
+        if (index >= maxReflection + 2)
+        {
+            DrawRays(index);
+        } 
+        else if (hit.collider != null && index < maxReflection + 2)
+        {
+            // Case where the laser reach something
+            points[index] = hit.point;
+            GameObject go = hit.collider.gameObject;
+            if (go.layer == LayerMask.NameToLayer("Reflector"))
             {
-                lineRenderer.SetPosition(i, points[i]);
+                // If it is a reflector : continue
+                Vector3 dir = hit.collider.gameObject.transform.right;
+                float angle = Vector3.Angle(-direction, dir);
+                if (angle > 91)
+                    dir = -dir;
+                CalculateRays(new Vector3(hit.point.x, hit.point.y, 0) + (dir * 0.15f), dir, index + 1);
+            }
+            else if (go.GetComponent<Receptor>() != null)
+            {
+                // If it is a receptor : stop
+                DrawRays(index + 1);
+            }
+            else
+            {
+                // If it is an obstacle : stop
+                DrawRays(index + 1);
             }
         }
-    }
-
-    void CalculateRays()
-    {
-        for (int i = 1; i < maxReflection + 2; i++)
+        else
         {
-            RaycastHit2D hit = Physics2D.Raycast(points[i-1], transform.right, range, collisionMask);
-
-            if (hit.collider)
-                lineRenderer.SetPosition(i, hit.point);
-            else
-                lineRenderer.SetPosition(i, transform.position + (transform.right * range));
+            points[index] = point + (direction * range);
+            // Case where the laser doesn't touch anything
         }
     }
 
     public override void OnActivate()
     {
         if(!active){
-            lineRenderer.positionCount = maxReflection + 2;
             active = true;
         }
     }
@@ -71,11 +90,12 @@ public class Laser : ActivatorListener
     {
         if(active){
             active = false;
-            ClearLineRenderer();
+            Clear();
         }
     }
 
-    private void ClearLineRenderer(){;
+    private void Clear(){;
         lineRenderer.positionCount = 0;
+        points = new Vector3[maxReflection + 2];
     }
 }
