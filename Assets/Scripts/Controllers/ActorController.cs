@@ -340,17 +340,20 @@ public class ActorController : MonoBehaviour
                     rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
                     rayOrigin += Vector2.up * (collisions.move.y);
                     rayOrigin += Vector2.right * collisions.move.x;
-                    rayOrigin += Vector2.right * facing * skinWidth;
+                    rayOrigin += Vector2.right * facing * (hit.distance + minFloorLength);
 
-                    RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
-                    if (!checkOnly && floorHit)
+                    if (!checkOnly)
                     {
-                        if (floorHit.normal.y < Mathf.Sin(45f * Mathf.Deg2Rad)) return false;
-                        if (floorHit.distance < floorOffset) return false;
-                        
-                        transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
-                    }
+                        RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+                        if (floorHit)
+                        {
+                            Debug.DrawRay(rayOrigin, Vector2.down * floorHit.distance, Color.magenta);
+                            if (Mathf.Sign(floorHit.normal.x) != facing && floorHit.normal.y < Mathf.Sin(maxSlopeAngle * Mathf.Deg2Rad)) return false;
+                            if (floorHit.distance < floorOffset) return false;
 
+                            transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
+                        }
+                    }
                     collisions.riding = hit.collider;
                     return true;
                 }
