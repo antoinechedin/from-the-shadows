@@ -47,9 +47,6 @@ public class ActorController : RaycastController
             GroundActor(ref move);
         }
 
-        Transform parent = collisions.riding == null ? null : collisions.riding.transform;
-        transform.SetParent(parent, true);
-
         transform.Translate(move);
         collisions.move = move;
     }
