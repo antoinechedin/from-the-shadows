@@ -13,7 +13,7 @@ public class RaycastController : MonoBehaviour
     protected int vRayCount;
     protected float hRaySpacing;
     protected float vRaySpacing;
-    protected BoxCollider2D boxCollider;
+    [HideInInspector] public BoxCollider2D boxCollider;
     protected RaycastOrigins raycastOrigins;
 
     protected virtual void Awake()
