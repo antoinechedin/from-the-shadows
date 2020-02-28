@@ -11,6 +11,9 @@ public class MenuLevels : MonoBehaviour
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
 
+    //test refonte UI
+    public List<GameObject> screenshots;
+
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
     {
         int nbCompleted = 0;
@@ -28,6 +31,8 @@ public class MenuLevels : MonoBehaviour
 
         DestroyPreviousButtons();
 
+
+        //TODO : Remplacer ça par la création des images des niveaux
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
             int levelNumber = i;
@@ -47,6 +52,50 @@ public class MenuLevels : MonoBehaviour
                 }
                 if (i == 0) EventSystem.current.SetSelectedGameObject(button.gameObject);
             }
+        }
+    }
+
+    public void SelectNextLevel()
+    {
+        //TODO : detecter les bounds if i > screenshots.Count etc....
+
+
+
+        foreach (GameObject go in screenshots) //pour chaque carte
+        {
+            StartCoroutine(SelectNextLevelAsync(go));
+        }
+    }
+
+    public IEnumerator SelectNextLevelAsync(GameObject go)
+    {
+        float moveDistance = 1000; //TODO : mettre en public (incrément de distance pour le déplacement des screenshots = distance entre chaque screenShots)
+        float speed = 20f; //TODO : mettre en public
+
+        int cpt = 0;
+        RectTransform rt = go.GetComponent<RectTransform>();
+        Vector3 destination = new Vector3(rt.localPosition.x - moveDistance, rt.localPosition.y, rt.localPosition.z);
+        while (Vector3.Distance(rt.localPosition, destination) > 0.1f && cpt < 1000)
+        {
+            rt.localPosition = Vector3.Lerp(rt.localPosition, destination, speed * Time.deltaTime);
+            cpt++;
+            yield return null;
+        }
+        rt.localPosition = destination;
+    }
+
+    public void SizeWithDistance()
+    {
+        foreach (GameObject go in screenshots)
+        {
+            Vector3 pos = go.GetComponent<RectTransform>().localPosition;
+            float minSize = 0.2f; //TODO : mettre ne public
+            float maxSize = 1.5f; //TODO : mettre en public
+            float distanceToMinSize = 1000; //TODO : mettre ne public
+
+            float finalSize = maxSize - (Mathf.Abs(pos.x) / distanceToMinSize);
+            finalSize = Mathf.Clamp(finalSize, minSize, maxSize);
+            go.transform.localScale = new Vector3(finalSize, finalSize, 1);
         }
     }
 
@@ -78,7 +127,7 @@ public class MenuLevels : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a Dictionary<string, bool> containing all the collectibles between the current checkpoint and the next check point
+    /// Returns a List<KeyValuePair<string, bool>> containing all the collectibles between the current checkpoint and the next check point
     /// </summary>
     /// <returns></returns>
     public List<KeyValuePair<string, bool>> GetCollectibleToNextCheckPoint(int level)

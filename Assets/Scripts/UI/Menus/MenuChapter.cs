@@ -10,9 +10,6 @@ public class MenuChapter : MonoBehaviour
     public MenuLevels menuLevels;
     public List<Button> chapterButtons;
     public Text levelLabel;
-    public Text lightCollectibleNumber;
-    public Text shadowCollectibleNumber;
-    public Text completedNumber;
     public GameObject chapterButtonsPanel;
     public RectTransform thisPanel;
     public RectTransform saveMenu;
@@ -26,7 +23,6 @@ public class MenuChapter : MonoBehaviour
     private bool chapterMenuIsOpen = false;
     private bool statsOpen = false;
     private int localIndexCurrentChapter;
-    private TextMeshProUGUI currentChapterName;
 
     private List<string> chaptersName;
 
@@ -45,12 +41,16 @@ public class MenuChapter : MonoBehaviour
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
-        currentChapterName = menuCamera.cursor.transform.Find("Chapter Label").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
     {
-        currentChapterName.text = chaptersName[localIndexCurrentChapter];
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            menuLevels.SelectNextLevel();
+        }
+        menuLevels.SizeWithDistance();
+
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
@@ -139,9 +139,6 @@ public class MenuChapter : MonoBehaviour
                 }
 
                 levelLabel.text = chaptersName[localIndexCurrentChapter];
-                lightCollectibleNumber.text = nbLightCollectibleTaken + "/" + totalNbLightCollectible;
-                shadowCollectibleNumber.text = nbShadowCollectibleTaken + "/" + totalNbShadowCollectible;
-                completedNumber.text = nbCompleted + "/" + totalLevel;
                 menuChapterAnimator.SetBool("open", true);
                 menuCamera.SetZoom(true);
                 GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
