@@ -11,6 +11,8 @@ public interface IPlayerState
 
 public class PlayerStanding : IPlayerState
 {
+
+    public bool turning = false;
     public void HandleInput(PlayerController player, PlayerInput input)
     {
         player.targetVelocity = input.moveAxis * player.settings.moveSpeed;
@@ -57,14 +59,19 @@ public class PlayerStanding : IPlayerState
 
         // Speed Animation
         player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
+        player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
+        if (!turning && Mathf.Abs(player.velocity.x) > 1 && player.input.moveAxis.x != 0 && Mathf.Sign(player.input.moveAxis.x) != player.facing){
+            player.animator.SetTrigger("turn");
+            turning = true;
+        }
     }
 
     public void FixedUpdate(PlayerController player)
     {
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
+         if (player.facing == 1)
             player.animator.transform.eulerAngles = Vector3.up * 90;
+        else
+            player.animator.transform.eulerAngles = Vector3.up * -90;
     }
 }
 
@@ -187,10 +194,10 @@ public class PlayerAirborne : IPlayerState
 
     public void FixedUpdate(PlayerController player)
     {
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
+        if (player.facing == 1)
             player.animator.transform.eulerAngles = Vector3.up * 90;
+        else
+            player.animator.transform.eulerAngles = Vector3.up * -90;
     }
 }
 
