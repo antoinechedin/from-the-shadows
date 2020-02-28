@@ -9,7 +9,7 @@ public class MenuLevels : MonoBehaviour
     public GridLayoutGroup buttonsGroup;
     public HorizontalLayoutGroup collectiblesPanel;
     public LevelButton levelButtonPrefab;
-    public GameObject collectibleTaken, collectibleMissing; // Prefabs
+    public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
 
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
     {
@@ -50,7 +50,6 @@ public class MenuLevels : MonoBehaviour
         }
     }
 
-    //TODO : faire apparaitre les collectibles pris ou non jusqu'au prochain CP
     public void SetMenuLevelInfo(int level)
     {
         Chapter localCurrentChapter = GameManager.Instance.GetChapters()[GameManager.Instance.CurrentChapter];
@@ -63,9 +62,13 @@ public class MenuLevels : MonoBehaviour
 
         foreach (KeyValuePair<string, bool> kv in collectiblesTaken)
         {
-            if (kv.Value)
+            if (kv.Key == "light" && kv.Value)
             {
-                Instantiate(collectibleTaken, collectiblesPanel.transform);
+                Instantiate(collectibleLight, collectiblesPanel.transform);
+            }
+            else if (kv.Key == "shadow" && kv.Value)
+            {
+                Instantiate(collectibleShadow, collectiblesPanel.transform);
             }
             else
             {
