@@ -10,12 +10,27 @@ public class MenuLevels : MonoBehaviour
     public HorizontalLayoutGroup collectiblesPanel;
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
+    public GameObject levelScreenshotsParent;
 
-    //test refonte UI
-    public List<GameObject> screenshots;
+    [Header("Carousel")]
+    [SerializeField]
+    private List<LevelScreenshot> screenshots = new List<LevelScreenshot>();
+    public float distanceBetweenScreenshots;
+    [Range(0.0f, 3.0f)]
+    [Tooltip("The minimum size when a level is not selected")]
+    public float minSize;
+    [Range(0.0f, 3.0f)]
+    [Tooltip("The size multiplier of the selected level")]
+    public float maxSize;
+    [Tooltip("The speed of the carousel")]
+    public float speed;
+    [SerializeField]
+    private int currentSelectedLevel = 0;
 
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
     {
+        ResetScreenshots();
+        
         int nbCompleted = 0;
         int totalLevels = 0;
 
@@ -27,76 +42,51 @@ public class MenuLevels : MonoBehaviour
             totalLevels++;
         }
 
-        //SetMenuLevelInfo(0);
+        SetMenuLevelInfo(0);
 
-        DestroyPreviousButtons();
-
-
-        //TODO : Remplacer ça par la création des images des niveaux
+        int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
-            int levelNumber = i;
             if (levels[i].IsCheckpoint)
             {
-                GameObject button = Instantiate(levelButtonPrefab.gameObject, buttonsGroup.transform);
-                button.transform.Find("Text").GetComponent<Text>().text = "" + (i + 1);
-                button.GetComponent<Button>().onClick.AddListener(delegate
-                {
-                    LevelButtonClicked(new LoadingChapterInfo(levelNumber));
-                });
-                button.GetComponent<LevelButton>().menuLevels = this;
-                button.GetComponent<LevelButton>().levelNumber = levelNumber;
-                if (levelNumber > 0 && !chapter.GetLevels()[levelNumber - 1].Completed)
-                {
-                    button.GetComponent<Button>().interactable = false;
-                }
-                if (i == 0) EventSystem.current.SetSelectedGameObject(button.gameObject);
+                //TODO : aller chercher le bon srceenshot
+                GameObject levelScreenshot = Resources.Load("LevelScreenshots/Level0Card") as GameObject;
+                LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshot, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
+                spawnedScreenshot.LevelIndex = i;
+                spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
+                screenshots.Add(spawnedScreenshot.GetComponent<LevelScreenshot>());
+
+                nbLevelSpawned++;
             }
         }
     }
 
     public void SelectNextLevel()
     {
-        //TODO : detecter les bounds if i > screenshots.Count etc....
-
-
-
-        foreach (GameObject go in screenshots) //pour chaque carte
+        if (currentSelectedLevel < screenshots.Count - 1)
         {
-            StartCoroutine(SelectNextLevelAsync(go));
+            foreach (LevelScreenshot go in screenshots)
+            {
+                go.SetNewDestination(new Vector3(-1000, 0, 0));
+            }
+            currentSelectedLevel++;
         }
+
+        SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
     }
 
-    public IEnumerator SelectNextLevelAsync(GameObject go)
+    public void SelectPreviousLevel()
     {
-        float moveDistance = 1000; //TODO : mettre en public (incrément de distance pour le déplacement des screenshots = distance entre chaque screenShots)
-        float speed = 20f; //TODO : mettre en public
-
-        int cpt = 0;
-        RectTransform rt = go.GetComponent<RectTransform>();
-        Vector3 destination = new Vector3(rt.localPosition.x - moveDistance, rt.localPosition.y, rt.localPosition.z);
-        while (Vector3.Distance(rt.localPosition, destination) > 0.1f && cpt < 1000)
+        if (currentSelectedLevel > 0)
         {
-            rt.localPosition = Vector3.Lerp(rt.localPosition, destination, speed * Time.deltaTime);
-            cpt++;
-            yield return null;
+            foreach (LevelScreenshot go in screenshots)
+            {
+                go.SetNewDestination(new Vector3(1000, 0, 0));
+            }
+            currentSelectedLevel--;
         }
-        rt.localPosition = destination;
-    }
 
-    public void SizeWithDistance()
-    {
-        foreach (GameObject go in screenshots)
-        {
-            Vector3 pos = go.GetComponent<RectTransform>().localPosition;
-            float minSize = 0.2f; //TODO : mettre ne public
-            float maxSize = 1.5f; //TODO : mettre en public
-            float distanceToMinSize = 1000; //TODO : mettre ne public
-
-            float finalSize = maxSize - (Mathf.Abs(pos.x) / distanceToMinSize);
-            finalSize = Mathf.Clamp(finalSize, minSize, maxSize);
-            go.transform.localScale = new Vector3(finalSize, finalSize, 1);
-        }
+        SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
     }
 
     public void SetMenuLevelInfo(int level)
@@ -152,17 +142,19 @@ public class MenuLevels : MonoBehaviour
                 collectibles.Add(new KeyValuePair<string, bool>("shadow", b));
             }
             level++;
-        } while (!ChapterLevels[level].IsCheckpoint);
+        } while ( level < ChapterLevels.Count && !ChapterLevels[level].IsCheckpoint);
 
         return collectibles;
     }
 
-    public void DestroyPreviousButtons()
+    public void ResetScreenshots()
     {
-        foreach (Transform child in buttonsGroup.transform)
+        foreach (LevelScreenshot child in screenshots)
         {
             GameObject.Destroy(child.gameObject);
         }
+        screenshots = new List<LevelScreenshot>();
+        currentSelectedLevel = 0;
     }
 
     private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo)

@@ -45,11 +45,14 @@ public class MenuChapter : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             menuLevels.SelectNextLevel();
         }
-        menuLevels.SizeWithDistance();
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            menuLevels.SelectPreviousLevel();
+        }
 
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
@@ -71,7 +74,7 @@ public class MenuChapter : MonoBehaviour
                     menuChapterAnimator.SetBool("open", false);
                 }
                 menuCamera.SetZoom(false);
-                menuLevels.DestroyPreviousButtons();
+                //menuLevels.DestroyPreviousButtons();
             }
             else if (!chapterMenuIsOpen)
             {
@@ -140,7 +143,7 @@ public class MenuChapter : MonoBehaviour
 
                 levelLabel.text = chaptersName[localIndexCurrentChapter];
                 menuChapterAnimator.SetBool("open", true);
-                menuCamera.SetZoom(true);
+                menuCam era.SetZoom(true);
                 GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
                 menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
             }
