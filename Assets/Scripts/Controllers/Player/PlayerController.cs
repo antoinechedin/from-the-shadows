@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public IPlayerState state;
     public Vector2 targetVelocity;
     public Vector2 velocity;
+    public int facing;
 
     public bool dead = false;
     public bool dying = false;
@@ -26,12 +27,12 @@ public class PlayerController : MonoBehaviour
         state = new PlayerStanding();
         animator = GetComponentInChildren<Animator>();
         animator.SetBool("Light", input.doubleJump);
+        facing = 1;
     }
 
     private void Update()
     {
         state.HandleInput(this, input);
-        state.Update(this);
     }
 
     private void FixedUpdate()
@@ -42,32 +43,41 @@ public class PlayerController : MonoBehaviour
                 velocity.y = 0;
         }
 
-        velocity.y -= settings.gravity * Time.deltaTime;
-        velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
+        if (state is PlayerLedgeGrab)
+        {
+            velocity.y = 0;
+        }
+        else
+        {
+            velocity.y -= settings.gravity * Time.deltaTime;
+            velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
+        }
+
+        if (velocity.x > 0)
+        {
+            if (facing != 1)
+            {
+                facing = 1;
+            }
+                
+        }
+        else if (velocity.x < 0)
+        {
+            if (facing != -1)
+            {
+                facing = -1;
+            } 
+        }
 
         actor.Move(velocity, Time.fixedDeltaTime);
-        UpdateSpriteColor();
+
+        state.FixedUpdate(this);
+        state.Update(this);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
             actor.collisions.move.magnitude
         );
-    }
-
-    private void UpdateSpriteColor()
-    {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            if (actor.collisions.bellow)
-            {
-                sr.color = Color.green;
-            }
-            else
-            {
-                sr.color = Color.blue;
-            }
-        }
     }
 
     public void Die()
@@ -79,5 +89,17 @@ public class PlayerController : MonoBehaviour
             dead = true;
             GameObject.FindObjectOfType<ChapterManager>().ResetLevel(input.id);
         }
+    }
+
+    public void SpawnAt(Vector3 position)
+    {
+        transform.position = position;
+        state = new PlayerStanding();
+        velocity = Vector2.zero;
+        targetVelocity = Vector2.zero;
+        facing = 1;
+
+        animator.Rebind();
+        animator.SetBool("Light", input.doubleJump);
     }
 }

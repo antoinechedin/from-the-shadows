@@ -12,12 +12,18 @@ public class Level
     [SerializeField]
     private bool completed = false; //indicates wether the level as been completed or not
     [SerializeField]
-    private bool[] collectibles;
+    private bool[] shadowCollectibles;
+    [SerializeField]
+    private bool[] lightCollectibles;
+    [SerializeField]
+    private bool isCheckpoint;
 
-    public Level(bool completed, bool[] collect)
+    public Level(bool completed, bool[] lightCollect, bool[] shadowCollect, bool isCheckpoint)
     {
         this.completed = completed;
-        collectibles = collect;
+        shadowCollectibles = shadowCollect;
+        lightCollectibles = lightCollect;
+        this.isCheckpoint = isCheckpoint;
     }
 
     public bool Completed
@@ -26,16 +32,33 @@ public class Level
         set { completed = value; }
     }
 
-    public bool[] Collectibles
+    public bool[] LightCollectibles
     {
-        get { return collectibles; }
-        set { collectibles = value; }
+        get { return lightCollectibles; }
+        set { lightCollectibles = value; }
+    }
+
+    public bool[] ShadowCollectibles
+    {
+        get { return shadowCollectibles; }
+        set { shadowCollectibles = value; }
+    }
+
+    public bool IsCheckpoint
+    {
+        get { return isCheckpoint; }
+        set { isCheckpoint = value; }
     }
 
     public string PrintLevel()
     {
         string res = "level: " + completed +", collectibles : ";
-        foreach (bool b in collectibles)
+        foreach (bool b in lightCollectibles)
+        {
+            res += b.ToString() + " ";
+        }
+
+        foreach (bool b in shadowCollectibles)
         {
             res += b.ToString() + " ";
         }

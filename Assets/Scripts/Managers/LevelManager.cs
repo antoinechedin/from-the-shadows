@@ -1,21 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class LevelManager : MonoBehaviour
 {
+#if UNITY_EDITOR
+    [ReadOnly]
+#endif
+    [Header("The id will automatically be set by the ChapterManager")]
     public int id;
+    public CinemachineVirtualCamera virtualCamera;
 
-    public Transform cameraLimitLB;
-    public Transform cameraLimitRT;
-
-    public List<GameObject> collectibles = new List<GameObject>();
+    public List<GameObject> lightCollectibles = new List<GameObject>();
+    public List<GameObject> shadowCollectibles = new List<GameObject>();
     public List<GameObject> playerSpawns;
 
     public List<GameObject> objectsToDisable; //objects that needs to be disabled when the player isn't in the level
     [Header("Put in roomsToEnable all the neighbors of the room")]
     public List<LevelManager> roomsToEnable;
 
+    private BoxCollider2D levelLimits;
+    private GameObject cameraConfiner;
 
     private void Awake()
     {
@@ -34,7 +40,45 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
+
+        // Crée une camera par défaut si aucune n'est renseignée. Préférez référencer celle en prefab
+
+        if (virtualCamera == null)
+        {
+            GameObject defaultVirtualCamera = new GameObject("Virtual Camera");
+            defaultVirtualCamera.AddComponent<CinemachineVirtualCamera>();
+            defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().AddCinemachineComponent<CinemachineFramingTransposer>();
+            defaultVirtualCamera.AddComponent<CinemachineConfiner>();
+            defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 20;
+            defaultVirtualCamera.GetComponent<CinemachineConfiner>().m_ConfineMode = CinemachineConfiner.Mode.Confine3D;
+            Vector3 rotationVector = defaultVirtualCamera.transform.rotation.eulerAngles;
+            rotationVector.x = 6;
+            defaultVirtualCamera.transform.rotation = Quaternion.Euler(rotationVector);
+            virtualCamera = defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>();
+            virtualCamera.gameObject.SetActive(false);
+            virtualCamera.transform.SetParent(transform);
+            Debug.Log("Virtual Camera is not set. Create a default one.");
+        }
+        else
+        {
+            virtualCamera = Instantiate(virtualCamera, transform);
+            virtualCamera.gameObject.SetActive(false);
+        }
+
+        levelLimits = gameObject.GetComponent<BoxCollider2D>();
+
+        if (levelLimits == null)
+        {
+            gameObject.AddComponent<BoxCollider2D>();
+            levelLimits = gameObject.GetComponent<BoxCollider2D>();
+            Debug.LogWarning("Levels limits is not set.");
+        }
+
+        cameraConfiner = new GameObject("Camera Confiner");
+        cameraConfiner.AddComponent<BoxCollider>();
+        cameraConfiner.transform.SetParent(transform);
     }
+
     public void Start()
     {
         // Fetch collectibles
@@ -43,11 +87,19 @@ public class LevelManager : MonoBehaviour
         {
             for (int i = 0; i < parentCollectibles.childCount; i++)
             {
-                collectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                if (parentCollectibles.GetChild(i).GetComponent<Collectible>().type == Collectible.Type.Light)
+                {
+                    lightCollectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                }
+                else if (parentCollectibles.GetChild(i).GetComponent<Collectible>().type == Collectible.Type.Shadow)
+                {
+                    shadowCollectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                }
+
             }
         }
 
-
+        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>());
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
@@ -60,10 +112,6 @@ public class LevelManager : MonoBehaviour
             if (level != null)
             {
                 level.gameObject.SetActive(false);
-            }
-            else
-            {
-                Debug.LogWarning("WARN : roomsToEnable list contains a null variable");
             }
         }
     }
@@ -82,10 +130,6 @@ public class LevelManager : MonoBehaviour
             {
                 level.gameObject.SetActive(true);
                 level.SetObjectToDisable(false);
-            }
-            else
-            {
-                Debug.LogWarning("WARN : roomsToEnable list contains a null variable");
             }
         }
     }
@@ -106,16 +150,28 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public void SetCollectibles(bool[] collectiblesTaken)
+    public void SetCollectibles(bool[] lightCollectiblesTaken, bool[] shadowCollectibleTaken)
     {
-        for (int i = 0; i < collectibles.Count; i++)
+        for (int i = 0; i < lightCollectibles.Count; i++)
         {
-            if (i < collectiblesTaken.Length)
+            if (i < lightCollectiblesTaken.Length)
             {
-                if (collectibles[i].GetComponent<Collectible>() != null)
+                if (lightCollectibles[i].GetComponent<Collectible>() != null)
                 {
-                    collectibles[i].GetComponent<Collectible>().isValidated = collectiblesTaken[i];
-                    collectibles[i].GetComponent<Collectible>().UpdateState();
+                    lightCollectibles[i].GetComponent<Collectible>().isValidated = lightCollectiblesTaken[i];
+                    lightCollectibles[i].GetComponent<Collectible>().UpdateState();
+                }
+            }
+        }
+
+        for (int i = 0; i < shadowCollectibles.Count; i++)
+        {
+            if (i < shadowCollectibleTaken.Length)
+            {
+                if (shadowCollectibles[i].GetComponent<Collectible>() != null)
+                {
+                    shadowCollectibles[i].GetComponent<Collectible>().isValidated = shadowCollectibleTaken[i];
+                    shadowCollectibles[i].GetComponent<Collectible>().UpdateState();
                 }
             }
         }
