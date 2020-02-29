@@ -9,6 +9,7 @@ public class Laser : ActivatorListener
     private LayerMask collisionMask;
     private Vector3[] points;
     private bool active;
+    private Receptor toDeactivate;
 
     public float range = 100;
     public int maxReflection = 5;
@@ -52,7 +53,14 @@ public class Laser : ActivatorListener
             // Case where the laser reach something
             points[index] = hit.point;
             GameObject go = hit.collider.gameObject;
-            if (go.layer == LayerMask.NameToLayer("Reflector"))
+            if (go.GetComponent<Receptor>() != null)
+            {
+                // If it is a receptor : stop and activate
+                DrawRays(index + 1);
+                go.GetComponent<Receptor>().On();
+                toDeactivate = go.GetComponent<Receptor>();
+            } 
+            else if (go.layer == LayerMask.NameToLayer("Reflector"))
             {
                 // If it is a reflector : continue
                 Vector3 dir = hit.collider.gameObject.transform.right;
@@ -61,21 +69,20 @@ public class Laser : ActivatorListener
                     dir = -dir;
                 CalculateRays(new Vector3(hit.point.x, hit.point.y, 0) + (dir * 0.15f), dir, index + 1);
             }
-            else if (go.GetComponent<Receptor>() != null)
-            {
-                // If it is a receptor : stop and activate
-                DrawRays(index + 1);
-            }
             else
             {
                 // If it is an obstacle : stop
                 DrawRays(index + 1);
+                if (toDeactivate != null)
+                    toDeactivate.Off();
             }
         }
         else
         {
-            points[index] = point + (direction * range);
             // Case where the laser doesn't touch anything
+            points[index] = point + (direction * range);
+            if (toDeactivate != null)
+                toDeactivate.Off();            
         }
     }
 
