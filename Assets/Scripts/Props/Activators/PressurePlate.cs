@@ -8,13 +8,11 @@ public class PressurePlate : Activator
     public AudioClip sound;
     public Material activeMat;
     public Material inactiveMat;
-    public bool hasTimer;
-    public float timer;
-    public int nbObjectsOnPlate;
     public string tagInteractObject;
 
     private GameObject child;
     private AudioSource audioSource;
+    private int nbObjectsOnPlate;
 
     private void Start()
     {
@@ -59,7 +57,6 @@ public class PressurePlate : Activator
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
-            CancelInvoke();
         }
     }
 
@@ -85,10 +82,7 @@ public class PressurePlate : Activator
             On();
         if(nbObjectsOnPlate == 0)
         {
-            if (hasTimer)
-                Invoke("Off", timer);
-            else
-                Off();
+            Off();
         }
     }    
 }
