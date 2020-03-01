@@ -69,10 +69,10 @@ public class PlayerController : MonoBehaviour
             } 
         }
 
-        state.Update(this);
-        state.FixedUpdate(this);
-
         actor.Move(velocity, Time.fixedDeltaTime);
+
+        state.FixedUpdate(this);
+        state.Update(this);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,

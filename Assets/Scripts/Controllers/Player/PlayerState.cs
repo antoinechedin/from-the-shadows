@@ -225,7 +225,7 @@ public class PlayerLedgeGrab : IPlayerState
 
     public void Update(PlayerController player)
     {
-        if(!player.actor.LedgeGrab(player.facing, true))
+        if (!player.actor.LedgeGrab(player.facing, true))
         {
             player.state = new PlayerAirborne(false, true, player);
             player.animator.SetTrigger("LedgeDrop");
