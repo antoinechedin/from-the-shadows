@@ -63,11 +63,18 @@ public class Laser : ActivatorListener
             else if (go.layer == LayerMask.NameToLayer("Reflector"))
             {
                 // If it is a reflector : continue
-                Vector3 dir = hit.collider.gameObject.transform.right;
+                Vector3 dir = Vector3.Reflect(-direction, hit.collider.transform.up);
                 float angle = Vector3.Angle(-direction, dir);
-                if (angle > 91)
-                    dir = -dir;
-                CalculateRays(new Vector3(hit.point.x, hit.point.y, 0) + (dir * 0.15f), dir, index + 1);
+                if (angle != 180)
+                {
+                    CalculateRays(new Vector3(hit.point.x, hit.point.y, 0) + (dir * 0.15f), dir, index + 1);
+                } else
+                {
+                    // Case where the laser is parallele to the reflector
+                    DrawRays(index + 1);
+                    if (toDeactivate != null)
+                        toDeactivate.Off();
+                }                
             }
             else
             {
