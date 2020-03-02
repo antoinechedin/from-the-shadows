@@ -45,15 +45,6 @@ public class MenuChapter : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            menuLevels.SelectNextLevel();
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            menuLevels.SelectPreviousLevel();
-        }
-
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
@@ -143,7 +134,7 @@ public class MenuChapter : MonoBehaviour
 
                 levelLabel.text = chaptersName[localIndexCurrentChapter];
                 menuChapterAnimator.SetBool("open", true);
-                menuCam era.SetZoom(true);
+                menuCamera.SetZoom(true);
                 GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
                 menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
             }

@@ -24,8 +24,34 @@ public class MenuLevels : MonoBehaviour
     public float maxSize;
     [Tooltip("The speed of the carousel")]
     public float speed;
-    [SerializeField]
+    [Tooltip("time between every possible change (prevents to go too fast if you hold)")]
+    public float repeatDelay;
+
     private int currentSelectedLevel = 0;
+
+    private float timeCpt = 0;
+
+    private void Update()
+    {
+        timeCpt += Time.deltaTime;
+
+        float moveX = Input.GetAxis("Horizontal_G");
+
+        if (timeCpt >= repeatDelay) //pour pas spam trop vite
+        {
+            if (moveX > 0.3f)
+            {
+                timeCpt = 0;
+                SelectNextLevel();
+            }
+            else if (moveX < -0.3f)
+            {
+                SelectPreviousLevel();
+                timeCpt = 0;
+            }
+        }
+
+    }
 
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
     {
@@ -47,18 +73,24 @@ public class MenuLevels : MonoBehaviour
         int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
-            if (levels[i].IsCheckpoint)
+            if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
             {
                 //TODO : aller chercher le bon srceenshot
-                GameObject levelScreenshot = Resources.Load("LevelScreenshots/Level0Card") as GameObject;
+                GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot") as GameObject;
+                levelScreenshot.name = i.ToString();
                 LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshot, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
+                spawnedScreenshot.GetComponent<Button>().onClick.AddListener(delegate
+                {
+                    LevelButtonClicked(new LoadingChapterInfo(i), spawnedScreenshot);
+                });
                 spawnedScreenshot.LevelIndex = i;
                 spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
-                screenshots.Add(spawnedScreenshot.GetComponent<LevelScreenshot>());
+                screenshots.Add(spawnedScreenshot);
 
                 nbLevelSpawned++;
             }
         }
+        EventSystem.current.SetSelectedGameObject(screenshots[0].gameObject);
     }
 
     public void SelectNextLevel()
@@ -157,8 +189,10 @@ public class MenuLevels : MonoBehaviour
         currentSelectedLevel = 0;
     }
 
-    private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo)
+    private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
     {
         GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+        //jouer son
+
     }
 }
