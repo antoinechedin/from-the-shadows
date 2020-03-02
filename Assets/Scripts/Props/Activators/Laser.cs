@@ -99,6 +99,8 @@ public class Laser : ActivatorListener
             active = false;
             Clear();
         }
+        if (toDeactivate != null)
+            toDeactivate.Off();
     }
 
     private void Clear(){;
