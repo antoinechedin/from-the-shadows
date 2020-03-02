@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PreBossWall : MonoBehaviour, IResetable
 {
+    public GameObject trigger;
+
     public bool isHorizontal = true;
     public bool isQuaranteCinqDegre = false;
 
@@ -12,16 +14,26 @@ public class PreBossWall : MonoBehaviour, IResetable
     public float endingSpeed = 5f;
     public float timeToReachMaxSpeed = 10f;
 
+    private float baseEndingSpeed;
+    private float baseTimeToReachMaxSpeed;
     private float t = 0.0f;
 
 
     private Vector3 basePosition;
     private void Start()
     {
+        baseEndingSpeed = endingSpeed;
+        baseTimeToReachMaxSpeed = timeToReachMaxSpeed;
         basePosition = this.transform.position;
     }
     void Update()
     {
+        if(trigger.GetComponent<PreBossTrigger>().triggered)
+        {
+            timeToReachMaxSpeed = trigger.GetComponent<PreBossTrigger>().newTimetoReachMaxSpeed;
+            endingSpeed = trigger.GetComponent<PreBossTrigger>().newEndingSpeed;
+        }
+
         actualSpeed = Mathf.Lerp(startingSpeed, endingSpeed, t);
         t += (1 / timeToReachMaxSpeed) * Time.deltaTime;
 
@@ -36,6 +48,8 @@ public class PreBossWall : MonoBehaviour, IResetable
     public void Reset()
     {
         actualSpeed = startingSpeed;
+        endingSpeed = baseEndingSpeed;
+        timeToReachMaxSpeed = baseTimeToReachMaxSpeed;
         t = 0.0f;
         this.transform.position = basePosition;
     }
