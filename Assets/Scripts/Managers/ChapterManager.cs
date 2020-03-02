@@ -145,6 +145,8 @@ public class ChapterManager : MonoBehaviour
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
 
         currentLevel = newCurrentLevel;
+        
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         // On active la nouvelle room et ses voisins
         levels[currentLevel].EnableLevel();

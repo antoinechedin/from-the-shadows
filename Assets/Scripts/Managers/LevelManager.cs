@@ -11,6 +11,8 @@ public class LevelManager : MonoBehaviour
     [Header("The id will automatically be set by the ChapterManager")]
     public int id;
     public CinemachineVirtualCamera virtualCamera;
+    public float maxCameraDepth = 35f;
+    public Vector2 cameraOffset;
 
     public List<GameObject> lightCollectibles = new List<GameObject>();
     public List<GameObject> shadowCollectibles = new List<GameObject>();
@@ -99,7 +101,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>());
+        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>(), maxCameraDepth);
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
