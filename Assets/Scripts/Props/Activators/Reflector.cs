@@ -10,6 +10,7 @@ public class Reflector : MonoBehaviour, IResetable
     private Quaternion currentRotation;
 
     public float angleRotation = 22.5f;
+    public float speedRotation = 5;
 
     public void Start()
     {
@@ -67,7 +68,7 @@ public class Reflector : MonoBehaviour, IResetable
 
 
         if (transform.parent.rotation != currentRotation)
-            transform.parent.rotation = Quaternion.Lerp(transform.parent.rotation, currentRotation, Time.deltaTime * 2);
+            transform.parent.rotation = Quaternion.Lerp(transform.parent.rotation, currentRotation, Time.deltaTime * speedRotation);
     }
 
     public void Rotate(float angle){
