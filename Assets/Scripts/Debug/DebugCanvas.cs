@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class DebugCanvas : MonoBehaviour
 {
+    private bool active = false;
+
     void Update()
     {
-        foreach (Transform child in transform)
+        if (GameManager.Instance.Debuging != active)
         {
-            child.gameObject.SetActive(GameManager.Instance.Debuging);
+            active = GameManager.Instance.Debuging;
+            foreach (Transform child in transform)
+            {
+                child.gameObject.SetActive(active);
+            }
         }
     }
 }

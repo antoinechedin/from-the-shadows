@@ -3,46 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-public class ActorController : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public class ActorController : RaycastController
 {
-    public LayerMask collisionMask = 1 << 9;
+
     [HideInInspector] public float maxSlopeAngle = 60;
-
-    private const float skinWidth = 0.04f;
-
-    private const float maxRaySpacing = 0.05f;
 
     private float minFloorLength = 0.01f;
 
-
-    private int hRayCount;
-    private int vRayCount;
-    private float hRaySpacing;
-    private float vRaySpacing;
-
     private Rigidbody2D body;
-    private BoxCollider2D boxCollider;
-    private RaycastOrigins raycastOrigins;
-
     public CollisionInfo collisions;
     public CollisionInfo collisionsPrevious;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         body = GetComponent<Rigidbody2D>();
         body.bodyType = RigidbodyType2D.Dynamic;
-        boxCollider = GetComponent<BoxCollider2D>();
-        InitRaySpacing();
     }
 
     public void Move(Vector2 velocity, float deltaTime)
     {
+        Move(velocity * deltaTime);
+    }
+
+    public void Move(Vector2 move)
+    {
         UpdateRaycastOrigins();
         collisionsPrevious = collisions;
         collisions.Reset();
-
-        Vector2 move = velocity * deltaTime;
         collisionsPrevious.move = move;
 
         if (move.y < 0)
@@ -138,7 +127,6 @@ public class ActorController : MonoBehaviour
                 {
                     collisions.bellow = true;
                     collisions.groundNormal = hit.normal;
-                    collisions.riding = hit.collider;
                 }
                 else
                 {
@@ -180,7 +168,6 @@ public class ActorController : MonoBehaviour
             collisions.climbingSlope = true;
             collisions.slopeAngle = slopeAngle;
             collisions.groundNormal = slopeNormal;
-            collisions.riding = collisionsPrevious.riding;
         }
     }
 
@@ -213,7 +200,6 @@ public class ActorController : MonoBehaviour
                             collisions.descendingSlope = true;
                             collisions.bellow = true;
                             collisions.groundNormal = hit.normal;
-                            collisions.riding = hit.collider;
                         }
                     }
                 }
@@ -271,7 +257,6 @@ public class ActorController : MonoBehaviour
         collisions.slidingSlope = true;
         collisions.bellow = true;
         collisions.groundNormal = hit.normal;
-        collisions.riding = hit.collider;
     }
 
     private void GroundActor(ref Vector2 move)
@@ -302,7 +287,6 @@ public class ActorController : MonoBehaviour
                         collisions.bellow = true;
                         collisions.slopeAngle = slopeAngle;
                         collisions.groundNormal = hit.normal;
-                        collisions.riding = hit.collider;
                         if (hit.normal.x != 0 && Mathf.Sign(hit.normal.x) == xSign) collisions.descendingSlope = true;
                     }
                 }
@@ -313,10 +297,9 @@ public class ActorController : MonoBehaviour
 
     public bool LedgeGrab(float facing, bool checkOnly)
     {
-        float maxLegdeGrabRaySpacing = 0.05f;
         float floorOffset = 0.08f;
-        float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxLegdeGrabRaySpacing) + 2;
-        float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxLegdeGrabRaySpacing, Mathf.Infinity)
+        float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxRaySpacing) + 2;
+        float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxRaySpacing, Mathf.Infinity)
                                      / (hLedgeGrabRayCount - 1);
         hLedgeGrabRayCount += 2;
         float ledgeGrabRayLength = skinWidth + minFloorLength;
@@ -340,18 +323,20 @@ public class ActorController : MonoBehaviour
                     rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
                     rayOrigin += Vector2.up * (collisions.move.y);
                     rayOrigin += Vector2.right * collisions.move.x;
-                    rayOrigin += Vector2.right * facing * skinWidth;
+                    rayOrigin += Vector2.right * facing * (hit.distance + minFloorLength);
 
-                    RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
-                    if (!checkOnly && floorHit)
+                    if (!checkOnly)
                     {
-                        if (floorHit.normal.y < Mathf.Sin(45f * Mathf.Deg2Rad)) return false;
-                        if (floorHit.distance < floorOffset) return false;
-                        
-                        transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
-                    }
+                        RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+                        if (floorHit)
+                        {
+                            Debug.DrawRay(rayOrigin, Vector2.down * floorHit.distance, Color.magenta);
+                            if (Mathf.Sign(floorHit.normal.x) != facing && floorHit.normal.y < Mathf.Sin(maxSlopeAngle * Mathf.Deg2Rad)) return false;
+                            if (floorHit.distance < floorOffset) return false;
 
-                    collisions.riding = hit.collider;
+                            transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
+                        }
+                    }
                     return true;
                 }
                 else return false;
@@ -361,30 +346,6 @@ public class ActorController : MonoBehaviour
         return false;
     }
 
-    private void UpdateRaycastOrigins()
-    {
-        this.raycastOrigins.bottomLeft = new Vector2(boxCollider.bounds.min.x, boxCollider.bounds.min.y);
-        this.raycastOrigins.bottomRight = new Vector2(boxCollider.bounds.max.x, boxCollider.bounds.min.y);
-        this.raycastOrigins.topLeft = new Vector2(boxCollider.bounds.min.x, boxCollider.bounds.max.y);
-        this.raycastOrigins.topRight = new Vector2(boxCollider.bounds.max.x, boxCollider.bounds.max.y);
-    }
-
-    private void InitRaySpacing()
-    {
-        float width = boxCollider.bounds.size.x;
-        float height = boxCollider.bounds.size.y;
-
-        this.hRayCount = Mathf.FloorToInt(height / maxRaySpacing) + 2;
-        this.vRayCount = Mathf.FloorToInt(width / maxRaySpacing) + 2;
-        this.hRaySpacing = height / (hRayCount - 1);
-        this.vRaySpacing = width / (vRayCount - 1);
-    }
-
-    struct RaycastOrigins
-    {
-        public Vector2 bottomLeft, bottomRight, topLeft, topRight;
-    }
-
     public struct CollisionInfo
     {
         public bool above, bellow, left, right;
@@ -392,7 +353,6 @@ public class ActorController : MonoBehaviour
         public float slopeAngle;
         public Vector2 move;
         public Vector2 groundNormal;
-        public Collider2D riding;
 
         public void Reset()
         {
@@ -400,7 +360,6 @@ public class ActorController : MonoBehaviour
             climbingSlope = descendingSlope = slidingSlope = false;
             slopeAngle = 0;
             groundNormal = Vector2.zero;
-            riding = null;
         }
     }
 }

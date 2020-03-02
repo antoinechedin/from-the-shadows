@@ -47,9 +47,7 @@ public class ChapterUtility : MonoBehaviour
         }
     }
 
-    [ReadOnly] public Camera mainCam;
     [ReadOnly] public int countLevel;
-    [ReadOnly] public int countCameraPoint;
     [ReadOnly] public int countLevelTrigger;
     [ReadOnly] public int countInvisibleWall;
 
@@ -62,7 +60,7 @@ public class ChapterUtility : MonoBehaviour
         return lm1.id.CompareTo(lm2.id);
     }
     /// <summary>
-    /// Fill the list of Transform for CameraPoints / LevelTriggers / Invisible Walls
+    /// Fill the list of Transform for LevelTriggers / Invisible Walls
     /// </summary>
     public void LevelScriptInit()
     {
@@ -70,9 +68,6 @@ public class ChapterUtility : MonoBehaviour
         levelTrigger.Clear();
         invisibleWall.Clear();
         levels.Clear();
-
-        // Get Reference to Camera
-        mainCam = Camera.main;
 
         // Level Count
         GameObject[] levelsGo = GameObject.FindGameObjectsWithTag("CU Level");
@@ -102,59 +97,16 @@ public class ChapterUtility : MonoBehaviour
 
         // Get Some Infos about the Datas collected (Count)
         countLevel = levels.Count;
-        countCameraPoint = countLevel;
         countLevelTrigger = levelTrigger.Count;
         countInvisibleWall = invisibleWall.Count;
     }
 
-    // Set the Main Camera to the Camera Point LB
-    public void GoToCameraPointLB(int id)
-    {
-        LevelManager lm = levels[id].GetComponent<LevelManager>();
-        mainCam.transform.position = lm.cameraLimitLB.position;
-    }
-
-    // Set the Main Camera to the Camera Point RT
-    public void GoToCameraPointRT(int id)
-    {
-        LevelManager lm = levels[id].GetComponent<LevelManager>();
-        mainCam.transform.position = lm.cameraLimitRT.position;
-    }
-
-    // Set the Camera Point from the Main Camera Position LB
-    public void SetCameraPointLB(int id)
-    {
-        LevelManager lm = levels[id].GetComponent<LevelManager>();
-        lm.cameraLimitLB.position = mainCam.transform.position;
-    }
-
-    // Set the Camera Point from the Main Camera Position RT
-    public void SetCameraPointRT(int id)
-    {
-        LevelManager lm = levels[id].GetComponent<LevelManager>();
-        lm.cameraLimitRT.position = mainCam.transform.position;
-    }
-
     /// <summary>
-    /// Display Custom Icons for CameraPoints & Colors for LevelTriggers / InvisibleWalls
+    /// Display Custom Icons for Colors for LevelTriggers / InvisibleWalls
     /// </summary>
     
     void OnDrawGizmos()
     {
-        // CameraPoints Custom Icons + Number
-        int i = 0;
-        foreach(LevelManager lm in levels)
-        {
-            i++;
-            GUI.color = Color.white;
-            Vector3 lb = lm.cameraLimitLB.position;
-            Vector3 rt = lm.cameraLimitRT.position;
-            Vector3 mean = (lb + rt) / 2;
-            Gizmos.DrawWireCube(mean, rt-lb);
-            Handles.Label(mean + 0.6f*Vector3.right, i.ToString());
-            Gizmos.DrawIcon(mean, "Camera2.png", true);
-        }
-
         // LevelTrigger Red Collider + Number
         foreach (Identifier<BoxCollider2D> box in levelTrigger)
         {
