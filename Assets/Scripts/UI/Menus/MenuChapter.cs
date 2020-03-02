@@ -57,6 +57,7 @@ public class MenuChapter : MonoBehaviour
             // Close the chapter
             else if (chapterMenuIsOpen)
             {
+               menuLevels.enabled = false;
                 chapterMenuIsOpen = false;
                 chapterButtonsPanel.SetActive(true);
                 metaDataIcon.gameObject.SetActive(true);
@@ -66,12 +67,10 @@ public class MenuChapter : MonoBehaviour
                     menuChapterAnimator.SetBool("open", false);
                 }
                 menuCamera.SetZoom(false);
-                //menuLevels.DestroyPreviousButtons();
             }
             else if (!chapterMenuIsOpen)
             {
                 menuCamera.SetReturnToSavesMenu(true);
-                gameObject.transform.position += new Vector3(605, 0, 0);
                 menuManager.OpenSaveMenu();
             }
         }
@@ -80,7 +79,7 @@ public class MenuChapter : MonoBehaviour
         {
             DisplayStatistics();
         }
-    }
+    }  
 
     public void DisplayStatistics()
     {
@@ -98,6 +97,7 @@ public class MenuChapter : MonoBehaviour
         int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         if (!chapterMenuIsOpen)
         {
+            menuLevels.enabled = true;
             chapterMenuIsOpen = true;
             chapterButtonsPanel.SetActive(false);
             metaDataIcon.gameObject.SetActive(false);
