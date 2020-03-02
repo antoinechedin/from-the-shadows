@@ -104,7 +104,10 @@ public class MenuLevels : MonoBehaviour
             currentSelectedLevel++;
         }
 
-        SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
+        if (screenshots.Count != 0)
+        {
+            SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
+        }
     }
 
     public void SelectPreviousLevel()
@@ -118,7 +121,10 @@ public class MenuLevels : MonoBehaviour
             currentSelectedLevel--;
         }
 
-        SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
+        if (screenshots.Count != 0)
+        {
+            SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
+        }
     }
 
     public void SetMenuLevelInfo(int level)
@@ -189,10 +195,13 @@ public class MenuLevels : MonoBehaviour
         currentSelectedLevel = 0;
     }
 
-    private static void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
+    private void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
     {
+        //load la scene
         GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
-        //jouer son
+        //animation
+        StartCoroutine(screenshot.PressedAnimation());
+        //jouer le son
 
     }
 }

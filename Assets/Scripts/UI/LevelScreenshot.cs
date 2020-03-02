@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class LevelScreenshot : MonoBehaviour
 {
     private RectTransform rt;
@@ -11,6 +12,8 @@ public class LevelScreenshot : MonoBehaviour
     public int levelIndex; //the index of the IG level
 
     private MenuLevels menuLevels;
+    private bool pressed = false;
+    private AudioSource audioSource;
 
     public int LevelIndex
     {
@@ -20,6 +23,8 @@ public class LevelScreenshot : MonoBehaviour
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         menuLevels = GameObject.FindObjectOfType<MenuLevels>();
         rt = GetComponent<RectTransform>();
 
@@ -29,7 +34,10 @@ public class LevelScreenshot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleScaling();
+        if (!pressed)
+        {
+            HandleScaling();
+        }
 
         if (destinationChanged)
         {
@@ -68,5 +76,32 @@ public class LevelScreenshot : MonoBehaviour
         float finalSize = menuLevels.maxSize - (Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots);
         finalSize = Mathf.Clamp(finalSize, menuLevels.minSize, menuLevels.maxSize);
         transform.localScale = startScale * new Vector3(finalSize, finalSize, 1);
+    }
+
+    public void Pressed()
+    {
+        StartCoroutine(PressedAnimation());
+    }
+
+    public IEnumerator PressedAnimation()
+    {
+        audioSource.Play();
+        pressed = true;
+
+        float timeCount = 0;
+        while (timeCount < 0.10f)
+        {
+            transform.localScale *= 1.03f;
+            timeCount += Time.deltaTime;
+            yield return null;
+        }
+
+        timeCount = 0;
+        while (timeCount < 0.10f)
+        {
+            transform.localScale /= 1.03f;
+            timeCount += Time.deltaTime;
+            yield return null;
+        }
     }
 }

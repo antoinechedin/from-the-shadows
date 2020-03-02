@@ -45,6 +45,7 @@ public class MenuChapter : MonoBehaviour
 
     void Update()
     {
+
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
