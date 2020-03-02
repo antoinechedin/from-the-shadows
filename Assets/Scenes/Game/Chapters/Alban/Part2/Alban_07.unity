@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -4650,10 +4650,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9662a3fdd5767240b61b401ac31cd6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxOffsetY: 0
-  distanceMaxOffset: 10
-  distanceMinOffset: 4
-  offsetY: 0
 --- !u!114 &1588252729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5448,6 +5444,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1808789413}
   - component: {fileID: 1808789414}
+  - component: {fileID: 1808789415}
   m_Layer: 0
   m_Name: Level7
   m_TagString: CU Level
@@ -5488,6 +5485,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   virtualCamera: {fileID: 0}
+  maxCameraDepth: 35
+  cameraOffset: {x: 0, y: 0}
   lightCollectibles: []
   shadowCollectibles: []
   playerSpawns:
@@ -5496,6 +5495,32 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 1331512281}
   roomsToEnable: []
+--- !u!61 &1808789415
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808789412}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 3.000002, y: 10}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 44.053593, y: 21}
+  m_EdgeRadius: 0
 --- !u!1001 &1876070759
 PrefabInstance:
   m_ObjectHideFlags: 0
