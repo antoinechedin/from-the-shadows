@@ -18,11 +18,6 @@ public class Reflector : MonoBehaviour, IResetable
         currentRotation = startRotation;
     }
 
-    //void Update()
-    //{
-         //  transform.parent.rotation = Quaternion.Lerp(start, end, (Mathf.Sin(currentTime * speed + Mathf.PI / 2) + 1f) / 2f);
-    //}
-
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -66,9 +61,7 @@ public class Reflector : MonoBehaviour, IResetable
             Rotate(-angleRotation); 
         }
 
-
-        if (transform.parent.rotation != currentRotation)
-            transform.parent.rotation = Quaternion.Lerp(transform.parent.rotation, currentRotation, Time.deltaTime * speedRotation);
+        transform.parent.rotation = Quaternion.Lerp(transform.parent.rotation, currentRotation, Time.deltaTime * speedRotation);
     }
 
     public void Rotate(float angle){

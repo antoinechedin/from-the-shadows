@@ -18,9 +18,8 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    public void ProcessCameraConfiner(BoxCollider2D limits, CinemachineVirtualCamera virtualCamera, BoxCollider newCollider)
+    public void ProcessCameraConfiner(BoxCollider2D limits, CinemachineVirtualCamera virtualCamera, BoxCollider newCollider, float maxCamDepth)
     {
-        float maxCamDepth = 35;
         float frameAspectRatio = (float)Screen.width / (float)Screen.height;
         float cameraDistance = Mathf.Abs(virtualCamera.transform.position.z);
         float frameHeight = cameraDistance * 2f * Mathf.Tan(virtualCamera.m_Lens.FieldOfView * Mathf.Deg2Rad / 2f);
