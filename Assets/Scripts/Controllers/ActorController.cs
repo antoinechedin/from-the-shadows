@@ -301,7 +301,7 @@ public class ActorController : RaycastController
         float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxRaySpacing) + 2;
         float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxRaySpacing, Mathf.Infinity)
                                      / (hLedgeGrabRayCount - 1);
-        hLedgeGrabRayCount += 2;
+        hLedgeGrabRayCount += 5;
         float ledgeGrabRayLength = skinWidth + minFloorLength;
 
         for (int i = 0; i < hLedgeGrabRayCount; i++)
@@ -334,6 +334,7 @@ public class ActorController : RaycastController
                             if (Mathf.Sign(floorHit.normal.x) != facing && floorHit.normal.y < Mathf.Sin(maxSlopeAngle * Mathf.Deg2Rad)) return false;
                             if (floorHit.distance < floorOffset) return false;
 
+                            Debug.Log("Grabbed");
                             transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
                         }
                     }
