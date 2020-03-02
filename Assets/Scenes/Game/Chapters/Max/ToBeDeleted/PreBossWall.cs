@@ -35,6 +35,8 @@ public class PreBossWall : MonoBehaviour, IResetable
 
     public void Reset()
     {
+        actualSpeed = startingSpeed;
+        t = 0.0f;
         this.transform.position = basePosition;
     }
 }
