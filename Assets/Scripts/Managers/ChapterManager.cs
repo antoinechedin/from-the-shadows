@@ -31,6 +31,7 @@ public class ChapterManager : MonoBehaviour
         }
 
         levels[currentLevel].virtualCamera.gameObject.SetActive(true);
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
