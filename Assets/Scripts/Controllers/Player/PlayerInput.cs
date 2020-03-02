@@ -12,6 +12,7 @@ public class PlayerInput : MonoBehaviour
     public bool active = true;
     
     public Vector2 moveAxis;
+    [HideInInspector] public float xMoveAxisSign = 1f;
     public bool pressedJump;
     public bool releasedJump;
 
@@ -41,5 +42,8 @@ public class PlayerInput : MonoBehaviour
             if (pressUp) moveAxis.y += 1;
             if (pressDown) moveAxis.y -= 1;
         }
+
+        if(moveAxis.x > 0) xMoveAxisSign = 1;
+        else if(moveAxis.x <0) xMoveAxisSign = -1;
     }
 }
