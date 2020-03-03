@@ -10,11 +10,17 @@ public class Skeleton : MonoBehaviour
     void Start()
     {
         animator = transform.Find("SkeletonFBX").gameObject.GetComponent<Animator>();
-        Invoke("TriggerAttack", 3);
+        Invoke("TriggerAttackLeft", 4);
+        Invoke("TriggerAttackRight", 10);
     }
 
-    public void TriggerAttack()
+    public void TriggerAttackLeft()
     {
-        animator.SetTrigger("HorizontalAttack");
+        animator.SetTrigger("AttackLeft");
+    }
+
+    public void TriggerAttackRight()
+    {
+        animator.SetTrigger("AttackRight");
     }
 }
