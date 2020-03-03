@@ -31,33 +31,24 @@ public class LevelScreenshot : MonoBehaviour
 
         startScale = rt.localScale;
         destination = rt.localPosition;
+
+        HandleScaling();
     }
     // Update is called once per frame
     void Update()
     {
-        if (!pressed)
-        {
-            HandleScaling();
-        }
-
-            if (Vector3.Distance(rt.localPosition, destination) > 0.1f)
-            {
-                rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed);
-            }
-            else
-            {
-                destinationChanged = false;
-            }
-    }
-
-    public IEnumerator Move()
-    {
-        while (Vector3.Distance(rt.localPosition, destination) > 0.1f)
+        if (Vector3.Distance(rt.localPosition, destination) > 0.1f)
         {
             rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed);
-            yield return null;
+            if (!pressed)
+            {
+                HandleScaling();
+            }
         }
-        rt.localPosition = destination;
+        else
+        {
+            destinationChanged = false;
+        }
     }
 
     /// <summary>
