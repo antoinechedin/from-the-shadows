@@ -60,6 +60,7 @@ public class PlayerStanding : IPlayerState
         // Speed Animation
         //player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
         player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
+        player.animator.SetFloat("speed", Mathf.Abs(player.velocity.x));
 
         if (Mathf.Abs(player.velocity.x) > 0 && player.input.moveAxis.x != 0 && Mathf.Sign(player.input.moveAxis.x) != player.xVelocitySign)
         {
@@ -167,6 +168,7 @@ public class PlayerAirborne : IPlayerState
             player.animator.transform.eulerAngles = Vector3.up * -90;
 
         player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
+        player.animator.SetFloat("speed", Mathf.Abs(player.velocity.x));
 
         if (canJump)
         {
@@ -190,7 +192,7 @@ public class PlayerAirborne : IPlayerState
 
         if (lastLedgeGrabTimer >= lastLedgeGrabDuration)
         {
-            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.xVelocitySign, false))
+            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.input.xMoveAxisSign, false))
             {
                 player.state = new PlayerLedgeGrab(player);
                 player.velocity = Vector2.zero;
