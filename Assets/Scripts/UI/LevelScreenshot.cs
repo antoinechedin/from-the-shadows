@@ -70,11 +70,6 @@ public class LevelScreenshot : MonoBehaviour
         transform.localScale = startScale * new Vector3(finalSize, finalSize, 1);
     }
 
-    public void Pressed()
-    {
-        StartCoroutine(PressedAnimation());
-    }
-
     public IEnumerator PressedAnimation()
     {
         audioSource.Play();

@@ -32,33 +32,32 @@ public class MenuLevels : MonoBehaviour
     private int currentSelectedLevel = 0;
 
     private float timeCpt = 0;
+    private bool pressed = false;
 
     private void Update()
     {
-        timeCpt += Time.deltaTime;
-        float moveX = Input.GetAxis("Horizontal_G");
-
-        if (Mathf.Abs(moveX) < stickDeadZone)
+        if (!pressed) //pour disable les contrôle si on a press un bouton
         {
-            timeCpt = repeatDelay;
-        }
+            timeCpt += Time.deltaTime;
+            float moveX = Input.GetAxis("Horizontal_G");
 
-        if (timeCpt >= repeatDelay) //pour pas spam trop vite
-        {
-            if (moveX > stickDeadZone)
-            {
-                SelectNextLevel();
-            }
-            else if (moveX < -stickDeadZone)
-            {
-                SelectPreviousLevel();
-            }
-            else//on release
+            if (Mathf.Abs(moveX) < stickDeadZone)
             {
                 timeCpt = repeatDelay;
             }
-        }
 
+            if (timeCpt >= repeatDelay) //pour pas spam trop vite
+            {
+                if (moveX > stickDeadZone)
+                {
+                    SelectNextLevel();
+                }
+                else if (moveX < -stickDeadZone)
+                {
+                    SelectPreviousLevel();
+                }
+            }
+        }
     }
 
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
@@ -81,9 +80,7 @@ public class MenuLevels : MonoBehaviour
         int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
-            //if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
-            //{
-            if (true)
+            if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
             {
                 //TODO : aller chercher le bon srceenshot
                 GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot") as GameObject;
@@ -213,7 +210,8 @@ public class MenuLevels : MonoBehaviour
         GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
         //animation
         StartCoroutine(screenshot.PressedAnimation());
-        //jouer le son
-
+        //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
+        pressed = true;
+        EventSystem.current.SetSelectedGameObject(null);
     }
 }
