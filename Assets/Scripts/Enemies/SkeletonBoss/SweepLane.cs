@@ -6,7 +6,7 @@ public class SweepLane : MonoBehaviour
 {
     public Transform[] points; 
     public GameObject prefab;
-    public float speed;
+    public float speed = 10;
     public float minSecondsAfterRespawn = 3;
     public float maxSecondsAfterRespawn = 6;
 
@@ -28,9 +28,9 @@ public class SweepLane : MonoBehaviour
         if (go != null)
             go.transform.position = Vector3.MoveTowards(go.transform.position, to, Time.deltaTime * speed);
         if (go != null && go.transform.position == to)
-        {
-            go = null;
+        {            
             Destroy(go);
+            go = null;
             float randomTime = Random.Range(minSecondsAfterRespawn, maxSecondsAfterRespawn);
             Invoke("Spawn", randomTime);
         }
