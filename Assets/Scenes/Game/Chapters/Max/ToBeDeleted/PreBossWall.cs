@@ -28,7 +28,7 @@ public class PreBossWall : MonoBehaviour, IResetable
     }
     void Update()
     {
-        if(trigger.GetComponent<PreBossTrigger>().triggered)
+        if(trigger != null && trigger.GetComponent<PreBossTrigger>().triggered)
         {
             timeToReachMaxSpeed = trigger.GetComponent<PreBossTrigger>().newTimetoReachMaxSpeed;
             endingSpeed = trigger.GetComponent<PreBossTrigger>().newEndingSpeed;
