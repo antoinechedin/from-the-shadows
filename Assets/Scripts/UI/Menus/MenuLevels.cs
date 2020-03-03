@@ -13,7 +13,6 @@ public class MenuLevels : MonoBehaviour
     public GameObject levelScreenshotsParent;
 
     [Header("Carousel")]
-    [SerializeField]
     private List<LevelScreenshot> screenshots = new List<LevelScreenshot>();
     public float distanceBetweenScreenshots;
     [Range(0.0f, 3.0f)]
