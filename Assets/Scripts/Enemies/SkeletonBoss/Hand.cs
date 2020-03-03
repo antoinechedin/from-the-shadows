@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour
 {
+    private HandAttack handAttack;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        handAttack = transform.parent.gameObject.GetComponent<HandAttack>();
     }
 
     // Update is called once per frame
@@ -18,8 +20,10 @@ public class Hand : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collider)
     {
-        Debug.Log("collision");
         if (collider.gameObject.tag == "HurtBoss")
-            Debug.Log("aie");
+        {
+            handAttack.GetHurt();
+            //handAttack.to = transform.position;
+        }
     }
 }

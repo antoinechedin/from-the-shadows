@@ -13,8 +13,10 @@ public class HandAttack : MonoBehaviour
     public Transform player2;
 
     private GameObject go;
-    private Vector3 from;
-    private Vector3 to;
+    [HideInInspector]
+    public Vector3 from;
+    [HideInInspector]
+    public Vector3 to;
 
     // Start is called before the first frame update
     void Start()
@@ -76,5 +78,10 @@ public class HandAttack : MonoBehaviour
             from = new Vector3(limitRight.position.x, player2.position.y, 0);
             to = new Vector3(limitLeft.position.x, player2.position.y, 0);
         }
+    }
+
+    public void GetHurt()
+    {
+        Debug.Log("aie");
     }
 }
