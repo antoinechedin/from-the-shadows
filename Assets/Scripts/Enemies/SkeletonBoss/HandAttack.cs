@@ -40,7 +40,11 @@ public class HandAttack : MonoBehaviour
         FindTarget();
 
         if (from != null && to != null && prefab != null)
+        {
             go = Instantiate(prefab, from, Quaternion.identity);
+            go.transform.parent = gameObject.transform;
+        }
+            
     }
 
     public void FindTarget()
