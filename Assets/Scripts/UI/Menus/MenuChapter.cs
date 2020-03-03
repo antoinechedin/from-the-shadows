@@ -41,6 +41,8 @@ public class MenuChapter : MonoBehaviour
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
+
+        levelLabel.text = chaptersName[localIndexCurrentChapter];
     }
 
     void Update()

@@ -50,7 +50,7 @@ public class LevelScreenshot : MonoBehaviour
     {
         while (Vector3.Distance(rt.localPosition, destination) > 0.1f)
         {
-            rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed * Time.deltaTime);
+            rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed);
             yield return null;
         }
         rt.localPosition = destination;
@@ -62,9 +62,9 @@ public class LevelScreenshot : MonoBehaviour
     /// <param name="distance"></param>
     public void SetNewDestination(Vector3 distance)
     {
-        destination += distance;
         if (!destinationChanged)
         {
+            destination += distance;
             destinationChanged = true;
         }
     }
