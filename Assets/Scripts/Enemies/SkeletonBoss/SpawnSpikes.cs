@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SweepLane : MonoBehaviour
+public class SpawnSpikes : MonoBehaviour
 {
     public Transform[] points; 
     public GameObject prefab;
