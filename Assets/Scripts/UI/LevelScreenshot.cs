@@ -7,7 +7,6 @@ public class LevelScreenshot : MonoBehaviour
 {
     private RectTransform rt;
     private Vector3 destination;
-    [SerializeField]
     private bool destinationChanged = false;
     private Vector2 startScale;
     public int levelIndex; //the index of the IG level
