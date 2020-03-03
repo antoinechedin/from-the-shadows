@@ -7,7 +7,7 @@ public class CameraManager : MonoBehaviour
 {
     public Transform cameraTarget;
 
-    void Start()
+    void Awake()
     {
         if (cameraTarget == null)
         {
@@ -76,7 +76,6 @@ public class CameraManager : MonoBehaviour
         }
 
         virtualCamera.Follow = cameraTarget;
-        virtualCamera.m_Follow = cameraTarget;
         virtualCamera.gameObject.GetComponent<CinemachineConfiner>().m_BoundingVolume = newCollider;
     }
 }
