@@ -26,6 +26,8 @@ public class MenuLevels : MonoBehaviour
     public float speed;
     [Tooltip("time between every possible change (prevents to go too fast if you hold)")]
     public float repeatDelay;
+    [Range(0.0f, 1.0f)]
+    public float stickDeadZone;
 
     private int currentSelectedLevel = 0;
 
@@ -34,20 +36,26 @@ public class MenuLevels : MonoBehaviour
     private void Update()
     {
         timeCpt += Time.deltaTime;
-
         float moveX = Input.GetAxis("Horizontal_G");
+
+        if (Mathf.Abs(moveX) < stickDeadZone)
+        {
+            timeCpt = repeatDelay;
+        }
 
         if (timeCpt >= repeatDelay) //pour pas spam trop vite
         {
-            if (moveX > 0.3f)
+            if (moveX > stickDeadZone)
             {
-                timeCpt = 0;
                 SelectNextLevel();
             }
-            else if (moveX < -0.3f)
+            else if (moveX < -stickDeadZone)
             {
                 SelectPreviousLevel();
-                timeCpt = 0;
+            }
+            else//on release
+            {
+                timeCpt = repeatDelay;
             }
         }
 
@@ -110,6 +118,7 @@ public class MenuLevels : MonoBehaviour
         {
             SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
         }
+        timeCpt = 0;
     }
 
     public void SelectPreviousLevel()
@@ -127,6 +136,7 @@ public class MenuLevels : MonoBehaviour
         {
             SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
         }
+        timeCpt = 0;
     }
 
     public void SetMenuLevelInfo(int level)

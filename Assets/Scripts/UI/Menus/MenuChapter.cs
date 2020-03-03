@@ -29,11 +29,11 @@ public class MenuChapter : MonoBehaviour
     void Awake()
     {
         chaptersName = new List<string>(new string[] {
-            "Chapter 0",
-            "Chapter 1",
-            "Chapter 2",
-            "Chapter 3",
-            "Chapter 4"
+            "CHAPTER 0",
+            "CHAPTER 1",
+            "CHAPTER 2",
+            "CHAPTER 3",
+            "CHAPTER 4"
         });
     }
 
@@ -42,7 +42,7 @@ public class MenuChapter : MonoBehaviour
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
 
-        levelLabel.text = chaptersName[localIndexCurrentChapter];
+        levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
     }
 
     void Update()
@@ -135,13 +135,18 @@ public class MenuChapter : MonoBehaviour
                     
                 }
 
-                levelLabel.text = chaptersName[localIndexCurrentChapter];
+                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
                 menuChapterAnimator.SetBool("open", true);
                 menuCamera.SetZoom(true);
                 GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
                 menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
             }
         }
+    }
+
+    public void UpdateChapterName(int chapterNumber)
+    {
+        levelLabel.text = chaptersName[chapterNumber].ToUpper();
     }
 
     public void ResetInteractablesChaptersButtons()
