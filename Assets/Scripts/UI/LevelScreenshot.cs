@@ -7,6 +7,7 @@ public class LevelScreenshot : MonoBehaviour
 {
     private RectTransform rt;
     private Vector3 destination;
+    [SerializeField]
     private bool destinationChanged = false;
     private Vector2 startScale;
     public int levelIndex; //the index of the IG level
@@ -39,11 +40,14 @@ public class LevelScreenshot : MonoBehaviour
             HandleScaling();
         }
 
-        if (destinationChanged)
-        {
-            StartCoroutine(Move());
-            destinationChanged = false;
-        }
+            if (Vector3.Distance(rt.localPosition, destination) > 0.1f)
+            {
+                rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed);
+            }
+            else
+            {
+                destinationChanged = false;
+            }
     }
 
     public IEnumerator Move()
@@ -62,11 +66,8 @@ public class LevelScreenshot : MonoBehaviour
     /// <param name="distance"></param>
     public void SetNewDestination(Vector3 distance)
     {
-        if (!destinationChanged)
-        {
             destination += distance;
             destinationChanged = true;
-        }
     }
 
     private void HandleScaling()
