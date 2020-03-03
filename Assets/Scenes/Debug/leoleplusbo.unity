@@ -306,7 +306,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275048804}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.82, y: 0, z: 0}
+  m_LocalPosition: {x: 11.37, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1922839872}
@@ -543,8 +543,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  cameraLimitLB: {fileID: 2116839002}
-  cameraLimitRT: {fileID: 2116839002}
+  virtualCamera: {fileID: 0}
+  maxCameraDepth: 35
+  cameraOffset: {x: 0, y: 0}
   lightCollectibles: []
   shadowCollectibles: []
   playerSpawns:
@@ -747,8 +748,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  cameraLimitLB: {fileID: 1605950528}
-  cameraLimitRT: {fileID: 1605950528}
+  virtualCamera: {fileID: 0}
+  maxCameraDepth: 35
+  cameraOffset: {x: 0, y: 0}
   lightCollectibles: []
   shadowCollectibles: []
   playerSpawns:
@@ -1438,6 +1440,11 @@ PrefabInstance:
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 275048804}
+    - target: {fileID: 5073413571132412512, guid: 6109579d718a57e4e8c87da5f5b897cc,
+        type: 3}
+      propertyPath: tpPlayers
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5073413571132412514, guid: 6109579d718a57e4e8c87da5f5b897cc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1837,8 +1844,10 @@ GameObject:
   - component: {fileID: 1588252727}
   - component: {fileID: 1588252726}
   - component: {fileID: 1588252725}
-  - component: {fileID: 1588252728}
   - component: {fileID: 1588252729}
+  - component: {fileID: 1588252731}
+  - component: {fileID: 1588252730}
+  - component: {fileID: 1588252728}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1918,15 +1927,33 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588252724}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9662a3fdd5767240b61b401ac31cd6c, type: 3}
+  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxOffsetY: 0
-  distanceMaxOffset: 10
-  distanceMinOffset: 4
-  offsetY: 0
+  m_ShowDebugText: 0
+  m_ShowCameraFrustum: 1
+  m_IgnoreTimeScale: 0
+  m_WorldUpOverride: {fileID: 0}
+  m_UpdateMethod: 0
+  m_BlendUpdateMethod: 0
+  m_DefaultBlend:
+    m_Style: 5
+    m_Time: 0.6
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  m_CustomBlends: {fileID: 0}
+  m_CameraCutEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_CameraActivatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1588252729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1939,11 +1966,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb6b474cb48e9b347a1474702aa13290, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCam: {fileID: 1588252726}
   countLevel: 0
-  countCameraPoint: 0
   countLevelTrigger: 0
   countInvisibleWall: 0
+--- !u!114 &1588252730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588252724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af39c724703b69b4295b88d41134beca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTarget: {fileID: 0}
+--- !u!114 &1588252731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588252724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_CameraOutput: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &1601611251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1974,8 +2043,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  cameraLimitLB: {fileID: 1457902954}
-  cameraLimitRT: {fileID: 1457902954}
+  virtualCamera: {fileID: 0}
+  maxCameraDepth: 35
+  cameraOffset: {x: 0, y: 0}
   lightCollectibles: []
   shadowCollectibles: []
   playerSpawns:
