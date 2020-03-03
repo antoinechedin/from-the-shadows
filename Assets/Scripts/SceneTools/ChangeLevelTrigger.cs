@@ -7,6 +7,8 @@ public class ChangeLevelTrigger : MonoBehaviour
     public int nbNecessaryPlayers;
     public GameObject newPlayerSpawns;
     public bool finishChapter = false;
+    [Header("Define whether the players will be tp'd to the \"newPlayerSpawn\" or not")]
+    public bool tpPlayers;
 
     private ChapterManager chapterManager;
     private int nbPlayerInTheTrigger = 0;
@@ -42,9 +44,29 @@ public class ChangeLevelTrigger : MonoBehaviour
                     chapterManager.ChangeLevel(newPlayerSpawns.GetComponentInParent<LevelManager>().id);
                     if (newPlayerSpawns != null)
                         chapterManager.CurrentSpawns = newPlayerSpawns;
+
+                    //si la téléportation des joueurs est activée
+                    if (tpPlayers)
+                    {
+                        StartCoroutine(TpPlayers());
+                    }
                 }
             }
         }
+    }
+
+    public IEnumerator TpPlayers()
+    {
+        GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
+        transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
+
+        //tant que l'ecran n'a pas fini de fade au noir
+        while (!transitionScreen.GetComponent<TransitionScreen>().finishedFadingIn)
+        {
+            yield return null;
+        }
+        //tp les joueurs
+        chapterManager.SpawnPlayers();
     }
 
     private void OnTriggerExit2D(Collider2D collision)
