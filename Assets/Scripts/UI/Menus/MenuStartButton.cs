@@ -9,6 +9,7 @@ public class MenuStartButton : MonoBehaviour
 
     Text text;
 
+    public bool fading = false;
     float dissolve;
     [Range(0f, 1f)]public float dissolveAmount;
 
@@ -20,21 +21,25 @@ public class MenuStartButton : MonoBehaviour
 
     public IEnumerator FadeOut()
     {
-        while(dissolve > 0)
+        fading = true;
+        while (dissolve > 0)
         {
             dissolve = Mathf.Clamp01(dissolve - dissolveAmount);
             text.material.SetFloat("_Dissolution", dissolve);
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
+        fading = false;
     }
 
     public IEnumerator FadeIn()
     {
+        fading = true;
         while (dissolve < 1)
         {
             dissolve = Mathf.Clamp01(dissolve + dissolveAmount);
             text.material.SetFloat("_Dissolution", dissolve);
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
+        fading = false;
     }
 }        

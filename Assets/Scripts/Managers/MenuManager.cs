@@ -18,8 +18,9 @@ public class MenuManager : MonoBehaviour
     public MenuChapter menuChapter;
     public MenuCamera menuCamera;
 
-    public Button playButton;
-    public Button firstSaveButton;
+    public Button play;
+    public Button options;
+    public Button firstSave;
 
     public Image background;
     public Image startMenuBackground;
@@ -28,12 +29,17 @@ public class MenuManager : MonoBehaviour
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
 
-    // Start is called before the first frame update
+    private MenuStartButton playButtonFade;
+    private MenuStartButton optionsButtonFade;
+
     void Start()
     {
+        playButtonFade = play.GetComponent<MenuStartButton>();
+        optionsButtonFade = options.GetComponent<MenuStartButton>();
+
         SaveManager.Instance.LoadAllSaveFiles();
 
-        playButton.onClick.AddListener(delegate { OpenSaveMenu(); });
+        play.onClick.AddListener(delegate { OpenSaveMenu(); });
 
         if (GameManager.Instance.LoadingMenuInfos == null)
         {
@@ -84,7 +90,7 @@ public class MenuManager : MonoBehaviour
 
         menuCamera.SetReturnToStartMenu(true);
 
-        EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+        EventSystem.current.SetSelectedGameObject(play.gameObject);
     }
 
     public void OpenSaveMenu()
@@ -95,8 +101,9 @@ public class MenuManager : MonoBehaviour
         }
         backgroundAnimator.SetBool("fade", true);
 
-        // wait button fade out
-        StartCoroutine(playButton.GetComponent<MenuStartButton>().FadeOut());        
+        // wait button fade out        
+        StartCoroutine(playButtonFade.FadeOut());
+        while (playButtonFade.fading) { }; // doesn't wait properly
 
         savesMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
@@ -155,5 +162,4 @@ public class MenuManager : MonoBehaviour
 		Application.Quit();
 #endif
     }
-
 }
