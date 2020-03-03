@@ -73,7 +73,9 @@ public class MenuLevels : MonoBehaviour
         int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
-            if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
+            //if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
+            //{
+            if (true)
             {
                 //TODO : aller chercher le bon srceenshot
                 GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot") as GameObject;
@@ -99,7 +101,7 @@ public class MenuLevels : MonoBehaviour
         {
             foreach (LevelScreenshot go in screenshots)
             {
-                go.SetNewDestination(new Vector3(-1000, 0, 0));
+                go.SetNewDestination(new Vector3(-distanceBetweenScreenshots, 0, 0));
             }
             currentSelectedLevel++;
         }
@@ -116,7 +118,7 @@ public class MenuLevels : MonoBehaviour
         {
             foreach (LevelScreenshot go in screenshots)
             {
-                go.SetNewDestination(new Vector3(1000, 0, 0));
+                go.SetNewDestination(new Vector3(distanceBetweenScreenshots, 0, 0));
             }
             currentSelectedLevel--;
         }
