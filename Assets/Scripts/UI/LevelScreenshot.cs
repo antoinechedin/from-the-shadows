@@ -90,7 +90,7 @@ public class LevelScreenshot : MonoBehaviour
         pressed = true;
 
         float timeCount = 0;
-        while (timeCount < 0.10f)
+        while (timeCount < 0.06f)
         {
             transform.localScale *= 1.03f;
             timeCount += Time.deltaTime;
@@ -98,7 +98,7 @@ public class LevelScreenshot : MonoBehaviour
         }
 
         timeCount = 0;
-        while (timeCount < 0.10f)
+        while (timeCount < 0.06f)
         {
             transform.localScale /= 1.03f;
             timeCount += Time.deltaTime;
