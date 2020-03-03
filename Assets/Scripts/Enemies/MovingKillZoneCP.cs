@@ -21,7 +21,6 @@ public class MovingKillZoneCP : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             movingKillZone.SetNewInfos(this);
-            Destroy(gameObject);
         }
     }
 }
