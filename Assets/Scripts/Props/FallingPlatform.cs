@@ -23,7 +23,7 @@ public class FallingPlatform : MonoBehaviour, IResetable
     {
         startingPosition = transform.position;
         child = transform.Find("Child").gameObject;
-        startingColor = child.GetComponent<MeshRenderer>().material.color;
+        startingColor = child.GetComponent<MeshRenderer>().material.GetColor("_BaseColor");
         targetColor = startingColor;
         fallingPosition = transform.position;
     }
@@ -37,8 +37,9 @@ public class FallingPlatform : MonoBehaviour, IResetable
                                          transform.position.z);
         }
 
-        Color color = child.GetComponent<MeshRenderer>().material.color;
-        child.GetComponent<MeshRenderer>().material.color = Color.Lerp(color, targetColor, Time.deltaTime * 10);
+        Color color = child.GetComponent<MeshRenderer>().material.GetColor("_BaseColor");
+        Color fade = Color.Lerp(color, targetColor, Time.deltaTime * 10);
+        child.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", fade);
         transform.position = Vector3.Lerp(transform.position, fallingPosition, Time.deltaTime * 5);
     }
 

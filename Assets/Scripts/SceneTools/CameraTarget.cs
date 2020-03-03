@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class CameraTarget : MonoBehaviour
 {
-    public Vector2 offset;
-
+    private Vector2 offset;
     private GameObject[] players = new GameObject[2];
 
     private void Start()
@@ -17,5 +16,11 @@ public class CameraTarget : MonoBehaviour
     void FixedUpdate()
     {
         transform.position = (players[0].transform.position + players[1].transform.position) / 2 + (Vector3)offset;
+    }
+
+    public Vector2 Offset
+    {
+        get => offset;
+        set => offset = value;
     }
 }

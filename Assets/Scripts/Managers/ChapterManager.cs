@@ -31,6 +31,7 @@ public class ChapterManager : MonoBehaviour
         }
 
         levels[currentLevel].virtualCamera.gameObject.SetActive(true);
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
@@ -145,6 +146,8 @@ public class ChapterManager : MonoBehaviour
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
 
         currentLevel = newCurrentLevel;
+        
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         // On active la nouvelle room et ses voisins
         levels[currentLevel].EnableLevel();

@@ -7,9 +7,19 @@ public class CameraManager : MonoBehaviour
 {
     public Transform cameraTarget;
 
-    public void ProcessCameraConfiner(BoxCollider2D limits, CinemachineVirtualCamera virtualCamera, BoxCollider newCollider)
+    void Start()
     {
-        float maxCamDepth = 35;
+        if (cameraTarget == null)
+        {
+            GameObject defaultCameraTarget = new GameObject("Camera Target");
+            defaultCameraTarget.gameObject.AddComponent<CameraTarget>();
+            cameraTarget = defaultCameraTarget.transform;
+            Debug.Log("Create a default Camera Target");
+        }
+    }
+
+    public void ProcessCameraConfiner(BoxCollider2D limits, CinemachineVirtualCamera virtualCamera, BoxCollider newCollider, float maxCamDepth)
+    {
         float frameAspectRatio = (float)Screen.width / (float)Screen.height;
         float cameraDistance = Mathf.Abs(virtualCamera.transform.position.z);
         float frameHeight = cameraDistance * 2f * Mathf.Tan(virtualCamera.m_Lens.FieldOfView * Mathf.Deg2Rad / 2f);
@@ -66,6 +76,7 @@ public class CameraManager : MonoBehaviour
         }
 
         virtualCamera.Follow = cameraTarget;
+        virtualCamera.m_Follow = cameraTarget;
         virtualCamera.gameObject.GetComponent<CinemachineConfiner>().m_BoundingVolume = newCollider;
     }
 }

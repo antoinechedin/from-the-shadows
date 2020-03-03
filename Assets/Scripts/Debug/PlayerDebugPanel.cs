@@ -8,7 +8,8 @@ public class PlayerDebugPanel : MonoBehaviour
     private TextMeshProUGUI playerInfos;
     private string playerInfosTemplate;
 
-    private PlayerController player;
+    [HideInInspector] public PlayerController player;
+    public int playerId;
 
     private void Awake()
     {
@@ -17,6 +18,22 @@ public class PlayerDebugPanel : MonoBehaviour
         if (playerInfos != null) playerInfosTemplate = playerInfos.text;
         
         player = transform.parent.parent.GetComponent<PlayerController>();
+    }
+
+    private void OnEnable() {
+        PlayerInput[] players = GameObject.FindObjectsOfType<PlayerInput>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].id == playerId)
+            {
+                player = players[i].GetComponent<PlayerController>();
+                break;
+            }
+        }
+    }
+
+    private void OnDisable() {
+        player = null;
     }
 
     private void Update()
@@ -32,10 +49,14 @@ public class PlayerDebugPanel : MonoBehaviour
                     player.targetVelocity.x,
                     player.targetVelocity.y,
                     player.actor.collisions.bellow ? "X" : " ",
-                    player.facing < 0 ? "<-" :  player.facing > 0 ? "->": "00",
+                    player.xVelocitySign < 0 ? "<-" :  player.xVelocitySign > 0 ? "->": "00",
                     player.state
                 );
             }
+        }
+        else
+        {
+            playerInfos.text = "No player " + playerId;
         }
     }
 }

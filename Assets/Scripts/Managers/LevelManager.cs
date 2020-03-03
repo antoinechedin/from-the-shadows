@@ -11,7 +11,8 @@ public class LevelManager : MonoBehaviour
     [Header("The id will automatically be set by the ChapterManager")]
     public int id;
     public CinemachineVirtualCamera virtualCamera;
-    public BoxCollider2D levelLimits;
+    public float maxCameraDepth = 35f;
+    public Vector2 cameraOffset;
 
     public List<GameObject> lightCollectibles = new List<GameObject>();
     public List<GameObject> shadowCollectibles = new List<GameObject>();
@@ -21,6 +22,8 @@ public class LevelManager : MonoBehaviour
     [Header("Put in roomsToEnable all the neighbors of the room")]
     public List<LevelManager> roomsToEnable;
 
+    private BoxCollider2D levelLimits;
+    private GameObject cameraConfiner;
 
     private void Awake()
     {
@@ -39,7 +42,45 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
+
+        // Crée une camera par défaut si aucune n'est renseignée. Préférez référencer celle en prefab
+
+        if (virtualCamera == null)
+        {
+            GameObject defaultVirtualCamera = new GameObject("Virtual Camera");
+            defaultVirtualCamera.AddComponent<CinemachineVirtualCamera>();
+            defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().AddCinemachineComponent<CinemachineFramingTransposer>();
+            defaultVirtualCamera.AddComponent<CinemachineConfiner>();
+            defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 20;
+            defaultVirtualCamera.GetComponent<CinemachineConfiner>().m_ConfineMode = CinemachineConfiner.Mode.Confine3D;
+            Vector3 rotationVector = defaultVirtualCamera.transform.rotation.eulerAngles;
+            rotationVector.x = 6;
+            defaultVirtualCamera.transform.rotation = Quaternion.Euler(rotationVector);
+            virtualCamera = defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>();
+            virtualCamera.gameObject.SetActive(false);
+            virtualCamera.transform.SetParent(transform);
+            Debug.Log("Virtual Camera is not set. Create a default one.");
+        }
+        else
+        {
+            virtualCamera = Instantiate(virtualCamera, transform);
+            virtualCamera.gameObject.SetActive(false);
+        }
+
+        levelLimits = gameObject.GetComponent<BoxCollider2D>();
+
+        if (levelLimits == null)
+        {
+            gameObject.AddComponent<BoxCollider2D>();
+            levelLimits = gameObject.GetComponent<BoxCollider2D>();
+            Debug.LogWarning("Levels limits is not set.");
+        }
+
+        cameraConfiner = new GameObject("Camera Confiner");
+        cameraConfiner.AddComponent<BoxCollider>();
+        cameraConfiner.transform.SetParent(transform);
     }
+
     public void Start()
     {
         // Fetch collectibles
@@ -60,25 +101,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        if (virtualCamera == null)
-        {
-            GameObject defaultVirtualCamera = Instantiate(new GameObject("Virtual Camera"), transform);
-            defaultVirtualCamera.AddComponent<CinemachineVirtualCamera>();
-            defaultVirtualCamera.AddComponent<CinemachineConfiner>();
-            virtualCamera = defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>();
-        }
-
-        if (levelLimits == null)
-        {
-            GameObject defaultLevelLimits = Instantiate(new GameObject("Level limits"), transform);
-            defaultLevelLimits.AddComponent<BoxCollider2D>();
-            levelLimits = defaultLevelLimits.GetComponent<BoxCollider2D>();
-        }
-
-        GameObject cameraConfiner = Instantiate(new GameObject("Camera Confiner"), transform);
-        cameraConfiner.AddComponent<BoxCollider>();
-
-        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>());
+        Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>(), maxCameraDepth);
     }
     /// <summary>
     /// Disable object in the Level when the player isn't in the level

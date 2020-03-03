@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public IPlayerState state;
     public Vector2 targetVelocity;
     public Vector2 velocity;
-    public int facing;
+    public int xVelocitySign;
 
     public bool dead = false;
     public bool dying = false;
@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
         state = new PlayerStanding();
         animator = GetComponentInChildren<Animator>();
         animator.SetBool("Light", input.doubleJump);
-        facing = 1;
+        xVelocitySign = 1;
     }
 
     private void Update()
@@ -55,24 +55,24 @@ public class PlayerController : MonoBehaviour
 
         if (velocity.x > 0)
         {
-            if (facing != 1)
+            if (xVelocitySign != 1)
             {
-                facing = 1;
+                xVelocitySign = 1;
             }
                 
         }
         else if (velocity.x < 0)
         {
-            if (facing != -1)
+            if (xVelocitySign != -1)
             {
-                facing = -1;
+                xVelocitySign = -1;
             } 
         }
 
-        state.Update(this);
-        state.FixedUpdate(this);
-
         actor.Move(velocity, Time.fixedDeltaTime);
+
+        state.FixedUpdate(this);
+        state.Update(this);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
         state = new PlayerStanding();
         velocity = Vector2.zero;
         targetVelocity = Vector2.zero;
-        facing = 1;
+        xVelocitySign = 1;
 
         animator.Rebind();
         animator.SetBool("Light", input.doubleJump);

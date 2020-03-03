@@ -11,6 +11,8 @@ public interface IPlayerState
 
 public class PlayerStanding : IPlayerState
 {
+
+    //public bool turning = false;
     public void HandleInput(PlayerController player, PlayerInput input)
     {
         player.targetVelocity = input.moveAxis * player.settings.moveSpeed;
@@ -36,7 +38,7 @@ public class PlayerStanding : IPlayerState
             GameManager.Instance.AddMetaInt(input.id == 1 ? MetaTag.PLAYER_1_JUMP : MetaTag.PLAYER_2_JUMP, 1);
 
             // Set Animator Jump
-            player.animator.SetTrigger("Jump");
+            player.animator.SetTrigger("jump");
         }
     }
 
@@ -52,19 +54,36 @@ public class PlayerStanding : IPlayerState
             player.state = new PlayerAirborne(false, false, player);
 
             // Set Animator Airborne -> We are falling
-            player.animator.SetTrigger("Airborne");
+            player.animator.SetTrigger("fall");
         }
 
         // Speed Animation
-        player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
+        //player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
+        player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
+        player.animator.SetFloat("speed", Mathf.Abs(player.velocity.x));
+
+        if (Mathf.Abs(player.velocity.x) > 0 && player.input.moveAxis.x != 0 && Mathf.Sign(player.input.moveAxis.x) != player.xVelocitySign)
+        {
+            if (Mathf.Sign(player.input.moveAxis.x) == 1)
+                player.animator.transform.eulerAngles = Vector3.up * 90;
+            else
+                player.animator.transform.eulerAngles = Vector3.up * -90;
+            if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("Turn"))
+                player.animator.SetTrigger("turn");
+        }
+
+        else
+        {
+            if (player.xVelocitySign == 1)
+                player.animator.transform.eulerAngles = Vector3.up * 90;
+            else
+                player.animator.transform.eulerAngles = Vector3.up * -90;
+        }
     }
 
     public void FixedUpdate(PlayerController player)
     {
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;
+
     }
 }
 
@@ -118,19 +137,14 @@ public class PlayerAirborne : IPlayerState
 
                 canJump = false;
                 canStopJump = true;
-
-                // Set Animator Jump -> Simple Jump
-                player.animator.SetTrigger("Jump");
             }
             else if (canDoubleJump)
             {
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.doubleJumpHeight * player.settings.gravity);
 
                 canDoubleJump = false;
-                canStopJump = true;
-
-                // Set Animator Jump -> Simple Jump
-                player.animator.SetTrigger("Jump");
+                canStopJump = true;               
+                player.animator.SetTrigger("flip");
             }
         }
 
@@ -148,6 +162,13 @@ public class PlayerAirborne : IPlayerState
 
     public void Update(PlayerController player)
     {
+        if (player.input.xMoveAxisSign == 1)
+            player.animator.transform.eulerAngles = Vector3.up * 90;
+        else
+            player.animator.transform.eulerAngles = Vector3.up * -90;
+
+        player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
+        player.animator.SetFloat("speed", Mathf.Abs(player.velocity.x));
 
         if (canJump)
         {
@@ -165,18 +186,18 @@ public class PlayerAirborne : IPlayerState
             player.state = new PlayerStanding();
 
             // Landing
-            player.animator.SetTrigger("Land");
+            player.animator.SetTrigger("land");
             return;
         }
 
         if (lastLedgeGrabTimer >= lastLedgeGrabDuration)
         {
-            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.facing, false))
+            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.input.xMoveAxisSign, false))
             {
                 player.state = new PlayerLedgeGrab(player);
                 player.velocity = Vector2.zero;
 
-                player.animator.SetTrigger("LedgeGrab");
+                player.animator.SetTrigger("hang");
             }
         }
         else
@@ -187,10 +208,7 @@ public class PlayerAirborne : IPlayerState
 
     public void FixedUpdate(PlayerController player)
     {
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;
+
     }
 }
 
@@ -206,7 +224,7 @@ public class PlayerLedgeGrab : IPlayerState
         if (input.moveAxis.y < -0.7f)
         {
             player.state = new PlayerAirborne(false, true, player);
-            player.animator.SetTrigger("LedgeDrop");
+            player.animator.SetTrigger("fall");
         }
 
         if (input.pressedJump)
@@ -219,16 +237,16 @@ public class PlayerLedgeGrab : IPlayerState
             GameManager.Instance.AddMetaInt(input.id == 1 ? MetaTag.PLAYER_1_JUMP : MetaTag.PLAYER_2_JUMP, 1);
 
             // Set Animator Jump
-            player.animator.SetTrigger("Jump");
+            player.animator.SetTrigger("jump");
         }
     }
 
     public void Update(PlayerController player)
     {
-        if(!player.actor.LedgeGrab(player.facing, true))
+        if (!player.actor.LedgeGrab(player.xVelocitySign, true))
         {
             player.state = new PlayerAirborne(false, true, player);
-            player.animator.SetTrigger("LedgeDrop");
+            player.animator.SetTrigger("fall");
         }
     }
 

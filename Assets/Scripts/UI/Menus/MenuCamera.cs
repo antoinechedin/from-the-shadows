@@ -58,7 +58,7 @@ public class MenuCamera : MonoBehaviour
                 Vector3 velocity = Vector3.zero;
 
                 // Move the camera
-                transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.1f);
+                transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, cameraSpeed / 100f);
 
                 // Rotate the camera
                 transform.rotation = Quaternion.Slerp(
