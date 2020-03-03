@@ -18,8 +18,8 @@ public class MenuManager : MonoBehaviour
     public MenuChapter menuChapter;
     public MenuCamera menuCamera;
 
-    public Button newGame;
-    public Button firstSave;
+    public Button playButton;
+    public Button firstSaveButton;
 
     public Image background;
     public Image startMenuBackground;
@@ -33,7 +33,7 @@ public class MenuManager : MonoBehaviour
     {
         SaveManager.Instance.LoadAllSaveFiles();
 
-        newGame.onClick.AddListener(delegate { OpenSaveMenu(); });
+        playButton.onClick.AddListener(delegate { OpenSaveMenu(); });
 
         if (GameManager.Instance.LoadingMenuInfos == null)
         {
@@ -84,7 +84,7 @@ public class MenuManager : MonoBehaviour
 
         menuCamera.SetReturnToStartMenu(true);
 
-        EventSystem.current.SetSelectedGameObject(newGame.gameObject);
+        EventSystem.current.SetSelectedGameObject(playButton.gameObject);
     }
 
     public void OpenSaveMenu()
@@ -94,6 +94,9 @@ public class MenuManager : MonoBehaviour
             startMenuBackgroundAnimator.SetBool("fade", false);
         }
         backgroundAnimator.SetBool("fade", true);
+
+        // wait button fade out
+        StartCoroutine(playButton.GetComponent<MenuStartButton>().FadeOut());        
 
         savesMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
