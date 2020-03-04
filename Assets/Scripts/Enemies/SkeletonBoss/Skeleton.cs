@@ -5,22 +5,22 @@ using UnityEngine;
 public class Skeleton : MonoBehaviour
 {
     public Animator animator;
+    public int laneToAttack;
+    public string stringDirection;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = transform.Find("SkeletonFBX").gameObject.GetComponent<Animator>();
-        Invoke("TriggerAttackLeft", 4);
-        Invoke("TriggerAttackRight", 10);
+        InvokeRepeating("TriggerAttack", 4, 6);
     }
 
-    public void TriggerAttackLeft()
+    public void TriggerAttack()
     {
-        animator.SetTrigger("AttackLeft");
+        // Construct the string trigger
+        string trigger = "Attack"+stringDirection+" "+laneToAttack;
+
+        animator.SetTrigger(trigger);
     }
 
-    public void TriggerAttackRight()
-    {
-        animator.SetTrigger("AttackRight");
-    }
 }
