@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(NewSolidController))]
-public class NewMovingPlatform : MonoBehaviour, IResetable
+[RequireComponent(typeof(SolidController))]
+public class MovingPlatform : MonoBehaviour, IResetable
 {
-    private NewSolidController solid;
+    private SolidController solid;
     private float timer;
     private Vector3 start;
     private Vector3 end;
@@ -17,7 +17,7 @@ public class NewMovingPlatform : MonoBehaviour, IResetable
 
     private void Awake()
     {
-        solid = GetComponent<NewSolidController>();
+        solid = GetComponent<SolidController>();
         if (transform.childCount < 2)
         {
             Debug.LogWarning(
@@ -103,9 +103,9 @@ public class NewMovingPlatform : MonoBehaviour, IResetable
                 end + (Vector3)(boxSize * new Vector2(0.5f, -0.5f))
             );
         }
-        else if (transform.childCount >= 2 && GetComponent<NewSolidController>() != null)
+        else if (transform.childCount >= 2 && GetComponent<SolidController>() != null)
         {
-            NewSolidController solid = GetComponent<NewSolidController>();
+            SolidController solid = GetComponent<SolidController>();
             if (solid.GetComponent<BoxCollider2D>() != null)
             {
                 Gizmos.color = Color.cyan;

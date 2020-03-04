@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(NewMovingPlatform), true)]
-public class NewMovingPlatformEditor : Editor
+[CustomEditor(typeof(MovingPlatform), true)]
+public class MovingPlatformEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        NewMovingPlatform movingPlatform = target as NewMovingPlatform;
+        MovingPlatform movingPlatform = target as MovingPlatform;
 
         if(GUILayout.Button("Center platform in path"))
         {
