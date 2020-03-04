@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 public class MenuLevels : MonoBehaviour
 {
     public GridLayoutGroup buttonsGroup;
-    public HorizontalLayoutGroup collectiblesPanel;
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
     public GameObject levelScreenshotsParent;
@@ -74,7 +73,7 @@ public class MenuLevels : MonoBehaviour
             totalLevels++;
         }
 
-        SetMenuLevelInfo(0);
+        //SetMenuLevelInfo(0, screenshots[0]);
 
         int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
@@ -85,6 +84,7 @@ public class MenuLevels : MonoBehaviour
                 GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot") as GameObject;
                 levelScreenshot.name = i.ToString();
                 LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshot, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
+                SetMenuLevelInfo(i, spawnedScreenshot);
                 spawnedScreenshot.GetComponent<Button>().onClick.AddListener(delegate
                 {
                     LevelButtonClicked(new LoadingChapterInfo(i), spawnedScreenshot);
@@ -109,11 +109,6 @@ public class MenuLevels : MonoBehaviour
             }
             currentSelectedLevel++;
         }
-
-        if (screenshots.Count != 0)
-        {
-            SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
-        }
         timeCpt = 0;
     }
 
@@ -127,37 +122,26 @@ public class MenuLevels : MonoBehaviour
             }
             currentSelectedLevel--;
         }
-
-        if (screenshots.Count != 0)
-        {
-            SetMenuLevelInfo(screenshots[currentSelectedLevel].LevelIndex);
-        }
         timeCpt = 0;
     }
 
-    public void SetMenuLevelInfo(int level)
+    public void SetMenuLevelInfo(int level, LevelScreenshot screenshot)
     {
-        Chapter localCurrentChapter = GameManager.Instance.GetChapters()[GameManager.Instance.CurrentChapter];
-        foreach (Transform child in collectiblesPanel.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
         List<KeyValuePair<string, bool>> collectiblesTaken = GetCollectibleToNextCheckPoint(level);
 
         foreach (KeyValuePair<string, bool> kv in collectiblesTaken)
         {
             if (kv.Key == "light" && kv.Value)
             {
-                Instantiate(collectibleLight, collectiblesPanel.transform);
+                Instantiate(collectibleLight, screenshot.collectiblesHolder.transform) ;
             }
             else if (kv.Key == "shadow" && kv.Value)
             {
-                Instantiate(collectibleShadow, collectiblesPanel.transform);
+                Instantiate(collectibleShadow, screenshot.collectiblesHolder.transform);
             }
             else
             {
-                Instantiate(collectibleMissing, collectiblesPanel.transform);
+                Instantiate(collectibleMissing, screenshot.collectiblesHolder.transform);
             }
         }
     }
