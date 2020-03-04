@@ -16,9 +16,9 @@ public class NewLightSource : MonoBehaviour
 
     private void Start()
     {
-        // lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple"));
-        // lightMaterial.SetFloat("Vector1_F2B11630", lightRadius - 0.1f);
-        // lightMaterial.SetColor("Color_5FF765E1", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
+        lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple"));
+        lightMaterial.SetFloat("Vector1_F2B11630", lightRadius - 0.1f);
+        lightMaterial.SetColor("Color_5FF765E1", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
         UpdateMesh();
     }
 
@@ -38,10 +38,10 @@ public class NewLightSource : MonoBehaviour
     {
         Mesh m = GetComponent<LightCollider>().CreateMeshFromCollider();
         GetComponent<MeshFilter>().sharedMesh = m;
-        // GetComponent<MeshRenderer>().material = lightMaterial;
-        // lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple"));
-        // lightMaterial.SetFloat("Vector1_F2B11630", lightRadius - 0.1f);
-        // lightMaterial.SetColor("Color_5FF765E1", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
+        GetComponent<MeshRenderer>().material = lightMaterial;
+        lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple"));
+        lightMaterial.SetFloat("Vector1_F2B11630", lightRadius - 0.1f);
+        lightMaterial.SetColor("Color_5FF765E1", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
