@@ -12,7 +12,7 @@ GameObject:
   m_Layer: 12
   m_Name: End
   m_TagString: Untagged
-  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -42,8 +42,8 @@ GameObject:
   - component: {fileID: 6694669359464684}
   - component: {fileID: 6694669359464691}
   - component: {fileID: 6694669359464685}
-  - component: {fileID: 6694669359464690}
-  - component: {fileID: 6694669359464689}
+  - component: {fileID: 1998566530722921728}
+  - component: {fileID: 1498091193430794188}
   m_Layer: 12
   m_Name: Moving Platform
   m_TagString: Untagged
@@ -140,7 +140,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6694669359464690
+--- !u!114 &1998566530722921728
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6694669359464695}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd7db292ac0e4ff40938d5ddeed1e403, type: 3}
+  m_Script: {fileID: 11500000, guid: 437ec1ac6a412ad44a6c608b0ba533c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   collisionMask:
@@ -159,7 +159,7 @@ MonoBehaviour:
   passengerMask:
     serializedVersion: 2
     m_Bits: 8192
---- !u!114 &6694669359464689
+--- !u!114 &1498091193430794188
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,10 +168,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 6694669359464695}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 367ed05fdf5d3f64284d95a31f1d19da, type: 3}
+  m_Script: {fileID: 11500000, guid: 52454d7e13f0dfc42b437857348a69c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cycleDuration: 5
+  activators: []
+  logic: 0
+  gizmoColor: {r: 0, g: 1, b: 1, a: 1}
+  controledByActivators: 0
+  cycleDuration: 4
   startOffset: 0.25
 --- !u!1 &6694670100264699
 GameObject:
@@ -185,7 +189,7 @@ GameObject:
   m_Layer: 12
   m_Name: Start
   m_TagString: Untagged
-  m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

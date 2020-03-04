@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(NewSolidController))]
-public class NewMovingPlatform : MonoBehaviour, IResetable
+[RequireComponent(typeof(SolidController))]
+public class MovingPlatform : ActivatorListener, IResetable
 {
-    private NewSolidController solid;
-    private float timer;
+    public bool controledByActivators;
+    private bool activated;
+
+    private SolidController solid;
+    public float timer;
     private Vector3 start;
     private Vector3 end;
 
@@ -17,7 +20,7 @@ public class NewMovingPlatform : MonoBehaviour, IResetable
 
     private void Awake()
     {
-        solid = GetComponent<NewSolidController>();
+        solid = GetComponent<SolidController>();
         if (transform.childCount < 2)
         {
             Debug.LogWarning(
@@ -39,12 +42,22 @@ public class NewMovingPlatform : MonoBehaviour, IResetable
         return (1 - Mathf.Cos(2 * Mathf.PI * (x / cycleDuration + startOffset))) / 2f;
     }
 
+    private float GotoFunc(float x)
+    {
+        return -1f / 2f * (Mathf.Cos(Mathf.PI * x / cycleDuration) - 1f);
+    }
+
     private void FixedUpdate()
     {
-        timer += Time.fixedDeltaTime;
-
-        if (awake)
+        if (controledByActivators)
         {
+            timer = Mathf.Clamp(timer + (activated ? Time.fixedDeltaTime : -Time.deltaTime), 0, cycleDuration);
+            Vector3 newPosition = start + (end - start) * GotoFunc(timer);
+            solid.Move(newPosition - transform.position);
+        }
+        else
+        {
+            timer += Time.fixedDeltaTime;
             Vector2 path = end - start;
             Vector3 newPosition = start + (Vector3)path * MoveFunc(timer);
 
@@ -55,6 +68,17 @@ public class NewMovingPlatform : MonoBehaviour, IResetable
     public void Reset()
     {
         timer = 0;
+        activated = false;
+    }
+
+    public override void OnActivate()
+    {
+        activated = true;
+    }
+
+    public override void OnDeactivate()
+    {
+        activated = false;
     }
 
     public void CenterPlatformInPath()
@@ -83,7 +107,7 @@ public class NewMovingPlatform : MonoBehaviour, IResetable
         {
             Gizmos.color = Color.cyan;
             Vector2 boxSize = transform.TransformVector(solid.boxCollider.size);
-            
+
             Gizmos.DrawWireCube(start, boxSize);
             Gizmos.DrawWireCube(end, boxSize);
             Gizmos.DrawLine(
@@ -103,12 +127,12 @@ public class NewMovingPlatform : MonoBehaviour, IResetable
                 end + (Vector3)(boxSize * new Vector2(0.5f, -0.5f))
             );
         }
-        else if (transform.childCount >= 2 && GetComponent<NewSolidController>() != null)
+        else if (transform.childCount >= 2 && GetComponent<SolidController>() != null)
         {
-            NewSolidController solid = GetComponent<NewSolidController>();
+            SolidController solid = GetComponent<SolidController>();
             if (solid.GetComponent<BoxCollider2D>() != null)
             {
-                Gizmos.color = Color.cyan;
+                Gizmos.color = gizmoColor;
                 Transform start = transform.GetChild(0);
                 Transform end = transform.GetChild(1);
                 Vector2 boxSize = transform.TransformVector(solid.GetComponent<BoxCollider2D>().size);
