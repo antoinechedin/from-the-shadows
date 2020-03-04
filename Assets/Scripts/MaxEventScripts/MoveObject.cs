@@ -4,14 +4,28 @@ using UnityEngine;
 
 public class MoveObject : MonoBehaviour
 {
+    private bool move = false;
+
+
     public float speed = 2f;
-    public int directionX = 1;
+    public Transform target;
+
+    public void StartMoving()
+    {
+        move = true;
+    }
+
+    public void StopMoving()
+    {
+        move = false;
+    }
+
 
     void Update()
     {
-        if (directionX == 1)
-            this.transform.position += new Vector3(speed * Time.deltaTime, 0, 0);
-        else
-            this.transform.position -= new Vector3(speed * Time.deltaTime, 0, 0);
+        if(move)
+        {
+            this.transform.position = Vector3.MoveTowards(this.transform.position, target.position, speed * Time.deltaTime);
+        }
     }
 }
