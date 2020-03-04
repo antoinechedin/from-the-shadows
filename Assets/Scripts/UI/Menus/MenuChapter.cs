@@ -10,9 +10,6 @@ public class MenuChapter : MonoBehaviour
     public MenuLevels menuLevels;
     public List<Button> chapterButtons;
     public Text levelLabel;
-    public Text lightCollectibleNumber;
-    public Text shadowCollectibleNumber;
-    public Text completedNumber;
     public GameObject chapterButtonsPanel;
     public RectTransform thisPanel;
     public RectTransform saveMenu;
@@ -26,18 +23,17 @@ public class MenuChapter : MonoBehaviour
     private bool chapterMenuIsOpen = false;
     private bool statsOpen = false;
     private int localIndexCurrentChapter;
-    private TextMeshProUGUI currentChapterName;
 
     private List<string> chaptersName;
 
     void Awake()
     {
         chaptersName = new List<string>(new string[] {
-            "Chapter 0",
-            "Chapter 1",
-            "Chapter 2",
-            "Chapter 3",
-            "Chapter 4"
+            "CHAPTER 0",
+            "CHAPTER 1",
+            "CHAPTER 2",
+            "CHAPTER 3",
+            "CHAPTER 4"
         });
     }
 
@@ -45,12 +41,13 @@ public class MenuChapter : MonoBehaviour
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
-        currentChapterName = menuCamera.cursor.transform.Find("Chapter Label").GetComponent<TextMeshProUGUI>();
+
+        levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
     }
 
     void Update()
     {
-        currentChapterName.text = chaptersName[localIndexCurrentChapter];
+
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
@@ -62,6 +59,7 @@ public class MenuChapter : MonoBehaviour
             // Close the chapter
             else if (chapterMenuIsOpen)
             {
+               menuLevels.enabled = false;
                 chapterMenuIsOpen = false;
                 chapterButtonsPanel.SetActive(true);
                 metaDataIcon.gameObject.SetActive(true);
@@ -71,12 +69,10 @@ public class MenuChapter : MonoBehaviour
                     menuChapterAnimator.SetBool("open", false);
                 }
                 menuCamera.SetZoom(false);
-                menuLevels.DestroyPreviousButtons();
             }
             else if (!chapterMenuIsOpen)
             {
                 menuCamera.SetReturnToSavesMenu(true);
-                gameObject.transform.position += new Vector3(605, 0, 0);
                 menuManager.OpenSaveMenu();
             }
         }
@@ -85,7 +81,7 @@ public class MenuChapter : MonoBehaviour
         {
             DisplayStatistics();
         }
-    }
+    }  
 
     public void DisplayStatistics()
     {
@@ -103,6 +99,7 @@ public class MenuChapter : MonoBehaviour
         int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         if (!chapterMenuIsOpen)
         {
+            menuLevels.enabled = true;
             chapterMenuIsOpen = true;
             chapterButtonsPanel.SetActive(false);
             metaDataIcon.gameObject.SetActive(false);
@@ -138,16 +135,18 @@ public class MenuChapter : MonoBehaviour
                     
                 }
 
-                levelLabel.text = chaptersName[localIndexCurrentChapter];
-                lightCollectibleNumber.text = nbLightCollectibleTaken + "/" + totalNbLightCollectible;
-                shadowCollectibleNumber.text = nbShadowCollectibleTaken + "/" + totalNbShadowCollectible;
-                completedNumber.text = nbCompleted + "/" + totalLevel;
+                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
                 menuChapterAnimator.SetBool("open", true);
                 menuCamera.SetZoom(true);
                 GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
                 menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
             }
         }
+    }
+
+    public void UpdateChapterName(int chapterNumber)
+    {
+        levelLabel.text = chaptersName[chapterNumber].ToUpper();
     }
 
     public void ResetInteractablesChaptersButtons()

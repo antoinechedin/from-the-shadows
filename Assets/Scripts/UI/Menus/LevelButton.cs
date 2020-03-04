@@ -10,6 +10,6 @@ public class LevelButton : MonoBehaviour, ISelectHandler
 
     public void OnSelect(BaseEventData eventData)
     {
-        menuLevels.SetMenuLevelInfo(levelNumber);
+        //menuLevels.SetMenuLevelInfo(levelNumber);
     }
 }

@@ -7,7 +7,7 @@ public class CameraManager : MonoBehaviour
 {
     public Transform cameraTarget;
 
-    void Start()
+    void Awake()
     {
         if (cameraTarget == null)
         {
@@ -20,6 +20,7 @@ public class CameraManager : MonoBehaviour
 
     public void ProcessCameraConfiner(BoxCollider2D limits, CinemachineVirtualCamera virtualCamera, BoxCollider newCollider, float maxCamDepth)
     {
+        float maxDepth = maxCamDepth;
         float frameAspectRatio = (float)Screen.width / (float)Screen.height;
         float cameraDistance = Mathf.Abs(virtualCamera.transform.position.z);
         float frameHeight = cameraDistance * 2f * Mathf.Tan(virtualCamera.m_Lens.FieldOfView * Mathf.Deg2Rad / 2f);
@@ -35,7 +36,7 @@ public class CameraManager : MonoBehaviour
 
         if (limitAspectRatio > frameAspectRatio)
         {
-            float maxDepth = limitHeight / (Mathf.Tan((vfov / 2f + teta) * Mathf.Deg2Rad) + Mathf.Tan((vfov / 2f - teta) * Mathf.Deg2Rad));
+            maxDepth = limitHeight / (Mathf.Tan((vfov / 2f + teta) * Mathf.Deg2Rad) + Mathf.Tan((vfov / 2f - teta) * Mathf.Deg2Rad));
             float cameraHeight = 0;
             float vSize = 0;
             float hOffset = frameAspectRatio * limitHeight;
@@ -57,7 +58,7 @@ public class CameraManager : MonoBehaviour
         }
         else
         {
-            float maxDepth = limitWidth / (2f * (Mathf.Tan((hfov / 2f) * Mathf.Deg2Rad)));
+            maxDepth = limitWidth / (2f * (Mathf.Tan((hfov / 2f) * Mathf.Deg2Rad)));
             float hSize = 0;
 
             if (maxDepth > maxCamDepth)
@@ -76,7 +77,7 @@ public class CameraManager : MonoBehaviour
         }
 
         virtualCamera.Follow = cameraTarget;
-        virtualCamera.m_Follow = cameraTarget;
+        virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = maxDepth;
         virtualCamera.gameObject.GetComponent<CinemachineConfiner>().m_BoundingVolume = newCollider;
     }
 }

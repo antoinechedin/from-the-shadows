@@ -7,6 +7,8 @@ public class ChangeLevelTrigger : MonoBehaviour
     public int nbNecessaryPlayers;
     public GameObject newPlayerSpawns;
     public bool finishChapter = false;
+    [Header("Define whether the players will be tp'd to the \"newPlayerSpawn\" or not")]
+    public bool tpPlayers;
 
     private ChapterManager chapterManager;
     private int nbPlayerInTheTrigger = 0;
@@ -39,7 +41,7 @@ public class ChangeLevelTrigger : MonoBehaviour
                 //sinon on passe au niveau suivant
                 else
                 {
-                    chapterManager.ChangeLevel(newPlayerSpawns.GetComponentInParent<LevelManager>().id);
+                    chapterManager.ChangeLevel(newPlayerSpawns.GetComponentInParent<LevelManager>().id, tpPlayers);
                     if (newPlayerSpawns != null)
                         chapterManager.CurrentSpawns = newPlayerSpawns;
                 }
