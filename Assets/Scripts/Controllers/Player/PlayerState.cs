@@ -5,8 +5,7 @@ using UnityEngine;
 public interface IPlayerState
 {
     void HandleInput(PlayerController player, PlayerInput input);
-    void Update(PlayerController playerController);
-    void FixedUpdate(PlayerController playerController);
+    void FixedUpdate(PlayerController player);
 }
 
 public class PlayerStanding : IPlayerState
@@ -42,7 +41,7 @@ public class PlayerStanding : IPlayerState
         }
     }
 
-    public void Update(PlayerController player)
+    public void FixedUpdate(PlayerController player)
     {
         if (player.actor.collisions.right || player.actor.collisions.left)
         {
@@ -79,11 +78,6 @@ public class PlayerStanding : IPlayerState
             else
                 player.animator.transform.eulerAngles = Vector3.up * -90;
         }
-    }
-
-    public void FixedUpdate(PlayerController player)
-    {
-
     }
 }
 
@@ -160,7 +154,7 @@ public class PlayerAirborne : IPlayerState
 
     }
 
-    public void Update(PlayerController player)
+    public void FixedUpdate(PlayerController player)
     {
         if (player.input.xMoveAxisSign == 1)
             player.animator.transform.eulerAngles = Vector3.up * 90;
@@ -172,7 +166,7 @@ public class PlayerAirborne : IPlayerState
 
         if (canJump)
         {
-            coyoteTimer += Time.deltaTime;
+            coyoteTimer += Time.fixedDeltaTime;
             if (coyoteTimer > coyoteDuration) canJump = false;
         }
 
@@ -202,13 +196,8 @@ public class PlayerAirborne : IPlayerState
         }
         else
         {
-            lastLedgeGrabTimer += Time.deltaTime;
+            lastLedgeGrabTimer += Time.fixedDeltaTime;
         }
-    }
-
-    public void FixedUpdate(PlayerController player)
-    {
-
     }
 }
 
@@ -241,7 +230,7 @@ public class PlayerLedgeGrab : IPlayerState
         }
     }
 
-    public void Update(PlayerController player)
+    public void FixedUpdate(PlayerController player)
     {
         if (!player.actor.LedgeGrab(player.xVelocitySign, true))
         {
@@ -249,9 +238,17 @@ public class PlayerLedgeGrab : IPlayerState
             player.animator.SetTrigger("fall");
         }
     }
+}
 
+public class MeleAttackState : IPlayerState
+{
     public void FixedUpdate(PlayerController player)
     {
+        
+    }
 
+    public void HandleInput(PlayerController player, PlayerInput input)
+    {
+        throw new System.NotImplementedException();
     }
 }

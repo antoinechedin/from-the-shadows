@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerInput input;
     [HideInInspector] public Animator animator;
     public IPlayerState state;
+    public IPlayerState attackState;
     public Vector2 targetVelocity;
     public Vector2 velocity;
     public int xVelocitySign;
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         state.HandleInput(this, input);
+        if (attackState != null) attackState.HandleInput(this, input);
     }
 
     private void FixedUpdate()
@@ -59,20 +61,20 @@ public class PlayerController : MonoBehaviour
             {
                 xVelocitySign = 1;
             }
-                
+
         }
         else if (velocity.x < 0)
         {
             if (xVelocitySign != -1)
             {
                 xVelocitySign = -1;
-            } 
+            }
         }
 
         actor.Move(velocity, Time.fixedDeltaTime);
 
         state.FixedUpdate(this);
-        state.Update(this);
+        if (attackState != null) attackState.HandleInput(this, input);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
