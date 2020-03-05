@@ -8,6 +8,7 @@ public class PlayerInput : MonoBehaviour
     public int id = 1;
     public bool doubleJump;
     public bool attack;
+    public Collider2D attackCollider;
     public LayerMask attackMask;
 
     public bool debugControl;
@@ -20,6 +21,15 @@ public class PlayerInput : MonoBehaviour
     public bool pressedAttack;
 
     public bool pressRight, pressLeft, pressUp, pressDown;
+
+    private void Awake() {
+        if(attack && attackCollider == null)
+        {
+            attack = false;
+            Debug.LogWarning("WARN PlayerInput.Awake: Player " +  id + " can attack but don't have an attack collider."
+                            + " Attack is disable.");
+        }
+    }
 
     private void Update()
     {

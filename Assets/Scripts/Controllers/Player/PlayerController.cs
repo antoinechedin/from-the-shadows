@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         actor.maxSlopeAngle = settings.maxSlopeAngle;
         input = GetComponent<PlayerInput>();
         state = new PlayerStanding();
-        attackState = new MeleAttackState();
+        attackState = new MeleAttackState(this);
         animator = GetComponentInChildren<Animator>();
         xVelocitySign = 1;
     }

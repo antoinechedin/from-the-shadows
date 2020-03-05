@@ -14,11 +14,10 @@ public class PlayerAttackListener : AttackListener
 
     public override void ReceiveAttack(Vector2 from, AttackType type)
     {
-        Debug.Log("Player " + player.input.id + " hit");
         switch (type)
         {
             case AttackType.Player:
-                player.velocity += ((Vector2)player.transform.position - from).normalized * 10 + Vector2.up * 10;
+                player.velocity = (((Vector2)player.transform.position - from).normalized + Vector2.up).normalized * 15;
                 player.actor.collisions.bellow = false;
                 break;
             default:

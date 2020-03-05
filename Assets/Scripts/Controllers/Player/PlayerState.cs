@@ -242,13 +242,18 @@ public class PlayerLedgeGrab : IPlayerState
 
 public class MeleAttackState : IPlayerState
 {
+    private Collider2D[] hits = new Collider2D[8];
+    private ContactFilter2D filter = new ContactFilter2D();
+
     private const float attackDuration = 0.3f;
 
     private float attackTimer;
 
-    public MeleAttackState()
+    public MeleAttackState(PlayerController player)
     {
         attackTimer = attackDuration;
+        filter.layerMask = player.input.attackMask;
+        filter.useLayerMask = true;
     }
 
     public void FixedUpdate(PlayerController player)
@@ -262,20 +267,13 @@ public class MeleAttackState : IPlayerState
         {
             attackTimer = 0;
 
-            Collider2D[] hits = Physics2D.OverlapBoxAll(
-                player.transform.position + Vector3.right * input.xMoveAxisSign,
-                Vector2.one,
-                0,
-                input.attackMask
-            );
-
-            foreach (Collider2D collider in hits)
+            int results = input.attackCollider.OverlapCollider(filter, hits);
+            for (int i = 0; i < results; i++)
             {
-                if (collider == player.actor.boxCollider) continue;
-                AttackListener listener = collider.GetComponent<AttackListener>();
+                if(hits[i] == player.actor.boxCollider) continue;
+                AttackListener listener = hits[i].GetComponent<AttackListener>();
                 if (listener != null) listener.ReceiveAttack(player.transform.position, AttackType.Player);
             }
-
             player.animator.SetTrigger("attack");
         }
     }
