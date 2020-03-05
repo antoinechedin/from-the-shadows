@@ -11,7 +11,7 @@ public class Torch : ActivatorListener, IResetable
     public AudioClip soundOff;
     public bool activeAtStart;
     public float lightRadius;
-    public bool swinging = false;
+    public bool neverStatic = false;
 
     private bool isMute = true;
     public bool active;
@@ -41,7 +41,7 @@ public class Torch : ActivatorListener, IResetable
 
     private void LateUpdate()
     {
-        if (Mathf.Abs(targetRadius - lightSource.GetComponent<NewLightSource>().lightRadius) < 0.001f && !swinging)
+        if (Mathf.Abs(targetRadius - lightSource.GetComponent<NewLightSource>().lightRadius) < 0.001f && !neverStatic)
             lightSource.GetComponent<NewLightSource>().GoStatic();
 
         lightSource.GetComponent<NewLightSource>().lightRadius = Mathf.Lerp(lightSource.GetComponent<NewLightSource>().lightRadius, targetRadius, Time.deltaTime*10);
