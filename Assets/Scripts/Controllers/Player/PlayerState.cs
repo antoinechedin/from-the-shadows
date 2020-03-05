@@ -242,13 +242,26 @@ public class PlayerLedgeGrab : IPlayerState
 
 public class MeleAttackState : IPlayerState
 {
+    private const float attackDuration = 1f;
+
+    private float attackTimer;
+
+    public MeleAttackState()
+    {
+        attackTimer = attackDuration;
+    }
+
     public void FixedUpdate(PlayerController player)
     {
-        
+        if(attackTimer < attackDuration) attackTimer += Time.fixedDeltaTime;
     }
 
     public void HandleInput(PlayerController player, PlayerInput input)
     {
-        throw new System.NotImplementedException();
+        if(input.pressedAttack && (player.state is PlayerStanding || player.state is PlayerAirborne))
+        {
+            Debug.Log("Attack");
+            attackTimer = 0;
+        }
     }
 }
