@@ -6,7 +6,7 @@ public class SpawnSpikes : MonoBehaviour
 {
     public Transform[] points; 
     public GameObject prefab;
-    public float speed = 10;
+    public float speed = 5;
     public float minSecondsAfterRespawn = 3;
     public float maxSecondsAfterRespawn = 6;
 
@@ -20,7 +20,7 @@ public class SpawnSpikes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("Spawn", 1);
+        Invoke("Spawn", minSecondsAfterRespawn);
     }
 
     // Update is called once per frame
