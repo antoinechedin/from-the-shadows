@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         actor.Move(velocity, Time.fixedDeltaTime);
 
         state.FixedUpdate(this);
-        if (attackState != null) attackState.HandleInput(this, input);
+        if (attackState != null) attackState.FixedUpdate(this);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,

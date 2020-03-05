@@ -137,7 +137,7 @@ public class PlayerAirborne : IPlayerState
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.doubleJumpHeight * player.settings.gravity);
 
                 canDoubleJump = false;
-                canStopJump = true;               
+                canStopJump = true;
                 player.animator.SetTrigger("flip");
             }
         }
@@ -242,7 +242,7 @@ public class PlayerLedgeGrab : IPlayerState
 
 public class MeleAttackState : IPlayerState
 {
-    private const float attackDuration = 1f;
+    private const float attackDuration = 0.3f;
 
     private float attackTimer;
 
@@ -253,15 +253,30 @@ public class MeleAttackState : IPlayerState
 
     public void FixedUpdate(PlayerController player)
     {
-        if(attackTimer < attackDuration) attackTimer += Time.fixedDeltaTime;
+        if (attackTimer < attackDuration) attackTimer += Time.fixedDeltaTime;
     }
 
     public void HandleInput(PlayerController player, PlayerInput input)
     {
-        if(input.pressedAttack && (player.state is PlayerStanding || player.state is PlayerAirborne))
+        if (input.pressedAttack && (player.state is PlayerStanding || player.state is PlayerAirborne) && attackTimer >= attackDuration)
         {
-            Debug.Log("Attack");
             attackTimer = 0;
+
+            Collider2D[] hits = Physics2D.OverlapBoxAll(
+                player.transform.position + Vector3.right * input.xMoveAxisSign,
+                Vector2.one,
+                0,
+                input.attackMask
+            );
+
+            foreach (Collider2D collider in hits)
+            {
+                if (collider == player.actor.boxCollider) continue;
+                AttackListener listener = collider.GetComponent<AttackListener>();
+                if (listener != null) listener.ReceiveAttack(player.transform.position, AttackType.Player);
+            }
+
+            player.animator.SetTrigger("attack");
         }
     }
 }

@@ -8,6 +8,7 @@ public class PlayerInput : MonoBehaviour
     public int id = 1;
     public bool doubleJump;
     public bool attack;
+    public LayerMask attackMask;
 
     public bool debugControl;
     public bool active = true;
