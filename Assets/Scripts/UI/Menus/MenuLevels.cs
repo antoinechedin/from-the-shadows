@@ -80,16 +80,17 @@ public class MenuLevels : MonoBehaviour
         {
             if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
             {
+                int localLevelIndex = i;
                 //TODO : aller chercher le bon srceenshot
                 GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot") as GameObject;
-                levelScreenshot.name = i.ToString();
+                levelScreenshot.name = localLevelIndex.ToString();
                 LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshot, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
                 SetMenuLevelInfo(i, spawnedScreenshot);
                 spawnedScreenshot.GetComponent<Button>().onClick.AddListener(delegate
                 {
-                    LevelButtonClicked(new LoadingChapterInfo(i), spawnedScreenshot);
+                    LevelButtonClicked(new LoadingChapterInfo(localLevelIndex), spawnedScreenshot);
                 });
-                spawnedScreenshot.LevelIndex = i;
+                spawnedScreenshot.LevelIndex = localLevelIndex;
                 spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
                 screenshots.Add(spawnedScreenshot);
 
