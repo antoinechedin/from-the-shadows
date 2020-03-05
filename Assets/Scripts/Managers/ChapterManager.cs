@@ -281,9 +281,6 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaInt(playerId == 1 ? MetaTag.PLAYER_1_DEATH : MetaTag.PLAYER_2_DEATH, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
-        //on remet Player.dead à false
-        player.dead = false;
-        player.dying = false;
 
         //tant que l'ecran n'a pas fini de fade au noir
         while (!transitionScreen.GetComponent<TransitionScreen>().finished)
@@ -291,7 +288,13 @@ public class ChapterManager : MonoBehaviour
             yield return null;
         }
 
-        player.input.active = true;
+        //on reactive les inputs des joueurs
+        foreach (PlayerController p in players)
+        {
+            p.dead = false;
+            p.dying = false;
+            p.input.active = true;
+        }
 
         resetingLevel = false;
     }

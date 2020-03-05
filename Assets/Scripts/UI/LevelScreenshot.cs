@@ -5,11 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class LevelScreenshot : MonoBehaviour
 {
+    public GameObject collectiblesHolder;
+
     private RectTransform rt;
     private Vector3 destination;
-    private bool destinationChanged = false;
+    // private bool destinationChanged = false; // inutile
     private Vector2 startScale;
-    public int levelIndex; //the index of the IG level
+    private int levelIndex; //the index of the IG level
 
     private MenuLevels menuLevels;
     private bool pressed = false;
@@ -46,7 +48,7 @@ public class LevelScreenshot : MonoBehaviour
         }
         else
         {
-            destinationChanged = false;
+            // destinationChanged = false;
         }
     }
 
@@ -57,14 +59,14 @@ public class LevelScreenshot : MonoBehaviour
     public void SetNewDestination(Vector3 distance)
     {
             destination += distance;
-            destinationChanged = true;
+            // destinationChanged = true;
     }
 
     private void HandleScaling()
     {
         Vector3 pos = GetComponent<RectTransform>().localPosition;
 
-        float finalSize = menuLevels.maxSize - (Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots);
+        float finalSize = menuLevels.maxSize - (Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots * menuLevels.minSize);
         finalSize = Mathf.Clamp(finalSize, menuLevels.minSize, menuLevels.maxSize);
         transform.localScale = startScale * new Vector3(finalSize, finalSize, 1);
     }
