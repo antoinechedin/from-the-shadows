@@ -43,6 +43,7 @@ public class Utils
         List<int> trix = new List<int>();
         List<Vector3> vertix = new List<Vector3>();
         List<Vector3> normix = new List<Vector3>();
+        List<Vector2> uv = new List<Vector2>();
 
         int offset = 0;
 
@@ -54,29 +55,37 @@ public class Utils
 
             Vector3[] vertices = new Vector3[polygonCollider.GetPath(j).Length * 6];
             Vector3[] normals = new Vector3[polygonCollider.GetPath(j).Length * 6];
+            Vector2[] localUvs = new Vector2[vertices.Length];
 
             for (int i = 0; i < polygonCollider.GetPath(j).Length; i++)
             {
                 vertices[i].x = polygonCollider.GetPath(j)[i].x;
                 vertices[i].y = polygonCollider.GetPath(j)[i].y;
                 vertices[i].z = frontDistance; // front vertex
+                localUvs[i] = new Vector2(vertices[i].x, vertices[i].y); //uv
+
                 vertices[i + polygonCollider.GetPath(j).Length].x = polygonCollider.GetPath(j)[i].x;
                 vertices[i + polygonCollider.GetPath(j).Length].y = polygonCollider.GetPath(j)[i].y;
                 vertices[i + polygonCollider.GetPath(j).Length].z = backDistance;  // back vertex    
+                localUvs[i + polygonCollider.GetPath(j).Length] = new Vector2(vertices[i + polygonCollider.GetPath(j).Length].x, vertices[i + polygonCollider.GetPath(j).Length].y); //uv
 
                 vertices[i + 2 * polygonCollider.GetPath(j).Length].x = polygonCollider.GetPath(j)[i].x;
                 vertices[i + 2 * polygonCollider.GetPath(j).Length].y = polygonCollider.GetPath(j)[i].y;
                 vertices[i + 2 * polygonCollider.GetPath(j).Length].z = frontDistance; // front vertex
+                localUvs[i + 2 * polygonCollider.GetPath(j).Length] = new Vector2(vertices[i + 2 * polygonCollider.GetPath(j).Length].x, vertices[i + 2 * polygonCollider.GetPath(j).Length].z); //uv
                 vertices[i + 3 * polygonCollider.GetPath(j).Length].x = polygonCollider.GetPath(j)[i].x;
                 vertices[i + 3 * polygonCollider.GetPath(j).Length].y = polygonCollider.GetPath(j)[i].y;
                 vertices[i + 3 * polygonCollider.GetPath(j).Length].z = backDistance;  // back vertex  
+                localUvs[i + 3 * polygonCollider.GetPath(j).Length] = new Vector2(vertices[i + 3 * polygonCollider.GetPath(j).Length].x, vertices[i + 3 * polygonCollider.GetPath(j).Length].z); //uv
 
                 vertices[i + 4 * polygonCollider.GetPath(j).Length].x = polygonCollider.GetPath(j)[i].x;
                 vertices[i + 4 * polygonCollider.GetPath(j).Length].y = polygonCollider.GetPath(j)[i].y;
                 vertices[i + 4 * polygonCollider.GetPath(j).Length].z = frontDistance; // front vertex
+                localUvs[i + 4 * polygonCollider.GetPath(j).Length] = new Vector2(vertices[i + 4 * polygonCollider.GetPath(j).Length].x, vertices[i + 4 * polygonCollider.GetPath(j).Length].z); //uv
                 vertices[i + 5 * polygonCollider.GetPath(j).Length].x = polygonCollider.GetPath(j)[i].x;
                 vertices[i + 5 * polygonCollider.GetPath(j).Length].y = polygonCollider.GetPath(j)[i].y;
                 vertices[i + 5 * polygonCollider.GetPath(j).Length].z = backDistance;  // back vertex  
+                localUvs[i + 5 * polygonCollider.GetPath(j).Length] = new Vector2(vertices[i + 5 * polygonCollider.GetPath(j).Length].x, vertices[i + 5 * polygonCollider.GetPath(j).Length].z); //uv
             }
 
             int[] triangles = new int[tris.Length * 2 + polygonCollider.GetPath(j).Length * 6];
@@ -118,6 +127,7 @@ public class Utils
             normix.AddRange(normals);
             vertix.AddRange(vertices);
             trix.AddRange(triangles);
+            uv.AddRange(localUvs);
 
             offset += polygonCollider.GetPath(j).Length * 6;
         }
@@ -127,6 +137,8 @@ public class Utils
 
         m.RecalculateNormals();
         m.RecalculateBounds();
+
+        m.uv = uv.ToArray();
 
         return m;
     }
