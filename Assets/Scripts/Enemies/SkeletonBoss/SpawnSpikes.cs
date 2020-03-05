@@ -16,6 +16,7 @@ public class SpawnSpikes : MonoBehaviour
     private int randomLane = -1;
     private int randomDirection = -1;
     private bool forceChangeLane = false;
+    private bool rotate = false;
 
     // Start is called before the first frame update
     void Start()
@@ -51,11 +52,6 @@ public class SpawnSpikes : MonoBehaviour
                 Spawn();
                 return;
             }
-            else
-            {
-                SwitchDirection();
-                forceChangeLane = true;
-            }
         }
         else
         {
@@ -68,22 +64,27 @@ public class SpawnSpikes : MonoBehaviour
             // and choose a random direction
             randomDirection = Random.Range(0, 2);
             if (randomDirection == 1)
-                SwitchDirection();
+            {
+                SwitchDirection();                
+            }
         }
 
         // Spawn the prefab
         if (from != null && to != null && prefab != null)
             go = Instantiate(prefab, from, Quaternion.identity);
 
-        if (randomDirection == 0)
-            go.transform.Rotate(new Vector3(0, 180, 0));
+        if (rotate)
+        {
+            go.transform.localScale = new Vector3(-1, 1, 1);
+        }
+        rotate = false;
     }
 
     public void SwitchDirection()
     {
-        randomDirection = 1;
         Vector3 tmp = from;
         from = to;
         to = tmp;
+        rotate = true;
     }
 }

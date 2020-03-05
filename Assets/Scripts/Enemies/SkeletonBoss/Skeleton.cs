@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skeleton : MonoBehaviour
+public class Skeleton : MonoBehaviour, IResetable
 {
     public Transform[] points;
     public float timeBetweenAttacks;
     public GameObject hands;
     public GameObject player1;
     public GameObject player2;
+    public GameObject leftZone;
+    public GameObject middleZone;
+    public GameObject rightZone;
+    public GameObject leftZoneBis;
+    public GameObject rightZoneBis;
 
-    public int hp = 3;
+    private int hp = 3;
     private int laneToAttack = 0;
     private string stringDirection;
 
@@ -52,17 +57,47 @@ public class Skeleton : MonoBehaviour
     
     public void GetHurt()
     {
-        Debug.Log("aie");
+        Debug.Log("aïe");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
         hp--;
         if (hp == 0)
+        {
             Die();
+            Invoke("DestroyMiddleZone", 3);
+        }
+           
+
+        if (hp == 2)
+            Invoke("DestroyLeftZone",1);
+        if (hp == 1)
+            Invoke("DestroyRightZone",1);
     }
 
     public void Die()
     {
-        Debug.Log("dead");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
         CancelInvoke();
+    }
+
+    public void Reset()
+    {
+        hp = 3;
+    }
+
+    public void DestroyLeftZone()
+    {
+        leftZone.SetActive(false);
+        leftZoneBis.SetActive(true);
+    }
+
+    public void DestroyRightZone()
+    {
+        rightZone.SetActive(false);
+        rightZoneBis.SetActive(true);
+    }
+
+    public void DestroyMiddleZone()
+    {
+        middleZone.SetActive(false);
     }
 }
