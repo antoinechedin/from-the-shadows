@@ -29,13 +29,13 @@ public class MenuManager : MonoBehaviour
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
 
-    private MenuStartButton playButtonFade;
-    private MenuStartButton optionsButtonFade;
+    private ButtonFade playButtonFade;
+    private ButtonFade optionsButtonFade;
 
     void Start()
     {
-        playButtonFade = play.GetComponent<MenuStartButton>();
-        optionsButtonFade = options.GetComponent<MenuStartButton>();
+        playButtonFade = play.GetComponent<ButtonFade>();
+        optionsButtonFade = options.GetComponent<ButtonFade>();
 
         SaveManager.Instance.LoadAllSaveFiles();
 
@@ -102,8 +102,7 @@ public class MenuManager : MonoBehaviour
         backgroundAnimator.SetBool("fade", true);
 
         // wait button fade out        
-        StartCoroutine(playButtonFade.FadeOut());
-        while (playButtonFade.fading) { }; // doesn't wait properly
+        StartCoroutine(playButtonFade.FadeOut());        
 
         savesMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);

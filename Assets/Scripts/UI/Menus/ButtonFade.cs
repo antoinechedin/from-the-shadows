@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuStartButton : MonoBehaviour
+public class ButtonFade : MonoBehaviour
 {
     public Material mat;
 
@@ -17,10 +17,18 @@ public class MenuStartButton : MonoBehaviour
     {
         text = GetComponentInChildren<Text>();
         text.material = Instantiate(mat);
+        dissolve = text.material.GetFloat("_Dissolution");
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+            StartCoroutine(FadeOut());
     }
 
     public IEnumerator FadeOut()
     {
+        Debug.Log("IN");
         fading = true;
         while (dissolve > 0)
         {
@@ -29,6 +37,7 @@ public class MenuStartButton : MonoBehaviour
             yield return null;
         }
         fading = false;
+        Debug.Log("OUT");
     }
 
     public IEnumerator FadeIn()
