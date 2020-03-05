@@ -13,33 +13,52 @@ public class FallingPlatform : MonoBehaviour, IResetable
     private Vector3 startingPosition;
     private bool isShaking = false;
     private bool isFalling;
-    private GameObject child;
     private Vector3 fallingPosition;
     private Color targetColor;
     private Color startingColor;
 
+    private Transform mesh;
+    private Collider2D plaformCollider;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        if (transform.childCount < 2)
+        {
+            Debug.LogWarning("WARN FallingPlatform.Start: " + Utils.GetFullName(transform)
+                             + " is invalid, couldn't find child mesh/collider");
+        }
+        else
+        {
+            plaformCollider = transform.GetChild(0).GetComponent<Collider2D>();
+            mesh = transform.GetChild(1);
+        }
+        if (plaformCollider == null)
+        {
+            Debug.LogWarning("WARN FallingPlatform.Start: "  + Utils.GetFullName(transform.GetChild(0))
+                             + " don't have 2D Collider");
+        }
+
         startingPosition = transform.position;
-        child = transform.Find("Child").gameObject;
-        startingColor = child.GetComponent<MeshRenderer>().material.color;
+        startingColor = mesh.GetComponent<MeshRenderer>().material.GetColor("_BaseColor");
         targetColor = startingColor;
         fallingPosition = transform.position;
+
     }
 
     public void Update()
     {
         if (isShaking)
         {
-            transform.position = new Vector3(transform.position.x + Mathf.Sin(Time.time * shakeSpeed) * shakeIntensity,
-                                         transform.position.y,
-                                         transform.position.z);
+            mesh.position = new Vector3(mesh.position.x + Mathf.Sin(Time.time * shakeSpeed) * shakeIntensity,
+                                         mesh.position.y,
+                                         mesh.position.z);
         }
 
-        Color color = child.GetComponent<MeshRenderer>().material.color;
-        child.GetComponent<MeshRenderer>().material.color = Color.Lerp(color, targetColor, Time.deltaTime * 10);
-        transform.position = Vector3.Lerp(transform.position, fallingPosition, Time.deltaTime * 5);
+        Color color = mesh.GetComponent<MeshRenderer>().material.GetColor("_BaseColor");
+        Color fade = Color.Lerp(color, targetColor, Time.deltaTime * 10);
+        mesh.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", fade);
+        mesh.position = Vector3.Lerp(mesh.position, fallingPosition, Time.deltaTime * 5);
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -53,19 +72,19 @@ public class FallingPlatform : MonoBehaviour, IResetable
 
     public void Fall()
     {
-        if (child != null)
-            child.GetComponent<Collider2D>().enabled = false;
+        if (plaformCollider != null)
+            plaformCollider.enabled = false;
         targetColor = new Color(startingColor.r, startingColor.g, startingColor.b, 0);
-        fallingPosition = transform.position - new Vector3(0, 5, 0);
+        fallingPosition = mesh.position - new Vector3(0, 5, 0);
         Invoke("Reset", timerBeforeSpawning);
     }
 
     public void Reset()
     {
         isShaking = false;
-        transform.position = startingPosition;
+        mesh.position = startingPosition;
         fallingPosition = startingPosition;
-        child.GetComponent<Collider2D>().enabled = true;
+        plaformCollider.enabled = true;
         targetColor = startingColor;
         CancelInvoke();
     }

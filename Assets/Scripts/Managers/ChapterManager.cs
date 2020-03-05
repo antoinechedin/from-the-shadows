@@ -31,6 +31,7 @@ public class ChapterManager : MonoBehaviour
         }
 
         levels[currentLevel].virtualCamera.gameObject.SetActive(true);
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
@@ -73,7 +74,7 @@ public class ChapterManager : MonoBehaviour
         {
             if (currentLevel + 1 < levels.Count)
             {
-                ChangeLevel(currentLevel + 1);
+                ChangeLevel(currentLevel + 1, true);
                 currentSpawns = levels[currentLevel].playerSpawns[0];
                 SpawnPlayers();
             }
@@ -83,7 +84,7 @@ public class ChapterManager : MonoBehaviour
         {
             if (currentLevel - 1 >= 0)
             {
-                ChangeLevel(currentLevel - 1);
+                ChangeLevel(currentLevel - 1, true);
                 currentSpawns = levels[currentLevel].playerSpawns[0];
                 SpawnPlayers();
             }
@@ -131,7 +132,7 @@ public class ChapterManager : MonoBehaviour
     /// <summary>
     /// Saves the current level and sets the new current level to "newCurrentLevel" in parameters
     /// </summary>
-    public void ChangeLevel(int newCurrentLevel)
+    public void ChangeLevel(int newCurrentLevel, bool tpPlayers)
     {
         // Mise à jour des infos concernant le niveau courant
         if (GameManager.Instance.CurrentChapter != -1)
@@ -145,6 +146,8 @@ public class ChapterManager : MonoBehaviour
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
 
         currentLevel = newCurrentLevel;
+        
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         // On active la nouvelle room et ses voisins
         levels[currentLevel].EnableLevel();
@@ -157,8 +160,32 @@ public class ChapterManager : MonoBehaviour
             levels[currentLevel].SetCollectibles(currentLvl.LightCollectibles, currentLvl.ShadowCollectibles);
         }
 
+        if (tpPlayers)
+        {
+            StartCoroutine(TpPlayersWithTransitionScreen());
+        }
 
         SaveManager.Instance.WriteSaveFile();
+    }
+
+    /// <summary>
+    /// Tps the players to the current spawn point and displays a transition screen
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator TpPlayersWithTransitionScreen()
+    {
+        //on affiche l'écran de transition de mort
+        GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
+        transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
+
+        //tant que l'ecran n'a pas fini de fade au noir
+        while (!transitionScreen.GetComponent<TransitionScreen>().finishedFadingIn)
+        {
+            yield return null;
+        }
+
+        currentSpawns = levels[currentLevel].playerSpawns[0];
+        SpawnPlayers();
     }
 
     public void FinishChapter()

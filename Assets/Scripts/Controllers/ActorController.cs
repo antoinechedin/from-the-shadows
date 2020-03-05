@@ -297,17 +297,18 @@ public class ActorController : RaycastController
 
     public bool LedgeGrab(float facing, bool checkOnly)
     {
+        float heightOffset = 0.5f;
         float floorOffset = 0.08f;
         float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxRaySpacing) + 2;
         float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxRaySpacing, Mathf.Infinity)
                                      / (hLedgeGrabRayCount - 1);
-        hLedgeGrabRayCount += 2;
+        hLedgeGrabRayCount += 5;
         float ledgeGrabRayLength = skinWidth + minFloorLength;
 
         for (int i = 0; i < hLedgeGrabRayCount; i++)
         {
             Vector2 rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
-            rayOrigin += Vector2.up * (collisions.move.y - (hLedgeGrabRaySpacing * i));
+            rayOrigin += Vector2.up * (collisions.move.y - (hLedgeGrabRaySpacing * i) + heightOffset);
             rayOrigin += Vector2.right * collisions.move.x;
 
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, ledgeGrabRayLength, collisionMask);
@@ -318,10 +319,17 @@ public class ActorController : RaycastController
                 if (i == 0) return false;
                 //if (hit.normal.y < Mathf.Sin(45f * Mathf.Deg2Rad)) return false;
 
+                rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
+                rayOrigin += Vector2.up * (collisions.move.y + heightOffset);
+                rayOrigin += Vector2.right * collisions.move.x;
+                RaycastHit2D headHit = Physics2D.Raycast(rayOrigin, Vector2.down, heightOffset, collisionMask);
+                Debug.DrawRay(rayOrigin, Vector2.down * heightOffset, Color.blue);
+                if (headHit) return false;
+
                 if (hit.distance - skinWidth < minFloorLength)
                 {
                     rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
-                    rayOrigin += Vector2.up * (collisions.move.y);
+                    rayOrigin += Vector2.up * (collisions.move.y + heightOffset);
                     rayOrigin += Vector2.right * collisions.move.x;
                     rayOrigin += Vector2.right * facing * (hit.distance + minFloorLength);
 
