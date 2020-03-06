@@ -20,6 +20,7 @@ public class NewLayeredObstacle : MonoBehaviour
         GameObject go = new GameObject();
         go.AddComponent<PolygonCollider2D>();
         go.AddComponent<MeshRenderer>();
+        go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         go.AddComponent<MeshFilter>();
         go.AddComponent<DrawPolygonGizmos>();
         go.name = "RealCollider";
@@ -53,7 +54,6 @@ public class NewLayeredObstacle : MonoBehaviour
         mat.SetFloat("Vector1_2568B206", height);
         mat.SetFloat("Vector1_6FEEDC3A", 0.5f);
 
-        GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
     }
 
     private void Start() 
