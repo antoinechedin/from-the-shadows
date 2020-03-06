@@ -97,11 +97,11 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = position;
         state = new PlayerStanding();
+        attackState = new MeleAttackState(this);
         velocity = Vector2.zero;
         targetVelocity = Vector2.zero;
         xVelocitySign = 1;
 
         animator.Rebind();
-        animator.SetBool("Light", input.doubleJump);
     }
 }
