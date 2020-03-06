@@ -77,7 +77,6 @@ public class MenuCamera : MonoBehaviour
             }
 
             // Cursor on UI follow world points
-            cursor.gameObject.SetActive(cursorPositions[chapterSelected].GetComponent<Renderer>().isVisible);
             Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
             Vector2 canvasSizeDelta = canvas.GetComponent<RectTransform>().sizeDelta / 2f;
             float canvasScaleFactor = canvas.scaleFactor;
