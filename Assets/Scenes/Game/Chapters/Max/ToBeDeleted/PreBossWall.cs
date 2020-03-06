@@ -18,8 +18,8 @@ public class PreBossWall : MonoBehaviour, IResetable
     private float baseTimeToReachMaxSpeed;
     private float t = 0.0f;
 
-
     private Vector3 basePosition;
+
     private void Start()
     {
         baseEndingSpeed = endingSpeed;
