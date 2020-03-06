@@ -146,7 +146,7 @@ public class ChapterManager : MonoBehaviour
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
 
         currentLevel = newCurrentLevel;
-        
+
         Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         // On active la nouvelle room et ses voisins
@@ -193,7 +193,7 @@ public class ChapterManager : MonoBehaviour
         //Save the metaData
         CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
-        GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
+        GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2, GameManager.Instance.CurrentChapter));
     }
 
     public void ValidateCollectibles()
