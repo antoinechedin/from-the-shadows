@@ -38,7 +38,7 @@ public class PlayerInput : MonoBehaviour
             moveAxis = Vector2.zero;
             pressedJump = false;
             releasedJump = false;
-            attack = false;
+            pressedAttack = false;
         }
         else if (debugControl)
         {
