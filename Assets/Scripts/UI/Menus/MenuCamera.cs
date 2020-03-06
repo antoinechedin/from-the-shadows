@@ -77,7 +77,6 @@ public class MenuCamera : MonoBehaviour
             }
 
             // Cursor on UI follow world points
-            cursor.gameObject.SetActive(cursorPositions[chapterSelected].GetComponent<Renderer>().isVisible);
             Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
             Vector2 canvasSizeDelta = canvas.GetComponent<RectTransform>().sizeDelta / 2f;
             float canvasScaleFactor = canvas.scaleFactor;
@@ -128,5 +127,10 @@ public class MenuCamera : MonoBehaviour
     public bool SmoothTransition
     {
         set { smoothTransition = value; }
+    }
+
+    public void UnlockAnimation(bool unlock)
+    {
+        cursor.GetComponent<Animator>().SetBool("unlock", unlock);
     }
 }
