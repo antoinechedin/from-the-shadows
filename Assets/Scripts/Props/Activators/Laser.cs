@@ -25,9 +25,6 @@ public class Laser : ActivatorListener
         points = new Vector3[maxReflection + 2];
         lineRenderer = GetComponent<LineRenderer>();
         collisionMask = LayerMask.GetMask("LayeredSolid", "Solid", "Player", "Reflector");
-
-        // Shader Effect
-        //ShaderEffect();
     }
 
     // Update is called once per frame
@@ -45,11 +42,8 @@ public class Laser : ActivatorListener
 
     void ShaderEffect()
     {
-        //for (int i = -200; i < max; i+=10)
-        {
-            dissolve.SetFloat("Vector1_149EC6A4", value / max);
-            value += 5;
-        }
+        dissolve.SetFloat("Vector1_149EC6A4", value / max);
+        value += 5;
     }
 
     void DrawRays(int nbPoints)
