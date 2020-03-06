@@ -190,6 +190,8 @@ public class ChapterManager : MonoBehaviour
 
     public void FinishChapter()
     {
+        ValidateCollectibles();
+        GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
         //Save the metaData
         CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
