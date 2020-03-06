@@ -124,6 +124,8 @@ public class MenuManager : MonoBehaviour
         int lastSaveSelected = savesMenu.gameObject.GetComponent<SaveMenu>().LastSelected;
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SaveMenu>().buttons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
+
+        yield return StartCoroutine(SavesDissolveIn());
     }
 
     public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
@@ -184,6 +186,11 @@ public class MenuManager : MonoBehaviour
         StartCoroutine(optionsDissolve.DissolveOut());
         StartCoroutine(quitDissolve.DissolveOut());        
         yield return StartCoroutine(playDissolve.DissolveOut());
+    }
+
+    IEnumerator SavesDissolveIn()
+    {        
+        yield return StartCoroutine(savesMenu.Find("New Game 1").Find("Rectangle").GetComponent<Dissolve>().DissolveIn());
     }
 
     IEnumerator Fade()

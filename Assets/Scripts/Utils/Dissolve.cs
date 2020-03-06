@@ -7,22 +7,22 @@ using UnityEngine.UI;
 public class Dissolve : MonoBehaviour
 {
     public Material mat;
-    public Texture2D texture;
     public Component component;
-
     public Vector2 ratio = new Vector2(1f, 1f);
+    public Color color;
 
     public bool dissolving = false;
     [Range(0f, 1f)] public float dissolveAmount;
     public bool disableOnce;
 
-    private float dissolve;    
+    private float dissolve;
 
     private void Start()
     {        
         ((MaskableGraphic)component).material = Instantiate(mat);
         dissolve = ((MaskableGraphic)component).material.GetFloat("_Dissolution");
         ((MaskableGraphic)component).material.SetVector("_Ratio", ratio);
+        ((MaskableGraphic)component).material.SetColor("_Color", color);
     }
 
     public IEnumerator DissolveOut()
