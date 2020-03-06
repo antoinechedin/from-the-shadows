@@ -87,6 +87,7 @@ public class Skeleton : MonoBehaviour, IResetable
         rightZone.SetActive(true);
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
+        hands.GetComponent<Animator>().SetTrigger("Reset");
     }
 
     public void DestroyLeftZone()

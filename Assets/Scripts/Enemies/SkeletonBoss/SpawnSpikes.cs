@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnSpikes : MonoBehaviour
+public class SpawnSpikes : MonoBehaviour, IResetable
 {
     public Transform[] points; 
     public GameObject prefab;
@@ -86,5 +86,16 @@ public class SpawnSpikes : MonoBehaviour
         from = to;
         to = tmp;
         rotate = true;
+    }
+
+    public void Reset()
+    {
+        CancelInvoke();
+        if (go != null)
+        {
+            Destroy(go);
+            go = null;
+        }
+        Invoke("Spawn", minSecondsAfterRespawn);
     }
 }
