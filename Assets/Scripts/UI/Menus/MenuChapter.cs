@@ -82,16 +82,16 @@ public class MenuChapter : MonoBehaviour
             DisplayStatistics();
         }
 
-        leftArrow.gameObject.SetActive(true);
-        rightArrow.gameObject.SetActive(true);
+        leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
+        rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
 
         if (localIndexCurrentChapter == 0)
         {
-            leftArrow.gameObject.SetActive(false);
+            leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
         }
         else if (localIndexCurrentChapter >= chaptersName.Count - 1)
         {
-            rightArrow.gameObject.SetActive(false);
+            rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
         }
     }
 
@@ -185,12 +185,15 @@ public class MenuChapter : MonoBehaviour
 
     private IEnumerator UnlockChapterCoroutine(int chapterUnlocked)
     {
-        yield return new WaitForSeconds(1f);
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForSeconds(0.5f);
         menuCamera.SetChapterSelected(chapterUnlocked);
+        GameManager.Instance.CurrentChapter = chapterUnlocked;
+        UpdateChapterName(chapterUnlocked);
+        yield return new WaitForSeconds(0.25f);
+        menuCamera.UnlockAnimation(true);
+        yield return new WaitForSeconds(3f);
         EventSystem.current.SetSelectedGameObject(chapterButtons[chapterUnlocked].gameObject);
-        yield return new WaitForSeconds(2f);
-        menuCamera.SetChapterSelected(chapterUnlocked - 1);
-        EventSystem.current.SetSelectedGameObject(chapterButtons[chapterUnlocked - 1].gameObject);
     }
 
 }
