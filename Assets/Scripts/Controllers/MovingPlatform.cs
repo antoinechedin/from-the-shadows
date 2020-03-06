@@ -10,8 +10,8 @@ public class MovingPlatform : ActivatorListener, IResetable
 
     private SolidController solid;
     public float timer;
-    public Vector3 start;
-    public Vector3 end;
+    private Vector3 start;
+    private Vector3 end;
 
     private bool awake;
 
