@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 4131913194119821326}
   - component: {fileID: 610891211744549664}
   - component: {fileID: 948717763814067940}
+  - component: {fileID: 4165274520994737986}
   m_Layer: 13
   m_Name: BasePlayer
   m_TagString: Player
@@ -247,12 +248,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   doubleJump: 0
+  attack: 0
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 8192
   debugControl: 0
   active: 1
   moveAxis: {x: 0, y: 0}
   xMoveAxisSign: 1
   pressedJump: 0
   releasedJump: 0
+  pressedAttack: 0
   pressRight: 0
   pressLeft: 0
   pressUp: 0
@@ -278,6 +284,18 @@ MonoBehaviour:
   xVelocitySign: 0
   dead: 0
   dying: 0
+--- !u!114 &4165274520994737986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789239184713555092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 136da88fa6412ba43959d64e46a87860, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3379676980847624257
 PrefabInstance:
   m_ObjectHideFlags: 0

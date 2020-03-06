@@ -48,18 +48,14 @@ public class MovingKillZone : MonoBehaviour, IResetable
     // Update is called once per frame
     void Update()
     {
-        //on incrément jusqu'à la vitesse max en timeToMaxSpeed secondes
-        if (maxSpeed - currentSpeed > 0.1f)
+        //on change jusqu'à la vitesse max en timeToMaxSpeed secondes
+        if (Mathf.Abs(maxSpeed - currentSpeed) > 0.1f)
         {
-            currentSpeed += Mathf.Lerp(0, maxSpeed, Time.deltaTime / timeToMaxSpeed);
+            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime / timeToMaxSpeed);
         }
 
         //déplacement vers la cible
         killZone.transform.position = Vector3.MoveTowards(killZone.transform.position, targetPos.position, currentSpeed * Time.deltaTime);
-
-        if (Vector3.Distance(killZone.transform.position, targetPos.position) < 0.1f)
-        {
-        }
     }
 
     public void SetNewInfos(MovingKillZoneCP cp)
