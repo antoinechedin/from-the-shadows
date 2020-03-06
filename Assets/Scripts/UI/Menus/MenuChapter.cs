@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -16,6 +17,8 @@ public class MenuChapter : MonoBehaviour
     public MenuManager menuManager;
     public Image metaDataPanel;
     public Image metaDataIcon;
+    public Image rightArrow;
+    public Image leftArrow;
 
     private List<Chapter> chapters;
     private Animator menuChapterAnimator;
@@ -31,9 +34,7 @@ public class MenuChapter : MonoBehaviour
         chaptersName = new List<string>(new string[] {
             "CHAPTER 0",
             "CHAPTER 1",
-            "CHAPTER 2",
-            "CHAPTER 3",
-            "CHAPTER 4"
+            "CHAPTER 2"
         });
     }
 
@@ -41,13 +42,12 @@ public class MenuChapter : MonoBehaviour
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
-
+        localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
     }
 
     void Update()
     {
-
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
@@ -59,7 +59,8 @@ public class MenuChapter : MonoBehaviour
             // Close the chapter
             else if (chapterMenuIsOpen)
             {
-               menuLevels.enabled = false;
+                menuLevels.ResetScreenshots();
+                menuLevels.enabled = false;
                 chapterMenuIsOpen = false;
                 chapterButtonsPanel.SetActive(true);
                 metaDataIcon.gameObject.SetActive(true);
@@ -81,7 +82,19 @@ public class MenuChapter : MonoBehaviour
         {
             DisplayStatistics();
         }
-    }  
+
+        leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
+        rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
+
+        if (localIndexCurrentChapter == 0)
+        {
+            leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
+        }
+        else if (localIndexCurrentChapter >= chaptersName.Count - 1)
+        {
+            rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
+        }
+    }
 
     public void DisplayStatistics()
     {
@@ -132,7 +145,7 @@ public class MenuChapter : MonoBehaviour
                     totalNbShadowCollectible += l.ShadowCollectibles.Length;
                     if (l.Completed) nbCompleted++;
                     totalLevel++;
-                    
+
                 }
 
                 levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
@@ -163,6 +176,25 @@ public class MenuChapter : MonoBehaviour
                 chapterButtons[i + 1].interactable = true;
             }
         }
+    }
+
+    public void UnlockChapter(int chapterUnlocked)
+    {
+        IEnumerator coroutine = UnlockChapterCoroutine(chapterUnlocked);
+        StartCoroutine(coroutine);
+    }
+
+    private IEnumerator UnlockChapterCoroutine(int chapterUnlocked)
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForSeconds(0.5f);
+        menuCamera.SetChapterSelected(chapterUnlocked);
+        GameManager.Instance.CurrentChapter = chapterUnlocked;
+        UpdateChapterName(chapterUnlocked);
+        yield return new WaitForSeconds(0.25f);
+        menuCamera.UnlockAnimation(true);
+        yield return new WaitForSeconds(3f);
+        EventSystem.current.SetSelectedGameObject(chapterButtons[chapterUnlocked].gameObject);
     }
 
 }

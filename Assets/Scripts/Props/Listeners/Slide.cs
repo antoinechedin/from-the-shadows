@@ -51,7 +51,7 @@ public class Slide : ActivatorListener
             open = true;
             targetPosition = stopPosition;
             if (direction == Direction.Depth)
-                GetComponent<Collider2D>().enabled = false;
+                transform.Find("Cube").GetComponent<Collider2D>().enabled = false;
             if (audioSource != null && !isMute)
                 audioSource.PlayOneShot(sound);
         }
@@ -65,7 +65,7 @@ public class Slide : ActivatorListener
             targetPosition = startPosition;
             if (direction == Direction.Depth)
             {
-                GetComponent<Collider2D>().enabled = true;
+                transform.Find("Cube").GetComponent<Collider2D>().enabled = true;
             }
             if (audioSource != null && !isMute)
                 audioSource.PlayOneShot(sound);

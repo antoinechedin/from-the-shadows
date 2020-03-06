@@ -11,5 +11,9 @@ public class PlayerKillZone : MonoBehaviour
         {
             collision.GetComponent<PlayerController>().Die();
         }
+        else if (collision.tag == "Enemy")
+        {
+            collision.GetComponent<EnemyController>().Die();
+        }
     }
 }

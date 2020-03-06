@@ -57,6 +57,7 @@ public class MenuManager : MonoBehaviour
         startMenuBackgroundAnimator = startMenuBackground.gameObject.GetComponent<Animator>();
 
         int sceneIndex = GameManager.Instance.LoadingMenuInfos.StartingMenuScene;
+        int finishChapterForFirstTime = GameManager.Instance.LoadingMenuInfos.FinishChapterForFirstTime;
         switch (sceneIndex)
         {
             case 0: // Start menu
@@ -68,12 +69,12 @@ public class MenuManager : MonoBehaviour
             case 2: // Chapters menu
                 if (GameManager.Instance.CurrentChapter != -1)
                 {
-                    OpenChaptersMenu(GameManager.Instance.CurrentChapter);
+                    OpenChaptersMenu(GameManager.Instance.CurrentChapter, finishChapterForFirstTime);
                 }
                 else
                 {
                     Debug.LogWarning("WARN MenuManager.Start: CurrentSave not set. Opening at chapter");
-                    OpenChaptersMenu(0);
+                    OpenChaptersMenu(0, -1);
                 }
 
                 break;
@@ -125,7 +126,7 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
     }
 
-    public void OpenChaptersMenu(int chapterIndex)
+    public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
     {
         chaptersMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
@@ -138,6 +139,11 @@ public class MenuManager : MonoBehaviour
         menuChapter.ResetInteractablesChaptersButtons();
 
         EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
+
+        if (chapterFirstCompleted >= 0)
+        {
+            menuChapter.UnlockChapter(chapterFirstCompleted + 1);
+        }
     }
 
     public IEnumerator OpenOptionsMenu()

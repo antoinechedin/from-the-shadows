@@ -154,7 +154,7 @@ public class SaveMenu : MonoBehaviour
                 GameManager.Instance.CurrentChapter = i + 1;
             }
         }
-        menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter);
+        menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter, -1);
     }
 
     /// <summary>

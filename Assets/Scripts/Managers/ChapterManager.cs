@@ -146,7 +146,7 @@ public class ChapterManager : MonoBehaviour
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
 
         currentLevel = newCurrentLevel;
-        
+
         Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         // On active la nouvelle room et ses voisins
@@ -190,10 +190,12 @@ public class ChapterManager : MonoBehaviour
 
     public void FinishChapter()
     {
+        ValidateCollectibles();
+        GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
         //Save the metaData
         CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
-        GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
+        GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2, GameManager.Instance.CurrentChapter));
     }
 
     public void ValidateCollectibles()
@@ -281,9 +283,6 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaInt(playerId == 1 ? MetaTag.PLAYER_1_DEATH : MetaTag.PLAYER_2_DEATH, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
-        //on remet Player.dead à false
-        player.dead = false;
-        player.dying = false;
 
         //tant que l'ecran n'a pas fini de fade au noir
         while (!transitionScreen.GetComponent<TransitionScreen>().finished)
@@ -291,7 +290,13 @@ public class ChapterManager : MonoBehaviour
             yield return null;
         }
 
-        player.input.active = true;
+        //on reactive les inputs des joueurs
+        foreach (PlayerController p in players)
+        {
+            p.dead = false;
+            p.dying = false;
+            p.input.active = true;
+        }
 
         resetingLevel = false;
     }
