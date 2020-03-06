@@ -42,7 +42,7 @@ public class MenuChapter : MonoBehaviour
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
-
+        localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
     }
 
@@ -59,6 +59,7 @@ public class MenuChapter : MonoBehaviour
             // Close the chapter
             else if (chapterMenuIsOpen)
             {
+                menuLevels.ResetScreenshots();
                 menuLevels.enabled = false;
                 chapterMenuIsOpen = false;
                 chapterButtonsPanel.SetActive(true);
