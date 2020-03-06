@@ -10,8 +10,8 @@ public class MovingPlatform : ActivatorListener, IResetable
 
     private SolidController solid;
     public float timer;
-    private Vector3 start;
-    private Vector3 end;
+    public Vector3 start;
+    public Vector3 end;
 
     private bool awake;
 
@@ -21,7 +21,10 @@ public class MovingPlatform : ActivatorListener, IResetable
     private void Awake()
     {
         solid = GetComponent<SolidController>();
-        if (transform.childCount < 2)
+        Transform startTransform = transform.Find("Start");
+        Transform endTransform = transform.Find("End");
+
+        if (startTransform == null || endTransform == null)
         {
             Debug.LogWarning(
                 "WARN MovingPlatform.Awake: Can't find start/end point of " + Utils.GetFullName(transform)
@@ -29,10 +32,10 @@ public class MovingPlatform : ActivatorListener, IResetable
         }
         else
         {
-            start = transform.GetChild(0).position;
-            end = transform.GetChild(1).position;
-            transform.GetChild(0).gameObject.SetActive(false);
-            transform.GetChild(1).gameObject.SetActive(false);
+            start = startTransform.position;
+            end = endTransform.position;
+            startTransform.gameObject.SetActive(false);
+            endTransform.gameObject.SetActive(false);
             awake = true;
         }
     }
