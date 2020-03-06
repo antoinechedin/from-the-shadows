@@ -129,4 +129,9 @@ public class MenuCamera : MonoBehaviour
     {
         set { smoothTransition = value; }
     }
+
+    public void UnlockAnimation(bool unlock)
+    {
+        cursor.GetComponent<Animator>().SetBool("unlock", unlock);
+    }
 }
