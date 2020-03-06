@@ -13,8 +13,10 @@ public class MovingKillZone : MonoBehaviour, IResetable
     private float timeToMaxSpeed;
 
     private float currentSpeed = 0;
-
+    
+    private MovingKillZoneCP currentResetCheckPoint;
     private MovingKillZoneCP currentCheckPoint;
+
     private Transform currentResetPoint;
 
     public Transform TargetPos
@@ -73,12 +75,13 @@ public class MovingKillZone : MonoBehaviour, IResetable
         if (cp.mustReset)
         {
             currentResetPoint = cp.resetPoint;
+            currentResetCheckPoint = cp;
         }
     }
 
     public void Reset()
     {
-        SetNewInfos(currentCheckPoint);
+        SetNewInfos(currentResetCheckPoint);
         killZone.transform.position = currentResetPoint.position;
         Debug.Log(currentCheckPoint);
         currentSpeed = 0;
