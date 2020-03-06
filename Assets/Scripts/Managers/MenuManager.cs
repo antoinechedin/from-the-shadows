@@ -20,6 +20,7 @@ public class MenuManager : MonoBehaviour
 
     public Button play;
     public Button options;
+    public Button quit;
     public Button firstSave;
 
     public Image background;
@@ -29,17 +30,23 @@ public class MenuManager : MonoBehaviour
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
 
-    private ButtonFade playButtonFade;
-    private ButtonFade optionsButtonFade;
+    private Dissolve titleDissolve;
+    private Dissolve playDissolve;
+    private Dissolve optionsDissolve;
+    private Dissolve quitDissolve;
 
     void Start()
     {
-        playButtonFade = play.GetComponent<ButtonFade>();
-        optionsButtonFade = options.GetComponent<ButtonFade>();
+        titleDissolve = startMenu.Find("Menu").Find("Image").GetComponent<Dissolve>();
+        playDissolve = play.GetComponentInChildren<Dissolve>();
+        optionsDissolve = options.GetComponentInChildren<Dissolve>();
+        quitDissolve = quit.GetComponentInChildren<Dissolve>();
 
         SaveManager.Instance.LoadAllSaveFiles();
 
-        play.onClick.AddListener(delegate { OpenSaveMenu(); });
+        play.onClick.AddListener(delegate { StartCoroutine(OpenSaveMenu()); });
+        options.onClick.AddListener(delegate { StartCoroutine(OpenOptionsMenu()); });
+        quit.onClick.AddListener(delegate { StartCoroutine(Quit()); });
 
         if (GameManager.Instance.LoadingMenuInfos == null)
         {
@@ -53,10 +60,10 @@ public class MenuManager : MonoBehaviour
         switch (sceneIndex)
         {
             case 0: // Start menu
-                OpenStartMenu();
+                StartCoroutine(OpenStartMenu());
                 break;
             case 1: // Saves menu
-                OpenSaveMenu();
+                StartCoroutine(OpenSaveMenu());
                 break;
             case 2: // Chapters menu
                 if (GameManager.Instance.CurrentChapter != -1)
@@ -76,13 +83,13 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void OpenStartMenu()
-    {
+    public IEnumerator OpenStartMenu()
+    {        
         startMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
-
+        
         startMenuBackground.gameObject.SetActive(true);
         startMenuBackgroundAnimator.SetBool("fade", true);
         backgroundAnimator.SetBool("fade", false);
@@ -91,18 +98,19 @@ public class MenuManager : MonoBehaviour
         menuCamera.SetReturnToStartMenu(true);
 
         EventSystem.current.SetSelectedGameObject(play.gameObject);
+          
+        yield return StartCoroutine(ButtonsDissolveIn());
     }
 
-    public void OpenSaveMenu()
-    {
+    public IEnumerator OpenSaveMenu()
+    {        
+        yield return StartCoroutine(ButtonsDissolveOut());        
+
         if (startMenu.gameObject.activeSelf)
         {
             startMenuBackgroundAnimator.SetBool("fade", false);
         }
         backgroundAnimator.SetBool("fade", true);
-
-        // wait button fade out        
-        StartCoroutine(playButtonFade.FadeOut());        
 
         savesMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
@@ -132,8 +140,10 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
     }
 
-    public void OpenOptionsMenu()
+    public IEnumerator OpenOptionsMenu()
     {
+        yield return StartCoroutine(ButtonsDissolveOut());
+
         optionsMenu.gameObject.SetActive(true);
         chaptersMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(false);
@@ -145,11 +155,29 @@ public class MenuManager : MonoBehaviour
         optionsMenu.GetComponent<MenuOptions>().OpenOptionsMenu();
     }
 
-    public void Quit()
+    public IEnumerator Quit()
     {
+        yield return StartCoroutine(ButtonsDissolveOut());
+
         GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen");
         loadingScreen = Instantiate(loadingScreen, gameObject.transform);
         StartCoroutine(Fade());
+    }
+
+    IEnumerator ButtonsDissolveIn()
+    {
+        StartCoroutine(titleDissolve.DissolveIn());
+        StartCoroutine(playDissolve.DissolveIn());
+        StartCoroutine(optionsDissolve.DissolveIn());        
+        yield return StartCoroutine(quitDissolve.DissolveIn());
+    }
+
+    IEnumerator ButtonsDissolveOut()
+    {
+        StartCoroutine(titleDissolve.DissolveOut());
+        StartCoroutine(optionsDissolve.DissolveOut());
+        StartCoroutine(quitDissolve.DissolveOut());        
+        yield return StartCoroutine(playDissolve.DissolveOut());
     }
 
     IEnumerator Fade()
