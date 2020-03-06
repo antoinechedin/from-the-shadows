@@ -39,7 +39,11 @@ public class MovingKillZone : MonoBehaviour, IResetable
 
 
     // Start is called before the first frame update
-    void Start()
+    //void Start()
+    //{
+    //    SetNewInfos(checkPoints[0].GetComponent<MovingKillZoneCP>());
+    //}
+    void OnEnable()
     {
         SetNewInfos(checkPoints[0].GetComponent<MovingKillZoneCP>());
     }
