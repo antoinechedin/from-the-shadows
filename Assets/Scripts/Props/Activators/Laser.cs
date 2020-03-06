@@ -14,12 +14,20 @@ public class Laser : ActivatorListener
     public float range = 100;
     public int maxReflection = 5;
 
+    // Shader Effect
+    public Material dissolve;
+    public float value = -110;
+    private float max = 100;
+
     // Use this for initialization
     void Start()
     {
         points = new Vector3[maxReflection + 2];
         lineRenderer = GetComponent<LineRenderer>();
         collisionMask = LayerMask.GetMask("LayeredSolid", "Solid", "Player", "Reflector");
+
+        // Shader Effect
+        //ShaderEffect();
     }
 
     // Update is called once per frame
@@ -29,6 +37,18 @@ public class Laser : ActivatorListener
         {
             points[0] = transform.position;
             CalculateRays(transform.position, transform.right, 1);
+
+            // Shader Effect
+            ShaderEffect();
+        }
+    }
+
+    void ShaderEffect()
+    {
+        //for (int i = -200; i < max; i+=10)
+        {
+            dissolve.SetFloat("Vector1_149EC6A4", value / max);
+            value += 5;
         }
     }
 
