@@ -82,6 +82,11 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Reset()
     {
         hp = 3;
+
+        leftZone.SetActive(true);
+        rightZone.SetActive(true);
+        leftZoneBis.SetActive(false);
+        rightZoneBis.SetActive(false);
     }
 
     public void DestroyLeftZone()

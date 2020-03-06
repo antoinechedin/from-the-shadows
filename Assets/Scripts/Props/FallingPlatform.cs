@@ -48,7 +48,7 @@ public class FallingPlatform : MonoBehaviour, IResetable
 
     public void Update()
     {
-        if (isShaking)
+        if (mesh != null)
         {
             mesh.position = new Vector3(mesh.position.x + Mathf.Sin(Time.time * shakeSpeed) * shakeIntensity,
                                          mesh.position.y,
