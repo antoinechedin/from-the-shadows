@@ -29,11 +29,9 @@ public class SpawnGhost : MonoBehaviour, IResetable
     public Vector3 GetRandomSpawnPoint()
     {        
         int random = Random.Range(0, spawnPoints.Length);
-        Debug.Log(random);
         if (Vector3.Distance(spawnPoints[random].position, player1.position) > minDistancePlayer 
          && Vector3.Distance(spawnPoints[random].position, player2.position) > minDistancePlayer)
-        {
-            Debug.Log("spawn " + random);
+        { 
             return spawnPoints[random].position;
         }
         else if( spawnPoints.Length > 2)
