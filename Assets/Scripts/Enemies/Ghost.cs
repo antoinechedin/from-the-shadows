@@ -94,7 +94,8 @@ public class Ghost : PatrolUnit, IResetable
 
     public void AfterDeadNimation()
     {
-        Instantiate(Resources.Load("DestroyPlatform"), transform.position, Quaternion.identity);
+        GameObject particules = Instantiate(Resources.Load("GhostDeath"), transform.position, Quaternion.identity) as GameObject;
+        //Destroy(particules, 2f);
         GetComponent<MeshRenderer>().enabled = false;
         this.enabled = false;
     }
