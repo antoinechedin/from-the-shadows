@@ -67,10 +67,13 @@ public class Skeleton : MonoBehaviour, IResetable
         }
            
 
-        if (hp == 2)
-            Invoke("DestroyLeftZone",1);
-        if (hp == 1)
-            Invoke("DestroyRightZone",1);
+        if (hp == 2 || hp == 1)
+        {
+            if (stringDirection == "Left")
+                Invoke("DestroyRightZone", 1);
+            else if (stringDirection == "Right")
+                Invoke("DestroyLeftZone", 1);
+        }            
     }
 
     public void Die()

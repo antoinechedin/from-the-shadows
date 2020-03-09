@@ -50,6 +50,12 @@ public class LevelManager : MonoBehaviour
             GameObject defaultVirtualCamera = new GameObject("Virtual Camera");
             defaultVirtualCamera.AddComponent<CinemachineVirtualCamera>();
             defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().AddCinemachineComponent<CinemachineFramingTransposer>();
+
+            defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            CinemachineBasicMultiChannelPerlin noise = defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            noise.m_NoiseProfile = Resources.Load("CustomShakeNoise") as NoiseSettings;
+            noise.m_AmplitudeGain = 0f;
+
             defaultVirtualCamera.AddComponent<CinemachineConfiner>();
             defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.FieldOfView = 20;
             defaultVirtualCamera.GetComponent<CinemachineConfiner>().m_ConfineMode = CinemachineConfiner.Mode.Confine3D;
@@ -178,6 +184,4 @@ public class LevelManager : MonoBehaviour
             }
         }
     }
-
-
 }
