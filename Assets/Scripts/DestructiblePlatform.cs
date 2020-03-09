@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DestructiblePlatform : MonoBehaviour
 {
+    public bool activated;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +22,7 @@ public class DestructiblePlatform : MonoBehaviour
 
     public IEnumerator Destruct()
     {
-        GetComponent<MeshRenderer>().enabled = false;
+        gameObject.SetActive(false);
         GameObject.FindObjectOfType<ChapterManager>().StartCameraShake(1f, 1f);
 
         for (int i = 0; i < 5; i++)
@@ -34,6 +35,13 @@ public class DestructiblePlatform : MonoBehaviour
 
         yield return new WaitForSeconds(1);
         GameObject.FindObjectOfType<ChapterManager>().StopCameraShake();
-        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Boss"))
+        {
+            StartCoroutine(Destruct());
+        }
     }
 }

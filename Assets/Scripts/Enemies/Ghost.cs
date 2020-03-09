@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Ghost : PatrolUnit
+public class Ghost : PatrolUnit, IResetable
 {
     private Animator animator;
 
@@ -68,6 +68,23 @@ public class Ghost : PatrolUnit
                 Debug.LogWarning(name + " : PatrolState not set.");
                 break;
         }
+    }
+
+    public new void Reset()
+    {
+        animator.SetBool("Die", false);
+        animator.SetBool("PlayerDetected", false);
+        base.Reset();
+    }
+
+    public void Die(Vector2 from)
+    {
+        //TODO : remplacer pour un effet de mort
+        animator.SetBool("Die", true);
+        this.enabled = false;
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        GetComponent<Rigidbody2D>().AddForce(-from * 30);
+        Destroy(gameObject, 0.5f);
     }
 
     /// <summary>
