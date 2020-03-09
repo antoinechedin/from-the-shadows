@@ -300,4 +300,15 @@ public class ChapterManager : MonoBehaviour
 
         resetingLevel = false;
     }
+
+    public void StartCameraShake(float amplitude, float frequency)
+    {
+        levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitude;
+        levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = frequency;
+    }
+
+    public void StopCameraShake()
+    {
+        levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 0f;
+    }
 }
