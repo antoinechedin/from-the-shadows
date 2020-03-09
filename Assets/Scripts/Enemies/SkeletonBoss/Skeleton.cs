@@ -30,7 +30,8 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         FindTarget();
         string trigger = "Attack" + stringDirection + laneToAttack;
-        hands.GetComponent<Animator>().SetTrigger(trigger);
+        Debug.Log(trigger);
+        hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
     }
 
     public void FindTarget()
@@ -57,8 +58,8 @@ public class Skeleton : MonoBehaviour, IResetable
     
     public void GetHurt()
     {
-        Debug.Log("aïe");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
+        hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger("Die");
         hp--;
         if (hp == 0)
         {
@@ -94,12 +95,14 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void DestroyLeftZone()
     {
+        transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("VerticalLeft");
         leftZone.SetActive(false);
         leftZoneBis.SetActive(true);
     }
 
     public void DestroyRightZone()
     {
+        transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("VerticalRight");
         rightZone.SetActive(false);
         rightZoneBis.SetActive(true);
     }
