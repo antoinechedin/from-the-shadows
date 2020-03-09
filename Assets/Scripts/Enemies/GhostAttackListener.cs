@@ -17,8 +17,7 @@ public class GhostAttackListener : AttackListener
         switch (type)
         {
             case AttackType.Player:
-                Debug.Log("BLBLBL");
-                ghost.Die(from);
+                StartCoroutine(ghost.Die(from));
                 break;
             default:
                 break;

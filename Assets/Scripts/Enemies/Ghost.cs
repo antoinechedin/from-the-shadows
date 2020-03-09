@@ -74,17 +74,21 @@ public class Ghost : PatrolUnit, IResetable
     {
         animator.SetBool("Die", false);
         animator.SetBool("PlayerDetected", false);
+        this.enabled = true;
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+        GetComponent<MeshRenderer>().enabled = true;
         base.Reset();
     }
 
-    public void Die(Vector2 from)
+    public IEnumerator Die(Vector2 from)
     {
         //TODO : remplacer pour un effet de mort
         animator.SetBool("Die", true);
         this.enabled = false;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-        GetComponent<Rigidbody2D>().AddForce(-from * 30);
-        Destroy(gameObject, 0.5f);
+        GetComponent<Rigidbody2D>().AddForce((from - new Vector2(transform.position.x, transform.position.y)) * 40);
+        yield return new WaitForSeconds(0.5f);
+        GetComponent<MeshRenderer>().enabled = false;
     }
 
     /// <summary>
