@@ -16,7 +16,8 @@ public class Laser : ActivatorListener
 
     // Shader Effect
     public Material dissolve;
-    public float value = -110;
+    public float increaseValue = 5;
+    private float value = -110;
     private float max = 100;
 
     // Use this for initialization
