@@ -76,7 +76,6 @@ public class MovingKillZone : MonoBehaviour, IResetable
     {
         SetNewInfos(currentCheckPoint);
         killZone.transform.position = currentResetPoint.position;
-        Debug.Log(currentCheckPoint);
         currentSpeed = 0;
     }
 }
