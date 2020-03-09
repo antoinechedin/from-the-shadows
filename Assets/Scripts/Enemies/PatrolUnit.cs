@@ -123,4 +123,4 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
 }
 
-public enum PatrolState { Patrol, Chase, Attack, PlayerDetection}
+public enum PatrolState { Patrol, Chase, Attack, PlayerDetection, Dead}

@@ -17,7 +17,7 @@ public class GhostAttackListener : AttackListener
         switch (type)
         {
             case AttackType.Player:
-                StartCoroutine(ghost.Die(from));
+                ghost.Die(from);
                 break;
             default:
                 break;

@@ -38,7 +38,8 @@ public class Ghost : PatrolUnit, IResetable
                 }
                 break;
 
-
+            case PatrolState.Dead:
+                break;
 
 
             case PatrolState.Chase:
@@ -75,23 +76,27 @@ public class Ghost : PatrolUnit, IResetable
         transform.rotation = Quaternion.identity;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         GetComponent<Rigidbody2D>().angularVelocity = 0f;
-        animator.SetBool("Die", false);
-        animator.SetBool("PlayerDetected", false);
+        animator.SetTrigger("Revive");
         this.enabled = true;
+        animator.SetBool("PlayerDetected", false);
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
         GetComponent<MeshRenderer>().enabled = true;
         base.Reset();
     }
 
-    public IEnumerator Die(Vector2 from)
+    public void Die(Vector2 from)
     {
-        //TODO : remplacer pour un effet de mort
-        animator.SetBool("Die", true);
-        this.enabled = false;
+        animator.SetTrigger("Die");
+        state = PatrolState.Dead;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         GetComponent<Rigidbody2D>().AddForce((new Vector2(transform.position.x, transform.position.y) - from) * 200);
-        yield return new WaitForSeconds(0.5f);
+    }
+
+    public void AfterDeadNimation()
+    {
+        Instantiate(Resources.Load("DestroyPlatform"), transform.position, Quaternion.identity);
         GetComponent<MeshRenderer>().enabled = false;
+        this.enabled = false;
     }
 
     /// <summary>
