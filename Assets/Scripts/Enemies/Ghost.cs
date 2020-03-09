@@ -72,6 +72,9 @@ public class Ghost : PatrolUnit, IResetable
 
     public new void Reset()
     {
+        transform.rotation = Quaternion.identity;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        GetComponent<Rigidbody2D>().angularVelocity = 0f;
         animator.SetBool("Die", false);
         animator.SetBool("PlayerDetected", false);
         this.enabled = true;
@@ -86,7 +89,7 @@ public class Ghost : PatrolUnit, IResetable
         animator.SetBool("Die", true);
         this.enabled = false;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-        GetComponent<Rigidbody2D>().AddForce((from - new Vector2(transform.position.x, transform.position.y)) * 40);
+        GetComponent<Rigidbody2D>().AddForce((new Vector2(transform.position.x, transform.position.y) - from) * 200);
         yield return new WaitForSeconds(0.5f);
         GetComponent<MeshRenderer>().enabled = false;
     }
