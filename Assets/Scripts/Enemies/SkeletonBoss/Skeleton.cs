@@ -133,12 +133,23 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Reset()
     {
         hp = 3;
+        //Reactivate destructible platforms
+        DestructiblePlatform[] toActivateLeft = leftZone.GetComponentsInChildren<DestructiblePlatform>(true);
+        DestructiblePlatform[] toActivateRight = rightZone.GetComponentsInChildren<DestructiblePlatform>(true);
+        for (int i = 0; i < toActivateLeft.Length; i++)
+        {
+            toActivateLeft[i].Reset();
+        }
+        for (int i = 0; i < toActivateRight.Length; i++)
+        {
+            toActivateRight[i].Reset();
+        }
 
-        leftZone.SetActive(true);
-        rightZone.SetActive(true);
+        //Deactivate zone bis
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
 
+        //Reactivate killzone
         leftKillZone.SetActive(true);
         rightKillZone.SetActive(true);
     }

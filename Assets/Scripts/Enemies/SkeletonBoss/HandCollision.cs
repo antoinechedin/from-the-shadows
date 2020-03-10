@@ -26,17 +26,17 @@ public class HandCollision : MonoBehaviour
             DeactivateCollider();
             Invoke("ActivateCollider", 2);
         } */
-        else if (collider.gameObject.GetComponent<RotatingPlatform>() != null)
+        if (collider.gameObject.GetComponent<RotatingPlatform>() != null)
         {
             DeactivateCollider();
             collider.gameObject.GetComponent<RotatingPlatform>().OnHit();
             Invoke("ActivateCollider", 2);
         }
-        else if (collider.gameObject.GetComponent<DestructiblePlatform>() != null && isDestructor)
+        if (collider.gameObject.GetComponent<DestructiblePlatform>() != null && isDestructor)
         {
             collider.gameObject.GetComponent<DestructiblePlatform>().StartCoroutine("Destruct");
         }
-        else if (collider.gameObject.tag == "stopBoss")
+        if (collider.gameObject.tag == "stopBoss")
         {
             GetComponent<Animator>().SetTrigger("Die");
         }
