@@ -301,14 +301,30 @@ public class ChapterManager : MonoBehaviour
         resetingLevel = false;
     }
 
+    public void ShakeFor(float amplitude, float frequency, float time)
+    {
+        StartCoroutine(ShakeForAsync(amplitude, frequency, time));
+    }
+
+    public IEnumerator ShakeForAsync(float amplitude, float frequency, float time)
+    {
+        Debug.Log("blblbl");
+        StartCameraShake(amplitude, frequency);
+        yield return new WaitForSeconds(time);
+        Debug.Log("blblbl2");
+        StopCameraShake();
+    }
+
     public void StartCameraShake(float amplitude, float frequency)
     {
+        Debug.Log("start");
         levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitude;
         levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = frequency;
     }
 
     public void StopCameraShake()
     {
+        Debug.Log("camera shake stoping");
         levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 0f;
     }
 }

@@ -4,25 +4,10 @@ using UnityEngine;
 
 public class DestructiblePlatform : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Destruct()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            StartCoroutine(Destruct());
-        }
-    }
-
-    public IEnumerator Destruct()
-    {
+        FindObjectOfType<ChapterManager>().ShakeFor(1f, 1f, 1f);
         gameObject.SetActive(false);
-        GameObject.FindObjectOfType<ChapterManager>().StartCameraShake(1f, 1f);
 
         for (int i = 0; i < 5; i++)
         {
@@ -31,16 +16,13 @@ public class DestructiblePlatform : MonoBehaviour
             Vector3 rdmPos = new Vector3(rdmX, rdmY, gameObject.transform.position.z);
             Instantiate(Resources.Load("DestroyPlatform"), rdmPos, Quaternion.identity);
         }
-
-        yield return new WaitForSeconds(1);
-        GameObject.FindObjectOfType<ChapterManager>().StopCameraShake();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Boss"))
         {
-            StartCoroutine(Destruct());
+            Destruct();
         }
     }
 }
