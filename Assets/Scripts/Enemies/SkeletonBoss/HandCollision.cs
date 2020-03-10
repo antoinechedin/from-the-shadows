@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(Animator))]
 public class HandCollision : MonoBehaviour
 {
     public GameObject skeleton;
@@ -13,6 +14,7 @@ public class HandCollision : MonoBehaviour
         if (collider.gameObject.tag == "HurtBoss")
         {
             skeleton.GetComponent<Skeleton>().GetHurt();
+            GetComponent<Animator>().SetTrigger("Die");
             DeactivateCollider();
             Invoke("ActivateCollider", 2);
         }
@@ -21,6 +23,16 @@ public class HandCollision : MonoBehaviour
             collider.GetComponent<EnemyController>().Die();
             DeactivateCollider();
             Invoke("ActivateCollider", 2);
+        }
+        else if (collider.gameObject.GetComponent<RotatingPlatform>() != null)
+        {
+            DeactivateCollider();
+            collider.gameObject.GetComponent<RotatingPlatform>().OnHit();
+            Invoke("ActivateCollider", 2);
+        }
+        else if (collider.gameObject.tag == "stopBoss")
+        {
+            GetComponent<Animator>().SetTrigger("Die");
         }
     }
 

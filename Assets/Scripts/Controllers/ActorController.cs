@@ -297,7 +297,7 @@ public class ActorController : RaycastController
 
     public bool LedgeGrab(float facing, bool checkOnly)
     {
-        float heightOffset = 0.5f;
+        float heightOffset = 0.4f;
         float floorOffset = 0.08f;
         float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxRaySpacing) + 2;
         float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxRaySpacing, Mathf.Infinity)
