@@ -135,6 +135,15 @@ public class Ghost : PatrolUnit, IResetable
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            AttackListener listener = collision.gameObject.GetComponent<AttackListener>();
+            if (listener != null) listener.ReceiveAttack(transform.position, AttackType.Monster);
+        }
+    }
+
     #region AnimatorFunctions   
     public void SetChaseState()
     {
