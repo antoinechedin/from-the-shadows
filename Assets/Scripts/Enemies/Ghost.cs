@@ -73,6 +73,7 @@ public class Ghost : PatrolUnit, IResetable
 
     public new void Reset()
     {
+        transform.localScale = Vector3.zero;
         transform.rotation = Quaternion.identity;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         GetComponent<Rigidbody2D>().angularVelocity = 0f;
@@ -94,10 +95,14 @@ public class Ghost : PatrolUnit, IResetable
 
     public void AfterDeadNimation()
     {
-        GameObject particules = Instantiate(Resources.Load("GhostDeath"), transform.position, Quaternion.identity) as GameObject;
-        //Destroy(particules, 2f);
+        Instantiate(Resources.Load("GhostDeath"), transform.position, Quaternion.identity);
         GetComponent<MeshRenderer>().enabled = false;
         this.enabled = false;
+    }
+
+    public void SpawnAnimation()
+    {
+        Instantiate(Resources.Load("GhostDeath"), transform.position + new Vector3(0, 0, -1), Quaternion.identity);
     }
 
     /// <summary>
