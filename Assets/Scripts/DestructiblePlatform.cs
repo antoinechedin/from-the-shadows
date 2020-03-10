@@ -20,9 +20,6 @@ public class DestructiblePlatform : MonoBehaviour, IResetable
 
     public void Reset()
     {
-        if (collision.gameObject.CompareTag("Boss"))
-        {
-            Destruct();
-        }
+        gameObject.SetActive(true);
     }
 }
