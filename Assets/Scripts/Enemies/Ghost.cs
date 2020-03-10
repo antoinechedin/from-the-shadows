@@ -21,14 +21,17 @@ public class Ghost : PatrolUnit, IResetable
         {
             case PatrolState.Patrol:
                 //mouvement de vas et vient
-                if (Vector3.Distance(transform.position, checkPoints[currentCheckPoint]) < 0.1f) //on est arrivé au checkPoint
+                if (checkPoints.Count > 0)
                 {
-                    GetNextCheckPoint();
-                }
+                    if (Vector3.Distance(transform.position, checkPoints[currentCheckPoint]) < 0.1f) //on est arrivé au checkPoint
+                    {
+                        GetNextCheckPoint();
+                    }
 
-                Vector3 moveDir = checkPoints[currentCheckPoint] - transform.position;
-                moveDir.Normalize();
-                transform.position += moveDir * patrolSpeed * Time.deltaTime;
+                    Vector3 moveDir = checkPoints[currentCheckPoint] - transform.position;
+                    moveDir.Normalize();
+                    transform.position += moveDir * patrolSpeed * Time.deltaTime;
+                }
 
                 ScanForPlayers();
 

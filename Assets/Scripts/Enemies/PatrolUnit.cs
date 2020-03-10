@@ -4,21 +4,32 @@ using UnityEngine;
 
 public abstract class PatrolUnit : MonoBehaviour, IResetable
 {
-    public int nbCheckPoint;
     public bool loopPatrol;
     public float patrolSpeed;
     public float chaseSpeed;
     public float perceptionRadius;
     public float keepFocusRadius;
+    public Transform checkPointsParent;
 
     protected int currentCheckPoint = 0;
     protected int sens = 1; //1 = droite, -1 = gauche
-    [ReadOnly]
-    [SerializeField]
     protected List<Vector3> checkPoints = new List<Vector3>();
     [SerializeField]
     protected PatrolState state;
     protected GameObject target = null;
+
+    private void Awake()
+    {
+        //on rempli la liste des checkPoint en fonction des enfants du checkPointsParent
+        if (checkPointsParent != null)
+        {
+            for (int i = 0; i < checkPointsParent.childCount; i++)
+            {
+                checkPoints.Add(checkPointsParent.GetChild(i).position);
+            }
+        }
+    }
+
 
     /// <summary>
     /// returns the next position the Unit should go. It it reaches the limits (whether it is mion or max) the behavior depends on if the 
@@ -64,11 +75,6 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
 
 
-
-
-
-
-
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
@@ -80,32 +86,23 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
 
         //pathing de la patrouille
-        int cpt = 0;
-        for (int i = 0; i < checkPoints.Count - 1; i++)
+        if (checkPointsParent != null)
         {
-            Gizmos.DrawLine(checkPoints[i], checkPoints[i + 1]);
-            UnityEditor.Handles.Label((checkPoints[i] + checkPoints[i + 1]) / 2, i.ToString());
-            cpt++;
-        }
-        if (loopPatrol)
-        {
-            Gizmos.DrawLine(checkPoints[0], checkPoints[checkPoints.Count - 1]);
-            UnityEditor.Handles.Label((checkPoints[0] + checkPoints[checkPoints.Count - 1]) / 2, cpt.ToString());
+            int cpt = 0;
+            for (int i = 0; i < checkPointsParent.childCount - 1; i++)
+            {
+                Gizmos.DrawLine(checkPointsParent.GetChild(i).position, checkPointsParent.GetChild(i + 1).position);
+                UnityEditor.Handles.Label((checkPointsParent.GetChild(i).position + checkPointsParent.GetChild(i + 1).position) / 2, i.ToString());
+                cpt++;
+            }
+            if (loopPatrol && checkPointsParent.childCount > 0)
+            {
+                Gizmos.DrawLine(checkPointsParent.GetChild(0).position, checkPointsParent.GetChild(checkPointsParent.childCount - 1).position);
+                UnityEditor.Handles.Label((checkPointsParent.GetChild(0).position + checkPointsParent.GetChild(checkPointsParent.childCount - 1).position) / 2, cpt.ToString());
+            }
         }
     }
     #endif
-
-    #region Editor
-    public void GoToCheckPoint(int i)
-    {
-        transform.position = checkPoints[i];
-    }
-
-    public void SetCheckPoint(int i)
-    {
-        checkPoints.Insert(i, transform.position);
-    }
-    #endregion
 }
 
 public enum PatrolState { Patrol, Chase, Attack, PlayerDetection, Dead}
