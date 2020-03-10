@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestructiblePlatform : MonoBehaviour
+public class DestructiblePlatform : MonoBehaviour, IResetable
 {
     // Start is called before the first frame update
     void Start()
@@ -25,5 +25,10 @@ public class DestructiblePlatform : MonoBehaviour
 
         yield return new WaitForSeconds(1);
         GameObject.FindObjectOfType<ChapterManager>().StopCameraShake();
+    }
+
+    public void Reset()
+    {
+        gameObject.SetActive(true);
     }
 }
