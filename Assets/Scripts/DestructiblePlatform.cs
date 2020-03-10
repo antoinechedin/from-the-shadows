@@ -2,8 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestructiblePlatform : MonoBehaviour
+public class DestructiblePlatform : MonoBehaviour, IResetable
 {
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Destruct();
+        }
+    }
     public void Destruct()
     {
         FindObjectOfType<ChapterManager>().ShakeFor(1f, 1f, 1f);
@@ -11,18 +19,15 @@ public class DestructiblePlatform : MonoBehaviour
 
         for (int i = 0; i < 5; i++)
         {
-            float rdmX = Random.Range(GetComponent<PolygonCollider2D>().bounds.min.x, GetComponent<PolygonCollider2D>().bounds.max.x);
-            float rdmY = Random.Range(GetComponent<PolygonCollider2D>().bounds.min.y, GetComponent<PolygonCollider2D>().bounds.max.y);
+            float rdmX = Random.Range(GetComponent<Collider2D>().bounds.min.x, GetComponent<Collider2D>().bounds.max.x);
+            float rdmY = Random.Range(GetComponent<Collider2D>().bounds.min.y, GetComponent<Collider2D>().bounds.max.y);
             Vector3 rdmPos = new Vector3(rdmX, rdmY, gameObject.transform.position.z);
             Instantiate(Resources.Load("DestroyPlatform"), rdmPos, Quaternion.identity);
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void Reset()
     {
-        if (collision.gameObject.CompareTag("Boss"))
-        {
-            Destruct();
-        }
+        gameObject.SetActive(true);
     }
 }

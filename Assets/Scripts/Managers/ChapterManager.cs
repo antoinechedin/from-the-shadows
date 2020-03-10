@@ -201,7 +201,16 @@ public class ChapterManager : MonoBehaviour
     public void ValidateCollectibles()
     {
         //Validate light collectibles
-        foreach (GameObject go in levels[currentLevel].lightCollectibles)
+        for (int i = 0; i < levels[currentLevel].lightCollectibles.Count; i++)
+        {
+            Collectible collectible = levels[currentLevel].lightCollectibles[i].GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Light, i);
+            }
+        }
+        /*foreach (GameObject go in levels[currentLevel].lightCollectibles)
         {
             Collectible collectible = go.GetComponent<Collectible>();
             if (collectible.isPickedUp)
@@ -209,10 +218,20 @@ public class ChapterManager : MonoBehaviour
                 collectible.isValidated = true;
                 GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Light, go.transform.GetSiblingIndex());
             }
-        }
+        }*/
 
+
+        for (int i = 0; i < levels[currentLevel].shadowCollectibles.Count; i++)
+        {
+            Collectible collectible = levels[currentLevel].shadowCollectibles[i].GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, i);
+            }
+        }
         //Validate shadow collectibles
-        foreach (GameObject go in levels[currentLevel].shadowCollectibles)
+        /*foreach (GameObject go in levels[currentLevel].shadowCollectibles)
         {
             Collectible collectible = go.GetComponent<Collectible>();
             if (collectible.isPickedUp)
@@ -220,7 +239,7 @@ public class ChapterManager : MonoBehaviour
                 collectible.isValidated = true;
                 GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, go.transform.GetSiblingIndex());
             }
-        }
+        }*/
     }
 
     public void CollectMetaData()
