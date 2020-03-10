@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class DestructiblePlatform : MonoBehaviour, IResetable
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    public IEnumerator Destruct()
+    private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Destruct();
+        }
+    }
+    public void Destruct()
+    {
+        FindObjectOfType<ChapterManager>().ShakeFor(1f, 1f, 1f);
         gameObject.SetActive(false);
-        GameObject.FindObjectOfType<ChapterManager>().StartCameraShake(1f, 1f);
 
         for (int i = 0; i < 5; i++)
         {
@@ -22,9 +24,6 @@ public class DestructiblePlatform : MonoBehaviour, IResetable
             Vector3 rdmPos = new Vector3(rdmX, rdmY, gameObject.transform.position.z);
             Instantiate(Resources.Load("DestroyPlatform"), rdmPos, Quaternion.identity);
         }
-
-        yield return new WaitForSeconds(1);
-        GameObject.FindObjectOfType<ChapterManager>().StopCameraShake();
     }
 
     public void Reset()

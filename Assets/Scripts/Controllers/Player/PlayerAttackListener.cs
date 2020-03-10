@@ -20,6 +20,9 @@ public class PlayerAttackListener : AttackListener
                 player.velocity = (((Vector2)player.transform.position - from).normalized + Vector2.up).normalized * 15;
                 player.actor.collisions.bellow = false;
                 break;
+            case AttackType.Monster:
+                player.Die();
+                break;
             default:
                 break;
         }

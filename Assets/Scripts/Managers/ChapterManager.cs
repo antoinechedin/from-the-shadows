@@ -320,6 +320,18 @@ public class ChapterManager : MonoBehaviour
         resetingLevel = false;
     }
 
+    public void ShakeFor(float amplitude, float frequency, float time)
+    {
+        StartCoroutine(ShakeForAsync(amplitude, frequency, time));
+    }
+
+    public IEnumerator ShakeForAsync(float amplitude, float frequency, float time)
+    {
+        StartCameraShake(amplitude, frequency);
+        yield return new WaitForSeconds(time);
+        StopCameraShake();
+    }
+
     public void StartCameraShake(float amplitude, float frequency)
     {
         levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitude;

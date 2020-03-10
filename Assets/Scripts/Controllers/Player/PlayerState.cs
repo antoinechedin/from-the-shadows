@@ -254,6 +254,7 @@ public class MeleAttackState : IPlayerState
         attackTimer = attackDuration;
         filter.layerMask = player.input.attackMask;
         filter.useLayerMask = true;
+        filter.useTriggers = true;
     }
 
     public void FixedUpdate(PlayerController player)
