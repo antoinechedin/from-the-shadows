@@ -10,13 +10,12 @@ public class MovingKillZoneCP : MonoBehaviour
     public float timeToMaxSpeed;
     public bool mustReset;
 
-    private MovingKillZone movingKillZone;
+    public MovingKillZone movingKillZone;
     private GameObject currentLevel;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
-        movingKillZone = GameObject.FindObjectOfType<MovingKillZone>();
         currentLevel = GetComponentInParent<LevelManager>().gameObject;
     }
 

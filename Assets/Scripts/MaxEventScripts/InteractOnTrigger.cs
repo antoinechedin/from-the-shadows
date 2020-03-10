@@ -7,7 +7,10 @@ using UnityEngine.Events;
 public class InteractOnTrigger : MonoBehaviour
 {
     public LayerMask layers;
-    public UnityEvent OnEnter, OnExit;
+    public UnityEvent OnEnter;
+    
+    public float delay = 5f;
+    public UnityEvent OnEnterDelayed, OnExit;
     new Collider2D collider;
 
     void Reset()
@@ -22,6 +25,7 @@ public class InteractOnTrigger : MonoBehaviour
         if (0 != (layers.value & 1 << other.gameObject.layer))
         {
             ExecuteOnEnter(other);
+            StartCoroutine(ExecuteOnEnterDelayed());
         }
     }
 
@@ -30,6 +34,11 @@ public class InteractOnTrigger : MonoBehaviour
         OnEnter.Invoke();
     }
 
+    IEnumerator ExecuteOnEnterDelayed()
+    {
+        yield return new WaitForSeconds(delay);
+        OnEnterDelayed.Invoke();
+    }
     void OnTriggerExit2D(Collider2D other)
     {
         if (0 != (layers.value & 1 << other.gameObject.layer))
