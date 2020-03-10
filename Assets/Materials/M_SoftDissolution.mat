@@ -7,17 +7,17 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_Dissolution
-  m_Shader: {fileID: -6465566751694194690, guid: 3aab0bae85a8af344b9478a3ced7ea13,
+  m_Name: M_SoftDissolution
+  m_Shader: {fileID: -6465566751694194690, guid: 32bf9a864794f9444af520d5b5145c03,
     type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON
+  m_ShaderKeywords: _ALPHATEST_ON _BLENDMODE_ALPHA _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
-    RenderType: TransparentCutout
+    RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS
   - TransparentBackface
@@ -25,8 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 28359363701792720, guid: b9b67577da1e38d4db101eb2706dc212,
-          type: 2}
+        m_Texture: {fileID: 2800000, guid: 48ebf2202859f99459788383835ead28, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_23CBA1AB_Texture_1:
@@ -35,19 +34,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaCutoffEnable: 1
-    - _AlphaDstBlend: 0
+    - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
     - _BlendMode: 0
     - _CullMode: 2
     - _CullModeForward: 2
-    - _Dissolution: 1
-    - _Dissolve: 0
+    - _Dissolution: 2
+    - _Dissolve: -3.33
     - _DoubleSidedEnable: 0
     - _DoubleSidedNormalMode: 2
-    - _DstBlend: 0
-    - _NoiseSize: 34
+    - _DstBlend: 10
+    - _NoiseSize: 50
     - _ReceivesSSR: 0
-    - _RenderQueueType: 1
+    - _RenderQueueType: 5
     - _RequireSplitLighting: 0
     - _SrcBlend: 1
     - _StencilRef: 0
@@ -60,22 +59,22 @@ Material:
     - _StencilWriteMaskDistortionVec: 64
     - _StencilWriteMaskGBuffer: 51
     - _StencilWriteMaskMV: 176
-    - _SurfaceType: 0
+    - _SurfaceType: 1
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentSortPriority: 0
     - _UseShadowThreshold: 0
-    - _ZTestDepthEqualForOpaque: 3
+    - _ZTestDepthEqualForOpaque: 4
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveColor: {r: 5.992157, g: 3.2, b: 0.5647059, a: 0}
+    - _Color: {r: 2, g: 2, b: 2, a: 1}
+    - _DissolveColor: {r: 5.660378, g: 4.141065, b: 0.237084, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _Ratio: {r: 1, g: 1, b: 0, a: 0}
---- !u!114 &1166245927841402863
+--- !u!114 &248882626937076630
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

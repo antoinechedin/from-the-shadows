@@ -84,6 +84,19 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Debug
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            StartCoroutine(ButtonsDissolveIn());
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            StartCoroutine(ButtonsDissolveOut());
+        }
+    }
+
     public IEnumerator OpenStartMenu()
     {        
         startMenu.gameObject.SetActive(true);
@@ -121,11 +134,12 @@ public class MenuManager : MonoBehaviour
         menuCamera.SetReturnToStartMenu(false);
         menuCamera.SetReturnToSavesMenu(true);
 
+        //yield return StartCoroutine(SavesDissolveIn());
+
         int lastSaveSelected = savesMenu.gameObject.GetComponent<SaveMenu>().LastSelected;
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SaveMenu>().buttons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
 
-        yield return StartCoroutine(SavesDissolveIn());
     }
 
     public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
@@ -189,8 +203,13 @@ public class MenuManager : MonoBehaviour
     }
 
     IEnumerator SavesDissolveIn()
-    {        
-        yield return StartCoroutine(savesMenu.Find("New Game 1").Find("Rectangle").GetComponent<Dissolve>().DissolveIn());
+    {
+        Dissolve ng1 = savesMenu.Find("New Game 1").Find("Rectangle").GetComponent<Dissolve>();
+        Dissolve ng2 = savesMenu.Find("New Game 2").Find("Rectangle").GetComponent<Dissolve>();
+        Dissolve ng3 = savesMenu.Find("New Game 3").Find("Rectangle").GetComponent<Dissolve>();
+        StartCoroutine(ng1.DissolveIn());
+        StartCoroutine(ng2.DissolveIn());
+        yield return StartCoroutine(ng3.DissolveIn());
     }
 
     IEnumerator Fade()
