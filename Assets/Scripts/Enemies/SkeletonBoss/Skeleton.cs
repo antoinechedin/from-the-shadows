@@ -100,8 +100,11 @@ public class Skeleton : MonoBehaviour, IResetable
     public void GetHurt()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
-        
+        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+
         hp--;
+
         if (hp == 0)
         {
             Die();
@@ -152,6 +155,10 @@ public class Skeleton : MonoBehaviour, IResetable
         //Reactivate killzone
         leftKillZone.SetActive(true);
         rightKillZone.SetActive(true);
+
+        //Cancel hand attack
+        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
     }
 
     public void DestroyLeftZone()
