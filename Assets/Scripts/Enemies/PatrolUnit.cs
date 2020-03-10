@@ -13,8 +13,9 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
     protected int currentCheckPoint = 0;
     protected int sens = 1; //1 = droite, -1 = gauche
+    [ReadOnly]
     [SerializeField]
-    protected Vector3[] checkPoints;
+    protected List<Vector3> checkPoints = new List<Vector3>();
     [SerializeField]
     protected PatrolState state;
     protected GameObject target = null;
@@ -27,13 +28,13 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
     {
         if (loopPatrol)
         {
-            if (currentCheckPoint + sens > checkPoints.Length - 1)
+            if (currentCheckPoint + sens > checkPoints.Count - 1)
             {
                 currentCheckPoint = 0;
             }
             else if (currentCheckPoint + sens < 0)
             {
-                currentCheckPoint = checkPoints.Length - 1;
+                currentCheckPoint = checkPoints.Count - 1;
             }
             else
             {
@@ -43,7 +44,7 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
         }
         else
         {
-            if (currentCheckPoint + sens > checkPoints.Length - 1 || currentCheckPoint + sens < 0)
+            if (currentCheckPoint + sens > checkPoints.Count - 1 || currentCheckPoint + sens < 0)
             {
                 sens *= -1;
             }
@@ -80,7 +81,7 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
         //pathing de la patrouille
         int cpt = 0;
-        for (int i = 0; i < checkPoints.Length - 1; i++)
+        for (int i = 0; i < checkPoints.Count - 1; i++)
         {
             Gizmos.DrawLine(checkPoints[i], checkPoints[i + 1]);
             UnityEditor.Handles.Label((checkPoints[i] + checkPoints[i + 1]) / 2, i.ToString());
@@ -88,8 +89,8 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
         }
         if (loopPatrol)
         {
-            Gizmos.DrawLine(checkPoints[0], checkPoints[checkPoints.Length - 1]);
-            UnityEditor.Handles.Label((checkPoints[0] + checkPoints[checkPoints.Length - 1]) / 2, cpt.ToString());
+            Gizmos.DrawLine(checkPoints[0], checkPoints[checkPoints.Count - 1]);
+            UnityEditor.Handles.Label((checkPoints[0] + checkPoints[checkPoints.Count - 1]) / 2, cpt.ToString());
         }
     }
     #endif
@@ -102,25 +103,9 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
     public void SetCheckPoint(int i)
     {
-        checkPoints[i] = transform.position;
-    }
-
-    public void InitCheckPoints()
-    {
-        checkPoints = new Vector3[nbCheckPoint];
-    }
-
-    public void OnValidate()
-    {
-        if (!Application.isPlaying && PlayerPrefs.GetInt("oldNbCheckPoint", 0) != nbCheckPoint)
-        {
-            PlayerPrefs.SetInt("oldNbCheckPoint", nbCheckPoint);
-            InitCheckPoints();
-        }
-
+        checkPoints.Insert(i, transform.position);
     }
     #endregion
-
 }
 
 public enum PatrolState { Patrol, Chase, Attack, PlayerDetection, Dead}

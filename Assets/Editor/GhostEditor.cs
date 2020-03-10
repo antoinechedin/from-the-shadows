@@ -20,7 +20,6 @@ public class GhostEditor : Editor
                 ghost.GoToCheckPoint(i);
             EditorGUILayout.EndHorizontal();
         }
-
         base.OnInspectorGUI();
     }
 }

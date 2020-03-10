@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DestructiblePlatform : MonoBehaviour
 {
-    public bool activated;
     // Start is called before the first frame update
     void Start()
     {
