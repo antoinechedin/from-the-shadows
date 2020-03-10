@@ -47,21 +47,20 @@ public class DialogueTrigger : MonoBehaviour
             {
                 if (currentDisplayed < guis.Count - 1) //Si c'est pas le dernier, on passe au texte suivant
                 {
+                    guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
                     guis[currentDisplayed].HideUI();
 
-                    guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
-
                     currentDisplayed++;
-                    guis[currentDisplayed].DisplayUI();
 
+                    guis[currentDisplayed].DisplayUI();
                     guis[currentDisplayed].ExecuteOnDialogueStart(); // Execute OnDialogueStart functions
 
                 }
                 else //Sinon le dialogue est terminé
                 {
                     //on cache la dernière boîte de dialogue
-                    guis[currentDisplayed].HideUI();
                     guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
+                    guis[currentDisplayed].HideUI();
 
 
                     //on active les inputs des joueurs

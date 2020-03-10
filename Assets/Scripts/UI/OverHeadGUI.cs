@@ -131,7 +131,7 @@ public class OverHeadGUI : MonoBehaviour
 
     public virtual void ExecuteOnDialogueEnd()
     {
-        OnDialogueStart.Invoke();
+        OnDialogueEnd.Invoke();
     }
 
 }
