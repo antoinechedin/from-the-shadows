@@ -90,7 +90,11 @@ public class MenuChapter : MonoBehaviour
         {
             leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
         }
-        else if (localIndexCurrentChapter >= chaptersName.Count - 1)
+        if (localIndexCurrentChapter >= chaptersName.Count - 1)
+        {
+            rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
+        }
+        else if (!chapterButtons[localIndexCurrentChapter + 1].interactable)
         {
             rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
         }
