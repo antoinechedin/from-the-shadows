@@ -7,7 +7,7 @@ using UnityEditor;
 public class NewLightSource : MonoBehaviour
 {
     public float lightRadius = 3.5f;
-    private Material lightMaterial;
+    private Material lightMaterial = null;
 
     private void Awake()
     {
