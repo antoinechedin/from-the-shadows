@@ -15,6 +15,8 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject rightZone;
     public GameObject leftZoneBis;
     public GameObject rightZoneBis;
+    public GameObject rightKillZone;
+    public GameObject leftKillZone;
 
     private int hp = 3;
     private int laneToAttack = 0;
@@ -29,7 +31,6 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void TriggerAttack()
     {
-        Debug.Log("attack simple");
         FindTarget();
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
@@ -37,7 +38,6 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void TriggerDoubleAttack()
     {
-        Debug.Log("attack double");
         FindDoubleTarget();
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
@@ -138,21 +138,37 @@ public class Skeleton : MonoBehaviour, IResetable
         rightZone.SetActive(true);
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
-        hands.GetComponent<Animator>().SetTrigger("Reset");
+
+        leftKillZone.SetActive(true);
+        rightKillZone.SetActive(true);
     }
 
     public void DestroyLeftZone()
     {
-        transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("VerticalLeft");
-        leftZone.SetActive(false);
+        leftKillZone.SetActive(false);
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().isDestructor = true;
+        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("VerticalLeft");
+        Invoke("ActiveLeftZoneBis", 2);
+    }
+
+    public void ActiveLeftZoneBis()
+    {
         leftZoneBis.SetActive(true);
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().isDestructor = false;
     }
 
     public void DestroyRightZone()
     {
-        transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("VerticalRight");
-        rightZone.SetActive(false);
+        rightKillZone.SetActive(false);
+        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().isDestructor = true;
+        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("VerticalRight");
+        Invoke("ActiveRightZoneBis", 2);
+    }
+
+    public void ActiveRightZoneBis()
+    {
         rightZoneBis.SetActive(true);
+        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().isDestructor = false;
     }
 
     public void DestroyMiddleZone()
