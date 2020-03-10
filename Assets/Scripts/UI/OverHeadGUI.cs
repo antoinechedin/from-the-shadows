@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+
 
 public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce, DisplayAfterTime }
 
@@ -39,6 +41,9 @@ public class OverHeadGUI : MonoBehaviour
     private float timeCount = 0;
 
     private Animator animator;
+
+
+    public UnityEvent OnDialogueStart, OnDialogueEnd;
 
     private void Awake()
     {
@@ -118,5 +123,16 @@ public class OverHeadGUI : MonoBehaviour
         animator.SetBool("display", false);
         //content.SetActive(UIActive);
     }
+
+    public virtual void ExecuteOnDialogueStart()
+    {
+        OnDialogueStart.Invoke();
+    }
+
+    public virtual void ExecuteOnDialogueEnd()
+    {
+        OnDialogueStart.Invoke();
+    }
+
 }
 
