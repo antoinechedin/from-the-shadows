@@ -14,7 +14,6 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
     protected int currentCheckPoint = 0;
     protected int sens = 1; //1 = droite, -1 = gauche
     protected List<Vector3> checkPoints = new List<Vector3>();
-    [SerializeField]
     protected PatrolState state;
     protected GameObject target = null;
 
