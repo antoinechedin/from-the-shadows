@@ -18,8 +18,11 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
     protected PatrolState state;
     protected GameObject target = null;
 
+    private Vector3 initialPos;
+
     private void Awake()
     {
+        initialPos = transform.position;
         //on rempli la liste des checkPoint en fonction des enfants du checkPointsParent
         if (checkPointsParent != null)
         {
@@ -66,7 +69,7 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
     public void Reset()
     {
-        transform.position = checkPoints[0];
+        transform.position = initialPos;
         sens = 1;
         currentCheckPoint = 0;
         state = PatrolState.Patrol;
