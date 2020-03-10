@@ -93,7 +93,7 @@ public class Ghost : PatrolUnit, IResetable
         animator.SetTrigger("Die");
         state = PatrolState.Dead;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-        GetComponent<Rigidbody2D>().AddForce((new Vector2(transform.position.x, transform.position.y) - from) * 200);
+        GetComponent<Rigidbody2D>().AddForce((new Vector2(transform.position.x, transform.position.y) - from).normalized * 200);
     }
 
     public void AfterDeadNimation()
@@ -132,15 +132,6 @@ public class Ghost : PatrolUnit, IResetable
             {
                 target = go;
             }
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            AttackListener listener = collision.gameObject.GetComponent<AttackListener>();
-            if (listener != null) listener.ReceiveAttack(transform.position, AttackType.Monster);
         }
     }
 
