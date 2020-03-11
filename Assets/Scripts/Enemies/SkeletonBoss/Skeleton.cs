@@ -122,7 +122,7 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             if (stringDirection == "Left")
                 Invoke("DestroyRightZone", 1);
-            else if (stringDirection == "Right")
+            else if (stringDirection == "Right") 
                 Invoke("DestroyLeftZone", 1);
         }
     }
