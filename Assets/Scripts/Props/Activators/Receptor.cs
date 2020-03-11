@@ -8,6 +8,7 @@ public class Receptor : Activator, IResetable
     public Material activeMat;
 
     private GameObject child;
+    private List<GameObject> currentLasers;
 
     // Start is called before the first frame update
     void Start()
@@ -19,30 +20,36 @@ public class Receptor : Activator, IResetable
         }
     }
 
-    public void On()
+    public virtual void On()
     {
-        if (TryActivate != null && !active)
-        {
-            active = true;
-            TryActivate();
-            if (child != null)
+
+        //if pas dans liste
+            //ajout dans liste
+            if (TryActivate != null && !active) //&& if Count > 0
             {
-                child.GetComponent<MeshRenderer>().material = activeMat;
+                active = true;
+                TryActivate();
+                if (child != null)
+                {
+                    child.GetComponent<MeshRenderer>().material = activeMat;
+                }
             }
-        }
     }
 
-    public void Off()
+    public virtual void Off()
     {
-        if (TryDeactivate != null && active)
-        {
-            active = false;
-            TryDeactivate();
-            if (child != null)
+        //enlevage de liste
+
+        //if list.COunt == 0
+            if (TryDeactivate != null && active)
             {
-                child.GetComponent<MeshRenderer>().material = inactiveMat;
+                active = false;
+                TryDeactivate();
+                if (child != null)
+                {
+                    child.GetComponent<MeshRenderer>().material = inactiveMat;
+                }
             }
-        }
     }
 
     public void Reset()
