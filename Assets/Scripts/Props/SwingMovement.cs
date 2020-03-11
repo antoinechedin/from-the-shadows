@@ -25,7 +25,7 @@ public class SwingMovement : MonoBehaviour, IResetable
 
         Transform child = swingingObject.transform.Find("Child").transform;
         child.Translate(new Vector3(0, -ropeLength, 0));
-        if (swingingObject.GetComponentInChildren<Torch>() != null) swingingObject.GetComponentInChildren<Torch>().swinging = true;
+        if (swingingObject.GetComponentInChildren<Torch>() != null) swingingObject.GetComponentInChildren<Torch>().neverStatic = true;
     }
 
     // Update is called once per frame

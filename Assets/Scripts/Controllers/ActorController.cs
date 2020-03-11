@@ -297,7 +297,7 @@ public class ActorController : RaycastController
 
     public bool LedgeGrab(float facing, bool checkOnly)
     {
-        float heightOffset = 0.5f;
+        float heightOffset = 0.4f;
         float floorOffset = 0.08f;
         float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxRaySpacing) + 2;
         float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxRaySpacing, Mathf.Infinity)
@@ -319,6 +319,13 @@ public class ActorController : RaycastController
                 if (i == 0) return false;
                 //if (hit.normal.y < Mathf.Sin(45f * Mathf.Deg2Rad)) return false;
 
+                rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
+                rayOrigin += Vector2.up * (collisions.move.y + heightOffset);
+                rayOrigin += Vector2.right * collisions.move.x;
+                RaycastHit2D headHit = Physics2D.Raycast(rayOrigin, Vector2.down, heightOffset, collisionMask);
+                Debug.DrawRay(rayOrigin, Vector2.down * heightOffset, Color.blue);
+                if (headHit) return false;
+
                 if (hit.distance - skinWidth < minFloorLength)
                 {
                     rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
@@ -335,7 +342,6 @@ public class ActorController : RaycastController
                             if (Mathf.Sign(floorHit.normal.x) != facing && floorHit.normal.y < Mathf.Sin(maxSlopeAngle * Mathf.Deg2Rad)) return false;
                             if (floorHit.distance < floorOffset) return false;
 
-                            Debug.Log("Grabbed");
                             transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
                         }
                     }

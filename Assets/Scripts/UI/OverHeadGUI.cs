@@ -40,11 +40,14 @@ public class OverHeadGUI : MonoBehaviour
 
     private Animator animator;
 
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
+
 
     private void Start()
     {
-        animator = GetComponent<Animator>();
-
         if (type == GUIType.AlwaysDisplayed)
         {
             DisplayUI();
@@ -100,7 +103,7 @@ public class OverHeadGUI : MonoBehaviour
         }
     }
 
-    private void DisplayUI()
+    public void DisplayUI()
     {
         UIActive = true;
         animator.SetBool("display", true);
@@ -108,7 +111,7 @@ public class OverHeadGUI : MonoBehaviour
         //content.SetActive(UIActive);
     }
 
-    private void HideUI()
+    public void HideUI()
     {
         UIActive = false;
         animator.SetBool("hide", true);

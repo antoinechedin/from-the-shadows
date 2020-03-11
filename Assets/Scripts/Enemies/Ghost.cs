@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Ghost : PatrolUnit
+public class Ghost : PatrolUnit, IResetable
 {
     private Animator animator;
 
@@ -21,14 +21,17 @@ public class Ghost : PatrolUnit
         {
             case PatrolState.Patrol:
                 //mouvement de vas et vient
-                if (Vector3.Distance(transform.position, checkPoints[currentCheckPoint]) < 0.1f) //on est arrivé au checkPoint
+                if (checkPoints.Count > 0)
                 {
-                    GetNextCheckPoint();
-                }
+                    if (Vector3.Distance(transform.position, checkPoints[currentCheckPoint]) < 0.1f) //on est arrivé au checkPoint
+                    {
+                        GetNextCheckPoint();
+                    }
 
-                Vector3 moveDir = checkPoints[currentCheckPoint] - transform.position;
-                moveDir.Normalize();
-                transform.position += moveDir * patrolSpeed * Time.deltaTime;
+                    Vector3 moveDir = checkPoints[currentCheckPoint] - transform.position;
+                    moveDir.Normalize();
+                    transform.position += moveDir * patrolSpeed * Time.deltaTime;
+                }
 
                 ScanForPlayers();
 
@@ -38,7 +41,8 @@ public class Ghost : PatrolUnit
                 }
                 break;
 
-
+            case PatrolState.Dead:
+                break;
 
 
             case PatrolState.Chase:
@@ -68,6 +72,40 @@ public class Ghost : PatrolUnit
                 Debug.LogWarning(name + " : PatrolState not set.");
                 break;
         }
+    }
+
+    public new void Reset()
+    {
+        transform.localScale = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        GetComponent<Rigidbody2D>().angularVelocity = 0f;
+        animator.SetTrigger("Revive");
+        this.enabled = true;
+        animator.SetBool("PlayerDetected", false);
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+        GetComponent<MeshRenderer>().enabled = true;
+        base.Reset();
+    }
+
+    public void Die(Vector2 from)
+    {
+        animator.SetTrigger("Die");
+        state = PatrolState.Dead;
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        GetComponent<Rigidbody2D>().AddForce((new Vector2(transform.position.x, transform.position.y) - from).normalized * 200);
+    }
+
+    public void AfterDeadNimation()
+    {
+        Instantiate(Resources.Load("GhostDeath"), transform.position, Quaternion.identity);
+        GetComponent<MeshRenderer>().enabled = false;
+        this.enabled = false;
+    }
+
+    public void SpawnAnimation()
+    {
+        Instantiate(Resources.Load("GhostDeath"), transform.position + new Vector3(0, 0, -1), Quaternion.identity);
     }
 
     /// <summary>

@@ -10,7 +10,6 @@ public class LightCollider : MonoBehaviour
     public float vectorModifier = 0.001f;
     public int numberPoints = 16;
     public LayerMask type;
-    [SerializeField]
     private bool isStatic = false;
 
     // Start is called before the first frame update

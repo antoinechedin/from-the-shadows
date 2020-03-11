@@ -200,7 +200,6 @@ public class GameManager : Singleton<GameManager>
         //On attend la fin du chargement
         while (asyncLoad.progress < 0.9f)
         {
-            Debug.Log(asyncLoad.progress);
             yield return null;
         }
 

@@ -9,7 +9,7 @@ public class LevelScreenshot : MonoBehaviour
 
     private RectTransform rt;
     private Vector3 destination;
-    private bool destinationChanged = false;
+    // private bool destinationChanged = false; // inutile
     private Vector2 startScale;
     private int levelIndex; //the index of the IG level
 
@@ -48,7 +48,7 @@ public class LevelScreenshot : MonoBehaviour
         }
         else
         {
-            destinationChanged = false;
+            // destinationChanged = false;
         }
     }
 
@@ -59,7 +59,7 @@ public class LevelScreenshot : MonoBehaviour
     public void SetNewDestination(Vector3 distance)
     {
             destination += distance;
-            destinationChanged = true;
+            // destinationChanged = true;
     }
 
     private void HandleScaling()
