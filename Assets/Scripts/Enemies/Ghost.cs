@@ -6,10 +6,12 @@ using UnityEngine;
 public class Ghost : PatrolUnit, IResetable
 {
     private Animator animator;
+    private Vector3 startScale;
 
     // Start is called before the first frame update
     void Start()
     {
+        startScale = transform.localScale;
         state = PatrolState.Patrol;
         animator = GetComponent<Animator>();
     }
@@ -31,6 +33,16 @@ public class Ghost : PatrolUnit, IResetable
                     Vector3 moveDir = checkPoints[currentCheckPoint] - transform.position;
                     moveDir.Normalize();
                     transform.position += moveDir * patrolSpeed * Time.deltaTime;
+
+                    //pour gérer s'il regarde à droite ou à gauche
+                    if (moveDir.x > 0)//droite
+                    {
+                        transform.rotation = Quaternion.Euler(0, 270f, 0f);
+                    }
+                    else if (moveDir.x < 0)
+                    {
+                        transform.rotation = Quaternion.Euler(0, 90f, 0f);
+                    }
                 }
 
                 ScanForPlayers();
@@ -56,6 +68,8 @@ public class Ghost : PatrolUnit, IResetable
                 //on se dirige vers la target
                 if (target != null)
                 {
+                    transform.LookAt(target.transform.position);
+                    transform.Rotate(0f, 180f, 0f);
                     Vector3 dir = target.transform.position - transform.position;
                     dir.Normalize();
                     transform.position += dir * chaseSpeed * Time.deltaTime;
@@ -93,7 +107,7 @@ public class Ghost : PatrolUnit, IResetable
         animator.SetTrigger("Die");
         state = PatrolState.Dead;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-        GetComponent<Rigidbody2D>().AddForce((new Vector2(transform.position.x, transform.position.y) - from).normalized * 200);
+        GetComponent<Rigidbody2D>().AddForce((new Vector2(transform.position.x, transform.position.y) - from).normalized * 300);
     }
 
     public void AfterDeadNimation()
