@@ -34,6 +34,7 @@ public class Skeleton : MonoBehaviour, IResetable
         FindTarget();
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
+        Debug.Log("attack simple");
     }
 
     public void TriggerDoubleAttack()
@@ -77,6 +78,7 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void FindTarget()
     {
+        Debug.Log("findTarget");
         float min = Mathf.Infinity;
         for (int i = 0; i < points.Length / 2; i++) {
             float minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
@@ -99,6 +101,7 @@ public class Skeleton : MonoBehaviour, IResetable
     
     public void GetHurt()
     {
+        Debug.Log("aie");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
@@ -114,6 +117,7 @@ public class Skeleton : MonoBehaviour, IResetable
         if (hp == 1)
         {
             //Cancel Trigger Attack
+            Debug.Log("cancel simple attavk");
             CancelInvoke();
             InvokeRepeating("TriggerDoubleAttack", 5, timeBetweenDoubleAttacks);
         }
@@ -130,13 +134,25 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Die()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
+        Debug.Log("mourrir");
         CancelInvoke();
     }
 
     public void Reset()
     {
         hp = 3;
+
+        // Cancel hand attack
+        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+        CancelInvoke();
+
+        // Restart hand attack
+        InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+
         //Reactivate destructible platforms
+        leftZone.SetActive(true);
+        rightZone.SetActive(true);
         DestructiblePlatform[] toActivateLeft = leftZone.GetComponentsInChildren<DestructiblePlatform>(true);
         DestructiblePlatform[] toActivateRight = rightZone.GetComponentsInChildren<DestructiblePlatform>(true);
         for (int i = 0; i < toActivateLeft.Length; i++)
@@ -148,6 +164,7 @@ public class Skeleton : MonoBehaviour, IResetable
             toActivateRight[i].Reset();
         }
 
+
         //Deactivate zone bis
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
@@ -155,10 +172,6 @@ public class Skeleton : MonoBehaviour, IResetable
         //Reactivate killzone
         leftKillZone.SetActive(true);
         rightKillZone.SetActive(true);
-
-        //Cancel hand attack
-        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
-        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
     }
 
     public void DestroyLeftZone()
@@ -172,6 +185,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public void ActiveLeftZoneBis()
     {
         leftZoneBis.SetActive(true);
+        leftZone.SetActive(false);
         hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().isDestructor = false;
     }
 
@@ -186,6 +200,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public void ActiveRightZoneBis()
     {
         rightZoneBis.SetActive(true);
+        rightZone.SetActive(false);
         hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().isDestructor = false;
     }
 
