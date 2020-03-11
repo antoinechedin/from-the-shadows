@@ -17,16 +17,19 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject rightZoneBis;
     public GameObject rightKillZone;
     public GameObject leftKillZone;
+    public GameObject middleZoneBis;
 
     private int hp = 3;
     private int laneToAttack = 0;
     private string stringDirection;
 
-
     // Start is called before the first frame update
     void Start()
     {
         InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+        Invoke("GetHurt", 1);
+        Invoke("GetHurt", 4);
+
     }
 
     public void TriggerAttack()
@@ -34,6 +37,7 @@ public class Skeleton : MonoBehaviour, IResetable
         FindTarget();
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
+        Debug.Log("attack simple");
     }
 
     public void TriggerDoubleAttack()
@@ -77,6 +81,7 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void FindTarget()
     {
+        Debug.Log("findTarget");
         float min = Mathf.Infinity;
         for (int i = 0; i < points.Length / 2; i++) {
             float minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
@@ -99,6 +104,7 @@ public class Skeleton : MonoBehaviour, IResetable
     
     public void GetHurt()
     {
+        Debug.Log("aie");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
@@ -113,9 +119,10 @@ public class Skeleton : MonoBehaviour, IResetable
 
         if (hp == 1)
         {
-            //Cancel Trigger Attack
+            //Cancel Trigger simple attack and start double attack
             CancelInvoke();
             InvokeRepeating("TriggerDoubleAttack", 5, timeBetweenDoubleAttacks);
+            middleZoneBis.GetComponent<Animator>().SetTrigger("Appear");       
         }
 
         if (hp == 2 || hp == 1)
@@ -130,13 +137,25 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Die()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
+        Debug.Log("mourrir");
         CancelInvoke();
     }
 
     public void Reset()
     {
         hp = 3;
+
+        // Cancel hand attack
+        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+        CancelInvoke();
+
+        // Restart hand attack
+        InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+
         //Reactivate destructible platforms
+        leftZone.SetActive(true);
+        rightZone.SetActive(true);
         DestructiblePlatform[] toActivateLeft = leftZone.GetComponentsInChildren<DestructiblePlatform>(true);
         DestructiblePlatform[] toActivateRight = rightZone.GetComponentsInChildren<DestructiblePlatform>(true);
         for (int i = 0; i < toActivateLeft.Length; i++)
@@ -148,17 +167,15 @@ public class Skeleton : MonoBehaviour, IResetable
             toActivateRight[i].Reset();
         }
 
+
         //Deactivate zone bis
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
+        middleZoneBis.GetComponent<Animator>().SetTrigger("Disappear");
 
         //Reactivate killzone
         leftKillZone.SetActive(true);
         rightKillZone.SetActive(true);
-
-        //Cancel hand attack
-        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
-        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
     }
 
     public void DestroyLeftZone()
@@ -172,6 +189,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public void ActiveLeftZoneBis()
     {
         leftZoneBis.SetActive(true);
+        leftZone.SetActive(false);
         hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().isDestructor = false;
     }
 
@@ -186,6 +204,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public void ActiveRightZoneBis()
     {
         rightZoneBis.SetActive(true);
+        rightZone.SetActive(false);
         hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().isDestructor = false;
     }
 
