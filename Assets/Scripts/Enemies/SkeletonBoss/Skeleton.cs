@@ -17,16 +17,19 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject rightZoneBis;
     public GameObject rightKillZone;
     public GameObject leftKillZone;
+    public GameObject middleZoneBis;
 
     private int hp = 3;
     private int laneToAttack = 0;
     private string stringDirection;
 
-
     // Start is called before the first frame update
     void Start()
     {
         InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+        Invoke("GetHurt", 1);
+        Invoke("GetHurt", 4);
+
     }
 
     public void TriggerAttack()
@@ -116,10 +119,10 @@ public class Skeleton : MonoBehaviour, IResetable
 
         if (hp == 1)
         {
-            //Cancel Trigger Attack
-            Debug.Log("cancel simple attavk");
+            //Cancel Trigger simple attack and start double attack
             CancelInvoke();
             InvokeRepeating("TriggerDoubleAttack", 5, timeBetweenDoubleAttacks);
+            middleZoneBis.GetComponent<Animator>().SetTrigger("Appear");       
         }
 
         if (hp == 2 || hp == 1)
@@ -168,6 +171,7 @@ public class Skeleton : MonoBehaviour, IResetable
         //Deactivate zone bis
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
+        middleZoneBis.GetComponent<Animator>().SetTrigger("Disappear");
 
         //Reactivate killzone
         leftKillZone.SetActive(true);
