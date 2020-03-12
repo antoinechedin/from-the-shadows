@@ -27,9 +27,6 @@ public class Skeleton : MonoBehaviour, IResetable
     void Start()
     {
         InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
-        Invoke("GetHurt", 1);
-        Invoke("GetHurt", 4);
-
     }
 
     public void TriggerAttack()
