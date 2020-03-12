@@ -29,7 +29,7 @@ public class Receptor : Activator, IResetable
         if (!lasersTouching.Contains(touchingGo))
         {
             //ajout dans la liste
-            lasersTouching.Add(touchingGo);
+            AddLaser(touchingGo);
 
             if (TryActivate != null && !active && lasersTouching.Count > 0)
             {
@@ -45,21 +45,34 @@ public class Receptor : Activator, IResetable
 
     public virtual void Off(GameObject leavingGo)
     {
-        //enlevage de liste
-        lasersTouching.Remove(leavingGo);
-
-        if (lasersTouching.Count == 0)
+        if (lasersTouching.Contains(leavingGo))
         {
-            if (TryDeactivate != null && active)
+            //enlevage de liste
+            RemoveLaser(leavingGo);
+
+            if (lasersTouching.Count == 0)
             {
-                active = false;
-                TryDeactivate();
-                if (child != null)
+                if (TryDeactivate != null && active)
                 {
-                    child.GetComponent<MeshRenderer>().material = inactiveMat;
+                    active = false;
+                    TryDeactivate();
+                    if (child != null)
+                    {
+                        child.GetComponent<MeshRenderer>().material = inactiveMat;
+                    }
                 }
             }
         }
+    }
+
+    public virtual void AddLaser(GameObject addedlaser)
+    {
+        lasersTouching.Add(addedlaser);
+    }
+
+    public virtual void RemoveLaser(GameObject removedLaser)
+    {
+        lasersTouching.Remove(removedLaser);
     }
 
     public void Reset()

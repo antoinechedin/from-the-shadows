@@ -4,25 +4,18 @@ using UnityEngine;
 
 public class Prism : Receptor
 {
-    private int requireNbLaserTouching;
-    public override void On(GameObject touchingGo)
+    public int requireNbLaserTouching;
+
+    public override void AddLaser(GameObject addedlaser)
     {
-        if (!lasersTouching.Contains(touchingGo))
-        {
-            //ajout dans la liste
-            lasersTouching.Add(touchingGo);
-            TestNbLaserTouching();
-        }
+        base.AddLaser(addedlaser);
+        TestNbLaserTouching();
     }
 
-    public override void Off(GameObject leavingGo)
+    public override void RemoveLaser(GameObject removedLaser)
     {
-        //enlevage de liste
-        if (lasersTouching.Contains(leavingGo))
-        {
-            lasersTouching.Remove(leavingGo);
-            TestNbLaserTouching();
-        }
+        base.RemoveLaser(removedLaser);
+        TestNbLaserTouching();
     }
 
     /// <summary>
@@ -34,6 +27,7 @@ public class Prism : Receptor
         if (lasersTouching.Count >= requireNbLaserTouching)
         {
             //FIRE A BIG LASER
+            Debug.Log("FIRE A BIG LASER");
         }
     }
 }
