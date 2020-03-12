@@ -14,6 +14,12 @@ public class Laser : ActivatorListener
     public float range = 100;
     public int maxReflection = 5;
 
+    // Shader Effect
+    public Material dissolve;
+    public float increaseValue = 5;
+    private float value = -110;
+    private float max = 100;
+
     // Use this for initialization
     void Start()
     {
@@ -29,7 +35,16 @@ public class Laser : ActivatorListener
         {
             points[0] = transform.position;
             CalculateRays(transform.position, transform.right, 1);
+
+            // Shader Effect
+            ShaderEffect();
         }
+    }
+
+    void ShaderEffect()
+    {
+        dissolve.SetFloat("Vector1_149EC6A4", value / max);
+        value += 5;
     }
 
     void DrawRays(int nbPoints)

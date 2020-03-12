@@ -14,7 +14,6 @@ public class CameraManager : MonoBehaviour
             GameObject defaultCameraTarget = new GameObject("Camera Target");
             defaultCameraTarget.gameObject.AddComponent<CameraTarget>();
             cameraTarget = defaultCameraTarget.transform;
-            Debug.Log("Create a default Camera Target");
         }
     }
 

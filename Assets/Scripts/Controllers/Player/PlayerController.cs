@@ -104,4 +104,14 @@ public class PlayerController : MonoBehaviour
 
         animator.Rebind();
     }
+
+    /// <summary>
+    /// Gives the position and rotation of t to the player
+    /// </summary>
+    /// <param name="t"></param>
+    public void SetTransform(Transform t)
+    {
+        transform.position = t.position;
+        transform.rotation = t.rotation;
+    }
 }
