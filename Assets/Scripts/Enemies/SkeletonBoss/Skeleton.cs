@@ -34,7 +34,6 @@ public class Skeleton : MonoBehaviour, IResetable
         FindTarget();
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
-        Debug.Log("attack simple");
     }
 
     public void TriggerDoubleAttack()
@@ -78,7 +77,6 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void FindTarget()
     {
-        Debug.Log("findTarget");
         float min = Mathf.Infinity;
         for (int i = 0; i < points.Length / 2; i++) {
             float minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
@@ -101,7 +99,6 @@ public class Skeleton : MonoBehaviour, IResetable
     
     public void GetHurt()
     {
-        Debug.Log("aie");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
@@ -118,8 +115,11 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             //Cancel Trigger simple attack and start double attack
             CancelInvoke();
+            Debug.Log("p3");
+            //middleZoneBis.SetActive(true);
+            middleZoneBis.GetComponent<Animator>().SetTrigger("Appear");
+
             InvokeRepeating("TriggerDoubleAttack", 5, timeBetweenDoubleAttacks);
-            middleZoneBis.GetComponent<Animator>().SetTrigger("Appear");       
         }
 
         if (hp == 2 || hp == 1)
@@ -134,7 +134,6 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Die()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
-        Debug.Log("mourrir");
         CancelInvoke();
     }
 
