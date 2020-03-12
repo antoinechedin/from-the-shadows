@@ -4,14 +4,36 @@ using UnityEngine;
 
 public class Prism : Receptor
 {
-    public override void On(GameObject touchingGo) {
-        base.On(touchingGo);
-        Debug.Log(lasersTouching.Count);
+    private int requireNbLaserTouching;
+    public override void On(GameObject touchingGo)
+    {
+        if (!lasersTouching.Contains(touchingGo))
+        {
+            //ajout dans la liste
+            lasersTouching.Add(touchingGo);
+            TestNbLaserTouching();
+        }
     }
 
-    public override void Off(GameObject touchingGo)
+    public override void Off(GameObject leavingGo)
     {
-        base.Off(touchingGo);
-        Debug.Log(lasersTouching.Count);
+        //enlevage de liste
+        if (lasersTouching.Contains(leavingGo))
+        {
+            lasersTouching.Remove(leavingGo);
+            TestNbLaserTouching();
+        }
+    }
+
+    /// <summary>
+    /// Test to see if the number of lasers touching the prism is equal to the required number. If it's true, fire a big laser.
+    /// </summary>
+    public void TestNbLaserTouching()
+    {
+        Debug.Log(gameObject.name + " : " + lasersTouching.Count);
+        if (lasersTouching.Count >= requireNbLaserTouching)
+        {
+            //FIRE A BIG LASER
+        }
     }
 }
