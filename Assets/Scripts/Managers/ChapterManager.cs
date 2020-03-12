@@ -302,6 +302,8 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaInt(playerId == 1 ? MetaTag.PLAYER_1_DEATH : MetaTag.PLAYER_2_DEATH, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
+        // Reset l'offset de la camera
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         //tant que l'ecran n'a pas fini de fade au noir
         while (!transitionScreen.GetComponent<TransitionScreen>().finished)
