@@ -8,7 +8,11 @@ public class BossPressurePlate : Activator
     public AudioClip sound;
     public Material activeMat;
     public Material inactiveMat;
-    public string tagInteractObject;
+    public PrismRotator prismRotator;
+    [Header("-1 = gauche. 1 = droite")]
+    [Range(-1, 1)]
+    public int sens;
+    
 
     private GameObject child;
     private AudioSource audioSource;
@@ -26,7 +30,7 @@ public class BossPressurePlate : Activator
     /// </summary>
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
+        if (collision.gameObject.CompareTag("Player"))
         {
             updateNbObjectsOnPlate(+1);
         }
@@ -37,7 +41,7 @@ public class BossPressurePlate : Activator
     /// </summary>
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
+        if (collision.gameObject.CompareTag("Player"))
         {
             updateNbObjectsOnPlate(-1);
         }
@@ -48,14 +52,12 @@ public class BossPressurePlate : Activator
     /// </summary>
     protected void On()
     {
-        if (TryActivate != null)
-        {
-            if (audioSource != null)
-                audioSource.PlayOneShot(sound);
-            if (child != null)
-                child.GetComponent<MeshRenderer>().material = activeMat;
-
-        }
+        Debug.Log("PP ON");
+        prismRotator.Rotate(sens);
+        if (audioSource != null)
+            audioSource.PlayOneShot(sound);
+        if (child != null)
+            child.GetComponent<MeshRenderer>().material = activeMat;
     }
 
     /// <summary>
@@ -63,11 +65,9 @@ public class BossPressurePlate : Activator
     /// </summary>
     protected void Off()
     {
-        if (TryDeactivate != null)
-        {
-            if (child != null)
-                child.GetComponent<MeshRenderer>().material = inactiveMat;
-        }
+        Debug.Log("PP OFF");
+        if (child != null)
+            child.GetComponent<MeshRenderer>().material = inactiveMat;
     }
 
     void updateNbObjectsOnPlate(int i)
