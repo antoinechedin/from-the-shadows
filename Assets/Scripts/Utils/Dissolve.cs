@@ -57,7 +57,7 @@ public class Dissolve : MonoBehaviour
         else
         {
             dissolving = true;
-            while (dissolve < 2)
+            while (dissolve < 1)
             {
                 dissolve = Mathf.Clamp(dissolve + dissolveAmount, -6f, 2f);
                 if (component.GetType().Equals(typeof(TextMeshProUGUI)))
