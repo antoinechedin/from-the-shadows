@@ -72,7 +72,7 @@ public class Laser : ActivatorListener
             {
                 // If it is a receptor : stop and activate
                 DrawRays(index + 1);
-                go.GetComponent<Receptor>().On();
+                go.GetComponent<Receptor>().On(gameObject);
                 toDeactivate = go.GetComponent<Receptor>();
             } 
             else if (go.layer == LayerMask.NameToLayer("Reflector"))
@@ -88,7 +88,7 @@ public class Laser : ActivatorListener
                     // Case where the laser is parallele to the reflector
                     DrawRays(index + 1);
                     if (toDeactivate != null)
-                        toDeactivate.Off();
+                        toDeactivate.Off(gameObject);
                 }                
             }
             else
@@ -96,7 +96,7 @@ public class Laser : ActivatorListener
                 // If it is an obstacle : stop
                 DrawRays(index + 1);
                 if (toDeactivate != null)
-                    toDeactivate.Off();
+                    toDeactivate.Off(gameObject);
             }
         }
         else
@@ -104,7 +104,7 @@ public class Laser : ActivatorListener
             // Case where the laser doesn't touch anything
             points[index] = point + (direction * range);
             if (toDeactivate != null)
-                toDeactivate.Off();            
+                toDeactivate.Off(gameObject);            
         }
     }
 
@@ -122,7 +122,7 @@ public class Laser : ActivatorListener
             Clear();
         }
         if (toDeactivate != null)
-            toDeactivate.Off();
+            toDeactivate.Off(gameObject);
     }
 
     private void Clear(){;
