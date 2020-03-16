@@ -17,7 +17,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject rightZoneBis;
     public GameObject rightKillZone;
     public GameObject leftKillZone;
-    public GameObject middleZoneBis;
+    public GameObject middleZoneSpikes;
 
     private int hp = 3;
     private int laneToAttack = 0;
@@ -115,9 +115,7 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             //Cancel Trigger simple attack and start double attack
             CancelInvoke();
-            Debug.Log("p3");
-            //middleZoneBis.SetActive(true);
-            middleZoneBis.GetComponent<Animator>().SetTrigger("Appear");
+            Invoke("ActiveMiddleZoneSpikes",3);
 
             InvokeRepeating("TriggerDoubleAttack", 5, timeBetweenDoubleAttacks);
         }
@@ -167,7 +165,7 @@ public class Skeleton : MonoBehaviour, IResetable
         //Deactivate zone bis
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
-        middleZoneBis.GetComponent<Animator>().SetTrigger("Disappear");
+        middleZoneSpikes.SetActive(false);
 
         //Reactivate killzone
         leftKillZone.SetActive(true);
@@ -207,5 +205,10 @@ public class Skeleton : MonoBehaviour, IResetable
     public void DestroyMiddleZone()
     {
         middleZone.SetActive(false);
+    }
+
+    public void ActiveMiddleZoneSpikes()
+    {
+        middleZoneSpikes.SetActive(true);
     }
 }
