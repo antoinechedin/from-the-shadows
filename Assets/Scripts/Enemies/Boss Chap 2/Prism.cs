@@ -9,6 +9,8 @@ public class Prism : Receptor
     public Material activated;
     public List<GameObject> indicators;
 
+    private bool firing = false;
+
     public override void AddLaser(GameObject addedlaser) 
     {
         base.AddLaser(addedlaser);
@@ -19,6 +21,12 @@ public class Prism : Receptor
     {
         base.RemoveLaser(removedLaser);
         TestNbLaserTouching();
+    }
+
+
+    private void Update()
+    {
+        Debug.DrawRay(transform.position, transform.forward * 100);
     }
 
     /// <summary>
@@ -44,7 +52,18 @@ public class Prism : Receptor
         if (lasersTouching.Count >= requireNbLaserTouching)
         {
             //FIRE A BIG LASER
-            Debug.Log("FIRE A BIG LASER");
+            if (!firing)
+            {
+                StartCoroutine(FireLaser());
+            }
         }
+    }
+
+    public IEnumerator FireLaser()
+    {
+        firing = true;
+        Debug.Log("FIRE A BIG LASER");
+        yield return new WaitForSeconds(3);
+        firing = false;
     }
 }
