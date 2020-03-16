@@ -79,8 +79,8 @@ public class MenuManager : MonoBehaviour
         optionsMenu.gameObject.SetActive(false);
 
         startMenuBackground.gameObject.SetActive(true);
-        startMenuBackgroundAnimator.SetBool("fade", true);
-        backgroundAnimator.SetBool("fade", false);
+        // startMenuBackgroundAnimator.SetBool("fade", true);
+        // backgroundAnimator.SetBool("fade", false);
         version.text = Application.version + "\n2020 © " + Application.companyName;
 
         menuCamera.SetReturnToStartMenu(true);
@@ -92,9 +92,9 @@ public class MenuManager : MonoBehaviour
     {
         if (startMenu.gameObject.activeSelf)
         {
-            startMenuBackgroundAnimator.SetBool("fade", false);
+            // startMenuBackgroundAnimator.SetBool("fade", false);
         }
-        backgroundAnimator.SetBool("fade", true);
+        // backgroundAnimator.SetBool("fade", true);
 
         savesMenu.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
