@@ -48,7 +48,7 @@ public class SaveMenu : MonoBehaviour
             }
             else
             {
-                menuManager.OpenStartMenu();
+                StartCoroutine(menuManager.OpenStartMenu());
             }
         }
     }

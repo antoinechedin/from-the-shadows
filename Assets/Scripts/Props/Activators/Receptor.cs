@@ -8,45 +8,75 @@ public class Receptor : Activator, IResetable
     public Material activeMat;
 
     private GameObject child;
+    protected List<GameObject> lasersTouching = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
-        child = transform.Find("Child").gameObject;
+        if (transform.Find("Child") != null)
+        {
+            child = transform.Find("Child").gameObject;
+        }
+
         if (child != null)
         {
             child.GetComponent<MeshRenderer>().material = inactiveMat;
         }
     }
 
-    public void On()
+    public virtual void On(GameObject touchingGo)
     {
-        if (TryActivate != null && !active)
+        if (!lasersTouching.Contains(touchingGo))
         {
-            active = true;
-            TryActivate();
-            if (child != null)
+            //ajout dans la liste
+            AddLaser(touchingGo);
+
+            if (TryActivate != null && !active && lasersTouching.Count > 0)
             {
-                child.GetComponent<MeshRenderer>().material = activeMat;
+                active = true;
+                TryActivate();
+                if (child != null)
+                {
+                    child.GetComponent<MeshRenderer>().material = activeMat;
+                }
             }
         }
     }
 
-    public void Off()
+    public virtual void Off(GameObject leavingGo)
     {
-        if (TryDeactivate != null && active)
+        if (lasersTouching.Contains(leavingGo))
         {
-            active = false;
-            TryDeactivate();
-            if (child != null)
+            //enlevage de liste
+            RemoveLaser(leavingGo);
+
+            if (lasersTouching.Count == 0)
             {
-                child.GetComponent<MeshRenderer>().material = inactiveMat;
+                if (TryDeactivate != null && active)
+                {
+                    active = false;
+                    TryDeactivate();
+                    if (child != null)
+                    {
+                        child.GetComponent<MeshRenderer>().material = inactiveMat;
+                    }
+                }
             }
         }
+    }
+
+    public virtual void AddLaser(GameObject addedlaser)
+    {
+        lasersTouching.Add(addedlaser);
+    }
+
+    public virtual void RemoveLaser(GameObject removedLaser)
+    {
+        lasersTouching.Remove(removedLaser);
     }
 
     public void Reset()
     {
-        Off();
+        Off(gameObject); 
     }
 }
