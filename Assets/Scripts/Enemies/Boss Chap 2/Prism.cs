@@ -10,6 +10,12 @@ public class Prism : Receptor
     public List<GameObject> indicators;
 
     private bool firing = false;
+    private LineRenderer lineRenderer;
+
+    private void Awake()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+    }
 
     public override void AddLaser(GameObject addedlaser) 
     {
@@ -62,8 +68,12 @@ public class Prism : Receptor
     public IEnumerator FireLaser()
     {
         firing = true;
-        Debug.Log("FIRE A BIG LASER");
+        Vector3 aimPoint = transform.position + transform.forward * 100;
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, aimPoint);
         yield return new WaitForSeconds(3);
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, transform.position);
         firing = false;
     }
 }
