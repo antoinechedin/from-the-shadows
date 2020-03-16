@@ -68,7 +68,13 @@ public class Prism : Receptor
     public IEnumerator FireLaser()
     {
         firing = true;
+
+        //On tir un rayon pour chercher la collision avec le boss
         Vector3 aimPoint = transform.position + transform.forward * 100;
+        RaycastHit hit = new RaycastHit();
+        Physics.Raycast(transform.position, aimPoint, out hit, 100, ~LayerMask.NameToLayer("BossLayer"));
+        Debug.Log(hit.distance);
+
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, aimPoint);
         yield return new WaitForSeconds(3);
