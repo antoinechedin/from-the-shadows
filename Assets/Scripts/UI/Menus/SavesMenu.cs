@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine;
 
-public class SavesMenu : MonoBehaviour
+public class SaveMenu : MonoBehaviour
 {
     public enum State { Loading, Saving };
     public State currentState;
-    public Button[] savesButons;
+    public string directoryPath;
+    public Button[] buttons;
     private Save[] saves;
 
     private RectTransform actionChoicePanel;
@@ -22,12 +23,12 @@ public class SavesMenu : MonoBehaviour
     {
         saves = GameManager.Instance.Saves;
         UpdateButtons();
-        actionChoicePanel = gameObject.transform.Find("SavesActionsButton").gameObject.GetComponent<RectTransform>();
-        // newGameChoicePanel = gameObject.transform.Find("New Game Choice").gameObject.GetComponent<RectTransform>();
+        actionChoicePanel = gameObject.transform.Find("Action Choice").gameObject.GetComponent<RectTransform>();
+        newGameChoicePanel = gameObject.transform.Find("New Game Choice").gameObject.GetComponent<RectTransform>();
         menuManager = GameObject.Find("Menu Manager").gameObject.GetComponent<MenuManager>();
-        if (savesButons.Length > 0)
+        if (buttons.Length > 0)
         {
-            EventSystem.current.SetSelectedGameObject(savesButons[0].gameObject);
+            EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[0].gameObject);
         }
     }
 
@@ -35,15 +36,15 @@ public class SavesMenu : MonoBehaviour
     {
         if (Input.GetButtonDown("B_G"))
         {
-            if (actionChoicePanel != null && actionChoicePanel.gameObject.activeSelf)
+            if (actionChoicePanel.gameObject.activeSelf)
             {
                 actionChoicePanel.gameObject.SetActive(false);
-                EventSystem.current.SetSelectedGameObject(savesButons[lastSelected].gameObject);
+                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[lastSelected].gameObject);
             }
-            else if (newGameChoicePanel != null && newGameChoicePanel.gameObject.activeSelf)
+            else if (newGameChoicePanel.gameObject.activeSelf)
             {
                 newGameChoicePanel.gameObject.SetActive(false);
-                EventSystem.current.SetSelectedGameObject(savesButons[lastSelected].gameObject);
+                EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[lastSelected].gameObject);
             }
             else
             {
@@ -57,16 +58,16 @@ public class SavesMenu : MonoBehaviour
     /// </summary>
     void UpdateButtons()
     {
-        for (int i = 0; i < savesButons.Length; i++)
+        for (int i = 0; i < buttons.Length; i++)
         {
             if (saves[i] != null)
             {
-                Text empty = savesButons[i].transform.Find("Text").GetComponent<Text>();
+                Text empty = buttons[i].transform.Find("Text").GetComponent<Text>();
                 empty.text = "";
-                savesButons[i].transform.Find("SaveInfo").gameObject.SetActive(true);
-                Text date = savesButons[i].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
+                buttons[i].transform.Find("SaveInfo").gameObject.SetActive(true);
+                Text date = buttons[i].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
                 date.text = saves[i].LastOpenDate.ToString();
-                Text timePlayed = savesButons[i].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
+                Text timePlayed = buttons[i].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
                 timePlayed.text = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm\:ss");
             }
             else
@@ -82,13 +83,13 @@ public class SavesMenu : MonoBehaviour
     /// <param name="index"> Index of the button to reset </param>
     public void ResetButton(int index)
     {
-        Text empty = savesButons[index].transform.Find("Text").GetComponent<Text>();
+        Text empty = buttons[index].transform.Find("Text").GetComponent<Text>();
         empty.text = "NEW GAME";
-        savesButons[index].transform.Find("SaveInfo").gameObject.SetActive(false);
+        buttons[index].transform.Find("SaveInfo").gameObject.SetActive(false);
 
-        Text timePlayed = savesButons[index].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
+        Text timePlayed = buttons[index].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
         timePlayed.text = "";
-        Text date = savesButons[index].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
+        Text date = buttons[index].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
         date.text = "";
     }
 
@@ -166,7 +167,7 @@ public class SavesMenu : MonoBehaviour
         Debug.Log("Delete save number " + indexSave);
 
         gameObject.transform.Find("Action Choice").gameObject.SetActive(false);
-        EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(savesButons[indexSave].gameObject);
+        EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(buttons[indexSave].gameObject);
 
         saves[indexSave] = null;
         UpdateButtons();

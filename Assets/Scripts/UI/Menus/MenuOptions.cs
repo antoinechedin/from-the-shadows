@@ -71,7 +71,7 @@ public class MenuOptions : MonoBehaviour
     public void Return()
     {
         if (menuManager != null)
-            StartCoroutine(menuManager.OpenStartMenu());
+            StartCoroutine(menuManager.OpenStartMenuCoroutine());
         else
             gameObject.SetActive(false);
     }
