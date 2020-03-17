@@ -8,8 +8,19 @@ public class Outline : MonoBehaviour
     public MeshRenderer mesh;
     public int materialIndex;
     public Color outlineColor;
+    [Range(0, 0.5f)]public float alphaChange;
 
     private Material instanceMat;
+    private float alpha;
+    private bool animating = false;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+            StartCoroutine(DisplayOutline());
+        else if (Input.GetKeyDown(KeyCode.H))
+            StartCoroutine(HideOutline());
+    }
 
     private void Awake()
     {
@@ -17,16 +28,37 @@ public class Outline : MonoBehaviour
         mesh.GetMaterials(list);
         instanceMat = list[materialIndex];
         instanceMat.SetColor("_Color", outlineColor);
-        HideOutline();
-    }
-
-    public void DisplayOutline()
-    {
-        instanceMat.SetFloat("_Alpha", 1);
-    }
-
-    public void HideOutline()
-    {
         instanceMat.SetFloat("_Alpha", 0);
+        alpha = instanceMat.GetFloat("_Alpha");
+    }
+
+    public IEnumerator DisplayOutline()
+    {
+        if (!animating)
+        {
+            animating = true;
+            while(alpha < 1)
+            {
+                alpha = Mathf.Clamp01(alpha + alphaChange);
+                instanceMat.SetFloat("_Alpha", alpha);
+                yield return null;
+            }
+            animating = false;
+        }
+    }
+
+    public IEnumerator HideOutline()
+    {
+        if (!animating)
+        {
+            animating = true;
+            while (alpha > 0)
+            {
+                alpha = Mathf.Clamp01(alpha - alphaChange);
+                instanceMat.SetFloat("_Alpha", alpha);
+                yield return null;
+            }
+            animating = false;
+        }
     }
 }
