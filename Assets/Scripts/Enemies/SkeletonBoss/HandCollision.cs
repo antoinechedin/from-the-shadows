@@ -44,7 +44,6 @@ public class HandCollision : MonoBehaviour
             // When the hand hurt a rotating spike from behind
             // the hand can not be killed for 2 seconds to avoid the spikes
             // the platform rotates
-            Debug.Log("pouet");
             isKillable = false;
             collider.gameObject.GetComponent<RotatingPlatform>().OnHit();
             Invoke("ActivateKillable", 2);
@@ -56,7 +55,7 @@ public class HandCollision : MonoBehaviour
             collider.gameObject.GetComponent<DestructiblePlatform>().StartCoroutine("Destruct");
         }
 
-        if (collider.gameObject.tag == "stopBoss")
+        if (collider.gameObject.tag == "StopBoss")
         {
             // When the hand is stopped by an obstacle but is not hurt
             GetComponent<Animator>().SetTrigger("Die");
@@ -77,7 +76,6 @@ public class HandCollision : MonoBehaviour
 
     public void ActivateKillable()
     {
-        Debug.Log("hand invicibility over");
         isKillable = true;
     }
 }
