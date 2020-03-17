@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+
 
 public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce, DisplayAfterTime }
 
@@ -26,6 +28,10 @@ public class OverHeadGUI : MonoBehaviour
     [Tooltip("the number of player needed to display the content")]
     public int nbPlayerNeeded;
 
+    [Header("Time before the player can pass the dialogue box")]
+    public float timeBeforePass = 0f;
+    public bool canPass = false;
+
     [Header("Note : set the target to \"this\" to make it static.")]
     [Space(-10)]
     [Header("The GameObject over which the content should be displayed above.")]
@@ -40,9 +46,13 @@ public class OverHeadGUI : MonoBehaviour
 
     private Animator animator;
 
+
+    public UnityEvent OnDialogueStart, OnDialogueEnd;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        canPass = false;
     }
 
 
@@ -56,6 +66,12 @@ public class OverHeadGUI : MonoBehaviour
         {
             HideUI();
         }
+    }
+
+    IEnumerator CanPassDialogue()
+    {
+        yield return new WaitForSeconds(timeBeforePass);
+        canPass = true;
     }
 
     private void Update()
@@ -108,6 +124,8 @@ public class OverHeadGUI : MonoBehaviour
         UIActive = true;
         animator.SetBool("display", true);
         animator.SetBool("hide", false);
+
+        StartCoroutine(CanPassDialogue());
         //content.SetActive(UIActive);
     }
 
@@ -117,6 +135,16 @@ public class OverHeadGUI : MonoBehaviour
         animator.SetBool("hide", true);
         animator.SetBool("display", false);
         //content.SetActive(UIActive);
+    }
+
+    public virtual void ExecuteOnDialogueStart()
+    {
+        OnDialogueStart.Invoke();
+    }
+
+    public virtual void ExecuteOnDialogueEnd()
+    {
+        OnDialogueEnd.Invoke();
     }
 }
 

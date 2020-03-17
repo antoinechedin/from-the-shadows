@@ -201,7 +201,16 @@ public class ChapterManager : MonoBehaviour
     public void ValidateCollectibles()
     {
         //Validate light collectibles
-        foreach (GameObject go in levels[currentLevel].lightCollectibles)
+        for (int i = 0; i < levels[currentLevel].lightCollectibles.Count; i++)
+        {
+            Collectible collectible = levels[currentLevel].lightCollectibles[i].GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Light, i);
+            }
+        }
+        /*foreach (GameObject go in levels[currentLevel].lightCollectibles)
         {
             Collectible collectible = go.GetComponent<Collectible>();
             if (collectible.isPickedUp)
@@ -209,10 +218,20 @@ public class ChapterManager : MonoBehaviour
                 collectible.isValidated = true;
                 GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Light, go.transform.GetSiblingIndex());
             }
-        }
+        }*/
 
+
+        for (int i = 0; i < levels[currentLevel].shadowCollectibles.Count; i++)
+        {
+            Collectible collectible = levels[currentLevel].shadowCollectibles[i].GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, i);
+            }
+        }
         //Validate shadow collectibles
-        foreach (GameObject go in levels[currentLevel].shadowCollectibles)
+        /*foreach (GameObject go in levels[currentLevel].shadowCollectibles)
         {
             Collectible collectible = go.GetComponent<Collectible>();
             if (collectible.isPickedUp)
@@ -220,7 +239,7 @@ public class ChapterManager : MonoBehaviour
                 collectible.isValidated = true;
                 GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, go.transform.GetSiblingIndex());
             }
-        }
+        }*/
     }
 
     public void CollectMetaData()
@@ -283,6 +302,8 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaInt(playerId == 1 ? MetaTag.PLAYER_1_DEATH : MetaTag.PLAYER_2_DEATH, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
+        // Reset l'offset de la camera
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         //tant que l'ecran n'a pas fini de fade au noir
         while (!transitionScreen.GetComponent<TransitionScreen>().finished)
@@ -299,6 +320,18 @@ public class ChapterManager : MonoBehaviour
         }
 
         resetingLevel = false;
+    }
+
+    public void ShakeFor(float amplitude, float frequency, float time)
+    {
+        StartCoroutine(ShakeForAsync(amplitude, frequency, time));
+    }
+
+    public IEnumerator ShakeForAsync(float amplitude, float frequency, float time)
+    {
+        StartCameraShake(amplitude, frequency);
+        yield return new WaitForSeconds(time);
+        StopCameraShake();
     }
 
     public void StartCameraShake(float amplitude, float frequency)

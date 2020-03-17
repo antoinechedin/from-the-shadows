@@ -14,7 +14,6 @@ public class CameraManager : MonoBehaviour
             GameObject defaultCameraTarget = new GameObject("Camera Target");
             defaultCameraTarget.gameObject.AddComponent<CameraTarget>();
             cameraTarget = defaultCameraTarget.transform;
-            Debug.Log("Create a default Camera Target");
         }
     }
 
@@ -78,6 +77,23 @@ public class CameraManager : MonoBehaviour
 
         virtualCamera.Follow = cameraTarget;
         virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = maxDepth;
+        virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>().m_UnlimitedSoftZone = true;
         virtualCamera.gameObject.GetComponent<CinemachineConfiner>().m_BoundingVolume = newCollider;
+    }
+
+    public void setOffsetY(float newOffsetY)
+    {
+        cameraTarget.GetComponent<CameraTarget>().Offset = new Vector2(
+            cameraTarget.GetComponent<CameraTarget>().Offset.x,
+            newOffsetY
+        );
+    }
+
+    public void setOffsetX(float newOffsetX)
+    {
+        cameraTarget.GetComponent<CameraTarget>().Offset = new Vector2(
+            newOffsetX,
+            cameraTarget.GetComponent<CameraTarget>().Offset.y
+        );
     }
 }

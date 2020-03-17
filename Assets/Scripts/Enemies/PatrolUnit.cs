@@ -4,20 +4,34 @@ using UnityEngine;
 
 public abstract class PatrolUnit : MonoBehaviour, IResetable
 {
-    public int nbCheckPoint;
     public bool loopPatrol;
     public float patrolSpeed;
     public float chaseSpeed;
     public float perceptionRadius;
     public float keepFocusRadius;
+    public Transform checkPointsParent;
 
     protected int currentCheckPoint = 0;
     protected int sens = 1; //1 = droite, -1 = gauche
-    [SerializeField]
-    protected Vector3[] checkPoints;
-    [SerializeField]
+    protected List<Vector3> checkPoints = new List<Vector3>();
     protected PatrolState state;
     protected GameObject target = null;
+
+    private Vector3 initialPos;
+
+    private void Awake()
+    {
+        initialPos = transform.position;
+        //on rempli la liste des checkPoint en fonction des enfants du checkPointsParent
+        if (checkPointsParent != null)
+        {
+            for (int i = 0; i < checkPointsParent.childCount; i++)
+            {
+                checkPoints.Add(checkPointsParent.GetChild(i).position);
+            }
+        }
+    }
+
 
     /// <summary>
     /// returns the next position the Unit should go. It it reaches the limits (whether it is mion or max) the behavior depends on if the 
@@ -27,13 +41,13 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
     {
         if (loopPatrol)
         {
-            if (currentCheckPoint + sens > checkPoints.Length - 1)
+            if (currentCheckPoint + sens > checkPoints.Count - 1)
             {
                 currentCheckPoint = 0;
             }
             else if (currentCheckPoint + sens < 0)
             {
-                currentCheckPoint = checkPoints.Length - 1;
+                currentCheckPoint = checkPoints.Count - 1;
             }
             else
             {
@@ -43,7 +57,7 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
         }
         else
         {
-            if (currentCheckPoint + sens > checkPoints.Length - 1 || currentCheckPoint + sens < 0)
+            if (currentCheckPoint + sens > checkPoints.Count - 1 || currentCheckPoint + sens < 0)
             {
                 sens *= -1;
             }
@@ -54,17 +68,12 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
     public void Reset()
     {
-        transform.position = checkPoints[0];
+        transform.position = initialPos;
         sens = 1;
         currentCheckPoint = 0;
         state = PatrolState.Patrol;
         target = null;
     }
-
-
-
-
-
 
 
 
@@ -79,48 +88,23 @@ public abstract class PatrolUnit : MonoBehaviour, IResetable
 
 
         //pathing de la patrouille
-        int cpt = 0;
-        for (int i = 0; i < checkPoints.Length - 1; i++)
+        if (checkPointsParent != null)
         {
-            Gizmos.DrawLine(checkPoints[i], checkPoints[i + 1]);
-            UnityEditor.Handles.Label((checkPoints[i] + checkPoints[i + 1]) / 2, i.ToString());
-            cpt++;
-        }
-        if (loopPatrol)
-        {
-            Gizmos.DrawLine(checkPoints[0], checkPoints[checkPoints.Length - 1]);
-            UnityEditor.Handles.Label((checkPoints[0] + checkPoints[checkPoints.Length - 1]) / 2, cpt.ToString());
+            int cpt = 0;
+            for (int i = 0; i < checkPointsParent.childCount - 1; i++)
+            {
+                Gizmos.DrawLine(checkPointsParent.GetChild(i).position, checkPointsParent.GetChild(i + 1).position);
+                UnityEditor.Handles.Label((checkPointsParent.GetChild(i).position + checkPointsParent.GetChild(i + 1).position) / 2, i.ToString());
+                cpt++;
+            }
+            if (loopPatrol && checkPointsParent.childCount > 0)
+            {
+                Gizmos.DrawLine(checkPointsParent.GetChild(0).position, checkPointsParent.GetChild(checkPointsParent.childCount - 1).position);
+                UnityEditor.Handles.Label((checkPointsParent.GetChild(0).position + checkPointsParent.GetChild(checkPointsParent.childCount - 1).position) / 2, cpt.ToString());
+            }
         }
     }
     #endif
-
-    #region Editor
-    public void GoToCheckPoint(int i)
-    {
-        transform.position = checkPoints[i];
-    }
-
-    public void SetCheckPoint(int i)
-    {
-        checkPoints[i] = transform.position;
-    }
-
-    public void InitCheckPoints()
-    {
-        checkPoints = new Vector3[nbCheckPoint];
-    }
-
-    public void OnValidate()
-    {
-        if (!Application.isPlaying && PlayerPrefs.GetInt("oldNbCheckPoint", 0) != nbCheckPoint)
-        {
-            PlayerPrefs.SetInt("oldNbCheckPoint", nbCheckPoint);
-            InitCheckPoints();
-        }
-
-    }
-    #endregion
-
 }
 
-public enum PatrolState { Patrol, Chase, Attack, PlayerDetection}
+public enum PatrolState { Patrol, Chase, Attack, PlayerDetection, Dead}

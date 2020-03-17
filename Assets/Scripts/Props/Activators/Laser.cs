@@ -14,6 +14,12 @@ public class Laser : ActivatorListener
     public float range = 100;
     public int maxReflection = 5;
 
+    // Shader Effect
+    public Material dissolve;
+    public float increaseValue = 5;
+    private float value = -110;
+    private float max = 100;
+
     // Use this for initialization
     void Start()
     {
@@ -29,6 +35,18 @@ public class Laser : ActivatorListener
         {
             points[0] = transform.position;
             CalculateRays(transform.position, transform.right, 1);
+
+            // Shader Effect
+            ShaderEffect();
+        }
+    }
+
+    void ShaderEffect()
+    {
+        if( dissolve != null)
+        {
+            dissolve.SetFloat("Vector1_149EC6A4", value / max);
+            value += 5;
         }
     }
 
@@ -37,6 +55,7 @@ public class Laser : ActivatorListener
         lineRenderer.positionCount = nbPoints;
         for (int i = 0; i< nbPoints; i ++)
         {
+            points[i].z = transform.parent.position.z;
             lineRenderer.SetPosition(i, points[i]);
         }
     }
@@ -44,6 +63,7 @@ public class Laser : ActivatorListener
     void CalculateRays(Vector3 point, Vector3 direction, int index)
     {
         RaycastHit2D hit = Physics2D.Raycast(point, direction, range, collisionMask);
+        // Debug.Log("Raycast "+ index +": "+ point + " direction "+ direction);
         if (index >= maxReflection + 2)
         {
             DrawRays(index);
@@ -57,7 +77,7 @@ public class Laser : ActivatorListener
             {
                 // If it is a receptor : stop and activate
                 DrawRays(index + 1);
-                go.GetComponent<Receptor>().On();
+                go.GetComponent<Receptor>().On(gameObject);
                 toDeactivate = go.GetComponent<Receptor>();
             } 
             else if (go.layer == LayerMask.NameToLayer("Reflector"))
@@ -67,13 +87,13 @@ public class Laser : ActivatorListener
                 float angle = Vector3.Angle(-direction, dir);
                 if (angle != 180)
                 {
-                    CalculateRays(new Vector3(hit.point.x, hit.point.y, 0) + (dir * 0.15f), dir, index + 1);
+                    CalculateRays(new Vector3(hit.point.x, hit.point.y, transform.parent.position.z) + (dir * 0.15f), dir, index + 1);
                 } else
                 {
                     // Case where the laser is parallele to the reflector
                     DrawRays(index + 1);
                     if (toDeactivate != null)
-                        toDeactivate.Off();
+                        toDeactivate.Off(gameObject);
                 }                
             }
             else
@@ -81,7 +101,7 @@ public class Laser : ActivatorListener
                 // If it is an obstacle : stop
                 DrawRays(index + 1);
                 if (toDeactivate != null)
-                    toDeactivate.Off();
+                    toDeactivate.Off(gameObject);
             }
         }
         else
@@ -89,7 +109,7 @@ public class Laser : ActivatorListener
             // Case where the laser doesn't touch anything
             points[index] = point + (direction * range);
             if (toDeactivate != null)
-                toDeactivate.Off();            
+                toDeactivate.Off(gameObject);            
         }
     }
 
@@ -107,7 +127,7 @@ public class Laser : ActivatorListener
             Clear();
         }
         if (toDeactivate != null)
-            toDeactivate.Off();
+            toDeactivate.Off(gameObject);
     }
 
     private void Clear(){;
