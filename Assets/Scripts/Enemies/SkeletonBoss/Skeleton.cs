@@ -26,7 +26,9 @@ public class Skeleton : MonoBehaviour, IResetable
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+        //InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+        Invoke("GetHurt", 1);
+        Invoke("GetHurt", 3);
     }
 
     public void TriggerAttack()
