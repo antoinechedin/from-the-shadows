@@ -13,12 +13,12 @@ public class PulsatingLight : MonoBehaviour
 
     private bool mustPulse = false;
 
-    private Light light;
+    private Light _light;
     private float t = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
-        light = this.GetComponent<Light>();
+        _light = this.GetComponent<Light>();
         if (playAtStart)
             mustPulse = true;
     }
@@ -30,7 +30,7 @@ public class PulsatingLight : MonoBehaviour
         {
             t += speed * Time.deltaTime;
 
-            light.intensity = Mathf.Lerp(startingIntensity, endingIntensity, t);
+            _light.intensity = Mathf.Lerp(startingIntensity, endingIntensity, t);
         }
     }
 }
