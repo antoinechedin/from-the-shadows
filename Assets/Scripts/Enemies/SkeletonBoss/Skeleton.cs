@@ -140,8 +140,8 @@ public class Skeleton : MonoBehaviour, IResetable
         hp = 3;
 
         // Cancel hand attack
-        hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
-        hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
+        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().StopHand();
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().StopHand();
         CancelInvoke();
 
         // Restart hand attack
