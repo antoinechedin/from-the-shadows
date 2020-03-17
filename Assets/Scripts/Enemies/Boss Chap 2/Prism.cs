@@ -75,11 +75,17 @@ public class Prism : Receptor
         Physics.Raycast(transform.position, aimPoint, out hit, 100, ~LayerMask.NameToLayer("BossLayer"));
         Debug.Log(hit.distance);
 
+        //on tir le rayon
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, aimPoint);
+
         yield return new WaitForSeconds(3);
+
+        //on enlève le rayon
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, transform.position);
         firing = false;
+
+        //TODO : reset les reflector
     }
 }
