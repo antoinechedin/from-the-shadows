@@ -21,8 +21,15 @@ public class HandCollision : MonoBehaviour
     }
     public void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == "HurtBoss" && isKillable)
+        if (collider.gameObject.tag == "StopBoss")
         {
+            // When the hand is stopped by an obstacle but is not hurt
+            Debug.Log("Case Stop Hand");
+            StopHand();
+        }
+        else if (collider.gameObject.tag == "HurtBoss" && isKillable)
+        {
+            Debug.Log("Case Hurt Boss");
             // Stop the hand animation
             GetComponent<Animator>().SetTrigger("Die");
 
@@ -41,6 +48,7 @@ public class HandCollision : MonoBehaviour
         }
         else if (collider.gameObject.GetComponent<RotatingPlatform>() != null && isKillable)
         {
+            Debug.Log("Case Rotate Spike");
             // When the hand hurt a rotating spike from behind
             // the hand can not be killed for 2 seconds to avoid the spikes
             // the platform rotates
@@ -51,14 +59,9 @@ public class HandCollision : MonoBehaviour
 
         if (collider.gameObject.GetComponent<DestructiblePlatform>() != null && isDestructor)
         {
+            Debug.Log("Case destruction");
             // When the hand destroys a platform
             collider.gameObject.GetComponent<DestructiblePlatform>().StartCoroutine("Destruct");
-        }
-
-        if (collider.gameObject.tag == "StopBoss")
-        {
-            // When the hand is stopped by an obstacle but is not hurt
-            GetComponent<Animator>().SetTrigger("Die");
         }
     }
 
@@ -77,5 +80,17 @@ public class HandCollision : MonoBehaviour
     public void ActivateKillable()
     {
         isKillable = true;
+    }
+
+    public void StopHand()
+    {
+        GetComponent<Animator>().SetTrigger("Die");
+        isKillable = false;
+
+        if (killzone != null)
+            killzone.SetActive(true);
+
+        Invoke("ActivateKillable", 1);
+        isDestructor = false;
     }
 }
