@@ -46,9 +46,12 @@ public class Torch : ActivatorListener, IResetable
             lightSource.GetComponent<NewLightSource>().lightRadius = 0f;
             OnActivate();
         }
+        else
+        {
+            OnDeactivate();
+        }
 
         isMute = false;
-        active = activeAtStart;
     }
 
     private void LateUpdate()
