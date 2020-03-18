@@ -74,7 +74,7 @@ public class MenuChapter : MonoBehaviour
             else if (!chapterMenuIsOpen)
             {
                 menuCamera.SetReturnToSavesMenu(true);
-                StartCoroutine(menuManager.OpenSaveMenuCoroutine());
+                menuManager.OpenSaveMenu();
             }
         }
 

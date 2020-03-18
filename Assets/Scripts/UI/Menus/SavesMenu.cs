@@ -46,7 +46,7 @@ public class SavesMenu : MonoBehaviour
             }
             else
             {
-                StartCoroutine(menuManager.OpenStartMenuCoroutine());
+                menuManager.OpenStartMenu();
             }
         }
     }
@@ -70,7 +70,7 @@ public class SavesMenu : MonoBehaviour
                 }
 
                 string saveName = "Save " + (i + 1).ToString();
-                string completion = "00" + "%";
+                string completion = (int)(saves[i].GetCompletion() * 100) + "%";
                 string timePlayed = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm");
 
                 buttonText.text = saveName + "   " + completion + " " + timePlayed;

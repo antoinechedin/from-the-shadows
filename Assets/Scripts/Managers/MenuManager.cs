@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using Coffee.UIExtensions;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -26,6 +27,8 @@ public class MenuManager : MonoBehaviour
     public Image background;
     public Image startMenuBackground;
     public TextMeshProUGUI version;
+
+    public float transitionDuration;
 
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
@@ -99,27 +102,57 @@ public class MenuManager : MonoBehaviour
 
     public void OpenStartMenu()
     {
-        StartCoroutine(OpenSaveMenuCoroutine());
+        StartCoroutine(OpenStartMenuCoroutine());
     }
 
-    public IEnumerator OpenStartMenuCoroutine()
-    {        
+    private IEnumerator OpenStartMenuCoroutine()
+    {
+        float duration = transitionDuration / 2f;
+
+        float timer = 0;
+        UIDissolve[] dissolves = savesMenu.GetComponentsInChildren<UIDissolve>();
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            timer = timer > duration ? duration : timer;
+
+            foreach (UIDissolve dissolve in dissolves)
+            {
+                dissolve.effectFactor = 0.5f + timer / (2 * duration);
+            }
+
+            yield return null;
+        }
+
         startMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
-        
-        startMenuBackground.gameObject.SetActive(true);
+
+        EventSystem.current.SetSelectedGameObject(play.gameObject);
+
+        // startMenuBackground.gameObject.SetActive(true);
         // startMenuBackgroundAnimator.SetBool("fade", true);
         // backgroundAnimator.SetBool("fade", false);
         version.text = Application.version + "\n2020 © " + Application.companyName;
 
-        menuCamera.SetReturnToStartMenu(true);
+        timer = 0;
+        dissolves = startMenu.GetComponentsInChildren<UIDissolve>();
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            timer = timer > duration ? duration : timer;
 
-        EventSystem.current.SetSelectedGameObject(play.gameObject);
-          
+            foreach (UIDissolve dissolve in dissolves)
+            {
+                dissolve.effectFactor = 1f - timer / (2 * duration);
+            }
+            yield return null;
+        }
+
+        menuCamera.SetReturnToStartMenu(true);
         // yield return StartCoroutine(ButtonsDissolveIn());
-        yield return null;
     }
 
     public void OpenSaveMenu()
@@ -127,8 +160,8 @@ public class MenuManager : MonoBehaviour
         StartCoroutine(OpenSaveMenuCoroutine());
     }
 
-    public IEnumerator OpenSaveMenuCoroutine()
-    {        
+    private IEnumerator OpenSaveMenuCoroutine()
+    {
         // yield return StartCoroutine(ButtonsDissolveOut());        
 
         if (startMenu.gameObject.activeSelf)
@@ -137,21 +170,52 @@ public class MenuManager : MonoBehaviour
         }
         // backgroundAnimator.SetBool("fade", true);
 
-        savesMenu.gameObject.SetActive(true);
+        float duration = transitionDuration / 2f;
+
+        float timer = 0;
+        UIDissolve[] dissolves = startMenu.GetComponentsInChildren<UIDissolve>();
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            timer = timer > duration ? duration : timer;
+
+            foreach (UIDissolve dissolve in dissolves)
+            {
+                dissolve.effectFactor = 0.5f + timer / (2 * duration);
+            }
+
+            yield return null;
+        }
+
         startMenu.gameObject.SetActive(false);
+        savesMenu.gameObject.SetActive(true);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
+
+        int lastSaveSelected = savesMenu.gameObject.GetComponent<SavesMenu>().LastSelected;
+        Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
+        EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
+
+        timer = 0;
+        dissolves = savesMenu.GetComponentsInChildren<UIDissolve>();
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            timer = timer > duration ? duration : timer;
+
+            foreach (UIDissolve dissolve in dissolves)
+            {
+                dissolve.effectFactor = 1f - timer / (2 * duration);
+            }
+
+            yield return null;
+        }
 
         menuCamera.SetReturnToStartMenu(false);
         menuCamera.SetReturnToSavesMenu(true);
 
         //yield return StartCoroutine(SavesDissolveIn());
-
-        int lastSaveSelected = savesMenu.gameObject.GetComponent<SavesMenu>().LastSelected;
-        Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
-        EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
-        yield return null;
-
     }
 
     public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
@@ -179,7 +243,7 @@ public class MenuManager : MonoBehaviour
         StartCoroutine(OpenOptionsMenuCoroutine());
     }
 
-    public IEnumerator OpenOptionsMenuCoroutine()
+    private IEnumerator OpenOptionsMenuCoroutine()
     {
         // yield return StartCoroutine(ButtonsDissolveOut());
 
