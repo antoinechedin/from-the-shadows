@@ -182,17 +182,17 @@ public class SaveManager : Singleton<SaveManager>
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //18
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //19
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //20
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //21    - Nom inconnu - 3 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //21    - Nom inconnu - 5 Collectibles
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //22
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //23
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //24
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //25
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //26
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //27
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //28  - La troisième rencontre - 6 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //28
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //29
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //30
-        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //31
+        lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //30
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //31 - La troisième rencontre - 4 Collectibles
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //32
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //33
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //34
