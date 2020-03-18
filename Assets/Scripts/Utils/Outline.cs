@@ -13,15 +13,7 @@ public class Outline : MonoBehaviour
     private Material instanceMat;
     private float alpha;
     private bool animating = false;
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.D))
-            StartCoroutine(DisplayOutline());
-        else if (Input.GetKeyDown(KeyCode.H))
-            StartCoroutine(HideOutline());
-    }
-
+    
     private void Awake()
     {
         List<Material> list = new List<Material>();
