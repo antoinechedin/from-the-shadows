@@ -43,10 +43,9 @@ public class ChapterManager : MonoBehaviour
             levels[currentLevel].SetCollectibles(currentLvl.LightCollectibles, currentLvl.ShadowCollectibles);
         }
 
-        //UpdateEnabledLevels();
-        foreach (LevelManager level in levels)
+        for (int i = 0; i < levels.Count; i++)
         {
-            level.DisableLevel();
+            if (i != currentLevel) levels[i].DisableThisLevelOnly();
         }
         levels[currentLevel].EnableLevel();
     }
@@ -134,13 +133,28 @@ public class ChapterManager : MonoBehaviour
     /// </summary>
     public void ChangeLevel(int newCurrentLevel, bool tpPlayers)
     {
+        Debug.Log("Level " + currentLevel + " to level " + newCurrentLevel);
+        
         // Mise à jour des infos concernant le niveau courant
         if (GameManager.Instance.CurrentChapter != -1)
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
-        // On désactive le nouveau actuel et ses voisins
-        levels[currentLevel].DisableLevel();
+        List<LevelManager> levelsToDisable = new List<LevelManager>();
+        foreach (LevelManager lm in levels[currentLevel].roomsToEnable)
+        {
+            if (!levels[newCurrentLevel].roomsToEnable.Contains(lm))
+            {
+                levelsToDisable.Add(lm);
+            }
+        }
+        foreach (LevelManager lm in levelsToDisable)
+        {
+            lm.gameObject.SetActive(false);
+        }
+
+        // On désactive le niveau actuel et ses voisins
+        // levels[currentLevel].DisableLevel();
 
         levels[newCurrentLevel].virtualCamera.gameObject.SetActive(true);
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
