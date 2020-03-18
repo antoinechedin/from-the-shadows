@@ -5,9 +5,11 @@ using System.IO;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine;
+using TMPro;
 
 public class SavesMenu : MonoBehaviour
 {
+    public MenuManager menuManager;
     public enum State { Loading, Saving };
     public State currentState;
     public Button[] savesButons;
@@ -15,14 +17,13 @@ public class SavesMenu : MonoBehaviour
 
     private RectTransform actionChoicePanel;
     private RectTransform newGameChoicePanel;
-    private MenuManager menuManager;
     private int lastSelected = 0;
 
     void Start()
     {
         saves = GameManager.Instance.Saves;
         UpdateButtons();
-        actionChoicePanel = gameObject.transform.Find("SavesActionsButton").gameObject.GetComponent<RectTransform>();
+        actionChoicePanel = gameObject.transform.Find("SavesActionsButtons").gameObject.GetComponent<RectTransform>();
         // newGameChoicePanel = gameObject.transform.Find("New Game Choice").gameObject.GetComponent<RectTransform>();
         menuManager = GameObject.Find("Menu Manager").gameObject.GetComponent<MenuManager>();
         if (savesButons.Length > 0)
@@ -61,13 +62,20 @@ public class SavesMenu : MonoBehaviour
         {
             if (saves[i] != null)
             {
-                Text empty = savesButons[i].transform.Find("Text").GetComponent<Text>();
-                empty.text = "";
-                savesButons[i].transform.Find("SaveInfo").gameObject.SetActive(true);
-                Text date = savesButons[i].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
-                date.text = saves[i].LastOpenDate.ToString();
-                Text timePlayed = savesButons[i].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
-                timePlayed.text = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm\:ss");
+                TextMeshProUGUI buttonText = savesButons[i].transform.GetComponentInChildren<TextMeshProUGUI>();
+                if (buttonText == null)
+                {
+                    Debug.LogWarning("WARN SavrMenu.UpdateButtons(): Couldn't find a TMPro Text Component in "
+                                     + Utils.GetFullName(savesButons[i].transform)
+                    );
+                    return;
+                }
+
+                string saveName = "Save " + i;
+                string completion = "NULL" + " %";
+                string timePlayed = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm\:ss");
+                
+                buttonText.text = saveName + "   " + completion + " " + timePlayed;
             }
             else
             {
@@ -82,14 +90,16 @@ public class SavesMenu : MonoBehaviour
     /// <param name="index"> Index of the button to reset </param>
     public void ResetButton(int index)
     {
-        Text empty = savesButons[index].transform.Find("Text").GetComponent<Text>();
-        empty.text = "NEW GAME";
-        savesButons[index].transform.Find("SaveInfo").gameObject.SetActive(false);
+        TextMeshProUGUI buttonText = savesButons[index].transform.GetComponentInChildren<TextMeshProUGUI>();
+        if (buttonText == null)
+        {
+            Debug.LogWarning("WARN SavrMenu.ResetButton(): Couldn't find a TMPro Text Component in "
+                             + Utils.GetFullName(savesButons[index].transform)
+            );
+            return;
+        }
 
-        Text timePlayed = savesButons[index].transform.Find("SaveInfo").transform.Find("TimePlayed").GetComponent<Text>();
-        timePlayed.text = "";
-        Text date = savesButons[index].transform.Find("SaveInfo").transform.Find("Date").GetComponent<Text>();
-        date.text = "";
+        buttonText.text = "New Game";
     }
 
     /// <summary>
