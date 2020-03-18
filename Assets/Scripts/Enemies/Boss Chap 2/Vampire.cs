@@ -19,10 +19,14 @@ public class Vampire : MonoBehaviour, IResetable
 
     private int life;
 
+    private Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
+        animator = GetComponent<Animator>();
         rdmAction = Random.Range(minTimeAction, maxTimeAction);
+        life = maxLife;
     }
 
     // Update is called once per frame
@@ -79,6 +83,7 @@ public class Vampire : MonoBehaviour, IResetable
 
     public void TakeDamage()
     {
+        animator.SetTrigger("TakeDamage");
         life--;
         Debug.Log("Take damage : " + life);
 
@@ -86,6 +91,17 @@ public class Vampire : MonoBehaviour, IResetable
         {
             Die();
         }
+    }
+
+    public void BigAttack()
+    {
+        Debug.Log("Big attack");
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+
+        //on active le gros laser
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, FindObjectOfType<Prism>().transform.position);
+        lineRenderer.enabled = true;
     }
 
     public void Die()

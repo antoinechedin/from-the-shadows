@@ -72,8 +72,10 @@ public class Prism : Receptor
         //On tir un rayon pour chercher la collision avec le boss
         Vector3 aimPoint = transform.position + transform.forward * 100;
         RaycastHit hit = new RaycastHit();
-        Physics.Raycast(transform.position, aimPoint, out hit, 100, ~LayerMask.NameToLayer("BossLayer"));
-        Debug.Log(hit.distance);
+        if (Physics.Raycast(transform.position, aimPoint, out hit, 100, ~LayerMask.NameToLayer("BossLayer")))
+        {
+            hit.transform.GetComponent<Vampire>().TakeDamage();
+        }
 
         //on tir le rayon
         lineRenderer.SetPosition(0, transform.position);
