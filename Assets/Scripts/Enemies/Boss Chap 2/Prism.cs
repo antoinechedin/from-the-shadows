@@ -9,12 +9,21 @@ public class Prism : Receptor
     public Material activated;
     public List<GameObject> indicators;
 
+    [Header("Attaque du boss")]
+    public GameObject laserRotator;
+    public float rotationSpeed;
+
     private bool firing = false;
     private LineRenderer lineRenderer;
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
+    }
+
+    private void Start()
+    {
+        laserRotator.SetActive(false);
     }
 
     public override void AddLaser(GameObject addedlaser) 
@@ -81,7 +90,7 @@ public class Prism : Receptor
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, aimPoint);
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
 
         //on enlève le rayon
         lineRenderer.SetPosition(0, transform.position);
@@ -89,5 +98,21 @@ public class Prism : Receptor
         firing = false;
 
         //TODO : reset les reflector
+    }
+
+    public IEnumerator SpiningLasers(float time)
+    {
+        float cpt = 0;
+
+        while (cpt < time)
+        {
+            cpt += Time.deltaTime;
+
+            //rotation
+            laserRotator.SetActive(true);
+            laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed));
+            yield return null;
+        }
+        laserRotator.SetActive(false);
     }
 }

@@ -102,6 +102,8 @@ public class Vampire : MonoBehaviour, IResetable
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, FindObjectOfType<Prism>().transform.position);
         lineRenderer.enabled = true;
+
+        StartCoroutine(FindObjectOfType<Prism>().SpiningLasers(5));
     }
 
     public void Die()
