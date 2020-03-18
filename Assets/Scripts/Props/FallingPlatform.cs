@@ -60,7 +60,8 @@ public class FallingPlatform : MonoBehaviour, IResetable
             Color color = mesh.GetComponent<MeshRenderer>().material.GetColor("_BaseColor");
             Color fade = Color.Lerp(color, targetColor, Time.deltaTime * 10);
             mesh.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", fade);
-            mesh.position = Vector3.Lerp(mesh.position, fallingPosition, Time.deltaTime * 5);
+            if (!isShaking)
+                mesh.position = Vector3.MoveTowards(mesh.position, fallingPosition, 1);
         }
     }
 
@@ -76,10 +77,11 @@ public class FallingPlatform : MonoBehaviour, IResetable
 
     public void Fall()
     {
+        isShaking = false;
         if (plaformCollider != null)
             plaformCollider.enabled = false;
         targetColor = new Color(startingColor.r, startingColor.g, startingColor.b, 0);
-        fallingPosition = mesh.position - new Vector3(0, 5, 0);
+        fallingPosition = mesh.position - new Vector3(0, 15, 0);
         Invoke("DeactivateChilds", 0.4f);
         Invoke("Reset", timerBeforeSpawning);
     }
