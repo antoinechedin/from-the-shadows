@@ -18,10 +18,17 @@ public class Slide : ActivatorListener
     public float distance;
     public AudioClip sound;
 
+    public GameObject objectToMove;
+
     public void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        startPosition = transform.position;
+
+        if (objectToMove != null)
+            startPosition = objectToMove.transform.position;
+        else
+            startPosition = transform.position;
+
         targetPosition = startPosition;
         switch (direction)
         {
@@ -74,6 +81,9 @@ public class Slide : ActivatorListener
 
     private void Update()
     {
-        transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * speed);
+        if(objectToMove != null)
+            objectToMove.transform.position = Vector3.Lerp(objectToMove.transform.position, targetPosition, Time.deltaTime * speed);
+        else
+            transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * speed);
     }
 }
