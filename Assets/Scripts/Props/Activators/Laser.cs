@@ -43,8 +43,11 @@ public class Laser : ActivatorListener
 
     void ShaderEffect()
     {
-        dissolve.SetFloat("Vector1_149EC6A4", value / max);
-        value += 5;
+        if( dissolve != null)
+        {
+            dissolve.SetFloat("Vector1_149EC6A4", value / max);
+            value += 5;
+        }
     }
 
     void DrawRays(int nbPoints)
@@ -52,6 +55,7 @@ public class Laser : ActivatorListener
         lineRenderer.positionCount = nbPoints;
         for (int i = 0; i< nbPoints; i ++)
         {
+            points[i].z = transform.parent.position.z;
             lineRenderer.SetPosition(i, points[i]);
         }
     }
@@ -59,6 +63,7 @@ public class Laser : ActivatorListener
     void CalculateRays(Vector3 point, Vector3 direction, int index)
     {
         RaycastHit2D hit = Physics2D.Raycast(point, direction, range, collisionMask);
+        // Debug.Log("Raycast "+ index +": "+ point + " direction "+ direction);
         if (index >= maxReflection + 2)
         {
             DrawRays(index);
@@ -82,7 +87,7 @@ public class Laser : ActivatorListener
                 float angle = Vector3.Angle(-direction, dir);
                 if (angle != 180)
                 {
-                    CalculateRays(new Vector3(hit.point.x, hit.point.y, 0) + (dir * 0.15f), dir, index + 1);
+                    CalculateRays(new Vector3(hit.point.x, hit.point.y, transform.parent.position.z) + (dir * 0.15f), dir, index + 1);
                 } else
                 {
                     // Case where the laser is parallele to the reflector

@@ -28,6 +28,10 @@ public class OverHeadGUI : MonoBehaviour
     [Tooltip("the number of player needed to display the content")]
     public int nbPlayerNeeded;
 
+    [Header("Time before the player can pass the dialogue box")]
+    public float timeBeforePass = 0f;
+    public bool canPass = false;
+
     [Header("Note : set the target to \"this\" to make it static.")]
     [Space(-10)]
     [Header("The GameObject over which the content should be displayed above.")]
@@ -48,6 +52,7 @@ public class OverHeadGUI : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        canPass = false;
     }
 
 
@@ -61,6 +66,12 @@ public class OverHeadGUI : MonoBehaviour
         {
             HideUI();
         }
+    }
+
+    IEnumerator CanPassDialogue()
+    {
+        yield return new WaitForSeconds(timeBeforePass);
+        canPass = true;
     }
 
     private void Update()
@@ -113,6 +124,8 @@ public class OverHeadGUI : MonoBehaviour
         UIActive = true;
         animator.SetBool("display", true);
         animator.SetBool("hide", false);
+
+        StartCoroutine(CanPassDialogue());
         //content.SetActive(UIActive);
     }
 
@@ -133,6 +146,5 @@ public class OverHeadGUI : MonoBehaviour
     {
         OnDialogueEnd.Invoke();
     }
-
 }
 
