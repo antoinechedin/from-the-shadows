@@ -21,21 +21,14 @@ public class LineRendererDrawForward : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, lineDistance, collisionMask);
         if (hit.collider != null)
         {
-            Debug.Log("touché qq chose");
             if (hit.transform.GetComponent<PlayerController>() != null) //si on capte le joueur
             {
-                Debug.Log("touché PLAYER");
                 hit.transform.GetComponent<PlayerController>().Die();
             }   
             else//on a touché un élément de décors
             {
-                Debug.Log(hit.point);
                 lineRenderer.SetPosition(1, hit.point);
             }
-        }
-        else
-        {
-            Debug.Log("rien touché");
         }
     }
 }

@@ -23,8 +23,6 @@ public class Prism : Receptor
 
     private void Start()
     {
-        if (laserRotator != null)
-            laserRotator.SetActive(false);
     }
 
     public override void AddLaser(GameObject addedlaser) 

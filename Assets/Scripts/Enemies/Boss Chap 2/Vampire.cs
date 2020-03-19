@@ -62,6 +62,18 @@ public class Vampire : MonoBehaviour, IResetable
     public void Attack()
     {
         Debug.Log("Attack");
+        if (life == 3)//phase 1 : fantôme
+        {
+
+        }
+        else if (life==2)//phase 2 fantôme + 1 explosif laser (joueur aléatoire)
+        {
+
+        }
+        else if (life == 1)//phase 3 + 2 explosif laser (chaque joueur)
+        {
+
+        }
     }
 
     public void Move()
