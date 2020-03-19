@@ -28,8 +28,8 @@ public class MenuManager : MonoBehaviour
     public Image startMenuBackground;
     public TextMeshProUGUI version;
 
-    public float transitionDuration;
-    public float transitionOffset;
+    public float dissolveDuration;
+    public float dissolveOffset;
 
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
@@ -108,16 +108,16 @@ public class MenuManager : MonoBehaviour
 
     private IEnumerator OpenStartMenuCoroutine()
     {
-        float duration = transitionDuration / 2f;
+        EventSystem.current.sendNavigationEvents = false;
 
-        UIDissolve[] dissolves = savesMenu.GetComponentsInChildren<UIDissolve>();
+        DissolveController[] dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(duration));
-            yield return new WaitForSeconds(transitionOffset);
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(dissolveDuration));
+            yield return new WaitForSeconds(dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(duration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
         startMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
@@ -131,17 +131,20 @@ public class MenuManager : MonoBehaviour
         // backgroundAnimator.SetBool("fade", false);
         version.text = Application.version + "\n2020 © " + Application.companyName;
 
-        dissolves = startMenu.GetComponentsInChildren<UIDissolve>();
+        dissolves = startMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(duration));
-            yield return new WaitForSeconds(transitionOffset);
+            StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
+            yield return new WaitForSeconds(dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(duration));
+        EventSystem.current.sendNavigationEvents = true;
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
 
         menuCamera.SetReturnToStartMenu(true);
         // yield return StartCoroutine(ButtonsDissolveIn());
+
+        EventSystem.current.sendNavigationEvents = true;
     }
 
     public void OpenSaveMenu()
@@ -151,6 +154,8 @@ public class MenuManager : MonoBehaviour
 
     private IEnumerator OpenSaveMenuCoroutine()
     {
+
+        EventSystem.current.sendNavigationEvents = false;
         // yield return StartCoroutine(ButtonsDissolveOut());        
 
         if (startMenu.gameObject.activeSelf)
@@ -159,17 +164,15 @@ public class MenuManager : MonoBehaviour
         }
         // backgroundAnimator.SetBool("fade", true);
 
-        float duration = transitionDuration / 2f;
-
-        UIDissolve[] dissolves = startMenu.GetComponentsInChildren<UIDissolve>();
+        DissolveController[] dissolves = startMenu.GetComponentsInChildren<DissolveController>();
 
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(duration));
-            yield return new WaitForSeconds(transitionOffset);
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(dissolveDuration));
+            yield return new WaitForSeconds(dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(duration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
         startMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(true);
@@ -180,14 +183,15 @@ public class MenuManager : MonoBehaviour
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
 
-        dissolves = savesMenu.GetComponentsInChildren<UIDissolve>();
-         for (int i = 0; i < dissolves.Length - 1; i++)
+        dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
+        for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(duration));
-            yield return new WaitForSeconds(transitionOffset);
+            StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
+            yield return new WaitForSeconds(dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(duration));
+        EventSystem.current.sendNavigationEvents = true;
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
 
         menuCamera.SetReturnToStartMenu(false);
         menuCamera.SetReturnToSavesMenu(true);

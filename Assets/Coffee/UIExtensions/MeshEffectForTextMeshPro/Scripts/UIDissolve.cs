@@ -355,42 +355,6 @@ namespace Coffee.UIExtensions
             _player.Stop();
         }
 
-        /// <summary>
-        /// Make the Gameobject appear with a Coroutine 
-        /// </summary>
-        /// <param name="duration">Effect duration in seconds</param>
-        /// <returns></returns>
-        public IEnumerator DissolveInCoroutine(float duration)
-        {
-            float timer = 0;
-            while (timer < duration)
-            {
-                timer += Time.deltaTime;
-                timer = timer > duration ? duration : timer;
-
-                effectFactor = 1f - timer / duration;
-                yield return null;
-            }
-        }
-
-        /// <summary>
-        /// Make the Gameobject disappear with a Coroutine 
-        /// </summary>
-        /// <param name="duration">Effect duration in seconds</param>
-        /// <returns></returns>
-        public IEnumerator DissolveOutCoroutine(float duration)
-        {
-            float timer = 0;
-            while (timer < duration)
-            {
-                timer += Time.deltaTime;
-                timer = timer > duration ? duration : timer;
-
-                effectFactor = timer / duration;
-                yield return null;
-            }
-        }
-
         //################################
         // Protected Members.
         //################################
