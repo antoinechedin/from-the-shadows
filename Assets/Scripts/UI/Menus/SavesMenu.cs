@@ -13,8 +13,6 @@ public class SavesMenu : MonoBehaviour
     public RectTransform actionChoiceButtons;
     public RectTransform newGameChoiceButtons;
 
-    public enum State { Loading, Saving };
-    public State currentState;
     public Button[] savesButons;
     private Save[] saves;
 
@@ -32,21 +30,23 @@ public class SavesMenu : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("B_G"))
+        if (EventSystem.current.sendNavigationEvents)
         {
-            if (actionChoiceButtons != null && actionChoiceButtons.gameObject.activeSelf)
+            if (Input.GetButtonDown("B_G"))
             {
-                actionChoiceButtons.gameObject.SetActive(false);
-                EventSystem.current.SetSelectedGameObject(savesButons[lastSelected].gameObject);
-            }
-            else if (newGameChoiceButtons != null && newGameChoiceButtons.gameObject.activeSelf)
-            {
-                newGameChoiceButtons.gameObject.SetActive(false);
-                EventSystem.current.SetSelectedGameObject(savesButons[lastSelected].gameObject);
-            }
-            else
-            {
-                menuManager.OpenStartMenu();
+                if (actionChoiceButtons != null && actionChoiceButtons.gameObject.activeSelf)
+                {
+                    StartCoroutine(CloseChoiceButtonsCoroutine(actionChoiceButtons));
+
+                }
+                else if (newGameChoiceButtons != null && newGameChoiceButtons.gameObject.activeSelf)
+                {
+                    StartCoroutine(CloseChoiceButtonsCoroutine(newGameChoiceButtons));
+                }
+                else
+                {
+                    menuManager.OpenStartMenu();
+                }
             }
         }
     }
@@ -106,20 +106,30 @@ public class SavesMenu : MonoBehaviour
     /// <param name="index"> Index of the button clicked </param>
     public void ChooseAction(int index)
     {
-        lastSelected = index;
+        StartCoroutine(ChooseActionCoroutine(index));
+    }
 
-        if (currentState == State.Loading && saves[index] != null)
+    public IEnumerator ChooseActionCoroutine(int index)
+    {
+        EventSystem.current.sendNavigationEvents = false;
+        lastSelected = index;
+        if (saves[index] != null)
         {
             Button playButton = actionChoiceButtons.transform.Find("PlayButton").GetComponent<Button>();
             Button deleteButton = actionChoiceButtons.transform.Find("DeleteButton").GetComponent<Button>();
 
             actionChoiceButtons.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(playButton.gameObject);
-            
             playButton.onClick.RemoveAllListeners();
             playButton.onClick.AddListener(delegate { Launch(index); });
             deleteButton.onClick.RemoveAllListeners();
             deleteButton.onClick.AddListener(delegate { Delete(index); });
+
+            DissolveController dissolve = actionChoiceButtons.GetComponent<DissolveController>();
+            if (dissolve != null)
+            {
+                yield return StartCoroutine(dissolve.DissolveInCoroutine(menuManager.dissolveDuration));
+            }
         }
         else if (saves[index] == null)
         {
@@ -128,12 +138,27 @@ public class SavesMenu : MonoBehaviour
 
             newGameChoiceButtons.gameObject.SetActive(true);
             EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(soloButton.gameObject);
-
             soloButton.onClick.RemoveAllListeners();
             soloButton.onClick.AddListener(delegate { NewGame(1, index); });
             duoButton.onClick.RemoveAllListeners();
             duoButton.onClick.AddListener(delegate { NewGame(2, index); });
+
+            DissolveController dissolve = newGameChoiceButtons.GetComponent<DissolveController>();
+            if (dissolve != null)
+            {
+                yield return StartCoroutine(dissolve.DissolveInCoroutine(menuManager.dissolveDuration));
+            }
         }
+        EventSystem.current.sendNavigationEvents = true;
+    }
+
+    private IEnumerator CloseChoiceButtonsCoroutine(RectTransform choiceButtons)
+    {
+        DissolveController dissolve = choiceButtons.GetComponent<DissolveController>();
+        // savesButons[lastSelected].GetComponent<Animator>().SetTrigger("");
+        EventSystem.current.SetSelectedGameObject(savesButons[lastSelected].gameObject);
+        yield return StartCoroutine(dissolve.DissolveOutCoroutine(menuManager.dissolveDuration));
+        actionChoiceButtons.gameObject.SetActive(false);
     }
 
     /// <summary>
