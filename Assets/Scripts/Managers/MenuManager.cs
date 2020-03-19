@@ -29,6 +29,7 @@ public class MenuManager : MonoBehaviour
     public TextMeshProUGUI version;
 
     public float transitionDuration;
+    public float transitionOffset;
 
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
@@ -109,21 +110,14 @@ public class MenuManager : MonoBehaviour
     {
         float duration = transitionDuration / 2f;
 
-        float timer = 0;
         UIDissolve[] dissolves = savesMenu.GetComponentsInChildren<UIDissolve>();
-
-        while (timer < duration)
+        for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            timer += Time.deltaTime;
-            timer = timer > duration ? duration : timer;
-
-            foreach (UIDissolve dissolve in dissolves)
-            {
-                dissolve.effectFactor = timer / duration;
-            }
-
-            yield return null;
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(duration));
+            yield return new WaitForSeconds(transitionOffset);
         }
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(duration));
 
         startMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
@@ -137,19 +131,14 @@ public class MenuManager : MonoBehaviour
         // backgroundAnimator.SetBool("fade", false);
         version.text = Application.version + "\n2020 © " + Application.companyName;
 
-        timer = 0;
         dissolves = startMenu.GetComponentsInChildren<UIDissolve>();
-        while (timer < duration)
+        for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            timer += Time.deltaTime;
-            timer = timer > duration ? duration : timer;
-
-            foreach (UIDissolve dissolve in dissolves)
-            {
-                dissolve.effectFactor = 1f - timer / duration;
-            }
-            yield return null;
+            StartCoroutine(dissolves[i].DissolveInCoroutine(duration));
+            yield return new WaitForSeconds(transitionOffset);
         }
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(duration));
 
         menuCamera.SetReturnToStartMenu(true);
         // yield return StartCoroutine(ButtonsDissolveIn());
@@ -172,21 +161,15 @@ public class MenuManager : MonoBehaviour
 
         float duration = transitionDuration / 2f;
 
-        float timer = 0;
         UIDissolve[] dissolves = startMenu.GetComponentsInChildren<UIDissolve>();
 
-        while (timer < duration)
+        for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            timer += Time.deltaTime;
-            timer = timer > duration ? duration : timer;
-
-            foreach (UIDissolve dissolve in dissolves)
-            {
-                dissolve.effectFactor = timer / duration;
-            }
-
-            yield return null;
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(duration));
+            yield return new WaitForSeconds(transitionOffset);
         }
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(duration));
 
         startMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(true);
@@ -197,20 +180,14 @@ public class MenuManager : MonoBehaviour
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
 
-        timer = 0;
         dissolves = savesMenu.GetComponentsInChildren<UIDissolve>();
-        while (timer < duration)
+         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            timer += Time.deltaTime;
-            timer = timer > duration ? duration : timer;
-
-            foreach (UIDissolve dissolve in dissolves)
-            {
-                dissolve.effectFactor = 1f - timer / duration;
-            }
-
-            yield return null;
+            StartCoroutine(dissolves[i].DissolveInCoroutine(duration));
+            yield return new WaitForSeconds(transitionOffset);
         }
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(duration));
 
         menuCamera.SetReturnToStartMenu(false);
         menuCamera.SetReturnToSavesMenu(true);
