@@ -133,8 +133,6 @@ public class ChapterManager : MonoBehaviour
     /// </summary>
     public void ChangeLevel(int newCurrentLevel, bool tpPlayers)
     {
-        Debug.Log("Level " + currentLevel + " to level " + newCurrentLevel);
-        
         // Mise à jour des infos concernant le niveau courant
         if (GameManager.Instance.CurrentChapter != -1)
             ValidateCollectibles();
@@ -143,7 +141,7 @@ public class ChapterManager : MonoBehaviour
         List<LevelManager> levelsToDisable = new List<LevelManager>();
         foreach (LevelManager lm in levels[currentLevel].roomsToEnable)
         {
-            if (!levels[newCurrentLevel].roomsToEnable.Contains(lm))
+            if (!levels[newCurrentLevel].roomsToEnable.Contains(lm) && levels[newCurrentLevel] != lm)
             {
                 levelsToDisable.Add(lm);
             }
