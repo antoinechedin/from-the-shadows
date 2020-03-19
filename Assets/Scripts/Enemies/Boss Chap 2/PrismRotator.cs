@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PrismRotator : MonoBehaviour
+public class PrismRotator : MonoBehaviour, IResetable
 {
     public float rotationStep;
     public float rotationSpeed;
-    public AimCursor aimCursor;
+    //public AimCursor aimCursor;
 
     private int currentPos = 1;//0 gauche      1 centre       2 droite
     private float targetRotation = 0;
@@ -39,6 +39,12 @@ public class PrismRotator : MonoBehaviour
             }
         }
 
-        aimCursor.SetTargetPos(currentPos);
+        //aimCursor.SetTargetPos(currentPos);
+    }
+
+    public void Reset()
+    {
+        targetRotation = 0;
+        currentPos = 1;
     }
 }

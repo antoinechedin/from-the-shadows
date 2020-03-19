@@ -52,7 +52,6 @@ public class BossPressurePlate : Activator
     /// </summary>
     protected void On()
     {
-        Debug.Log("PP ON");
         prismRotator.Rotate(sens);
         if (audioSource != null)
             audioSource.PlayOneShot(sound);
@@ -65,7 +64,6 @@ public class BossPressurePlate : Activator
     /// </summary>
     protected void Off()
     {
-        Debug.Log("PP OFF");
         if (child != null)
             child.GetComponent<MeshRenderer>().material = inactiveMat;
     }
