@@ -109,6 +109,7 @@ public class LevelManager : MonoBehaviour
 
         Camera.main.GetComponent<CameraManager>().ProcessCameraConfiner(levelLimits, virtualCamera, cameraConfiner.GetComponent<BoxCollider>(), maxCameraDepth);
     }
+
     /// <summary>
     /// Disable object in the Level when the player isn't in the level
     /// </summary>
@@ -140,6 +141,11 @@ public class LevelManager : MonoBehaviour
                 level.SetObjectToDisable(false);
             }
         }
+    }
+
+    public void DisableThisLevelOnly()
+    {
+        gameObject.SetActive(false);
     }
 
     public void SetObjectToDisable(bool b)

@@ -59,6 +59,6 @@ public class ChangeLevelTrigger : MonoBehaviour
 
     private void OnDisable()
     {
-        nbPlayerInTheTrigger = 0;
+        // nbPlayerInTheTrigger = 0;
     }
 }
