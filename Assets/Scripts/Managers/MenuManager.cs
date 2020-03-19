@@ -119,7 +119,7 @@ public class MenuManager : MonoBehaviour
 
             foreach (UIDissolve dissolve in dissolves)
             {
-                dissolve.effectFactor = 0.5f + timer / (2 * duration);
+                dissolve.effectFactor = timer / duration;
             }
 
             yield return null;
@@ -146,7 +146,7 @@ public class MenuManager : MonoBehaviour
 
             foreach (UIDissolve dissolve in dissolves)
             {
-                dissolve.effectFactor = 1f - timer / (2 * duration);
+                dissolve.effectFactor = 1f - timer / duration;
             }
             yield return null;
         }
@@ -182,7 +182,7 @@ public class MenuManager : MonoBehaviour
 
             foreach (UIDissolve dissolve in dissolves)
             {
-                dissolve.effectFactor = 0.5f + timer / (2 * duration);
+                dissolve.effectFactor = timer / duration;
             }
 
             yield return null;
@@ -206,7 +206,7 @@ public class MenuManager : MonoBehaviour
 
             foreach (UIDissolve dissolve in dissolves)
             {
-                dissolve.effectFactor = 1f - timer / (2 * duration);
+                dissolve.effectFactor = 1f - timer / duration;
             }
 
             yield return null;
