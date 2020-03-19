@@ -119,11 +119,11 @@ public class SavesMenu : MonoBehaviour
             Button deleteButton = actionChoiceButtons.transform.Find("DeleteButton").GetComponent<Button>();
 
             actionChoiceButtons.gameObject.SetActive(true);
-            EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(playButton.gameObject);
             playButton.onClick.RemoveAllListeners();
             playButton.onClick.AddListener(delegate { Launch(index); });
             deleteButton.onClick.RemoveAllListeners();
             deleteButton.onClick.AddListener(delegate { Delete(index); });
+            EventSystem.current.SetSelectedGameObject(playButton.gameObject);
 
             DissolveController dissolve = actionChoiceButtons.GetComponent<DissolveController>();
             if (dissolve != null)
@@ -137,11 +137,11 @@ public class SavesMenu : MonoBehaviour
             Button duoButton = newGameChoiceButtons.transform.Find("DuoButton").GetComponent<Button>();
 
             newGameChoiceButtons.gameObject.SetActive(true);
-            EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(soloButton.gameObject);
             soloButton.onClick.RemoveAllListeners();
             soloButton.onClick.AddListener(delegate { NewGame(1, index); });
             duoButton.onClick.RemoveAllListeners();
             duoButton.onClick.AddListener(delegate { NewGame(2, index); });
+            EventSystem.current.SetSelectedGameObject(soloButton.gameObject);
 
             DissolveController dissolve = newGameChoiceButtons.GetComponent<DissolveController>();
             if (dissolve != null)
