@@ -23,7 +23,8 @@ public class Prism : Receptor
 
     private void Start()
     {
-        laserRotator.SetActive(false);
+        if (laserRotator != null)
+            laserRotator.SetActive(false);
     }
 
     public override void AddLaser(GameObject addedlaser) 
@@ -103,13 +104,13 @@ public class Prism : Receptor
     public IEnumerator SpiningLasers(float time)
     {
         float cpt = 0;
+        laserRotator.SetActive(true);
 
         while (cpt < time)
         {
             cpt += Time.deltaTime;
 
             //rotation
-            laserRotator.SetActive(true);
             laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed));
             yield return null;
         }

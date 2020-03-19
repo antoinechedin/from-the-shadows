@@ -17,18 +17,25 @@ public class LineRendererDrawForward : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 aimPoint = transform.position + (transform.up * lineDistance);
-        RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, aimPoint, out hit, lineDistance))
+        LayerMask collisionMask = LayerMask.GetMask("LayeredSolid", "Solid", "Player");
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, lineDistance, collisionMask);
+        if (hit.collider != null)
         {
+            Debug.Log("touché qq chose");
             if (hit.transform.GetComponent<PlayerController>() != null) //si on capte le joueur
             {
+                Debug.Log("touché PLAYER");
                 hit.transform.GetComponent<PlayerController>().Die();
-            }
+            }   
             else//on a touché un élément de décors
             {
+                Debug.Log(hit.point);
                 lineRenderer.SetPosition(1, hit.point);
             }
+        }
+        else
+        {
+            Debug.Log("rien touché");
         }
     }
 }
