@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class DissolveController : MonoBehaviour
 {
+
+    private const float START_OFFSET = 0.4f;
     /// <summary>
     /// Make the Gameobject appear with a Coroutine 
     /// </summary>
@@ -21,7 +23,7 @@ public class DissolveController : MonoBehaviour
 
             foreach (UIDissolve dissolve in dissolves)
             {
-                dissolve.effectFactor = 1f - timer / duration;
+                dissolve.effectFactor = 1f - (timer - timer * START_OFFSET) / duration;
             }
             yield return null;
         }
@@ -43,7 +45,7 @@ public class DissolveController : MonoBehaviour
 
             foreach (UIDissolve dissolve in dissolves)
             {
-                dissolve.effectFactor = timer / duration;
+                dissolve.effectFactor = START_OFFSET + (timer - timer * START_OFFSET) / duration;
             }
             yield return null;
         }

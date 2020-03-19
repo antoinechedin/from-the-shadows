@@ -154,11 +154,13 @@ public class SavesMenu : MonoBehaviour
 
     private IEnumerator CloseChoiceButtonsCoroutine(RectTransform choiceButtons)
     {
+        EventSystem.current.sendNavigationEvents = false;
         DissolveController dissolve = choiceButtons.GetComponent<DissolveController>();
         // savesButons[lastSelected].GetComponent<Animator>().SetTrigger("");
         EventSystem.current.SetSelectedGameObject(savesButons[lastSelected].gameObject);
         yield return StartCoroutine(dissolve.DissolveOutCoroutine(menuManager.dissolveDuration));
-        actionChoiceButtons.gameObject.SetActive(false);
+        choiceButtons.gameObject.SetActive(false);
+        EventSystem.current.sendNavigationEvents = true;
     }
 
     /// <summary>
