@@ -11,6 +11,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private int currentDisplayed = 0;
     private bool started = false;
+    private bool canPassDialogue = false;
 
     // Start is called before the first frame update
     void Start()
@@ -45,32 +46,36 @@ public class DialogueTrigger : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("A_G"))
             {
-                if (currentDisplayed < guis.Count - 1) //Si c'est pas le dernier, on passe au texte suivant
+                if(guis[currentDisplayed].canPass)
                 {
-                    guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
-                    guis[currentDisplayed].HideUI();
-
-                    currentDisplayed++;
-
-                    guis[currentDisplayed].DisplayUI();
-                    guis[currentDisplayed].ExecuteOnDialogueStart(); // Execute OnDialogueStart functions
-
-                }
-                else //Sinon le dialogue est terminé
-                {
-                    //on cache la dernière boîte de dialogue
-                    guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
-                    guis[currentDisplayed].HideUI();
-
-
-                    //on active les inputs des joueurs
-                    GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                    foreach (GameObject p in players)
+                    if (currentDisplayed < guis.Count - 1) //Si c'est pas le dernier, on passe au texte suivant
                     {
-                        p.GetComponent<PlayerInput>().active = true;
+                        guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
+                        guis[currentDisplayed].HideUI();
+                        guis[currentDisplayed].canPass = false;
+
+                        currentDisplayed++;
+
+                        guis[currentDisplayed].DisplayUI();
+                        guis[currentDisplayed].ExecuteOnDialogueStart(); // Execute OnDialogueStart functions
+
                     }
-                    //on détruit la boîte de dialogue
-                    Destroy(gameObject, 1f);
+                    else //Sinon le dialogue est terminé
+                    {
+                        //on cache la dernière boîte de dialogue
+                        guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
+                        guis[currentDisplayed].HideUI();
+
+
+                        //on active les inputs des joueurs
+                        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                        foreach (GameObject p in players)
+                        {
+                            p.GetComponent<PlayerInput>().active = true;
+                        }
+                        //on détruit la boîte de dialogue
+                        Destroy(gameObject, 1f);
+                    }
                 }
             }
         }

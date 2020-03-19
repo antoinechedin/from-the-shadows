@@ -51,7 +51,7 @@ public class Save
 
     public StringIntDictionary MetaInt
     {
-        get {return metaInt;}
+        get { return metaInt; }
         set { metaInt = value; }
     }
 
@@ -66,5 +66,35 @@ public class Save
         return (nbPlayer == 1 ? "solo " : "duo ") + chapters.Count + " chap";
     }
 
+    public float GetCompletion()
+    {
+        int elementsTotal = 0;
+        int elementsCompleted = 0;
+        foreach (Chapter c in chapters)
+        {
+            foreach (Level l in c.GetLevels())
+            {
+                elementsTotal++;
+                if (l.Completed) elementsCompleted++;
+                if (l.ShadowCollectibles != null)
+                {
+                    foreach (bool b in l.ShadowCollectibles)
+                    {
+                        if (b) elementsCompleted++;
+                        elementsTotal++;
+                    }
+                }
+                if (l.LightCollectibles != null)
+                {
+                    foreach (bool b in l.LightCollectibles)
+                    {
+                        if (b) elementsCompleted++;
+                        elementsTotal++;
+                    }
+                }
+            }
+        }
+        return (float)elementsCompleted / (float)elementsTotal;
+    }
 
 }
