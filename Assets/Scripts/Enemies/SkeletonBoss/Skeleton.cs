@@ -27,9 +27,14 @@ public class Skeleton : MonoBehaviour, IResetable
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
-        //Invoke("GetHurt", 1);
-        //Invoke("GetHurt", 3);
+        // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+    }
+
+    public void Appear()
+    {
+        Debug.Log("Boss fight starting");
+        transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Appear");
+        InvokeRepeating("TriggerAttack", 15, timeBetweenAttacks);
     }
 
     public void TriggerAttack()

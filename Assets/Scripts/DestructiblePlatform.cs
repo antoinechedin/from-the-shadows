@@ -14,7 +14,7 @@ public class DestructiblePlatform : MonoBehaviour, IResetable
     }
     public void Destruct()
     {
-        FindObjectOfType<ChapterManager>().ShakeFor(2f, 1f, 3f);
+        FindObjectOfType<ChapterManager>().ShakeFor(1f, 1f, 2f);
         gameObject.SetActive(false);
 
         for (int i = 0; i < 5; i++)
