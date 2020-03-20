@@ -133,14 +133,16 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void EnableLevel()
     {
-        gameObject.SetActive(true);
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
         this.SetObjectToDisable(true);
 
         foreach (LevelManager level in roomsToEnable)
         {
             if (level != null)
             {
-                level.gameObject.SetActive(true);
+                if (!level.gameObject.activeSelf)
+                    level.gameObject.SetActive(true);
                 level.SetObjectToDisable(false);
             }
         }
