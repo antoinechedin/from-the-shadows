@@ -54,7 +54,7 @@ public class SavesMenu : MonoBehaviour
     /// <summary>
     /// Get file infos and link each save to the corresponding button
     /// </summary>
-    public void UpdateButtons()
+    private void UpdateButtons()
     {
         for (int i = 0; i < savesButons.Length; i++)
         {

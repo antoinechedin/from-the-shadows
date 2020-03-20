@@ -179,8 +179,6 @@ public class MenuManager : MonoBehaviour
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
-        savesMenu.UpdateButtons();
-
         int lastSaveSelected = savesMenu.gameObject.GetComponent<SavesMenu>().LastSelected;
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
@@ -209,7 +207,7 @@ public class MenuManager : MonoBehaviour
     private IEnumerator OpenChaptersMenuCoroutine(int chapterIndex, int chapterFirstCompleted)
     {
         EventSystem.current.sendNavigationEvents = false;
-        
+
         DissolveController[] dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
@@ -238,6 +236,8 @@ public class MenuManager : MonoBehaviour
         {
             menuChapter.UnlockChapter(chapterFirstCompleted + 1);
         }
+
+        EventSystem.current.sendNavigationEvents = true;
     }
 
     public void OpenOptionsMenu()
