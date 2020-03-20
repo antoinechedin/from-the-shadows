@@ -6,7 +6,7 @@ using UnityEngine;
 public class DissolveController : MonoBehaviour
 {
 
-    private const float START_OFFSET = 0.4f;
+    private const float START_OFFSET = 0f;
     /// <summary>
     /// Make the Gameobject appear with a Coroutine 
     /// </summary>
