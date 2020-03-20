@@ -82,7 +82,7 @@ public class MenuLevels : MonoBehaviour
             {
                 int localLevelIndex = i;
                 //TODO : aller chercher le bon srceenshot
-                GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot") as GameObject;
+                GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot01") as GameObject;
                 levelScreenshot.name = localLevelIndex.ToString();
                 LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshot, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
                 SetMenuLevelInfo(i, spawnedScreenshot);
