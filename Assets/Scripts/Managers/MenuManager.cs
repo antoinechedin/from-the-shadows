@@ -12,7 +12,7 @@ using UnityEditor;
 public class MenuManager : MonoBehaviour
 {
     public RectTransform startMenu;
-    public RectTransform savesMenu;
+    public SavesMenu savesMenu;
     public RectTransform optionsMenu;
     public RectTransform chaptersMenu;
 
@@ -179,6 +179,8 @@ public class MenuManager : MonoBehaviour
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
+        savesMenu.UpdateButtons();
+
         int lastSaveSelected = savesMenu.gameObject.GetComponent<SavesMenu>().LastSelected;
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
@@ -201,12 +203,28 @@ public class MenuManager : MonoBehaviour
 
     public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
     {
+        StartCoroutine(OpenChaptersMenuCoroutine(chapterIndex, chapterFirstCompleted));
+    }
+
+    private IEnumerator OpenChaptersMenuCoroutine(int chapterIndex, int chapterFirstCompleted)
+    {
+        EventSystem.current.sendNavigationEvents = false;
+        
+        DissolveController[] dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
+        for (int i = 0; i < dissolves.Length - 1; i++)
+        {
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(dissolveDuration));
+            yield return new WaitForSeconds(dissolveOffset);
+        }
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
+
+
         chaptersMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
 
-        backgroundAnimator.SetBool("fade", false);
+        // backgroundAnimator.SetBool("fade", false);
 
         menuCamera.SetReturnToSavesMenu(false);
         menuChapter.ResetInteractablesChaptersButtons();

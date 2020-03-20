@@ -54,7 +54,7 @@ public class SavesMenu : MonoBehaviour
     /// <summary>
     /// Get file infos and link each save to the corresponding button
     /// </summary>
-    void UpdateButtons()
+    public void UpdateButtons()
     {
         for (int i = 0; i < savesButons.Length; i++)
         {
@@ -170,8 +170,8 @@ public class SavesMenu : MonoBehaviour
     public void Launch(int indexSave)
     {
         GameManager.Instance.CurrentSave = indexSave;
-        actionChoiceButtons.gameObject.SetActive(false);
-        newGameChoiceButtons.gameObject.SetActive(false);
+        // actionChoiceButtons.gameObject.SetActive(false);
+        // newGameChoiceButtons.gameObject.SetActive(false);
         List<Chapter> chapters = GameManager.Instance.GetChapters();
         GameManager.Instance.CurrentChapter = 0;
         for (int i = 0; i < chapters.Count - 1; i++)
