@@ -73,7 +73,7 @@ public class SavesMenu : MonoBehaviour
                 string completion = (int)(saves[i].GetCompletion() * 100) + "%";
                 string timePlayed = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm");
 
-                buttonText.text = saveName + "   " + completion + " " + timePlayed;
+                buttonText.text = saveName + "  " + completion + " " + timePlayed;
             }
             else
             {
