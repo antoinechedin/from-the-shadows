@@ -18,14 +18,17 @@ public class LookAt : MonoBehaviour
     }
     void Update()
     {
-        if(followInstant)
+        if(target != null)
         {
-            transform.LookAt(target);
-        }
-        else
-        {
-            Vector3 targetDirection = target.position - transform.position;
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(targetDirection), 8 * Time.deltaTime);
+            if (followInstant)
+            {
+                transform.LookAt(target);
+            }
+            else
+            {
+                Vector3 targetDirection = target.position - transform.position;
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(targetDirection), 8 * Time.deltaTime);
+            }
         }
     }
 }
