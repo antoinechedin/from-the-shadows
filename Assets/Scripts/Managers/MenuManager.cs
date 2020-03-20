@@ -216,13 +216,16 @@ public class MenuManager : MonoBehaviour
             StartCoroutine(dissolves[i].DissolveOutCoroutine(dissolveDuration));
             yield return new WaitForSeconds(dissolveOffset);
         }
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
 
-        chaptersMenu.gameObject.SetActive(true);
-        savesMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
+        savesMenu.gameObject.SetActive(false);
+        chaptersMenu.gameObject.SetActive(true);
         optionsMenu.gameObject.SetActive(false);
+
+        savesMenu.actionChoiceButtons.gameObject.SetActive(false);
+        savesMenu.newGameChoiceButtons.gameObject.SetActive(false);
 
         // backgroundAnimator.SetBool("fade", false);
 
