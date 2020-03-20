@@ -4,14 +4,6 @@ using UnityEngine;
 
 public class DestructiblePlatform : MonoBehaviour, IResetable
 {
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            Destruct();
-        }
-    }
     public void Destruct()
     {
         FindObjectOfType<ChapterManager>().ShakeFor(1f, 1f, 2f);

@@ -14,6 +14,10 @@ public class SpawnGhost : MonoBehaviour, IResetable
 
     public void Start()
     {
+    }
+
+    public void StartSpawningGhost()
+    {
         Invoke("Spawn", minSecondsAfterRespawn);
     }
 

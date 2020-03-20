@@ -19,6 +19,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject leftKillZone;
     public GameObject middleZoneSpikes;
     public GameObject middleZoneSpikesAnim;
+    public GameObject spawnGhostObject;
 
     private int hp = 3;
     private int laneToAttack = 0;
@@ -35,6 +36,7 @@ public class Skeleton : MonoBehaviour, IResetable
         Debug.Log("Boss fight starting");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Appear");
         InvokeRepeating("TriggerAttack", 15, timeBetweenAttacks);
+        spawnGhostObject.GetComponent<SpawnGhost>().StartSpawningGhost();
     }
 
     public void TriggerAttack()
