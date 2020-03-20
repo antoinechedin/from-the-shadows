@@ -16,19 +16,10 @@ public class DissolveController : MonoBehaviour
     {
         UIDissolve[] dissolves = GetComponentsInChildren<UIDissolve>();
         float timer = 0;
-        Debug.Log("UIDissolve: " + dissolves.Length);
-        foreach (UIDissolve dissolve in dissolves)
-        {
-            Debug.Log("### " + Utils.GetFullName(dissolve.transform));
-        }
-
         while (timer < duration)
         {
             timer += Time.deltaTime;
             timer = timer >= duration ? duration : timer;
-
-            if (Utils.GetFullName(transform) == "Canvas/StartMenu/SavesMenu/SavesButtons/Save1Button")
-                Debug.Log(timer);
 
             foreach (UIDissolve dissolve in dissolves)
             {
