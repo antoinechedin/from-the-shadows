@@ -20,6 +20,7 @@ public class NewLayeredObstacle : MonoBehaviour
         GameObject go = new GameObject();
         go.AddComponent<PolygonCollider2D>();
         go.AddComponent<MeshRenderer>();
+        go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         go.AddComponent<MeshFilter>();
         go.AddComponent<DrawPolygonGizmos>();
         go.name = "RealCollider";
@@ -45,18 +46,27 @@ public class NewLayeredObstacle : MonoBehaviour
 
         // Initialize LightSource & SpriteRenderer
         lightSources = new List<NewLightSource>();
+
+        float width = GetComponent<PolygonCollider2D>().bounds.extents.x / 4;
+        float height = GetComponent<PolygonCollider2D>().bounds.extents.y / 4;
+        float depth = GetComponent<PolygonCollider2D>().bounds.extents.z / 4;
+        mat.SetFloat("Vector1_A50F5B04", width);
+        mat.SetFloat("Vector1_2568B206", height);
+        mat.SetFloat("Vector1_6FEEDC3A", 0.5f);
+
     }
 
     private void Start() 
     {
         UpdateCollider();
+
     }
 
     private void Update()
     {
         foreach(NewLightSource nls in lightSources)
         {
-            if (!nls.GetComponent<LightCollider>().isStatic)
+            if (!nls.GetComponent<LightCollider>().GetStatic())
             {
                 UpdateCollider();
                 break;

@@ -71,7 +71,7 @@ public class MenuOptions : MonoBehaviour
     public void Return()
     {
         if (menuManager != null)
-            menuManager.OpenStartMenu();
+           menuManager.OpenStartMenu();
         else
             gameObject.SetActive(false);
     }

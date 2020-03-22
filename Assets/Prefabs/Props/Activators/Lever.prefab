@@ -77,12 +77,13 @@ MonoBehaviour:
   soundOn: {fileID: 8300000, guid: daa844b1a4297ae4f81acdf39df07a11, type: 3}
   soundOff: {fileID: 8300000, guid: daa844b1a4297ae4f81acdf39df07a11, type: 3}
   activeMat: {fileID: 2100000, guid: 099a43ec3a28fca47a26b744e2f91270, type: 2}
-  inactiveMat: {fileID: 2100000, guid: c25219404ba2c4c44bac839d978b476b, type: 2}
-  timerMat: {fileID: 2100000, guid: 860df7c9484be7b48bf22d61a2729168, type: 2}
+  inactiveMat: {fileID: 2100000, guid: 0a06846d9892c864f8e44d6ad3861113, type: 2}
+  timerMat: {fileID: 2100000, guid: a336fad94eeb69845b797c593035547b, type: 2}
   hasTimer: 0
   timer: 0
   activeAtStart: 0
   doNotReset: 0
+  withAnimation: 1
 --- !u!82 &5547092354359783741
 AudioSource:
   m_ObjectHideFlags: 0
@@ -191,6 +192,7 @@ GameObject:
   - component: {fileID: 4295746361045430831}
   - component: {fileID: 4295746361045430830}
   - component: {fileID: 4295746361045430833}
+  - component: {fileID: 4322414336465932570}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -234,10 +236,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 42bea223135a07f4294084e1007ffedf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -245,6 +248,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -270,6 +274,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &4322414336465932570
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4295746361045430835}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f06faf788074e3f43a6cac0560176aab, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4295746361393187547
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,10 +348,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 42bea223135a07f4294084e1007ffedf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -336,6 +360,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

@@ -3,43 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-public class ActorController : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public class ActorController : RaycastController
 {
-    public LayerMask collisionMask = 1 << 9;
+
     [HideInInspector] public float maxSlopeAngle = 60;
 
-    private const float skinWidth = 0.021f;
-
-    private const float maxRaySpacing = 0.05f;
-
-    private int hRayCount;
-    private int vRayCount;
-    private float hRaySpacing;
-    private float vRaySpacing;
+    private float minFloorLength = 0.01f;
 
     private Rigidbody2D body;
-    private BoxCollider2D boxCollider;
-    private RaycastOrigins raycastOrigins;
-
     public CollisionInfo collisions;
     public CollisionInfo collisionsPrevious;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         body = GetComponent<Rigidbody2D>();
         body.bodyType = RigidbodyType2D.Dynamic;
-        boxCollider = GetComponent<BoxCollider2D>();
-        InitRaySpacing();
     }
 
     public void Move(Vector2 velocity, float deltaTime)
     {
+        Move(velocity * deltaTime);
+    }
+
+    public void Move(Vector2 move)
+    {
         UpdateRaycastOrigins();
         collisionsPrevious = collisions;
         collisions.Reset();
-
-        Vector2 move = velocity * deltaTime;
         collisionsPrevious.move = move;
 
         if (move.y < 0)
@@ -55,8 +47,7 @@ public class ActorController : MonoBehaviour
             GroundActor(ref move);
         }
 
-
-        body.MovePosition(body.position + move);
+        transform.Translate(move);
         collisions.move = move;
     }
 
@@ -85,7 +76,7 @@ public class ActorController : MonoBehaviour
                     float dstToSlope = 0;
                     if (slopeAngle != collisionsPrevious.slopeAngle)
                     {
-                        
+
                         dstToSlope = Mathf.Clamp(hit.distance - skinWidth, 0, Mathf.Infinity);
                         move.x -= dstToSlope * xSign;
                     }
@@ -107,7 +98,6 @@ public class ActorController : MonoBehaviour
                     collisions.right = xSign >= 0;
                 }
             }
-
             Debug.DrawRay(rayOrigin, Vector2.right * xSign * rayLength * 5, Color.red);
         }
     }
@@ -143,8 +133,6 @@ public class ActorController : MonoBehaviour
                     collisions.above = ySign >= 0;
                 }
             }
-
-
             Debug.DrawRay(rayOrigin, Vector2.up * ySign * rayLength * 5, Color.red);
         }
 
@@ -307,28 +295,63 @@ public class ActorController : MonoBehaviour
         move.y -= dst2Ground;
     }
 
-    private void UpdateRaycastOrigins()
+    public bool LedgeGrab(float facing, bool checkOnly)
     {
-        this.raycastOrigins.bottomLeft = new Vector2(boxCollider.bounds.min.x, boxCollider.bounds.min.y);
-        this.raycastOrigins.bottomRight = new Vector2(boxCollider.bounds.max.x, boxCollider.bounds.min.y);
-        this.raycastOrigins.topLeft = new Vector2(boxCollider.bounds.min.x, boxCollider.bounds.max.y);
-        this.raycastOrigins.topRight = new Vector2(boxCollider.bounds.max.x, boxCollider.bounds.max.y);
-    }
+        float heightOffset = 0.4f;
+        float floorOffset = 0.08f;
+        float hLedgeGrabRayCount = Mathf.FloorToInt(Mathf.Abs(collisions.move.y) / maxRaySpacing) + 2;
+        float hLedgeGrabRaySpacing = Mathf.Clamp(Mathf.Abs(collisions.move.y), maxRaySpacing, Mathf.Infinity)
+                                     / (hLedgeGrabRayCount - 1);
+        hLedgeGrabRayCount += 5;
+        float ledgeGrabRayLength = skinWidth + minFloorLength;
 
-    private void InitRaySpacing()
-    {
-        float width = boxCollider.bounds.size.x;
-        float height = boxCollider.bounds.size.y;
+        for (int i = 0; i < hLedgeGrabRayCount; i++)
+        {
+            Vector2 rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
+            rayOrigin += Vector2.up * (collisions.move.y - (hLedgeGrabRaySpacing * i) + heightOffset);
+            rayOrigin += Vector2.right * collisions.move.x;
 
-        this.hRayCount = Mathf.FloorToInt(height / maxRaySpacing) + 2;
-        this.vRayCount = Mathf.FloorToInt(width / maxRaySpacing) + 2;
-        this.hRaySpacing = height / (hRayCount - 1);
-        this.vRaySpacing = width / (vRayCount - 1);
-    }
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, ledgeGrabRayLength, collisionMask);
+            Debug.DrawRay(rayOrigin, Vector2.right * facing * ledgeGrabRayLength, hit ? Color.blue : Color.yellow);
 
-    struct RaycastOrigins
-    {
-        public Vector2 bottomLeft, bottomRight, topLeft, topRight;
+            if (hit)
+            {
+                if (i == 0) return false;
+                //if (hit.normal.y < Mathf.Sin(45f * Mathf.Deg2Rad)) return false;
+
+                rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
+                rayOrigin += Vector2.up * (collisions.move.y + heightOffset);
+                rayOrigin += Vector2.right * collisions.move.x;
+                RaycastHit2D headHit = Physics2D.Raycast(rayOrigin, Vector2.down, heightOffset, collisionMask);
+                Debug.DrawRay(rayOrigin, Vector2.down * heightOffset, Color.blue);
+                if (headHit) return false;
+
+                if (hit.distance - skinWidth < minFloorLength)
+                {
+                    rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
+                    rayOrigin += Vector2.up * (collisions.move.y + heightOffset);
+                    rayOrigin += Vector2.right * collisions.move.x;
+                    rayOrigin += Vector2.right * facing * (hit.distance + minFloorLength);
+
+                    if (!checkOnly)
+                    {
+                        RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+                        if (floorHit)
+                        {
+                            Debug.DrawRay(rayOrigin, Vector2.down * floorHit.distance, Color.magenta);
+                            if (Mathf.Sign(floorHit.normal.x) != facing && floorHit.normal.y < Mathf.Sin(maxSlopeAngle * Mathf.Deg2Rad)) return false;
+                            if (floorHit.distance < floorOffset) return false;
+
+                            transform.Translate(Vector2.down * (floorHit.distance - floorOffset));
+                        }
+                    }
+                    return true;
+                }
+                else return false;
+            }
+        }
+
+        return false;
     }
 
     public struct CollisionInfo

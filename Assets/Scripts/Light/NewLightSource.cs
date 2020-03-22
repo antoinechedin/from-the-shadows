@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter), typeof(Rigidbody2D))]
 [RequireComponent(typeof(LightCollider))]
 public class NewLightSource : MonoBehaviour
 {
     public float lightRadius = 3.5f;
-    public Material lightMaterial;
+    private Material lightMaterial = null;
 
     private void Awake()
     {
@@ -15,27 +16,41 @@ public class NewLightSource : MonoBehaviour
 
     private void Start()
     {
+        // lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple2"));
+        // lightMaterial.SetFloat("Vector1_DF611158", lightRadius - 0.1f);
+        // lightMaterial.SetColor("Color_95D64D8A", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
         UpdateMesh();
     }
 
-    private void LateUpdate()
+    public void GoStatic()
     {
-        if(!GetComponent<LightCollider>().isStatic)
+        GetComponent<LightCollider>().SetStatic(true);
+        UpdateMesh();
+    }
+
+    private void Update()
+    {
+        if (!GetComponent<LightCollider>().GetStatic())
             UpdateMesh();
     }
 
-    private void UpdateMesh()
+    public void UpdateMesh()
     {
         Mesh m = GetComponent<LightCollider>().CreateMeshFromCollider();
         GetComponent<MeshFilter>().sharedMesh = m;
-        GetComponent<MeshRenderer>().material = lightMaterial;
+        // GetComponent<MeshRenderer>().material = lightMaterial;
+        // lightMaterial = new Material(Shader.Find("Shader Graphs/Ripple2"));
+        // lightMaterial.SetFloat("Vector1_DF611158", lightRadius - 0.1f);
+        // lightMaterial.SetColor("Color_95D64D8A", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("LayeredSolid") || other.gameObject.layer == LayerMask.NameToLayer("DisLayeredSolid"))
         {
-            other.GetComponent<NewLayeredObstacle>().AddLightSource(this);
+            NewLayeredObstacle newLayeredObstacle = other.GetComponent<NewLayeredObstacle>();
+            if (newLayeredObstacle != null)
+                newLayeredObstacle.AddLightSource(this);
         }
     }
 
@@ -43,7 +58,10 @@ public class NewLightSource : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("LayeredSolid") || other.gameObject.layer == LayerMask.NameToLayer("DisLayeredSolid"))
         {
-            other.GetComponent<NewLayeredObstacle>().RemoveLightSource(this);
+            NewLayeredObstacle newLayeredObstacle = other.GetComponent<NewLayeredObstacle>();
+            if (newLayeredObstacle != null)
+                newLayeredObstacle.RemoveLightSource(this);
         }
     }
 }
+

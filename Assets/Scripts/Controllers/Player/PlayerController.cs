@@ -12,8 +12,10 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerInput input;
     [HideInInspector] public Animator animator;
     public IPlayerState state;
+    public IPlayerState attackState;
     public Vector2 targetVelocity;
     public Vector2 velocity;
+    public int xVelocitySign;
 
     public bool dead = false;
     public bool dying = false;
@@ -24,14 +26,15 @@ public class PlayerController : MonoBehaviour
         actor.maxSlopeAngle = settings.maxSlopeAngle;
         input = GetComponent<PlayerInput>();
         state = new PlayerStanding();
+        attackState = new MeleAttackState(this);
         animator = GetComponentInChildren<Animator>();
-        animator.SetBool("Light", input.doubleJump);
+        xVelocitySign = 1;
     }
 
     private void Update()
     {
         state.HandleInput(this, input);
-        state.Update(this);
+        if (attackState != null) attackState.HandleInput(this, input);
     }
 
     private void FixedUpdate()
@@ -42,32 +45,41 @@ public class PlayerController : MonoBehaviour
                 velocity.y = 0;
         }
 
-        velocity.y -= settings.gravity * Time.deltaTime;
-        velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
+        if (state is PlayerLedgeGrab)
+        {
+            velocity.y = 0;
+        }
+        else
+        {
+            velocity.y -= settings.gravity * Time.deltaTime;
+            velocity.y = Mathf.Clamp(velocity.y, -settings.maxFallSpeed, Mathf.Infinity);
+        }
+
+        if (velocity.x > 0)
+        {
+            if (xVelocitySign != 1)
+            {
+                xVelocitySign = 1;
+            }
+
+        }
+        else if (velocity.x < 0)
+        {
+            if (xVelocitySign != -1)
+            {
+                xVelocitySign = -1;
+            }
+        }
 
         actor.Move(velocity, Time.fixedDeltaTime);
-        UpdateSpriteColor();
+
+        state.FixedUpdate(this);
+        if (attackState != null) attackState.FixedUpdate(this);
 
         GameManager.Instance.AddMetaFloat(
             input.id == 1 ? MetaTag.PLAYER_1_DISTANCE : MetaTag.PLAYER_2_DISTANCE,
             actor.collisions.move.magnitude
         );
-    }
-
-    private void UpdateSpriteColor()
-    {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            if (actor.collisions.bellow)
-            {
-                sr.color = Color.green;
-            }
-            else
-            {
-                sr.color = Color.blue;
-            }
-        }
     }
 
     public void Die()
@@ -79,5 +91,26 @@ public class PlayerController : MonoBehaviour
             dead = true;
             GameObject.FindObjectOfType<ChapterManager>().ResetLevel(input.id);
         }
+    }
+
+    public void SpawnAt(Vector3 position)
+    {
+        transform.position = position;
+        state = new PlayerStanding();
+        attackState = new MeleAttackState(this);
+        velocity = Vector2.zero;
+        targetVelocity = Vector2.zero;
+        xVelocitySign = 1;
+
+        animator.Rebind();
+    }
+
+    /// <summary>
+    /// Gives the position and rotation of t to the player
+    /// </summary>
+    /// <param name="t"></param>
+    public void SetPosition(Transform t)
+    {
+        transform.position = t.position;
     }
 }

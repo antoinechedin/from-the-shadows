@@ -10,7 +10,7 @@ public class LightCollider : MonoBehaviour
     public float vectorModifier = 0.001f;
     public int numberPoints = 16;
     public LayerMask type;
-    public bool isStatic = false;
+    private bool isStatic = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +43,16 @@ public class LightCollider : MonoBehaviour
     void Add1Point(Vector2 pointToAdd)
     {
         points.Add((Vector2)transform.position - pointToAdd);
+    }
+
+    public bool GetStatic()
+    {
+        return isStatic;
+    }
+
+    public void SetStatic(bool value)
+    {
+        isStatic = value;
     }
 
     public void SetColliderOnOverlap2()

@@ -1,16 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class ChapterManager : MonoBehaviour
 {
     public List<LevelManager> levels;
     public PauseMenu pauseMenu;
-    private int currentLevel = 0; //indice du niveau actuel
+    private int currentLevel = 0; // indice du niveau actuel
 
     private float timeSinceBegin = 0;
-    private LevelCamera levelCamera;
     private GameObject currentSpawns;
+
+    private bool resetingLevel = false;
 
     public GameObject CurrentSpawns
     {
@@ -21,26 +23,29 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
+        SetLevelsId();
+
         if (GameManager.Instance.LoadingChapterInfo != null)
         {
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
         }
 
-        levelCamera = Camera.main.GetComponent<LevelCamera>();
-        CreateEmptyCameraPoints();
-        levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
-        levelCamera.MoveTo((levels[currentLevel].cameraLimitRT.position + levels[currentLevel].cameraLimitLB.position) / 2, false);
+        levels[currentLevel].virtualCamera.gameObject.SetActive(true);
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
 
-        if(GameManager.Instance.CurrentChapter != -1)
-            levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
-
-        //UpdateEnabledLevels();
-        foreach (LevelManager level in levels)
+        //collectibles
+        if (GameManager.Instance.CurrentChapter != -1)
         {
-            level.DisableLevel();
+            Level currentLvl = GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel];
+            levels[currentLevel].SetCollectibles(currentLvl.LightCollectibles, currentLvl.ShadowCollectibles);
+        }
+
+        for (int i = 0; i < levels.Count; i++)
+        {
+            if (i != currentLevel) levels[i].DisableThisLevelOnly();
         }
         levels[currentLevel].EnableLevel();
     }
@@ -51,27 +56,54 @@ public class ChapterManager : MonoBehaviour
 
         // Position moyenne des deux joueurs
 
-        if (levelCamera.StayInLimits)
-        {
-            Vector3 meanPosition = new Vector3();
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            meanPosition = (players[0].transform.position + players[1].transform.position) / 2;
-            Camera.main.GetComponent<LevelCamera>().MoveTo(meanPosition);
-        }
-
         if (Input.GetButtonDown("Start_G"))
         {
             pauseMenu.gameObject.SetActive(true);
             pauseMenu.OpenPauseMenu();
         }
-        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
+
+        if (Input.GetButtonDown("Select_G"))
         {
-            NextLevel();
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }
 
+        #region CheatCodes
+        //next level
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
+        {
+            if (currentLevel + 1 < levels.Count)
+            {
+                ChangeLevel(currentLevel + 1, true);
+                currentSpawns = levels[currentLevel].playerSpawns[0];
+                SpawnPlayers();
+            }
+        }
+        //previous level
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.B))
+        {
+            if (currentLevel - 1 >= 0)
+            {
+                ChangeLevel(currentLevel - 1, true);
+                currentSpawns = levels[currentLevel].playerSpawns[0];
+                SpawnPlayers();
+            }
+        }
+        //kill players
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K))
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// Sets the LevelManager.id value according to the position of the level in the ChapterManager.levels list.
+    /// </summary>
+    public void SetLevelsId()
+    {
+        for (int i = 0; i < levels.Count; i++)
+        {
+            levels[i].id = i;
         }
     }
 
@@ -90,108 +122,136 @@ public class ChapterManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             if (player.GetComponent<PlayerInput>().id == 1) //Light
-                player.transform.position = lightSpawnPos;
+                player.GetComponent<PlayerController>().SpawnAt(lightSpawnPos);
             else if (player.GetComponent<PlayerInput>().id == 2)//shadow
-                player.transform.position = shadowSpawnPos;
+                player.GetComponent<PlayerController>().SpawnAt(shadowSpawnPos);
         }
     }
 
     /// <summary>
-    /// decrease the current level index and teleports the cameara to the position avec the previous level
+    /// Saves the current level and sets the new current level to "newCurrentLevel" in parameters
     /// </summary>
-    public void PreviousLevel(int newCurrentLevel = -1)
+    public void ChangeLevel(int newCurrentLevel, bool tpPlayers)
     {
-        //on désactive la room actuelle et ses voisins
-        levels[currentLevel].DisableLevel();
-
-        //on décrémente l'indice de la room actuelle
-        if (newCurrentLevel != -1)
-            currentLevel = newCurrentLevel;
-        else
-            currentLevel--;
-
-
-        //On active la nouvelle room et ses voisins
-        levels[currentLevel].EnableLevel();
-
-        if (currentLevel >= 0) //on bouge la cam dans le tableau précédent
-        {
-            CreateEmptyCameraPoints();
-            levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
-        }
-    }
-
-    /// <summary>
-    /// increase the current level index and teleports the cameara to the position avec the next level
-    /// </summary>
-    public void NextLevel(int newCurrentLevel = -1)
-    {
-        //Mise àjour des infos concernant le niveau courant
-        if(GameManager.Instance.CurrentChapter != -1)
+        // Mise à jour des infos concernant le niveau courant
+        if (GameManager.Instance.CurrentChapter != -1)
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
-        //on désactive le nouveau actuel et ses voisins
-        levels[currentLevel].DisableLevel();
-
-        if (newCurrentLevel != -1)
-            currentLevel = newCurrentLevel;
-        else
-            currentLevel++;
-
-
-        //On active la nouvelle room et ses voisins
-        if (newCurrentLevel != 1000)
-            levels[currentLevel].EnableLevel();
-
-
-        if (currentLevel == levels.Count || newCurrentLevel == 1000) //Le chapitre est terminé
+        List<LevelManager> levelsToDisable = new List<LevelManager>();
+        foreach (LevelManager lm in levels[currentLevel].roomsToEnable)
         {
-            //Save the metaData
-            CollectMetaData();
-            SaveManager.Instance.WriteSaveFile();
-            GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
+            if (!levels[newCurrentLevel].roomsToEnable.Contains(lm) && levels[newCurrentLevel] != lm)
+            {
+                levelsToDisable.Add(lm);
+            }
         }
-        else //on transfert le joueur dans le tableau suivant
+        foreach (LevelManager lm in levelsToDisable)
         {
-            CollectMetaData();
-            SaveManager.Instance.WriteSaveFile();
-            CreateEmptyCameraPoints();
-            levelCamera.SetLimit(levels[currentLevel].cameraLimitLB, levels[currentLevel].cameraLimitRT);
-            if (GameManager.Instance.CurrentChapter != -1)
-                levels[currentLevel].SetCollectibles(GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel].Collectibles);
+            lm.gameObject.SetActive(false);
+        }
+
+        // On désactive le niveau actuel et ses voisins
+        // levels[currentLevel].DisableLevel();
+
+        levels[newCurrentLevel].virtualCamera.gameObject.SetActive(true);
+        levels[currentLevel].virtualCamera.gameObject.SetActive(false);
+
+        currentLevel = newCurrentLevel;
+
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
+
+        // On active la nouvelle room et ses voisins
+        levels[currentLevel].EnableLevel();
+
+        CollectMetaData();
+
+        if (GameManager.Instance.CurrentChapter != -1)
+        {
+            Level currentLvl = GameManager.Instance.GetCurrentChapter().GetLevels()[currentLevel];
+            levels[currentLevel].SetCollectibles(currentLvl.LightCollectibles, currentLvl.ShadowCollectibles);
+        }
+
+        if (tpPlayers)
+        {
+            StartCoroutine(TpPlayersWithTransitionScreen());
         }
 
         SaveManager.Instance.WriteSaveFile();
     }
 
+    /// <summary>
+    /// Tps the players to the current spawn point and displays a transition screen
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator TpPlayersWithTransitionScreen()
+    {
+        //on affiche l'écran de transition de mort
+        GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
+        transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
+
+        //tant que l'ecran n'a pas fini de fade au noir
+        while (!transitionScreen.GetComponent<TransitionScreen>().finishedFadingIn)
+        {
+            yield return null;
+        }
+
+        currentSpawns = levels[currentLevel].playerSpawns[0];
+        SpawnPlayers();
+    }
+
+    public void FinishChapter()
+    {
+        ValidateCollectibles();
+        GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
+        //Save the metaData
+        CollectMetaData();
+        SaveManager.Instance.WriteSaveFile();
+        GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2, GameManager.Instance.CurrentChapter));
+    }
+
     public void ValidateCollectibles()
     {
-        foreach (GameObject go in levels[currentLevel].collectibles)
+        //Validate light collectibles
+        for (int i = 0; i < levels[currentLevel].lightCollectibles.Count; i++)
+        {
+            Collectible collectible = levels[currentLevel].lightCollectibles[i].GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Light, i);
+            }
+        }
+        /*foreach (GameObject go in levels[currentLevel].lightCollectibles)
         {
             Collectible collectible = go.GetComponent<Collectible>();
             if (collectible.isPickedUp)
             {
                 collectible.isValidated = true;
-                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, go.transform.GetSiblingIndex());
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Light, go.transform.GetSiblingIndex());
+            }
+        }*/
+
+
+        for (int i = 0; i < levels[currentLevel].shadowCollectibles.Count; i++)
+        {
+            Collectible collectible = levels[currentLevel].shadowCollectibles[i].GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, i);
             }
         }
-    }
-
-    public void CreateEmptyCameraPoints()
-    {
-        if (levels[currentLevel].cameraLimitLB == null)
+        //Validate shadow collectibles
+        /*foreach (GameObject go in levels[currentLevel].shadowCollectibles)
         {
-            GameObject emptyPoint = new GameObject();
-            emptyPoint.transform.position = new Vector3(-5f, 5f, -10f);
-            levels[currentLevel].cameraLimitLB = emptyPoint.transform;
-        }
-        if (levels[currentLevel].cameraLimitRT == null)
-        {
-            GameObject emptyPoint = new GameObject();
-            emptyPoint.transform.position = new Vector3(-5f, 5f, -10f);
-            levels[currentLevel].cameraLimitRT = emptyPoint.transform;
-        }
+            Collectible collectible = go.GetComponent<Collectible>();
+            if (collectible.isPickedUp)
+            {
+                collectible.isValidated = true;
+                GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, go.transform.GetSiblingIndex());
+            }
+        }*/
     }
 
     public void CollectMetaData()
@@ -206,7 +266,11 @@ public class ChapterManager : MonoBehaviour
     /// <param name="playerId"></param>
     public void ResetLevel(int playerId)
     {
-        StartCoroutine(ResetLevelAsync(playerId));
+        if (!resetingLevel)
+        {
+            resetingLevel = true;
+            StartCoroutine(ResetLevelAsync(playerId));
+        }
     }
 
     /// <summary>
@@ -250,9 +314,8 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaInt(playerId == 1 ? MetaTag.PLAYER_1_DEATH : MetaTag.PLAYER_2_DEATH, 1);
         //Reset tous les objets Resetables
         levels[currentLevel].ResetAllResetables();
-        //on remet Player.dead à false
-        player.dead = false;
-        player.dying = false;
+        // Reset l'offset de la camera
+        Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
         //tant que l'ecran n'a pas fini de fade au noir
         while (!transitionScreen.GetComponent<TransitionScreen>().finished)
@@ -260,6 +323,37 @@ public class ChapterManager : MonoBehaviour
             yield return null;
         }
 
-        player.input.active = true;
+        //on reactive les inputs des joueurs
+        foreach (PlayerController p in players)
+        {
+            p.dead = false;
+            p.dying = false;
+            p.input.active = true;
+        }
+
+        resetingLevel = false;
+    }
+
+    public void ShakeFor(float amplitude, float frequency, float time)
+    {
+        StartCoroutine(ShakeForAsync(amplitude, frequency, time));
+    }
+
+    public IEnumerator ShakeForAsync(float amplitude, float frequency, float time)
+    {
+        StartCameraShake(amplitude, frequency);
+        yield return new WaitForSeconds(time);
+        StopCameraShake();
+    }
+
+    public void StartCameraShake(float amplitude, float frequency)
+    {
+        levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitude;
+        levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = frequency;
+    }
+
+    public void StopCameraShake()
+    {
+        levels[currentLevel].virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 0f;
     }
 }

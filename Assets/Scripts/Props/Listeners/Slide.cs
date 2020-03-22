@@ -18,10 +18,17 @@ public class Slide : ActivatorListener
     public float distance;
     public AudioClip sound;
 
+    public GameObject objectToMove;
+
     public void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        startPosition = transform.position;
+
+        if (objectToMove != null)
+            startPosition = objectToMove.transform.position;
+        else
+            startPosition = transform.position;
+
         targetPosition = startPosition;
         switch (direction)
         {
@@ -51,7 +58,7 @@ public class Slide : ActivatorListener
             open = true;
             targetPosition = stopPosition;
             if (direction == Direction.Depth)
-                GetComponent<Collider2D>().enabled = false;
+                transform.Find("Cube").GetComponent<Collider2D>().enabled = false;
             if (audioSource != null && !isMute)
                 audioSource.PlayOneShot(sound);
         }
@@ -65,7 +72,7 @@ public class Slide : ActivatorListener
             targetPosition = startPosition;
             if (direction == Direction.Depth)
             {
-                GetComponent<Collider2D>().enabled = true;
+                transform.Find("Cube").GetComponent<Collider2D>().enabled = true;
             }
             if (audioSource != null && !isMute)
                 audioSource.PlayOneShot(sound);
@@ -74,6 +81,9 @@ public class Slide : ActivatorListener
 
     private void Update()
     {
-        transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * speed);
+        if(objectToMove != null)
+            objectToMove.transform.position = Vector3.Lerp(objectToMove.transform.position, targetPosition, Time.deltaTime * speed);
+        else
+            transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * speed);
     }
 }

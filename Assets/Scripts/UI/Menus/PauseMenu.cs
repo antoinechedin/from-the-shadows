@@ -32,6 +32,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Home()
     {
+        Input.ResetInputAxes();
         Time.timeScale = 1;
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
@@ -53,15 +54,14 @@ public class PauseMenu : MonoBehaviour
         SaveManager.Instance.WriteSaveFile();
         StartCoroutine(Fade());
     }
-  
     IEnumerator Fade()
     {
         yield return new WaitForSeconds(1f);
-        #if UNITY_EDITOR 
-		EditorApplication.isPlaying = false;
-		#else 
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
 		Application.Quit();
-		#endif
+#endif
     }
 
 }

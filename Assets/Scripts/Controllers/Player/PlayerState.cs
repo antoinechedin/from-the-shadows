@@ -5,11 +5,13 @@ using UnityEngine;
 public interface IPlayerState
 {
     void HandleInput(PlayerController player, PlayerInput input);
-    void Update(PlayerController playerController);
+    void FixedUpdate(PlayerController player);
 }
 
 public class PlayerStanding : IPlayerState
 {
+
+    //public bool turning = false;
     public void HandleInput(PlayerController player, PlayerInput input)
     {
         player.targetVelocity = input.moveAxis * player.settings.moveSpeed;
@@ -23,14 +25,11 @@ public class PlayerStanding : IPlayerState
             float deceleration = player.settings.moveSpeed / player.settings.groundDecelerationTime;
             player.velocity.x = Mathf.MoveTowards(player.velocity.x, player.targetVelocity.x, deceleration * Time.deltaTime);
 
-
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
         }
 
         if (input.pressedJump)
         {
-            player.state = new PlayerAirborne(true, player);
+            player.state = new PlayerAirborne(true, false, player);
 
             player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
             player.actor.collisions.bellow = false;
@@ -38,12 +37,11 @@ public class PlayerStanding : IPlayerState
             GameManager.Instance.AddMetaInt(input.id == 1 ? MetaTag.PLAYER_1_JUMP : MetaTag.PLAYER_2_JUMP, 1);
 
             // Set Animator Jump
-            player.animator.SetTrigger("Jump");
-            player.animator.SetBool("Airborne", true);
+            player.animator.SetTrigger("jump");
         }
     }
 
-    public void Update(PlayerController player)
+    public void FixedUpdate(PlayerController player)
     {
         if (player.actor.collisions.right || player.actor.collisions.left)
         {
@@ -52,32 +50,34 @@ public class PlayerStanding : IPlayerState
 
         if (!player.actor.collisions.bellow)
         {
-            player.state = new PlayerAirborne(false, player);
+            player.state = new PlayerAirborne(false, false, player);
 
             // Set Animator Airborne -> We are falling
-            player.animator.SetBool("Airborne", true);
+            player.animator.SetTrigger("fall");
         }
-
-        // Animator Run Idle
-        if (Mathf.Abs(player.targetVelocity.x) < 1.5f && player.input.moveAxis.x == 0)
-        {
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
-        }
-        else
-        {
-            player.animator.SetBool("Idle", false);
-            player.animator.SetBool("Running", true);
-        }
-
-        // Orient Player
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;
 
         // Speed Animation
-        player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x));
+        //player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
+        player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
+        player.animator.SetFloat("speed", Mathf.Abs(player.velocity.x));
+
+        if (Mathf.Abs(player.velocity.x) > 0 && player.input.moveAxis.x != 0 && Mathf.Sign(player.input.moveAxis.x) != player.xVelocitySign)
+        {
+            if (Mathf.Sign(player.input.moveAxis.x) == 1)
+                player.animator.transform.eulerAngles = Vector3.up * 90;
+            else
+                player.animator.transform.eulerAngles = Vector3.up * -90;
+            if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("Turn"))
+                player.animator.SetTrigger("turn");
+        }
+
+        else
+        {
+            if (player.xVelocitySign == 1)
+                player.animator.transform.eulerAngles = Vector3.up * 90;
+            else
+                player.animator.transform.eulerAngles = Vector3.up * -90;
+        }
     }
 }
 
@@ -87,16 +87,26 @@ public class PlayerAirborne : IPlayerState
     public bool canDoubleJump;
     public bool canStopJump;
     public float coyoteTimer;
-    public float coyoteDuration = 0.07f;
+    public float coyoteDuration = 0.087f;
+    public float lastLedgeGrabTimer;
+    public float lastLedgeGrabDuration = 0.07f;
     float stopJumpSpeed;
 
-    public PlayerAirborne(bool jump, PlayerController player)
+    public PlayerAirborne(bool jump, bool dropLedge, PlayerController player)
     {
-        canJump = !jump;
-        canDoubleJump = player.input.doubleJump;
+        canJump = true;
         canStopJump = jump;
+        stopJumpSpeed = player.settings.gravity / 7f;
+        canDoubleJump = player.input.doubleJump;
         coyoteTimer = 0;
-        stopJumpSpeed = player.settings.gravity / 9f;
+
+        if (jump || dropLedge)
+        {
+            canJump = false;
+        }
+
+        if (dropLedge) lastLedgeGrabTimer = 0;
+        else lastLedgeGrabTimer = lastLedgeGrabDuration;
     }
 
     public void HandleInput(PlayerController player, PlayerInput input)
@@ -118,24 +128,17 @@ public class PlayerAirborne : IPlayerState
             if (canJump)
             {
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
-                
+
                 canJump = false;
                 canStopJump = true;
-
-                // Set Animator Jump -> Simple Jump
-                player.animator.SetTrigger("Jump");
-                player.animator.SetBool("Airborne", true);
-            } 
-            else if(canDoubleJump)
+            }
+            else if (canDoubleJump)
             {
                 player.velocity.y = Mathf.Sqrt(2 * player.settings.doubleJumpHeight * player.settings.gravity);
 
                 canDoubleJump = false;
                 canStopJump = true;
-
-                // Set Animator Jump -> Simple Jump
-                player.animator.SetTrigger("Jump");
-                player.animator.SetBool("Airborne", true);
+                player.animator.SetTrigger("flip");
             }
         }
 
@@ -151,11 +154,19 @@ public class PlayerAirborne : IPlayerState
 
     }
 
-    public void Update(PlayerController player)
+    public void FixedUpdate(PlayerController player)
     {
+        if (player.input.xMoveAxisSign == 1)
+            player.animator.transform.eulerAngles = Vector3.up * 90;
+        else
+            player.animator.transform.eulerAngles = Vector3.up * -90;
+
+        player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
+        player.animator.SetFloat("speed", Mathf.Abs(player.velocity.x));
+
         if (canJump)
         {
-            coyoteTimer += Time.deltaTime;
+            coyoteTimer += Time.fixedDeltaTime;
             if (coyoteTimer > coyoteDuration) canJump = false;
         }
 
@@ -168,29 +179,103 @@ public class PlayerAirborne : IPlayerState
         {
             player.state = new PlayerStanding();
 
-            // Set Animator Airborne -> We are Landing
-            player.animator.SetBool("Airborne", false);
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
-
+            // Landing
+            player.animator.SetTrigger("land");
+            return;
         }
 
-        // Animator Run Idle
-        if (Mathf.Abs(player.velocity.x) < 1.1f)
+        if (lastLedgeGrabTimer >= lastLedgeGrabDuration)
         {
-            player.animator.SetBool("Idle", true);
-            player.animator.SetBool("Running", false);
+            if (player.velocity.y < 0 && player.actor.LedgeGrab(player.input.xMoveAxisSign, false))
+            {
+                player.state = new PlayerLedgeGrab(player);
+                player.velocity = Vector2.zero;
+
+                player.animator.SetTrigger("hang");
+            }
         }
         else
         {
-            player.animator.SetBool("Idle", false);
-            player.animator.SetBool("Running", true);
+            lastLedgeGrabTimer += Time.fixedDeltaTime;
+        }
+    }
+}
+
+public class PlayerLedgeGrab : IPlayerState
+{
+    public PlayerLedgeGrab(PlayerController player)
+    {
+        player.velocity = Vector2.zero;
+    }
+
+    public void HandleInput(PlayerController player, PlayerInput input)
+    {
+        if (input.moveAxis.y < -0.7f)
+        {
+            player.state = new PlayerAirborne(false, true, player);
+            player.animator.SetTrigger("fall");
         }
 
-        // Orient Player
-        if (player.velocity.x < 0)
-            player.animator.transform.eulerAngles = Vector3.up * -90;
-        else if (player.velocity.x > 0)
-            player.animator.transform.eulerAngles = Vector3.up * 90;
+        if (input.pressedJump)
+        {
+            player.state = new PlayerAirborne(true, false, player);
+
+            player.velocity.y = Mathf.Sqrt(2 * player.settings.jumpHeight * player.settings.gravity);
+            player.actor.collisions.bellow = false;
+
+            GameManager.Instance.AddMetaInt(input.id == 1 ? MetaTag.PLAYER_1_JUMP : MetaTag.PLAYER_2_JUMP, 1);
+
+            // Set Animator Jump
+            player.animator.SetTrigger("jump");
+        }
+    }
+
+    public void FixedUpdate(PlayerController player)
+    {
+        if (!player.actor.LedgeGrab(player.xVelocitySign, true))
+        {
+            player.state = new PlayerAirborne(false, true, player);
+            player.animator.SetTrigger("fall");
+        }
+    }
+}
+
+public class MeleAttackState : IPlayerState
+{
+    private Collider2D[] hits = new Collider2D[8];
+    private ContactFilter2D filter = new ContactFilter2D();
+
+    private const float attackDuration = 0.3f;
+
+    private float attackTimer;
+
+    public MeleAttackState(PlayerController player)
+    {
+        attackTimer = attackDuration;
+        filter.layerMask = player.input.attackMask;
+        filter.useLayerMask = true;
+        filter.useTriggers = true;
+    }
+
+    public void FixedUpdate(PlayerController player)
+    {
+        if (attackTimer < attackDuration) attackTimer += Time.fixedDeltaTime;
+    }
+
+    public void HandleInput(PlayerController player, PlayerInput input)
+    {
+        if (input.pressedAttack && (player.state is PlayerStanding || player.state is PlayerAirborne) && attackTimer >= attackDuration)
+        {
+            attackTimer = 0;
+
+            int results = input.attackCollider.OverlapCollider(filter, hits);
+            for (int i = 0; i < results; i++)
+            {
+                if(hits[i] == player.actor.boxCollider) continue;
+                AttackListener listener = hits[i].GetComponent<AttackListener>();
+                if (listener != null) listener.ReceiveAttack(player.transform.position, AttackType.Player);
+            }
+            player.animator.SetTrigger("attack");
+        }
     }
 }

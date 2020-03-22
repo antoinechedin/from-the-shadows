@@ -58,7 +58,7 @@ public class MenuCamera : MonoBehaviour
                 Vector3 velocity = Vector3.zero;
 
                 // Move the camera
-                transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.1f);
+                transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, cameraSpeed / 100f);
 
                 // Rotate the camera
                 transform.rotation = Quaternion.Slerp(
@@ -77,7 +77,6 @@ public class MenuCamera : MonoBehaviour
             }
 
             // Cursor on UI follow world points
-            cursor.gameObject.SetActive(cursorPositions[chapterSelected].GetComponent<Renderer>().isVisible);
             Vector2 screenPoint = Camera.main.WorldToScreenPoint(cursorPositions[chapterSelected].transform.position);
             Vector2 canvasSizeDelta = canvas.GetComponent<RectTransform>().sizeDelta / 2f;
             float canvasScaleFactor = canvas.scaleFactor;
@@ -128,5 +127,10 @@ public class MenuCamera : MonoBehaviour
     public bool SmoothTransition
     {
         set { smoothTransition = value; }
+    }
+
+    public void UnlockAnimation(bool unlock)
+    {
+        cursor.GetComponent<Animator>().SetBool("unlock", unlock);
     }
 }
