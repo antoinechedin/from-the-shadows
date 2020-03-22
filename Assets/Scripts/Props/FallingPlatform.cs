@@ -86,6 +86,13 @@ public class FallingPlatform : MonoBehaviour, IResetable
         Invoke("Reset", timerBeforeSpawning);
     }
 
+    public void StartFall()
+    {
+        isShaking = true;
+        isFalling = true;
+        Invoke("Fall", timerBeforeFalling);
+    }
+
     public void Reset()
     {
         CancelInvoke();
