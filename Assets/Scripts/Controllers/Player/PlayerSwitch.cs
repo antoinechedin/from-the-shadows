@@ -6,19 +6,18 @@ using UnityEngine;
 
 public class PlayerSwitch : MonoBehaviour
 {
-    public enum CurrentPlayer { Light, Shadow };
+    private enum CurrentPlayer { Light, Shadow };
 
     public Material shadowMat;
     public Material lightMat;
-
     public SkinnedMeshRenderer mesh;
+    public GameObject lightSourceGO;
 
     private CurrentPlayer currentPlayer;
 
     private void Awake()
     {
-        currentPlayer = CurrentPlayer.Shadow;
-        mesh.material = shadowMat;
+        PlayShadow();
     }
 
     void Update()
@@ -33,13 +32,25 @@ public class PlayerSwitch : MonoBehaviour
     {
         if(currentPlayer == CurrentPlayer.Shadow)
         {
-            currentPlayer = CurrentPlayer.Light;
-            mesh.material = lightMat;
+            PlayLight();
         }
         else
         {
-            currentPlayer = CurrentPlayer.Shadow;
-            mesh.material = shadowMat;
+            PlayShadow();
         }
+    }
+
+    private void PlayLight()
+    {
+        currentPlayer = CurrentPlayer.Light;
+        mesh.material = lightMat;
+        lightSourceGO.SetActive(true);
+    }
+
+    private void PlayShadow()
+    {
+        currentPlayer = CurrentPlayer.Shadow;
+        mesh.material = shadowMat;
+        lightSourceGO.SetActive(false);
     }
 }
