@@ -13,6 +13,7 @@ public class MoveObjectTo : MonoBehaviour
     public float speed = 2f;
     public Transform target;
 
+    private bool executed = false;
     public UnityEvent OnTargetReached;
 
     private Vector3 basePosition;
@@ -41,6 +42,7 @@ public class MoveObjectTo : MonoBehaviour
     protected virtual void ExecuteOnTargetReached()
     {
         OnTargetReached.Invoke();
+        executed = true;
     }
 
     public void TeleportTo(Transform target)
@@ -54,7 +56,7 @@ public class MoveObjectTo : MonoBehaviour
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, target.position, speed * Time.deltaTime);
 
-            if (this.transform.position == targettedPosition)
+            if (this.transform.position == targettedPosition && !executed)
                 ExecuteOnTargetReached();
             if (this.transform.position == targettedPosition && cycle)
                 target.position = basePosition;
