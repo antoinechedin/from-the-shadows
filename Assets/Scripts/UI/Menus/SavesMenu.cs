@@ -14,6 +14,8 @@ public class SavesMenu : MonoBehaviour
     public RectTransform newGameChoiceButtons;
 
     public Button[] savesButons;
+
+    public AudioClip returnAudioClip;
     private Save[] saves;
 
     private int lastSelected = 0;
@@ -47,6 +49,7 @@ public class SavesMenu : MonoBehaviour
                 {
                     menuManager.OpenStartMenu();
                 }
+                GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(returnAudioClip);
             }
         }
     }
