@@ -21,6 +21,9 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject middleZoneSpikesAnim;
     public GameObject spawnGhostObject;
 
+    public GameObject bottomKillZone;
+    public GameObject endChapterTrigger;
+
     private int hp = 3;
     private int laneToAttack = 0;
     private string stringDirection;
@@ -119,8 +122,7 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             Die();
             Invoke("DestroyMiddleZone", 3);
-            Invoke("DestroyRightZone", 4);
-            Invoke("DestroyLeftZone", 4);
+            Invoke("DestroyOtherZones", 4);
         }
 
         if (hp == 1)
@@ -220,9 +222,17 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void DestroyMiddleZone()
     {
+        bottomKillZone.SetActive(false);
+        endChapterTrigger.SetActive(true);
         middleZone.SetActive(false);
+        middleZoneSpikes.SetActive(false);
     }
 
+    public void DestroyOtherZones()
+    {
+        leftZoneBis.SetActive(false);
+        rightZoneBis.SetActive(false);
+    }
     public void ActiveMiddleZoneSpikesAnim()
     {
         middleZoneSpikesAnim.SetActive(true);
