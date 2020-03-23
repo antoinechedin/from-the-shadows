@@ -18,6 +18,8 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject rightKillZone;
     public GameObject leftKillZone;
     public GameObject middleZoneSpikes;
+    public GameObject middleZoneSpikesAnim;
+    public GameObject spawnGhostObject;
 
     private int hp = 3;
     private int laneToAttack = 0;
@@ -26,7 +28,15 @@ public class Skeleton : MonoBehaviour, IResetable
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+        // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+    }
+
+    public void Appear()
+    {
+        Debug.Log("Boss fight starting");
+        transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Appear");
+        InvokeRepeating("TriggerAttack", 15, timeBetweenAttacks);
+        spawnGhostObject.GetComponent<SpawnGhost>().StartSpawningGhost();
     }
 
     public void TriggerAttack()
@@ -109,13 +119,17 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             Die();
             Invoke("DestroyMiddleZone", 3);
+            Invoke("DestroyRightZone", 4);
+            Invoke("DestroyLeftZone", 4);
         }
 
         if (hp == 1)
         {
             //Cancel Trigger simple attack and start double attack
             CancelInvoke();
-            Invoke("ActiveMiddleZoneSpikes",3);
+            Invoke("ActiveMiddleZoneSpikesAnim", 1);
+            Invoke("StartFallingPlatform", 1.8f);
+            Invoke("ActiveMiddleZoneSpikes", 4);
 
             InvokeRepeating("TriggerDoubleAttack", 5, timeBetweenDoubleAttacks);
         }
@@ -166,7 +180,9 @@ public class Skeleton : MonoBehaviour, IResetable
         leftZoneBis.SetActive(false);
         rightZoneBis.SetActive(false);
         middleZoneSpikes.SetActive(false);
-
+        middleZoneSpikesAnim.GetComponent<Animator>().ResetTrigger("Appear");
+        middleZoneSpikesAnim.GetComponent<Animator>().SetTrigger("Reset");
+        middleZoneSpikesAnim.SetActive(false);
         //Reactivate killzone
         leftKillZone.SetActive(true);
         rightKillZone.SetActive(true);
@@ -207,8 +223,20 @@ public class Skeleton : MonoBehaviour, IResetable
         middleZone.SetActive(false);
     }
 
+    public void ActiveMiddleZoneSpikesAnim()
+    {
+        middleZoneSpikesAnim.SetActive(true);
+        middleZoneSpikesAnim.GetComponent<Animator>().SetTrigger("Appear");
+    }
+
+    public void StartFallingPlatform()
+    {
+        middleZoneSpikesAnim.transform.GetChild(2).GetComponent<FallingPlatform>().StartFall();
+    }
+
     public void ActiveMiddleZoneSpikes()
     {
         middleZoneSpikes.SetActive(true);
+        middleZoneSpikesAnim.SetActive(false);
     }
 }

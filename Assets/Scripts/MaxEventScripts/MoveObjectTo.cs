@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MoveObjectTo : MonoBehaviour
 {
@@ -12,13 +13,18 @@ public class MoveObjectTo : MonoBehaviour
     public float speed = 2f;
     public Transform target;
 
+    public UnityEvent OnTargetReached;
+
     private Vector3 basePosition;
     private Vector3 targettedPosition;
 
     private void Start()
     {
         basePosition = this.transform.position;
-        targettedPosition = target.position;
+
+        if(target != null)
+            targettedPosition = target.position;
+
         if (moveAtStart)
             move = true;
     }
@@ -32,6 +38,15 @@ public class MoveObjectTo : MonoBehaviour
         move = false;
     }
 
+    protected virtual void ExecuteOnTargetReached()
+    {
+        OnTargetReached.Invoke();
+    }
+
+    public void TeleportTo(Transform target)
+    {
+        this.transform.position = target.position;
+    }
 
     void Update()
     {
@@ -39,6 +54,8 @@ public class MoveObjectTo : MonoBehaviour
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, target.position, speed * Time.deltaTime);
 
+            if (this.transform.position == targettedPosition)
+                ExecuteOnTargetReached();
             if (this.transform.position == targettedPosition && cycle)
                 target.position = basePosition;
             else if (this.transform.position == basePosition && cycle)

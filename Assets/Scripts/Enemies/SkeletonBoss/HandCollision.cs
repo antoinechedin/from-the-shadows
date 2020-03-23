@@ -53,7 +53,7 @@ public class HandCollision : MonoBehaviour
             collider.gameObject.GetComponent<RotatingPlatform>().OnHit();
             Invoke("ActivateKillable", 2);
         }
-        else if (collider.gameObject.tag == "Player")
+        else if (collider.gameObject.tag == "Player" && !isDestructor)
         {
             Debug.Log("Case kill player");
             StopHand();
