@@ -22,7 +22,7 @@ public class PlayerSwitch : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetButtonDown("RB_G") || Input.GetKeyDown(KeyCode.LeftShift))
         {
             TogglePlayer();
         }
