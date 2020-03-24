@@ -36,7 +36,7 @@ public class LineRendererDrawForward : MonoBehaviour
         }
         else
         {
-            lineRenderer.SetPosition(1, transform.up * lineDistance);
+            lineRenderer.SetPosition(1, transform.position + (transform.up * lineDistance));
         }
     }
 }

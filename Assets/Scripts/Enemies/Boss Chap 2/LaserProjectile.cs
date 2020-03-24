@@ -37,7 +37,14 @@ public class LaserProjectile : MonoBehaviour
         }
         else
         {
-            lineRenderer.SetPosition(1, transform.up * laserLength);
+            lineRenderer.SetPosition(1, transform.position + (transform.up * laserLength));
+        }
+
+        //détection de collision pour la destruction complète du laser
+        LayerMask destructMask = LayerMask.GetMask("LayeredSolid", "Solid");
+        if (Physics2D.OverlapCircle(transform.position, 0.01f, destructMask))
+        {
+            Destroy(gameObject);
         }
     }
 }
