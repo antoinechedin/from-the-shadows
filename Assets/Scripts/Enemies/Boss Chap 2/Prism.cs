@@ -23,7 +23,6 @@ public class Prism : Receptor
 
     private void Start()
     {
-        laserRotator.SetActive(false);
     }
 
     public override void AddLaser(GameObject addedlaser) 
@@ -36,12 +35,6 @@ public class Prism : Receptor
     {
         base.RemoveLaser(removedLaser);
         TestNbLaserTouching();
-    }
-
-
-    private void Update()
-    {
-        Debug.DrawRay(transform.position, transform.forward * 100);
     }
 
     /// <summary>
@@ -103,16 +96,15 @@ public class Prism : Receptor
     public IEnumerator SpiningLasers(float time)
     {
         float cpt = 0;
-
+        laserRotator.GetComponent<Animator>().SetTrigger("Activating");
         while (cpt < time)
         {
             cpt += Time.deltaTime;
 
             //rotation
-            laserRotator.SetActive(true);
             laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed));
             yield return null;
         }
-        laserRotator.SetActive(false);
+        laserRotator.GetComponent<Animator>().SetTrigger("Disactivating");
     }
 }
