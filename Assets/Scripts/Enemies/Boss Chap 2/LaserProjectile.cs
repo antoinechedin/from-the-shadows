@@ -2,41 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LineRendererDrawForward : MonoBehaviour
+public class LaserProjectile : MonoBehaviour
 {
-    public float lineDistance;
-    public bool active = false;
 
-    LineRenderer lineRenderer;
-    // Start is called before the first frame update
-    void Start()
+    public float speed;
+    public float laserLength;
+
+    private LineRenderer lineRenderer;
+
+    private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.SetPosition(0, transform.position);
     }
 
     // Update is called once per frame
     void Update()
     {
+        transform.position += transform.up * speed * Time.deltaTime;
+        lineRenderer.SetPosition(0, gameObject.transform.position);
+
         LayerMask collisionMask = LayerMask.GetMask("LayeredSolid", "Solid", "Player");
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, lineDistance, collisionMask);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, laserLength, collisionMask);
         if (hit.collider != null)
         {
             if (hit.transform.GetComponent<PlayerController>() != null) //si on capte le joueur
             {
-                if (active)
-                {
-                    hit.transform.GetComponent<PlayerController>().Die();
-                }
-            }   
+                hit.transform.GetComponent<PlayerController>().Die();
+            }
             else//on a touché un élément de décors
             {
+                Debug.Log("element de decors");
                 lineRenderer.SetPosition(1, hit.point);
             }
         }
         else
         {
-            lineRenderer.SetPosition(1, transform.up * lineDistance);
+            lineRenderer.SetPosition(1, transform.up * laserLength);
         }
     }
 }

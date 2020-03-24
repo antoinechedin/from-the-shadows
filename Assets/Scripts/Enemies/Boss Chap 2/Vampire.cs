@@ -11,6 +11,7 @@ public class Vampire : MonoBehaviour, IResetable
     [Header("Actions")]
     public float minTimeAction;
     public float maxTimeAction;
+    public GameObject explosivePrefab;
 
     public int maxLife;
 
@@ -64,16 +65,28 @@ public class Vampire : MonoBehaviour, IResetable
         Debug.Log("Attack");
         if (life == 3)//phase 1 : fantôme
         {
-
+            LaunchExplosive();
         }
         else if (life==2)//phase 2 fantôme + 1 explosif laser (joueur aléatoire)
         {
-
+            LaunchExplosive();
         }
         else if (life == 1)//phase 3 + 2 explosif laser (chaque joueur)
         {
-
+            LaunchExplosive();
         }
+    }
+
+    public void LaunchExplosive()
+    {
+        //pick a random target
+        PlayerController[] players = FindObjectsOfType<PlayerController>();
+        GameObject targetPlayer = players[Random.Range(0, players.Length)].gameObject;
+        Debug.Log(targetPlayer.name +" targeted");
+
+        //launch attack
+        GameObject spawned = Instantiate(explosivePrefab, transform.position, Quaternion.identity);
+        spawned.GetComponent<VampireExplosive>().SetTargetPos(targetPlayer.transform.position);
     }
 
     public void Move()

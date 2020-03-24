@@ -37,12 +37,6 @@ public class Prism : Receptor
         TestNbLaserTouching();
     }
 
-
-    private void Update()
-    {
-        Debug.DrawRay(transform.position, transform.forward * 100);
-    }
-
     /// <summary>
     /// Test to see if the number of lasers touching the prism is equal to the required number. If it's true, fire a big laser.
     /// </summary>
@@ -102,8 +96,7 @@ public class Prism : Receptor
     public IEnumerator SpiningLasers(float time)
     {
         float cpt = 0;
-        laserRotator.SetActive(true);
-
+        laserRotator.GetComponent<Animator>().SetTrigger("Activating");
         while (cpt < time)
         {
             cpt += Time.deltaTime;
@@ -112,6 +105,6 @@ public class Prism : Receptor
             laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed));
             yield return null;
         }
-        laserRotator.SetActive(false);
+        laserRotator.GetComponent<Animator>().SetTrigger("Disactivating");
     }
 }
