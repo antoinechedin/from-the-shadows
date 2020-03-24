@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class VampireExplosive : MonoBehaviour
 {
-    public float speed;
     public GameObject projectilePrefab;
-    public int nbProjectile;
+
+    private float speed;
+    private int minNbProjectible;
+    private int maxNbProjectile;
+
+    private float speedSubProjectile;
+    private float lengthSubProjectile;
 
     private Vector3 targetPos;
 
@@ -21,19 +26,31 @@ public class VampireExplosive : MonoBehaviour
 
     public void Explode()
     {
-        Debug.Log("Explode");
-        float step = 360 / nbProjectile;
+        //off aléatoire de rotation en Z
+        float rdmRot = Random.Range(0, 360);
 
-        for (int i = 0; i < nbProjectile; i++)
+        //choisi aléatoirement le nombre de projectiles
+        int rdm = Random.Range(minNbProjectible, maxNbProjectile + 1);
+
+        float step = 360 / rdm;
+
+        for (int i = 0; i < rdm; i++)
         {
-            Instantiate(projectilePrefab, gameObject.transform.position, Quaternion.Euler(0, 0, i * step));
+            GameObject projectile = Instantiate(projectilePrefab, gameObject.transform.position, Quaternion.Euler(0, 0, i * step + rdmRot));
+            projectile.GetComponent<LaserProjectile>().SetInfo(speedSubProjectile, lengthSubProjectile);
         }
 
         Destroy(gameObject);
     }
 
-    public void SetTargetPos(Vector3 pos)
+    public void SetInfos(Vector3 pos, float speedProjectile, int minSubProj, int maxSubProj, float speedSubProj, float lengthSubProj)
     {
         targetPos = pos;
+        speed = speedProjectile;
+        minNbProjectible = minSubProj;
+        maxNbProjectile = maxSubProj;
+
+        speedSubProjectile = speedSubProj;
+        lengthSubProjectile = lengthSubProj;
     }
 }

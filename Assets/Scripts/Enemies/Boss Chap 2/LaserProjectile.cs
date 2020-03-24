@@ -5,8 +5,8 @@ using UnityEngine;
 public class LaserProjectile : MonoBehaviour
 {
 
-    public float speed;
-    public float laserLength;
+    private float speed;
+    private float laserLength;
 
     private LineRenderer lineRenderer;
 
@@ -27,11 +27,11 @@ public class LaserProjectile : MonoBehaviour
         {
             if (hit.transform.GetComponent<PlayerController>() != null) //si on capte le joueur
             {
+                Debug.Log("JOUEUR");
                 hit.transform.GetComponent<PlayerController>().Die();
             }
             else//on a touché un élément de décors
             {
-                Debug.Log("element de decors");
                 lineRenderer.SetPosition(1, hit.point);
             }
         }
@@ -46,5 +46,11 @@ public class LaserProjectile : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SetInfo(float speedSubProj, float laserLen)
+    {
+        speed = speedSubProj;
+        laserLength = laserLen;
     }
 }

@@ -13,6 +13,16 @@ public class Vampire : MonoBehaviour, IResetable
     public float maxTimeAction;
     public GameObject explosivePrefab;
 
+    [Header("Projectile explosif")]
+    public float speedProjectile;
+    public int minNbSubProjectile;
+    public int maxNbSubProjectile;
+
+    [Header("Sous projectiles")]
+    public float speedSubProjectile;
+    public float lengthSubProjectile;
+
+    [Header("Stats")]
     public int maxLife;
 
     private float cptAction;
@@ -86,7 +96,12 @@ public class Vampire : MonoBehaviour, IResetable
 
         //launch attack
         GameObject spawned = Instantiate(explosivePrefab, transform.position, Quaternion.identity);
-        spawned.GetComponent<VampireExplosive>().SetTargetPos(targetPlayer.transform.position);
+        spawned.GetComponent<VampireExplosive>().SetInfos(targetPlayer.transform.position + new Vector3(0, 2, 0),
+            speedProjectile,
+            minNbSubProjectile,
+            maxNbSubProjectile, 
+            speedSubProjectile,
+            lengthSubProjectile);
     }
 
     public void Move()
