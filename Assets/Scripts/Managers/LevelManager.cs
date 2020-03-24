@@ -22,6 +22,9 @@ public class LevelManager : MonoBehaviour
     [Header("Put in roomsToEnable all the neighbors of the room")]
     public List<LevelManager> roomsToEnable;
 
+    public GameObject soloLevel; // For Level design purpose, to easily switch between solo/duo level before having a separate Chapter
+    public GameObject duoLevel;
+
     private BoxCollider2D levelLimits;
     private GameObject cameraConfiner;
 
@@ -130,14 +133,16 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void EnableLevel()
     {
-        gameObject.SetActive(true);
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
         this.SetObjectToDisable(true);
 
         foreach (LevelManager level in roomsToEnable)
         {
             if (level != null)
             {
-                level.gameObject.SetActive(true);
+                if (!level.gameObject.activeSelf)
+                    level.gameObject.SetActive(true);
                 level.SetObjectToDisable(false);
             }
         }

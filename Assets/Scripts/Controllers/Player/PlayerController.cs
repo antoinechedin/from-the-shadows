@@ -109,9 +109,8 @@ public class PlayerController : MonoBehaviour
     /// Gives the position and rotation of t to the player
     /// </summary>
     /// <param name="t"></param>
-    public void SetTransform(Transform t)
+    public void SetPosition(Transform t)
     {
         transform.position = t.position;
-        transform.rotation = t.rotation;
     }
 }
