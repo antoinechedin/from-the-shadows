@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(AudioSource))]
-public class LevelScreenshot : MonoBehaviour
+public class LevelScreenshot : MonoBehaviour, ISelectHandler
 {
     public GameObject collectiblesHolder;
 
@@ -13,7 +14,8 @@ public class LevelScreenshot : MonoBehaviour
     private Vector2 startScale;
     private int levelIndex; //the index of the IG level
 
-    private MenuLevels menuLevels;
+    [HideInInspector]
+    public MenuLevels menuLevels;
     private bool pressed = false;
     private AudioSource audioSource;
 
@@ -58,8 +60,8 @@ public class LevelScreenshot : MonoBehaviour
     /// <param name="distance"></param>
     public void SetNewDestination(Vector3 distance)
     {
-            destination += distance;
-            // destinationChanged = true;
+        destination += distance;
+        // destinationChanged = true;
     }
 
     private void HandleScaling()
@@ -91,5 +93,10 @@ public class LevelScreenshot : MonoBehaviour
             timeCount += Time.deltaTime;
             yield return null;
         }
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        Debug.Log(transform.name + " selected");
     }
 }

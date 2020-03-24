@@ -10,6 +10,7 @@ public class MenuLevels : MonoBehaviour
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
     public GameObject levelScreenshotsParent;
+    public LevelScreenshot levelScreenshotPrefab;
 
     [Header("Carousel")]
     private List<LevelScreenshot> screenshots = new List<LevelScreenshot>();
@@ -34,28 +35,28 @@ public class MenuLevels : MonoBehaviour
 
     private void Update()
     {
-        if (!pressed) //pour disable les contrôle si on a press un bouton
-        {
-            timeCpt += Time.deltaTime;
-            float moveX = Input.GetAxis("Horizontal_G");
+        // if (!pressed) //pour disable les contrôle si on a press un bouton
+        // {
+        //     timeCpt += Time.deltaTime;
+        //     float moveX = Input.GetAxis("Horizontal_G");
 
-            if (Mathf.Abs(moveX) < stickDeadZone)
-            {
-                timeCpt = repeatDelay;
-            }
+        //     if (Mathf.Abs(moveX) < stickDeadZone)
+        //     {
+        //         timeCpt = repeatDelay;
+        //     }
 
-            if (timeCpt >= repeatDelay) //pour pas spam trop vite
-            {
-                if (moveX > stickDeadZone)
-                {
-                    SelectNextLevel();
-                }
-                else if (moveX < -stickDeadZone)
-                {
-                    SelectPreviousLevel();
-                }
-            }
-        }
+        //     if (timeCpt >= repeatDelay) //pour pas spam trop vite
+        //     {
+        //         if (moveX > stickDeadZone)
+        //         {
+        //             SelectNextLevel();
+        //         }
+        //         else if (moveX < -stickDeadZone)
+        //         {
+        //             SelectPreviousLevel();
+        //         }
+        //     }
+        // }
     }
 
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
@@ -82,9 +83,7 @@ public class MenuLevels : MonoBehaviour
             {
                 int localLevelIndex = i;
                 //TODO : aller chercher le bon srceenshot
-                GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot01") as GameObject;
-                levelScreenshot.name = localLevelIndex.ToString();
-                LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshot, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
+                LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshotPrefab, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
                 SetMenuLevelInfo(i, spawnedScreenshot);
                 spawnedScreenshot.GetComponent<Button>().onClick.AddListener(delegate
                 {
