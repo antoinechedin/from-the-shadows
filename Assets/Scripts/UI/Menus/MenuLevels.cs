@@ -21,6 +21,9 @@ public class MenuLevels : MonoBehaviour
     [Range(0.0f, 3.0f)]
     [Tooltip("The size multiplier of the selected level")]
     public float maxSize;
+    [Range(0f, 1f)]
+    [Tooltip("Foreground alpha value when screenshot is unselected")]
+    public float foregroundMaxAlpha;
     [Tooltip("The speed of the carousel")]
     public float speed;
     [Tooltip("time between every possible change (prevents to go too fast if you hold)")]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class LevelScreenshot : MonoBehaviour, ISelectHandler
@@ -21,6 +22,8 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     /// The gameobject index of the screenshots list inside MenuLevel
     /// </summary>
     [HideInInspector] public int levelIndex;
+
+    public Image foreground;
 
     [HideInInspector]
     public MenuLevels menuLevels;
@@ -43,7 +46,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         startScale = rt.localScale;
         destination = rt.localPosition;
 
-        HandleScaling();
+        HandleScalingAndForeground();
     }
     // Update is called once per frame
     void Update()
@@ -53,7 +56,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
             rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed);
             if (!pressed)
             {
-                HandleScaling();
+                HandleScalingAndForeground();
             }
         }
         else
@@ -72,13 +75,17 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         // destinationChanged = true;
     }
 
-    private void HandleScaling()
+    private void HandleScalingAndForeground()
     {
         Vector3 pos = GetComponent<RectTransform>().localPosition;
 
-        float finalSize = menuLevels.maxSize - (Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots * menuLevels.minSize);
+        float finalSize = menuLevels.maxSize - Mathf.Abs(pos.x) * (menuLevels.maxSize - menuLevels.minSize) / menuLevels.distanceBetweenScreenshots;
         finalSize = Mathf.Clamp(finalSize, menuLevels.minSize, menuLevels.maxSize);
         transform.localScale = startScale * new Vector3(finalSize, finalSize, 1);
+
+        float foregroungAlpha = Mathf.Abs(pos.x) * menuLevels.foregroundMaxAlpha / menuLevels.distanceBetweenScreenshots;
+        foregroungAlpha = Mathf.Clamp(foregroungAlpha, 0, menuLevels.foregroundMaxAlpha);
+        foreground.color = new Color(0, 0, 0, foregroungAlpha);
     }
 
     public IEnumerator PressedAnimation()
