@@ -8,6 +8,10 @@ public class Vampire : MonoBehaviour, IResetable
     public List<Transform> positions;
     public float speed;
 
+    [Header("Attaque du boss")]
+    public GameObject laserRotator;
+    public float rotationSpeed;
+
     [Header("Actions")]
     public float minTimeAction;
     public float maxTimeAction;
@@ -32,6 +36,8 @@ public class Vampire : MonoBehaviour, IResetable
 
     private Animator animator;
 
+    private bool firingLaser = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,11 +49,14 @@ public class Vampire : MonoBehaviour, IResetable
     // Update is called once per frame
     void Update()
     {
-        cptAction += Time.deltaTime;
-
-        if (cptAction >= rdmAction)
+        if (!firingLaser)
         {
-            PickRandomAction();
+            cptAction += Time.deltaTime;
+
+            if (cptAction >= rdmAction)
+            {
+                PickRandomAction();
+            }
         }
     }
     public void PickRandomAction()
@@ -121,6 +130,31 @@ public class Vampire : MonoBehaviour, IResetable
         }
     }
 
+    public IEnumerator SpiningLasers(float time)
+    {
+        firingLaser = true;
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+
+        //on active le gros laser
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, FindObjectOfType<Prism>().transform.position);
+        lineRenderer.enabled = true;
+
+        float cpt = 0;
+        laserRotator.GetComponent<Animator>().SetTrigger("Activating");
+        while (cpt < time)
+        {
+            cpt += Time.deltaTime;
+
+            //rotation
+            laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed * Time.deltaTime));
+            yield return null;
+        }
+        laserRotator.GetComponent<Animator>().SetTrigger("Disactivating");
+        lineRenderer.enabled = false;
+        firingLaser = false;
+    }
+
     public void TakeDamage()
     {
         animator.SetTrigger("TakeDamage");
@@ -135,15 +169,7 @@ public class Vampire : MonoBehaviour, IResetable
 
     public void BigAttack()
     {
-        Debug.Log("Big attack");
-        LineRenderer lineRenderer = GetComponent<LineRenderer>();
-
-        //on active le gros laser
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, FindObjectOfType<Prism>().transform.position);
-        lineRenderer.enabled = true;
-
-        StartCoroutine(FindObjectOfType<Prism>().SpiningLasers(5));
+        StartCoroutine(SpiningLasers(5));
     }
 
     public void Die()

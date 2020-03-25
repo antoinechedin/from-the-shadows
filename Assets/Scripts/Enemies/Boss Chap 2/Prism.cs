@@ -9,10 +9,6 @@ public class Prism : Receptor
     public Material activated;
     public List<GameObject> indicators;
 
-    [Header("Attaque du boss")]
-    public GameObject laserRotator;
-    public float rotationSpeed;
-
     private bool firing = false;
     private LineRenderer lineRenderer;
 
@@ -91,20 +87,5 @@ public class Prism : Receptor
         firing = false;
 
         //TODO : reset les reflector
-    }
-
-    public IEnumerator SpiningLasers(float time)
-    {
-        float cpt = 0;
-        laserRotator.GetComponent<Animator>().SetTrigger("Activating");
-        while (cpt < time)
-        {
-            cpt += Time.deltaTime;
-
-            //rotation
-            laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed));
-            yield return null;
-        }
-        laserRotator.GetComponent<Animator>().SetTrigger("Disactivating");
     }
 }
