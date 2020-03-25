@@ -9,20 +9,28 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     public GameObject collectiblesHolder;
 
     private RectTransform rt;
-    private Vector3 destination;
+    [HideInInspector] public Vector3 destination;
     // private bool destinationChanged = false; // inutile
     private Vector2 startScale;
-    private int levelIndex; //the index of the IG level
+    /// <summary>
+    /// The ingame ID of the level
+    /// </summary>
+    private int levelId;
+
+    /// <summary>
+    /// The gameobject index of the screenshots list inside MenuLevel
+    /// </summary>
+    [HideInInspector] public int levelIndex;
 
     [HideInInspector]
     public MenuLevels menuLevels;
     private bool pressed = false;
     private AudioSource audioSource;
 
-    public int LevelIndex
+    public int LevelId
     {
-        get { return levelIndex; }
-        set { levelIndex = value; }
+        get { return levelId; }
+        set { levelId = value; }
     }
 
     private void Start()
@@ -97,6 +105,9 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
 
     public void OnSelect(BaseEventData eventData)
     {
-        Debug.Log(transform.name + " selected");
+        if (menuLevels != null)
+        {
+            menuLevels.SelectCheckpoint(levelIndex);
+        }
     }
 }

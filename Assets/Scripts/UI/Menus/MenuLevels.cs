@@ -33,36 +33,10 @@ public class MenuLevels : MonoBehaviour
     private float timeCpt = 0;
     private bool pressed = false;
 
-    private void Update()
-    {
-        // if (!pressed) //pour disable les contrôle si on a press un bouton
-        // {
-        //     timeCpt += Time.deltaTime;
-        //     float moveX = Input.GetAxis("Horizontal_G");
-
-        //     if (Mathf.Abs(moveX) < stickDeadZone)
-        //     {
-        //         timeCpt = repeatDelay;
-        //     }
-
-        //     if (timeCpt >= repeatDelay) //pour pas spam trop vite
-        //     {
-        //         if (moveX > stickDeadZone)
-        //         {
-        //             SelectNextLevel();
-        //         }
-        //         else if (moveX < -stickDeadZone)
-        //         {
-        //             SelectPreviousLevel();
-        //         }
-        //     }
-        // }
-    }
-
     public void SetMenuLevels(int chapterNumber, Chapter chapter)
     {
         ResetScreenshots();
-        
+
         int nbCompleted = 0;
         int totalLevels = 0;
 
@@ -89,7 +63,8 @@ public class MenuLevels : MonoBehaviour
                 {
                     LevelButtonClicked(new LoadingChapterInfo(localLevelIndex), spawnedScreenshot);
                 });
-                spawnedScreenshot.LevelIndex = localLevelIndex;
+                spawnedScreenshot.LevelId = localLevelIndex;
+                spawnedScreenshot.levelIndex = nbLevelSpawned;
                 spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
                 screenshots.Add(spawnedScreenshot);
 
@@ -99,30 +74,12 @@ public class MenuLevels : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(screenshots[0].gameObject);
     }
 
-    public void SelectNextLevel()
+    public void SelectCheckpoint(int index)
     {
-        if (currentSelectedLevel < screenshots.Count - 1)
+        foreach (LevelScreenshot go in screenshots)
         {
-            foreach (LevelScreenshot go in screenshots)
-            {
-                go.SetNewDestination(new Vector3(-distanceBetweenScreenshots, 0, 0));
-            }
-            currentSelectedLevel++;
+            go.destination = new Vector3((go.levelIndex - index) * distanceBetweenScreenshots, 0, 0);
         }
-        timeCpt = 0;
-    }
-
-    public void SelectPreviousLevel()
-    {
-        if (currentSelectedLevel > 0)
-        {
-            foreach (LevelScreenshot go in screenshots)
-            {
-                go.SetNewDestination(new Vector3(distanceBetweenScreenshots, 0, 0));
-            }
-            currentSelectedLevel--;
-        }
-        timeCpt = 0;
     }
 
     public void SetMenuLevelInfo(int level, LevelScreenshot screenshot)
@@ -133,7 +90,7 @@ public class MenuLevels : MonoBehaviour
         {
             if (kv.Key == "light" && kv.Value)
             {
-                Instantiate(collectibleLight, screenshot.collectiblesHolder.transform) ;
+                Instantiate(collectibleLight, screenshot.collectiblesHolder.transform);
             }
             else if (kv.Key == "shadow" && kv.Value)
             {
@@ -172,7 +129,7 @@ public class MenuLevels : MonoBehaviour
                 collectibles.Add(new KeyValuePair<string, bool>("shadow", b));
             }
             level++;
-        } while ( level < ChapterLevels.Count && !ChapterLevels[level].IsCheckpoint);
+        } while (level < ChapterLevels.Count && !ChapterLevels[level].IsCheckpoint);
 
         return collectibles;
     }
