@@ -14,6 +14,7 @@ public class ActorController : RaycastController
     private Rigidbody2D body;
     public CollisionInfo collisions;
     public CollisionInfo collisionsPrevious;
+    public LayerMask ledgeGrabMask;
 
     protected override void Awake()
     {
@@ -311,7 +312,7 @@ public class ActorController : RaycastController
             rayOrigin += Vector2.up * (collisions.move.y - (hLedgeGrabRaySpacing * i) + heightOffset);
             rayOrigin += Vector2.right * collisions.move.x;
 
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, ledgeGrabRayLength, collisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * facing, ledgeGrabRayLength, ledgeGrabMask);
             Debug.DrawRay(rayOrigin, Vector2.right * facing * ledgeGrabRayLength, hit ? Color.blue : Color.yellow);
 
             if (hit)
@@ -322,7 +323,7 @@ public class ActorController : RaycastController
                 rayOrigin = facing < 0 ? raycastOrigins.topLeft : raycastOrigins.topRight;
                 rayOrigin += Vector2.up * (collisions.move.y + heightOffset);
                 rayOrigin += Vector2.right * collisions.move.x;
-                RaycastHit2D headHit = Physics2D.Raycast(rayOrigin, Vector2.down, heightOffset, collisionMask);
+                RaycastHit2D headHit = Physics2D.Raycast(rayOrigin, Vector2.down, heightOffset, ledgeGrabMask);
                 Debug.DrawRay(rayOrigin, Vector2.down * heightOffset, Color.blue);
                 if (headHit) return false;
 
@@ -335,7 +336,7 @@ public class ActorController : RaycastController
 
                     if (!checkOnly)
                     {
-                        RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
+                        RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, ledgeGrabMask);
                         if (floorHit)
                         {
                             Debug.DrawRay(rayOrigin, Vector2.down * floorHit.distance, Color.magenta);
