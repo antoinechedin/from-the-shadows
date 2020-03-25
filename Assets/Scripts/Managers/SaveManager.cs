@@ -161,29 +161,31 @@ public class SaveManager : Singleton<SaveManager>
 
         //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
         List<Level> lvlChap0 = new List<Level>();
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //0   - L'entrée dans le manoir - 2 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //0   - The entrance - 2 Collectibles
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //1
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //2
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //3
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //4
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //5 
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //6
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //7   - La salle aux escaliers - 4 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //7   - The room of a thousand stairs - 4 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); // GhostRoom
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //8
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //9
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //10
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //11
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //12
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //13
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //14 - La deuxième rencontre - 3 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //14 - The second encounter - 3 Collectibles
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //15
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //16
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //17
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //18
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //19
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //20
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //21    - Nom inconnu - 5 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //21 
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //22
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //  - Fresh air - 5 Collectibles
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //23
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //24
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //25
@@ -192,19 +194,19 @@ public class SaveManager : Singleton<SaveManager>
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //28
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //29
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //30
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //31 - La troisième rencontre - 4 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //31 - The third encounter - 4 Collectibles
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //32
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { false }, false)); //33
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { }, false)); //34
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //35
         lvlChap0.Add(new Level(false, new bool[] { false }, new bool[] { false }, false)); //36
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //37 - Le théâtre - 0 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //37 - The show - 0 Collectibles
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //38
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //39
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //40
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //41
         lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, false)); //42
-        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //43 - L'affrontement - 0 Collectibles
+        lvlChap0.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //43 - The confrontation - 0 Collectibles
         // List<Level> lvlChap1 = new List<Level>();
         // lvlChap1.Add(new Level(false, new bool[] { false }));
 
