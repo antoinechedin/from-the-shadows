@@ -22,6 +22,17 @@ public class Outline : MonoBehaviour
         instanceMat.SetColor("_Color", outlineColor);
         instanceMat.SetFloat("_Alpha", 0);
         alpha = instanceMat.GetFloat("_Alpha");
+        StartCoroutine(HideOutline());
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        StartCoroutine(DisplayOutline());
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        StartCoroutine(HideOutline());
     }
 
     public IEnumerator DisplayOutline()
