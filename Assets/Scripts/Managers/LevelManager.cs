@@ -22,9 +22,6 @@ public class LevelManager : MonoBehaviour
     [Header("Put in roomsToEnable all the neighbors of the room")]
     public List<LevelManager> roomsToEnable;
 
-    //public GameObject soloLevel; // For Level design purpose, to easily switch between solo/duo level before having a separate Chapter
-    //public GameObject duoLevel;
-
     private BoxCollider2D levelLimits;
     private GameObject cameraConfiner;
 
