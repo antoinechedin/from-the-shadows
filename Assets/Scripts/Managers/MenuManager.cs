@@ -182,6 +182,7 @@ public class MenuManager : MonoBehaviour
         int lastSaveSelected = savesMenu.gameObject.GetComponent<SavesMenu>().LastSelected;
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
+        savesMenu.UpdateButtons();
 
         dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
