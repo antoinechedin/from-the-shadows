@@ -72,6 +72,7 @@ public class Reflector : MonoBehaviour, IResetable
     public void Reset()
     {
         transform.parent.rotation = startRotation;
+        currentRotation = startRotation;
     }
 
     public void Shuffle()
