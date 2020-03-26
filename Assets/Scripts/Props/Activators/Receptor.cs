@@ -75,7 +75,7 @@ public class Receptor : Activator, IResetable
         lasersTouching.Remove(removedLaser);
     }
 
-    public void Reset()
+    public virtual void Reset()
     {
         Off(gameObject); 
     }

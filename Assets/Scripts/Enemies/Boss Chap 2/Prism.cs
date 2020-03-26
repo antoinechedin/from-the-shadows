@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Prism : Receptor
+public class Prism : Receptor, IResetable
 {
     public int requireNbLaserTouching;
     public Material notActivated;
@@ -87,5 +87,16 @@ public class Prism : Receptor
         firing = false;
 
         //TODO : reset les reflector
+    }
+
+    public override void Reset()
+    {
+        base.Reset();
+
+        //on enlève le rayon
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, transform.position);
+        firing = false;
+        StopCoroutine(FireLaser());
     }
 }

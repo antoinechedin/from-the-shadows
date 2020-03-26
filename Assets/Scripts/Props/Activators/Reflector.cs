@@ -73,4 +73,10 @@ public class Reflector : MonoBehaviour, IResetable
     {
         transform.parent.rotation = startRotation;
     }
+
+    public void Shuffle()
+    {
+        int max = Mathf.FloorToInt(360 / angleRotation);
+        Rotate(Random.Range(1, max) * angleRotation);
+    }
 }
