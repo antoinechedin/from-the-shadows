@@ -27,8 +27,7 @@ public class LaserProjectile : MonoBehaviour
         {
             if (hit.transform.GetComponent<PlayerController>() != null) //si on capte le joueur
             {
-                Debug.Log("JOUEUR");
-                hit.transform.GetComponent<PlayerController>().Die();
+                //hit.transform.GetComponent<PlayerController>().Die();
             }
             else//on a touché un élément de décors
             {
@@ -41,8 +40,7 @@ public class LaserProjectile : MonoBehaviour
         }
 
         //détection de collision pour la destruction complète du laser
-        LayerMask destructMask = LayerMask.GetMask("LayeredSolid", "Solid");
-        if (Physics2D.OverlapCircle(transform.position, 0.01f, destructMask))
+        if (Physics2D.OverlapCircle(transform.position, 0.01f, collisionMask))
         {
             Destroy(gameObject);
         }
