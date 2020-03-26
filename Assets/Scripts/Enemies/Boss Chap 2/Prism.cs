@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Prism : Receptor
+public class Prism : Receptor, IResetable
 {
     public int requireNbLaserTouching;
     public Material notActivated;
     public Material activated;
     public List<GameObject> indicators;
-
-    [Header("Attaque du boss")]
-    public GameObject laserRotator;
-    public float rotationSpeed;
 
     private bool firing = false;
     private LineRenderer lineRenderer;
@@ -23,7 +19,6 @@ public class Prism : Receptor
 
     private void Start()
     {
-        laserRotator.SetActive(false);
     }
 
     public override void AddLaser(GameObject addedlaser) 
@@ -36,12 +31,6 @@ public class Prism : Receptor
     {
         base.RemoveLaser(removedLaser);
         TestNbLaserTouching();
-    }
-
-
-    private void Update()
-    {
-        Debug.DrawRay(transform.position, transform.forward * 100);
     }
 
     /// <summary>
@@ -100,19 +89,14 @@ public class Prism : Receptor
         //TODO : reset les reflector
     }
 
-    public IEnumerator SpiningLasers(float time)
+    public override void Reset()
     {
-        float cpt = 0;
+        base.Reset();
 
-        while (cpt < time)
-        {
-            cpt += Time.deltaTime;
-
-            //rotation
-            laserRotator.SetActive(true);
-            laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed));
-            yield return null;
-        }
-        laserRotator.SetActive(false);
+        //on enlève le rayon
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, transform.position);
+        firing = false;
+        StopCoroutine(FireLaser());
     }
 }
