@@ -150,13 +150,13 @@ public class SaveManager : Singleton<SaveManager>
         //création des dictionnaires de metadonnées
         StringIntDictionary mInt = new StringIntDictionary();
         mInt.Add("jumpNumber1", 0);
-        mInt.Add("jumpNumber2", 0);
+        mInt.Add("jumpNumber2", 0); // if
         mInt.Add("playerDeath1", 0);
-        mInt.Add("playerDeath2", 0);
+        mInt.Add("playerDeath2", 0); // if
 
         StringFloatDictionary mFloat = new StringFloatDictionary();
         mFloat.Add("distance1", 0);
-        mFloat.Add("distance2", 0);
+        mFloat.Add("distance2", 0); // if
         mFloat.Add("totalTimePlayed", 0);
 
         //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
@@ -212,7 +212,7 @@ public class SaveManager : Singleton<SaveManager>
 
 
         List<Chapter> chapters = new List<Chapter>();
-        chapters.Add(new Chapter(lvlChap0));
+        chapters.Add(new Chapter(lvlChap0)); // if avec variable
         // chapters.Add(new Chapter(lvlChap1));
         // chapters.Add(new Chapter(lvlChap1));
         // chapters.Add(new Chapter(lvlChap1));
