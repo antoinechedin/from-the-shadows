@@ -83,21 +83,21 @@ public class MenuChapter : MonoBehaviour
             DisplayStatistics();
         }
 
-        leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
-        rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
+        // leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
+        // rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
 
-        if (localIndexCurrentChapter == 0)
-        {
-            leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
-        }
-        if (localIndexCurrentChapter >= chaptersName.Count - 1)
-        {
-            rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
-        }
-        else if (!chapterButtons[localIndexCurrentChapter + 1].interactable)
-        {
-            rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
-        }
+        // if (localIndexCurrentChapter == 0)
+        // {
+        //     leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
+        // }
+        // if (localIndexCurrentChapter >= chaptersName.Count - 1)
+        // {
+        //     rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
+        // }
+        // else if (!chapterButtons[localIndexCurrentChapter + 1].interactable)
+        // {
+        //     rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 0);
+        // }
     }
 
     public void DisplayStatistics()
@@ -111,14 +111,16 @@ public class MenuChapter : MonoBehaviour
         metaDataPanelAnimator.SetBool("open", !metaDataPanelAnimator.GetBool("open"));
     }
 
-    public void OpenChapterMenu()
+    public void OpenChapterMenu(int chapterId)
     {
-        int localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
+        GameManager.Instance.CurrentChapter = chapterId;
+        menuCamera.SetChapterSelected(chapterId);
+
         if (!chapterMenuIsOpen)
         {
             menuLevels.enabled = true;
             chapterMenuIsOpen = true;
-            chapterButtonsPanel.SetActive(false);
+            //chapterButtonsPanel.SetActive(false);
             metaDataIcon.gameObject.SetActive(false);
             if (menuChapterAnimator != null)
             {
@@ -152,7 +154,7 @@ public class MenuChapter : MonoBehaviour
 
                 }
 
-                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
+//                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
                 menuChapterAnimator.SetBool("open", true);
                 menuCamera.SetZoom(true);
                 GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
