@@ -30,6 +30,8 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     private bool pressed = false;
     private AudioSource audioSource;
 
+    private CanvasGroup canvasGroup;
+
     public int LevelId
     {
         get { return levelId; }
@@ -39,6 +41,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        canvasGroup = GetComponent<CanvasGroup>();
 
         menuLevels = GameObject.FindObjectOfType<MenuLevels>();
         rt = GetComponent<RectTransform>();
@@ -46,7 +49,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         startScale = rt.localScale;
         destination = rt.localPosition;
 
-        HandleScalingAndForeground();
+        HandleAppearence();
     }
     // Update is called once per frame
     void Update()
@@ -56,7 +59,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
             rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed);
             if (!pressed)
             {
-                HandleScalingAndForeground();
+                HandleAppearence();
             }
         }
         else
@@ -75,7 +78,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         // destinationChanged = true;
     }
 
-    private void HandleScalingAndForeground()
+    private void HandleAppearence()
     {
         Vector3 pos = GetComponent<RectTransform>().localPosition;
 
@@ -86,6 +89,10 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         float foregroungAlpha = Mathf.Abs(pos.x) * menuLevels.foregroundMaxAlpha / menuLevels.distanceBetweenScreenshots;
         foregroungAlpha = Mathf.Clamp(foregroungAlpha, 0, menuLevels.foregroundMaxAlpha);
         foreground.color = new Color(0, 0, 0, foregroungAlpha);
+
+        float overallAlpha = 2 - Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots;
+        overallAlpha = Mathf.Clamp(overallAlpha, 0f, 1f);
+        canvasGroup.alpha = overallAlpha;
     }
 
     public IEnumerator PressedAnimation()
