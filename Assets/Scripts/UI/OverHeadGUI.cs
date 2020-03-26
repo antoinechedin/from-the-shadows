@@ -19,6 +19,8 @@ public class OverHeadGUI : MonoBehaviour
     TextMeshPro text;
     Image image;
 
+    public bool isSoloPlayerSpeaking = false;
+
     public GUIType type;
 
     [Header("Place in \"content\" the canvas containing all the UI elements you wish to display")]
@@ -125,6 +127,19 @@ public class OverHeadGUI : MonoBehaviour
         animator.SetBool("display", true);
         animator.SetBool("hide", false);
 
+        if(isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
+        {
+            if (FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
+            {
+                transform.Find("Content/DialogueBoxBackground/SpeakerName").GetComponent<TextMeshProUGUI>().text = "Shadow";
+                transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().shadowDialogueIcon;
+            }
+            else
+            {
+                transform.Find("Content/DialogueBoxBackground/SpeakerName").GetComponent<TextMeshProUGUI>().text = "Light";
+                transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().lightDialogueIcon;
+            }
+        }
         StartCoroutine(CanPassDialogue());
         //content.SetActive(UIActive);
     }

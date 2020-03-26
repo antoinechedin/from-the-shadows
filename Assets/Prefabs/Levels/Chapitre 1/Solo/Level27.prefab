@@ -280,6 +280,29 @@ MonoBehaviour:
     distanceFadeStart: 10000
     distanceFadeEnd: 10000
     textureIndex: -1
+--- !u!114 &3829007301560293111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1430125115705463105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32531e3a2e55c3c40bd8a2ca1c34a93c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cycle: 0
+  moveAtStart: 0
+  resetOnChangeTarget: 0
+  speed: 0.7
+  target: {fileID: 8176620657409928192}
+  OnTargetReached:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFinalTargetReached:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1572624542982681528
 GameObject:
   m_ObjectHideFlags: 0
@@ -970,29 +993,22 @@ MonoBehaviour:
     distanceFadeStart: 10000
     distanceFadeEnd: 10000
     textureIndex: -1
---- !u!114 &3829007301560293111
+--- !u!114 &8423305553741622164
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430125115705463105}
+  m_GameObject: {fileID: 5092334677528290425}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32531e3a2e55c3c40bd8a2ca1c34a93c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d94d7cc278ad5743ad2cd5b6210f2b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cycle: 0
-  moveAtStart: 0
-  resetOnChangeTarget: 0
-  speed: 0.7
-  target: {fileID: 8176620657409928192}
-  OnTargetReached:
-    m_PersistentCalls:
-      m_Calls: []
-  OnFinalTargetReached:
-    m_PersistentCalls:
-      m_Calls: []
+  startingIntensity: 12000
+  endingIntensity: 6000
+  speed: 2
+  playAtStart: 1
 --- !u!1 &5654769211945767711
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,8 +1293,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  soloLevel: {fileID: 7887373686296180043}
-  duoLevel: {fileID: 0}
 --- !u!61 &1118928907433856115
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1371,38 +1385,6 @@ Transform:
   m_Father: {fileID: 7521324050677419431}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8423305553741622164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5092334677528290425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d94d7cc278ad5743ad2cd5b6210f2b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingIntensity: 12000
-  endingIntensity: 6000
-  speed: 2
-  playAtStart: 1
---- !u!114 &7567397424435913598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914484298492600674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d94d7cc278ad5743ad2cd5b6210f2b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingIntensity: 12000
-  endingIntensity: 6000
-  speed: 2
-  playAtStart: 1
 --- !u!1 &7254657309747210330
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,6 +1693,22 @@ Transform:
   m_Father: {fileID: 6523047419537030327}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4156663752920910831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7909223030370184795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d94d7cc278ad5743ad2cd5b6210f2b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingIntensity: 12000
+  endingIntensity: 6000
+  speed: 2
+  playAtStart: 1
 --- !u!1 &8176879152827541848
 GameObject:
   m_ObjectHideFlags: 0
@@ -1804,22 +1802,6 @@ Transform:
   m_Father: {fileID: 5816534772804676025}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4156663752920910831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7909223030370184795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d94d7cc278ad5743ad2cd5b6210f2b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingIntensity: 12000
-  endingIntensity: 6000
-  speed: 2
-  playAtStart: 1
 --- !u!1 &8739531900061133974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1868,6 +1850,22 @@ Transform:
   m_Father: {fileID: 7521324050677419431}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7567397424435913598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8914484298492600674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d94d7cc278ad5743ad2cd5b6210f2b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingIntensity: 12000
+  endingIntensity: 6000
+  speed: 2
+  playAtStart: 1
 --- !u!1 &9083771791317390482
 GameObject:
   m_ObjectHideFlags: 0

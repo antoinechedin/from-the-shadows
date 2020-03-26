@@ -199,11 +199,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9088170777007377173}
-  - component: {fileID: 2507327766045310596}
   - component: {fileID: 5493098282762594813}
   - component: {fileID: -5237048288700266302}
   - component: {fileID: 3735220986113032804}
   - component: {fileID: 8425493968790471056}
+  - component: {fileID: 478296449104747047}
   m_Layer: 0
   m_Name: SoloPlayer_Cinematic
   m_TagString: Untagged
@@ -218,7 +218,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9088170777007377160}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -75.11399, y: 0.06057453, z: -2.5010767}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -227,23 +227,7 @@ Transform:
   - {fileID: 2979115323540781147}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2507327766045310596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9088170777007377160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1f86cf8b0058564198ce0bf97c9da3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shadowMat: {fileID: 2100000, guid: 4b0456e7ab6f8bd41aa37ae70600a84c, type: 2}
-  lightMat: {fileID: 2100000, guid: 3336802e978970b4d88c8069e397bdb4, type: 2}
-  mesh: {fileID: 2348481785444272090}
-  lightSourceGO: {fileID: 2979115323540781138}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &5493098282762594813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +312,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.55, y: 1.4}
   m_EdgeRadius: 0
+--- !u!114 &478296449104747047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9088170777007377160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70455b1c54d899a40a17c269ad0aa072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 2348481785444272090}
+  lightSourceGO: {fileID: 2979115323540781138}
+  playerSwitch: {fileID: 0}
 --- !u!1001 &2682624787251575537
 PrefabInstance:
   m_ObjectHideFlags: 0
