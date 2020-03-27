@@ -23,6 +23,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     /// </summary>
     [HideInInspector] public int levelIndex;
 
+    public Image screenshot;
     public Image foreground;
 
     [HideInInspector]

@@ -55,6 +55,11 @@ public class MenuLevels : MonoBehaviour
         }
 
         //SetMenuLevelInfo(0, screenshots[0]);
+        LevelButtonInfosArray levelButtonInfosArray = null;
+        if(chapterNumber < levelButtonInfosMatrix.Length)
+        {
+            levelButtonInfosArray = levelButtonInfosMatrix[chapterNumber];
+        }
 
         int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
@@ -72,8 +77,14 @@ public class MenuLevels : MonoBehaviour
                 spawnedScreenshot.LevelId = localLevelIndex;
                 spawnedScreenshot.levelIndex = nbLevelSpawned;
                 spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
-                screenshots.Add(spawnedScreenshot);
+                
+                if(levelButtonInfosArray != null && nbLevelSpawned < levelButtonInfosArray.infos.Length)
+                {
+                    LevelButtonInfos levelButtonInfos = levelButtonInfosArray.infos[nbLevelSpawned];
+                    spawnedScreenshot.screenshot.sprite = levelButtonInfos.image;
+                }
 
+                screenshots.Add(spawnedScreenshot);
                 nbLevelSpawned++;
             }
         }

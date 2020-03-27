@@ -1,5 +1,5 @@
 using System;
-using UnityEngine.UI;
+using UnityEngine;
 
 [Serializable]
 public class LevelButtonInfosArray
@@ -11,5 +11,5 @@ public class LevelButtonInfosArray
 public class LevelButtonInfos
 {
     public string name;
-    public Image image;
+    public Sprite image;
 }
