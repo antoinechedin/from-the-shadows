@@ -12,8 +12,8 @@ public class MenuLevels : MonoBehaviour
     public GameObject levelScreenshotsParent;
     public LevelScreenshot levelScreenshotPrefab;
 
-    [Header("Carousel")]
     private List<LevelScreenshot> screenshots = new List<LevelScreenshot>();
+    [Header("Carousel")]
     public float distanceBetweenScreenshots;
     [Range(0.0f, 3.0f)]
     [Tooltip("The minimum size when a level is not selected")]
@@ -36,14 +36,17 @@ public class MenuLevels : MonoBehaviour
     private float timeCpt = 0;
     private bool pressed = false;
 
-    public void SetMenuLevels(int chapterNumber, Chapter chapter)
+    [Header("Level Buttons Infos")]
+    public LevelButtonInfosArray[] levelButtonInfosMatrix;
+
+    public void SetMenuLevels(int chapterNumber)
     {
         ResetScreenshots();
 
         int nbCompleted = 0;
         int totalLevels = 0;
 
-        List<Level> levels = chapter.GetLevels();
+        List<Level> levels = GameManager.Instance.Saves[GameManager.Instance.CurrentSave].Chapters[chapterNumber].GetLevels();
         foreach (Level l in levels)
         {
 

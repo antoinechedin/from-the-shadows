@@ -25,7 +25,6 @@ public class MenuChapter : MonoBehaviour
     private Animator metaDataPanelAnimator;
     private bool chapterMenuIsOpen = false;
     private bool statsOpen = false;
-    private int localIndexCurrentChapter;
 
     private List<string> chaptersName;
 
@@ -42,13 +41,11 @@ public class MenuChapter : MonoBehaviour
     {
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
-        localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
     }
 
     void Update()
     {
-        localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
         if (Input.GetButtonDown("B_G"))
         {
@@ -64,7 +61,7 @@ public class MenuChapter : MonoBehaviour
                 chapterMenuIsOpen = false;
                 chapterButtonsPanel.SetActive(true);
                 metaDataIcon.gameObject.SetActive(true);
-                EventSystem.current.SetSelectedGameObject(chapterButtons[localIndexCurrentChapter].gameObject);
+                EventSystem.current.SetSelectedGameObject(chapterButtons[GameManager.Instance.CurrentChapter].gameObject);
                 if (menuChapterAnimator != null)
                 {
                     menuChapterAnimator.SetBool("open", false);
@@ -107,13 +104,15 @@ public class MenuChapter : MonoBehaviour
         chapterButtonsPanel.SetActive(!chapterButtonsPanel.activeSelf);
         menuCamera.cursor.gameObject.SetActive(!menuCamera.cursor.gameObject.activeSelf);
         metaDataIcon.gameObject.SetActive(!metaDataIcon.gameObject.activeSelf);
-        EventSystem.current.SetSelectedGameObject(chapterButtons[localIndexCurrentChapter].gameObject);
+        EventSystem.current.SetSelectedGameObject(chapterButtons[GameManager.Instance.CurrentChapter].gameObject);
         metaDataPanelAnimator.SetBool("open", !metaDataPanelAnimator.GetBool("open"));
     }
 
     public void OpenChapterMenu(int chapterId)
     {
         GameManager.Instance.CurrentChapter = chapterId;
+        Debug.Log("Open chapter: " + chapterId);
+        Debug.Log("Current chapter: " + GameManager.Instance.CurrentChapter);
         menuCamera.SetChapterSelected(chapterId);
 
         if (!chapterMenuIsOpen)
@@ -133,7 +132,7 @@ public class MenuChapter : MonoBehaviour
                 int nbCompleted = 0;
                 int totalLevel = 0;
 
-                List<Level> levels = chapters[localIndexCurrentChapter].GetLevels();
+                List<Level> levels = chapters[GameManager.Instance.CurrentChapter].GetLevels();
                 foreach (Level l in levels)
                 {
                     //Light collectibles
@@ -157,8 +156,7 @@ public class MenuChapter : MonoBehaviour
                 //                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
                 menuChapterAnimator.SetBool("open", true);
                 menuCamera.SetZoom(true);
-                GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
-                menuLevels.SetMenuLevels(localIndexCurrentChapter, chapters[localIndexCurrentChapter]);
+                menuLevels.SetMenuLevels(GameManager.Instance.CurrentChapter);
             }
         }
     }
