@@ -9,7 +9,7 @@ public class MenuChapter : MonoBehaviour
 {
     public MenuCamera menuCamera;
     public MenuLevels menuLevels;
-    public List<Button> chapterButtons;
+    public Button[] chapterButtons;
     public Text levelLabel;
     public GameObject chapterButtonsPanel;
     public RectTransform thisPanel;
@@ -43,7 +43,7 @@ public class MenuChapter : MonoBehaviour
         menuChapterAnimator = gameObject.GetComponent<Animator>();
         metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
-        levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
+        // levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
     }
 
     void Update()
@@ -154,7 +154,7 @@ public class MenuChapter : MonoBehaviour
 
                 }
 
-//                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
+                //                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
                 menuChapterAnimator.SetBool("open", true);
                 menuCamera.SetZoom(true);
                 GameManager.Instance.CurrentChapter = localIndexCurrentChapter;
@@ -170,16 +170,43 @@ public class MenuChapter : MonoBehaviour
 
     public void ResetInteractablesChaptersButtons()
     {
-        chapters = GameManager.Instance.GetChapters();
-        for (int i = 1; i < chapterButtons.Count; i++)
+        if (chapterButtons.Length == 0)
         {
-            chapterButtons[i].interactable = false;
+            Debug.LogError("ERROR MenuChaputer.ResetInteractablesChaptersButtons(): There's no chapter buttons");
+            return;
         }
-        for (int i = 0; i < chapters.Count - 1; i++)
+
+        int lastUnlockedChapterId = 0;
+        chapterButtons[0].interactable = true;
+        chapters = GameManager.Instance.GetChapters();
+
+        int i = 1;
+        while (i < Mathf.Min(chapters.Count, chapterButtons.Length) && chapters[i - 1].isCompleted())
         {
-            if (chapters[i].isCompleted())
+            chapterButtons[i].interactable = true;
+            lastUnlockedChapterId = i;
+            i++;
+        }
+
+        if (lastUnlockedChapterId == 0)
+        {
+            Navigation explicitNav = new Navigation();
+            explicitNav.mode = Navigation.Mode.Explicit;
+            chapterButtons[0].navigation = explicitNav;
+        }
+        else
+        {
+            for (i = 0; i < Mathf.Min(chapters.Count, chapterButtons.Length); i++)
             {
-                chapterButtons[i + 1].interactable = true;
+                Navigation explicitNav = new Navigation();
+                explicitNav.mode = Navigation.Mode.Explicit;
+                if (i <= lastUnlockedChapterId)
+                {
+                    explicitNav.selectOnUp = chapterButtons[Utils.Modulo(i - 1, lastUnlockedChapterId + 1)];
+                    explicitNav.selectOnDown = chapterButtons[Utils.Modulo(i + 1, lastUnlockedChapterId + 1)];
+
+                }
+                chapterButtons[i].navigation = explicitNav;
             }
         }
     }
