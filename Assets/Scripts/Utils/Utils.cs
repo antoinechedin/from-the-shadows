@@ -29,6 +29,16 @@ public class Utils
     }
 
     /// <summary>
+    /// Simple modulo function x % y that handle negative value for x
+    /// </summary>
+    /// <returns></returns>
+    public static int Modulo(int x, int y)
+    {
+        int r = x % y;
+        return r < 0 ? r + y : r;
+    }
+
+    /// <summary>
     /// Create a 3D Mesh from a PolygonCollider2D
     /// </summary>
     /// <param name="polygonCollider">PolygonCollider to Mesherize</param>
@@ -113,7 +123,7 @@ public class Utils
                 // triangles around the perimeter of the object
                 int n = (i + 1) % polygonCollider.GetPath(j).Length;
 
-                triangles[count_tris] = offset + i + (2 + 2*(i%2))  * polygonCollider.GetPath(j).Length;
+                triangles[count_tris] = offset + i + (2 + 2 * (i % 2)) * polygonCollider.GetPath(j).Length;
                 triangles[count_tris + 1] = offset + n + (2 + 2 * (i % 2)) * polygonCollider.GetPath(j).Length;
                 triangles[count_tris + 2] = offset + i + (3 + 2 * (i % 2)) * polygonCollider.GetPath(j).Length;
 
