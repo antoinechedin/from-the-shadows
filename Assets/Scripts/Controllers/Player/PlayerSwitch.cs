@@ -53,4 +53,12 @@ public class PlayerSwitch : MonoBehaviour
         mesh.material = shadowMat;
         lightSourceGO.SetActive(false);
     }
+
+    public string GetCurrentPlayer()
+    {
+        if (currentPlayer == CurrentPlayer.Shadow)
+            return "Shadow";
+        else
+            return "Light";
+    }
 }

@@ -9,11 +9,14 @@ public class MoveObjectTo : MonoBehaviour
 
     public bool cycle = false;
     public bool moveAtStart = false;
+    public bool resetOnChangeTarget = false;
 
+    private bool isFinalTarget = false;
     public float speed = 2f;
     public Transform target;
 
-    public UnityEvent OnTargetReached;
+    private bool executed = false;
+    public UnityEvent OnTargetReached, OnFinalTargetReached;
 
     private Vector3 basePosition;
     private Vector3 targettedPosition;
@@ -41,11 +44,36 @@ public class MoveObjectTo : MonoBehaviour
     protected virtual void ExecuteOnTargetReached()
     {
         OnTargetReached.Invoke();
+        executed = true;
+    }
+    protected virtual void ExecuteOnFinalTargetReached()
+    {
+        OnFinalTargetReached.Invoke();
+        executed = true;
     }
 
     public void TeleportTo(Transform target)
     {
         this.transform.position = target.position;
+
+    }
+
+    public void IsFinalTarget(bool _isFinalTarget)
+    {
+        isFinalTarget = _isFinalTarget;
+    }
+    public void SetSpeed(float newSpeed)
+    {
+        this.speed = newSpeed;
+    }
+
+    public void SetTarget(Transform newTarget)
+    {
+        this.target = newTarget;
+        targettedPosition = target.position;
+
+        if (resetOnChangeTarget)
+            executed = false;
     }
 
     void Update()
@@ -54,8 +82,13 @@ public class MoveObjectTo : MonoBehaviour
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, target.position, speed * Time.deltaTime);
 
-            if (this.transform.position == targettedPosition)
-                ExecuteOnTargetReached();
+            if (this.transform.position == targettedPosition && !executed)
+            {
+                if (isFinalTarget)
+                    ExecuteOnFinalTargetReached();
+                else
+                    ExecuteOnTargetReached();
+            }
             if (this.transform.position == targettedPosition && cycle)
                 target.position = basePosition;
             else if (this.transform.position == basePosition && cycle)
