@@ -1,31 +1,48 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
-public class LevelScreenshot : MonoBehaviour
+public class LevelScreenshot : MonoBehaviour, ISelectHandler
 {
     public GameObject collectiblesHolder;
 
     private RectTransform rt;
-    private Vector3 destination;
+    [HideInInspector] public Vector3 destination;
     // private bool destinationChanged = false; // inutile
     private Vector2 startScale;
-    private int levelIndex; //the index of the IG level
+    /// <summary>
+    /// The ingame ID of the level
+    /// </summary>
+    private int levelId;
 
-    private MenuLevels menuLevels;
+    /// <summary>
+    /// The gameobject index of the screenshots list inside MenuLevel
+    /// </summary>
+    [HideInInspector] public int levelIndex;
+
+    public Image screenshot;
+    public Image foreground;
+
+    [HideInInspector]
+    public MenuLevels menuLevels;
     private bool pressed = false;
     private AudioSource audioSource;
 
-    public int LevelIndex
+    private CanvasGroup canvasGroup;
+
+    public int LevelId
     {
-        get { return levelIndex; }
-        set { levelIndex = value; }
+        get { return levelId; }
+        set { levelId = value; }
     }
 
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        canvasGroup = GetComponent<CanvasGroup>();
 
         menuLevels = GameObject.FindObjectOfType<MenuLevels>();
         rt = GetComponent<RectTransform>();
@@ -33,7 +50,7 @@ public class LevelScreenshot : MonoBehaviour
         startScale = rt.localScale;
         destination = rt.localPosition;
 
-        HandleScaling();
+        HandleAppearence();
     }
     // Update is called once per frame
     void Update()
@@ -43,7 +60,7 @@ public class LevelScreenshot : MonoBehaviour
             rt.localPosition = Vector3.Lerp(rt.localPosition, destination, menuLevels.speed);
             if (!pressed)
             {
-                HandleScaling();
+                HandleAppearence();
             }
         }
         else
@@ -58,17 +75,25 @@ public class LevelScreenshot : MonoBehaviour
     /// <param name="distance"></param>
     public void SetNewDestination(Vector3 distance)
     {
-            destination += distance;
-            // destinationChanged = true;
+        destination += distance;
+        // destinationChanged = true;
     }
 
-    private void HandleScaling()
+    private void HandleAppearence()
     {
         Vector3 pos = GetComponent<RectTransform>().localPosition;
 
-        float finalSize = menuLevels.maxSize - (Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots * menuLevels.minSize);
+        float finalSize = menuLevels.maxSize - Mathf.Abs(pos.x) * (menuLevels.maxSize - menuLevels.minSize) / menuLevels.distanceBetweenScreenshots;
         finalSize = Mathf.Clamp(finalSize, menuLevels.minSize, menuLevels.maxSize);
         transform.localScale = startScale * new Vector3(finalSize, finalSize, 1);
+
+        float foregroungAlpha = Mathf.Abs(pos.x) * menuLevels.foregroundMaxAlpha / menuLevels.distanceBetweenScreenshots;
+        foregroungAlpha = Mathf.Clamp(foregroungAlpha, 0, menuLevels.foregroundMaxAlpha);
+        foreground.color = new Color(0, 0, 0, foregroungAlpha);
+
+        float overallAlpha = 2 - Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots;
+        overallAlpha = Mathf.Clamp(overallAlpha, 0f, 1f);
+        canvasGroup.alpha = overallAlpha;
     }
 
     public IEnumerator PressedAnimation()
@@ -90,6 +115,14 @@ public class LevelScreenshot : MonoBehaviour
             transform.localScale /= 1.03f;
             timeCount += Time.deltaTime;
             yield return null;
+        }
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        if (menuLevels != null)
+        {
+            menuLevels.SelectCheckpoint(levelIndex);
         }
     }
 }

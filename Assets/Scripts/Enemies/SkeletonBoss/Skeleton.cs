@@ -5,6 +5,9 @@ using UnityEngine;
 public class Skeleton : MonoBehaviour, IResetable
 {
     public Transform[] points;
+
+    public bool isSolo = false;
+
     public float timeBetweenAttacks;
     public float timeBetweenDoubleAttacks;
     public GameObject hands;
@@ -19,7 +22,10 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject leftKillZone;
     public GameObject middleZoneSpikes;
     public GameObject middleZoneSpikesAnim;
-    public GameObject spawnGhostObject;
+    //public GameObject spawnGhostObject;
+
+    public GameObject bottomKillZone;
+    public GameObject endChapterTrigger;
 
     private int hp = 3;
     private int laneToAttack = 0;
@@ -36,7 +42,7 @@ public class Skeleton : MonoBehaviour, IResetable
         Debug.Log("Boss fight starting");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Appear");
         InvokeRepeating("TriggerAttack", 15, timeBetweenAttacks);
-        spawnGhostObject.GetComponent<SpawnGhost>().StartSpawningGhost();
+        //spawnGhostObject.GetComponent<SpawnGhost>().StartSpawningGhost();
     }
 
     public void TriggerAttack()
@@ -61,10 +67,21 @@ public class Skeleton : MonoBehaviour, IResetable
         int laneL = -1;
         for (int i = 0; i < points.Length / 2; i++)
         {
-            float minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
-                                      Vector3.Distance(player2.transform.position, points[i * 2].position));
-            float minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
-                                       Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
+            float minLeft = 0f;
+            float minRight = 0f;
+
+            if (isSolo)
+            {
+                minLeft = Vector3.Distance(player1.transform.position, points[i * 2].position);
+                minRight = Vector3.Distance(player1.transform.position, points[i * 2 + 1].position);
+            }
+            else
+            {
+                minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
+                          Vector3.Distance(player2.transform.position, points[i * 2].position));
+                minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
+                                           Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
+            }
             if (minLeft < minL)
             {
                 minL = minLeft;
@@ -89,10 +106,23 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         float min = Mathf.Infinity;
         for (int i = 0; i < points.Length / 2; i++) {
-            float minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
-                                      Vector3.Distance(player2.transform.position, points[i * 2].position));
-            float minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
-                                       Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
+
+            float minLeft = 0f;
+            float minRight = 0f;
+
+            if(isSolo)
+            {
+                minLeft = Vector3.Distance(player1.transform.position, points[i * 2].position);
+                minRight = Vector3.Distance(player1.transform.position, points[i * 2 + 1].position);
+            }
+            else
+            {
+                minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
+                          Vector3.Distance(player2.transform.position, points[i * 2].position));
+                minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
+                                           Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
+            }
+
             if (minLeft < min && minLeft < minRight)
             {
                 min = minLeft;
@@ -119,8 +149,7 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             Die();
             Invoke("DestroyMiddleZone", 3);
-            Invoke("DestroyRightZone", 4);
-            Invoke("DestroyLeftZone", 4);
+            Invoke("DestroyOtherZones", 4);
         }
 
         if (hp == 1)
@@ -220,9 +249,17 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public void DestroyMiddleZone()
     {
+        bottomKillZone.SetActive(false);
+        endChapterTrigger.SetActive(true);
         middleZone.SetActive(false);
+        middleZoneSpikes.SetActive(false);
     }
 
+    public void DestroyOtherZones()
+    {
+        leftZoneBis.SetActive(false);
+        rightZoneBis.SetActive(false);
+    }
     public void ActiveMiddleZoneSpikesAnim()
     {
         middleZoneSpikesAnim.SetActive(true);

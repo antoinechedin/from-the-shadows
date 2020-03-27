@@ -14,13 +14,13 @@ public class SavesMenu : MonoBehaviour
     public RectTransform newGameChoiceButtons;
 
     public Button[] savesButons;
-    private Save[] saves;
+
+    public AudioClip returnAudioClip;
 
     private int lastSelected = 0;
 
     void Start()
     {
-        saves = GameManager.Instance.Saves;
         UpdateButtons();
         if (savesButons.Length > 0)
         {
@@ -37,7 +37,6 @@ public class SavesMenu : MonoBehaviour
                 if (actionChoiceButtons != null && actionChoiceButtons.gameObject.activeSelf)
                 {
                     StartCoroutine(CloseChoiceButtonsCoroutine(actionChoiceButtons));
-
                 }
                 else if (newGameChoiceButtons != null && newGameChoiceButtons.gameObject.activeSelf)
                 {
@@ -47,6 +46,7 @@ public class SavesMenu : MonoBehaviour
                 {
                     menuManager.OpenStartMenu();
                 }
+                GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(returnAudioClip);
             }
         }
     }
@@ -54,11 +54,11 @@ public class SavesMenu : MonoBehaviour
     /// <summary>
     /// Get file infos and link each save to the corresponding button
     /// </summary>
-    private void UpdateButtons()
+    public void UpdateButtons()
     {
         for (int i = 0; i < savesButons.Length; i++)
         {
-            if (saves[i] != null)
+            if (GameManager.Instance.Saves[i] != null)
             {
                 TextMeshProUGUI buttonText = savesButons[i].transform.GetComponentInChildren<TextMeshProUGUI>();
                 if (buttonText == null)
@@ -70,7 +70,7 @@ public class SavesMenu : MonoBehaviour
                 }
 
                 string saveName = "Save " + (i + 1).ToString();
-                string completion = (int)(saves[i].GetCompletion() * 100) + "%";
+                string completion = (int)(GameManager.Instance.Saves[i].GetCompletion() * 100) + "%";
                 string timePlayed = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm");
 
                 buttonText.text = saveName + "  " + completion + " " + timePlayed;
@@ -113,7 +113,7 @@ public class SavesMenu : MonoBehaviour
     {
         EventSystem.current.sendNavigationEvents = false;
         lastSelected = index;
-        if (saves[index] != null)
+        if (GameManager.Instance.Saves[index] != null)
         {
             Button playButton = actionChoiceButtons.transform.Find("PlayButton").GetComponent<Button>();
             Button deleteButton = actionChoiceButtons.transform.Find("DeleteButton").GetComponent<Button>();
@@ -132,7 +132,7 @@ public class SavesMenu : MonoBehaviour
             }
             yield return new WaitForSeconds(menuManager.dissolveDuration);
         }
-        else if (saves[index] == null)
+        else if (GameManager.Instance.Saves[index] == null)
         {
             Button soloButton = newGameChoiceButtons.transform.Find("SoloButton").GetComponent<Button>();
             Button duoButton = newGameChoiceButtons.transform.Find("DuoButton").GetComponent<Button>();
@@ -203,7 +203,7 @@ public class SavesMenu : MonoBehaviour
         actionChoiceButtons.gameObject.SetActive(false);
         EventSystem.current.GetComponent<EventSystem>().SetSelectedGameObject(savesButons[indexSave].gameObject);
 
-        saves[indexSave] = null;
+        GameManager.Instance.Saves[indexSave] = null;
         UpdateButtons();
     }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class LineRendererDrawForward : MonoBehaviour
 {
     public float lineDistance;
+    public bool active = false;
 
     LineRenderer lineRenderer;
     // Start is called before the first frame update
@@ -17,7 +18,25 @@ public class LineRendererDrawForward : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        lineRenderer.SetPosition(1, transform.position + (transform.up * lineDistance));
-        //cast un ray pour voir si on touche le joueur
+        LayerMask collisionMask = LayerMask.GetMask("LayeredSolid", "Solid", "Player");
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, lineDistance, collisionMask);
+        if (hit.collider != null)
+        {
+            if (hit.transform.GetComponent<PlayerController>() != null) //si on capte le joueur
+            {
+                if (active)
+                {
+                    //hit.transform.GetComponent<PlayerController>().Die();
+                }
+            }   
+            else//on a touché un élément de décors
+            {
+                lineRenderer.SetPosition(1, hit.point);
+            }
+        }
+        else
+        {
+            lineRenderer.SetPosition(1, transform.position + (transform.up * lineDistance));
+        }
     }
 }

@@ -16,7 +16,7 @@ public class PrismRotator : MonoBehaviour, IResetable
     {
         if (transform.rotation != Quaternion.Euler(0, targetRotation, 0))
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(new Vector3(0, targetRotation, 0)), rotationSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(new Vector3(0, targetRotation, 0)), rotationSpeed * Time.deltaTime);
         }
     }
 

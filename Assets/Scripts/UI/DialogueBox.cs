@@ -5,6 +5,8 @@ using UnityEngine;
 public class DialogueBox : MonoBehaviour
 {
     public GameObject passDialogueImage;
+    public Sprite lightDialogueIcon;
+    public Sprite shadowDialogueIcon;
 
     private void Awake()
     {
