@@ -31,9 +31,9 @@ public class MenuChapter : MonoBehaviour
     void Awake()
     {
         chaptersName = new List<string>(new string[] {
-            "CHAPTER 0",
-            "CHAPTER 1",
-            "CHAPTER 2"
+            "Prologue",
+            "Chapter 1",
+            "Chapter 2"
         });
     }
 
@@ -182,10 +182,16 @@ public class MenuChapter : MonoBehaviour
         int i = 1;
         while (i < Mathf.Min(chapters.Count, chapterButtons.Length))
         {
-            chapterButtons[i].interactable = chapters[i - 1].isCompleted();
             if (chapters[i - 1].isCompleted())
             {
+                chapterButtons[i].interactable = true;
+                chapterButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = chaptersName[i];
                 lastUnlockedChapterId = i;
+            }
+            else
+            {
+                chapterButtons[i].interactable = false;
+                chapterButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = "...";
             }
             i++;
         }
