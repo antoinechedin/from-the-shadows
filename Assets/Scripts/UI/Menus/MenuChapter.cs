@@ -16,8 +16,6 @@ public class MenuChapter : MonoBehaviour
     public MenuManager menuManager;
     public Image metaDataPanel;
     public Image metaDataIcon;
-    public Image rightArrow;
-    public Image leftArrow;
 
     private List<Chapter> chapters;
     private Animator menuChapterAnimator;
