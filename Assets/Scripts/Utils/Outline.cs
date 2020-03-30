@@ -12,11 +12,7 @@ public class Outline : MonoBehaviour
 
     private Material instanceMat;
     private float alpha;
-    private bool animating = false;
-
     private int nPlayerIn;
-
-    Coroutine dCor, hCor;
 
     private void Awake()
     {
@@ -28,7 +24,7 @@ public class Outline : MonoBehaviour
         alpha = instanceMat.GetFloat("_Alpha");
 
         nPlayerIn = 0;
-        hCor = StartCoroutine(HideOutline());
+        StartCoroutine(HideOutline());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -36,7 +32,7 @@ public class Outline : MonoBehaviour
         nPlayerIn++;
         if (nPlayerIn > 0)
         {
-            dCor = StartCoroutine(DisplayOutline());
+            StartCoroutine(DisplayOutline());
         }
     }
 
@@ -45,7 +41,7 @@ public class Outline : MonoBehaviour
         nPlayerIn--;
         if (nPlayerIn <= 0)
         {
-            hCor = StartCoroutine(HideOutline());
+            StartCoroutine(HideOutline());
         }
     }
 
