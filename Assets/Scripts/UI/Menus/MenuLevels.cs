@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class MenuLevels : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class MenuLevels : MonoBehaviour
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
     public GameObject levelScreenshotsParent;
+    public TextMeshProUGUI levelName;
     public LevelScreenshot levelScreenshotPrefab;
 
     private List<LevelScreenshot> screenshots = new List<LevelScreenshot>();
@@ -84,6 +86,7 @@ public class MenuLevels : MonoBehaviour
                     spawnedScreenshot.screenshot.sprite = levelButtonInfos.image;
                 }
 
+                spawnedScreenshot.Init(this);
                 screenshots.Add(spawnedScreenshot);
                 nbLevelSpawned++;
             }
@@ -113,6 +116,7 @@ public class MenuLevels : MonoBehaviour
         {
             go.destination = new Vector3((go.levelIndex - index) * distanceBetweenScreenshots, 0, 0);
         }
+        levelName.text = levelButtonInfosMatrix[GameManager.Instance.CurrentChapter].infos[index].name;
     }
 
     public void SetMenuLevelInfo(int level, LevelScreenshot screenshot)

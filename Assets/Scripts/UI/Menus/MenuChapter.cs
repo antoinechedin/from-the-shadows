@@ -10,7 +10,6 @@ public class MenuChapter : MonoBehaviour
     public MenuCamera menuCamera;
     public MenuLevels menuLevels;
     public Button[] chapterButtons;
-    public Text levelLabel;
     public GameObject chapterButtonsPanel;
     public RectTransform thisPanel;
     public RectTransform saveMenu;
@@ -161,11 +160,6 @@ public class MenuChapter : MonoBehaviour
         }
     }
 
-    public void UpdateChapterName(int chapterNumber)
-    {
-        levelLabel.text = chaptersName[chapterNumber].ToUpper();
-    }
-
     public void ResetInteractablesChaptersButtons()
     {
         if (chapterButtons.Length == 0)
@@ -231,7 +225,7 @@ public class MenuChapter : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         menuCamera.SetChapterSelected(chapterUnlocked);
         GameManager.Instance.CurrentChapter = chapterUnlocked;
-        UpdateChapterName(chapterUnlocked);
+        // UpdateChapterName(chapterUnlocked);
         yield return new WaitForSeconds(0.25f);
         menuCamera.UnlockAnimation(true);
         yield return new WaitForSeconds(3f);

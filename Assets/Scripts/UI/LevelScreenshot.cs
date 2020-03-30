@@ -26,7 +26,6 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     public Image screenshot;
     public Image foreground;
 
-    [HideInInspector]
     public MenuLevels menuLevels;
     private bool pressed = false;
     private AudioSource audioSource;
@@ -44,7 +43,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         audioSource = GetComponent<AudioSource>();
         canvasGroup = GetComponent<CanvasGroup>();
 
-        menuLevels = GameObject.FindObjectOfType<MenuLevels>();
+
         rt = GetComponent<RectTransform>();
 
         startScale = rt.localScale;
@@ -52,6 +51,12 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
 
         HandleAppearence();
     }
+
+    public void Init(MenuLevels menuLevels)
+    {
+        this.menuLevels = menuLevels;
+    }
+
     // Update is called once per frame
     void Update()
     {
