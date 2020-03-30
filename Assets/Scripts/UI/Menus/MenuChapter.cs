@@ -174,15 +174,19 @@ public class MenuChapter : MonoBehaviour
             return;
         }
 
+
         int lastUnlockedChapterId = 0;
         chapterButtons[0].interactable = true;
         chapters = GameManager.Instance.GetChapters();
 
         int i = 1;
-        while (i < Mathf.Min(chapters.Count, chapterButtons.Length) && chapters[i - 1].isCompleted())
+        while (i < Mathf.Min(chapters.Count, chapterButtons.Length))
         {
-            chapterButtons[i].interactable = true;
-            lastUnlockedChapterId = i;
+            chapterButtons[i].interactable = chapters[i - 1].isCompleted();
+            if (chapters[i - 1].isCompleted())
+            {
+                lastUnlockedChapterId = i;
+            }
             i++;
         }
 

@@ -56,7 +56,7 @@ public class MenuLevels : MonoBehaviour
 
         //SetMenuLevelInfo(0, screenshots[0]);
         LevelButtonInfosArray levelButtonInfosArray = null;
-        if(chapterNumber < levelButtonInfosMatrix.Length)
+        if (chapterNumber < levelButtonInfosMatrix.Length)
         {
             levelButtonInfosArray = levelButtonInfosMatrix[chapterNumber];
         }
@@ -77,8 +77,8 @@ public class MenuLevels : MonoBehaviour
                 spawnedScreenshot.LevelId = localLevelIndex;
                 spawnedScreenshot.levelIndex = nbLevelSpawned;
                 spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
-                
-                if(levelButtonInfosArray != null && nbLevelSpawned < levelButtonInfosArray.infos.Length)
+
+                if (levelButtonInfosArray != null && nbLevelSpawned < levelButtonInfosArray.infos.Length)
                 {
                     LevelButtonInfos levelButtonInfos = levelButtonInfosArray.infos[nbLevelSpawned];
                     spawnedScreenshot.screenshot.sprite = levelButtonInfos.image;
@@ -88,6 +88,22 @@ public class MenuLevels : MonoBehaviour
                 nbLevelSpawned++;
             }
         }
+
+        for (int i = 0; i < screenshots.Count; i++)
+        {
+            Navigation explicitNav = new Navigation();
+            explicitNav.mode = Navigation.Mode.Explicit;
+            if (i > 0)
+            {
+                explicitNav.selectOnLeft = screenshots[i - 1].GetComponent<Button>();
+            }
+            if(i < screenshots.Count - 1)
+            {
+                explicitNav.selectOnRight = screenshots[i + 1].GetComponent<Button>();
+            }
+            screenshots[i].GetComponent<Button>().navigation = explicitNav;
+        }
+
         EventSystem.current.SetSelectedGameObject(screenshots[0].gameObject);
     }
 
