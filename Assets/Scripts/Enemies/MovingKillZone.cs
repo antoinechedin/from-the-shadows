@@ -12,7 +12,7 @@ public class MovingKillZone : MonoBehaviour, IResetable
     private float maxSpeed;
     private float timeToMaxSpeed;
 
-    private float currentSpeed = 0;
+    public float currentSpeed = 0;
     
     private MovingKillZoneCP currentResetCheckPoint;
     private MovingKillZoneCP currentCheckPoint;
