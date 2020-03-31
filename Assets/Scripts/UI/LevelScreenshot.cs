@@ -96,7 +96,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         foregroungAlpha = Mathf.Clamp(foregroungAlpha, 0, menuLevels.foregroundMaxAlpha);
         foreground.color = new Color(0, 0, 0, foregroungAlpha);
 
-        float overallAlpha = 2 - Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots;
+        float overallAlpha = (menuLevels.distanceBetweenScreenshots - Mathf.Abs(pos.x)) / (0.9f * menuLevels.distanceBetweenScreenshots) + 1;
         overallAlpha = Mathf.Clamp(overallAlpha, 0f, 1f);
         canvasGroup.alpha = overallAlpha;
     }
