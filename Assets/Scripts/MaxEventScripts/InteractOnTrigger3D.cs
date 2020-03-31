@@ -22,7 +22,6 @@ public class InteractOnTrigger3D : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("a");
         if (0 != (layers.value & 1 << other.gameObject.layer))
         {
             ExecuteOnEnter(other);

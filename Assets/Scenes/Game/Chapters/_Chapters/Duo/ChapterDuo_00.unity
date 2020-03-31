@@ -121,6 +121,76 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &21148259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81bcacc415a1f743bfdf703afc52027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 0
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  top:
+    m_OverrideState: 0
+    m_Value: {r: 0.5756052, g: 0.581431, b: 0.6132076, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  middle:
+    m_OverrideState: 0
+    m_Value: {r: 0.5187789, g: 0.5286766, b: 0.5471698, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  bottom:
+    m_OverrideState: 0
+    m_Value: {r: 0.5896226, g: 0.63831145, b: 1, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  gradientDiffusion:
+    m_OverrideState: 0
+    m_Value: 1
 --- !u!1001 &64292846
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -128,16 +198,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 313260997714514289, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2296814024977611279, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3220394515078501144, guid: dc30f4994e30a0f4f907e3dc7805afbc,
         type: 3}
       propertyPath: m_Name
@@ -145,24 +205,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3220394515078501146, guid: dc30f4994e30a0f4f907e3dc7805afbc,
         type: 3}
-      propertyPath: roomsToEnable.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3220394515078501146, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-        type: 3}
       propertyPath: roomsToEnable.Array.data[0]
       value: 
       objectReference: {fileID: 177871141}
-    - target: {fileID: 3220394515078501146, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-        type: 3}
-      propertyPath: soloLevel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3220394515078501146, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-        type: 3}
-      propertyPath: duoLevel
-      value: 
-      objectReference: {fileID: 64292848}
     - target: {fileID: 3220394515078501147, guid: dc30f4994e30a0f4f907e3dc7805afbc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -218,21 +263,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3330900691729979330, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7391004040327417810, guid: dc30f4994e30a0f4f907e3dc7805afbc,
         type: 3}
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 103074449}
-    - target: {fileID: 7391004040327417810, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc30f4994e30a0f4f907e3dc7805afbc, type: 3}
 --- !u!114 &64292847 stripped
@@ -247,12 +282,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &64292848 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3330900691729979330, guid: dc30f4994e30a0f4f907e3dc7805afbc,
-    type: 3}
-  m_PrefabInstance: {fileID: 64292846}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &103074449 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3177337940944003259, guid: 43fcfcc4992f0be46972d028750aa366,
@@ -271,11 +300,6 @@ PrefabInstance:
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 1297449917}
-    - target: {fileID: 783810587108644219, guid: 43fcfcc4992f0be46972d028750aa366,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 3078866628651193592, guid: 43fcfcc4992f0be46972d028750aa366,
         type: 3}
       propertyPath: roomsToEnable.Array.data[0]
@@ -286,16 +310,6 @@ PrefabInstance:
       propertyPath: roomsToEnable.Array.data[1]
       value: 
       objectReference: {fileID: 64292847}
-    - target: {fileID: 3078866628651193592, guid: 43fcfcc4992f0be46972d028750aa366,
-        type: 3}
-      propertyPath: soloLevel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3078866628651193592, guid: 43fcfcc4992f0be46972d028750aa366,
-        type: 3}
-      propertyPath: duoLevel
-      value: 
-      objectReference: {fileID: 177871142}
     - target: {fileID: 3078866628651193593, guid: 43fcfcc4992f0be46972d028750aa366,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -356,26 +370,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tuto04
       objectReference: {fileID: 0}
-    - target: {fileID: 3438243293352227844, guid: 43fcfcc4992f0be46972d028750aa366,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4932510185321035876, guid: 43fcfcc4992f0be46972d028750aa366,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6759877467904791393, guid: 43fcfcc4992f0be46972d028750aa366,
         type: 3}
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 738586671}
-    - target: {fileID: 6759877467904791393, guid: 43fcfcc4992f0be46972d028750aa366,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 43fcfcc4992f0be46972d028750aa366, type: 3}
 --- !u!114 &177871141 stripped
@@ -390,12 +389,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &177871142 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3438243293352227844, guid: 43fcfcc4992f0be46972d028750aa366,
-    type: 3}
-  m_PrefabInstance: {fileID: 177871140}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &401341161 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5396662201310397363, guid: b72c72cc6ef955a4a9aee2aba226c671,
@@ -500,10 +493,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3156557426827512, guid: b72c72cc6ef955a4a9aee2aba226c671, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1263354575291100228, guid: b72c72cc6ef955a4a9aee2aba226c671,
         type: 3}
       propertyPath: m_Name
@@ -519,16 +508,6 @@ PrefabInstance:
       propertyPath: roomsToEnable.Array.data[1]
       value: 
       objectReference: {fileID: 177871141}
-    - target: {fileID: 1263354575291100230, guid: b72c72cc6ef955a4a9aee2aba226c671,
-        type: 3}
-      propertyPath: soloLevel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1263354575291100230, guid: b72c72cc6ef955a4a9aee2aba226c671,
-        type: 3}
-      propertyPath: duoLevel
-      value: 
-      objectReference: {fileID: 982225937}
     - target: {fileID: 1263354575291100231, guid: b72c72cc6ef955a4a9aee2aba226c671,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -584,31 +563,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4760797891981099588, guid: b72c72cc6ef955a4a9aee2aba226c671,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5961541010243685488, guid: b72c72cc6ef955a4a9aee2aba226c671,
         type: 3}
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 1381135760}
-    - target: {fileID: 5961541010243685488, guid: b72c72cc6ef955a4a9aee2aba226c671,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 7559085794682203470, guid: b72c72cc6ef955a4a9aee2aba226c671,
         type: 3}
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 941141311}
-    - target: {fileID: 7559085794682203470, guid: b72c72cc6ef955a4a9aee2aba226c671,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b72c72cc6ef955a4a9aee2aba226c671, type: 3}
 --- !u!114 &982225936 stripped
@@ -623,12 +587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &982225937 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3156557426827512, guid: b72c72cc6ef955a4a9aee2aba226c671,
-    type: 3}
-  m_PrefabInstance: {fileID: 982225935}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1004932460
 GameObject:
   m_ObjectHideFlags: 0
@@ -854,76 +812,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 64292846}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1329638439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a81bcacc415a1f743bfdf703afc52027, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 0
-  exposure:
-    m_OverrideState: 0
-    m_Value: 0
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxColor:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  top:
-    m_OverrideState: 0
-    m_Value: {r: 0.5756052, g: 0.581431, b: 0.6132076, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  middle:
-    m_OverrideState: 0
-    m_Value: {r: 0.5187789, g: 0.5286766, b: 0.5471698, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  bottom:
-    m_OverrideState: 0
-    m_Value: {r: 0.5896226, g: 0.63831145, b: 1, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  gradientDiffusion:
-    m_OverrideState: 0
-    m_Value: 1
 --- !u!114 &1345044199 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2898554941874682229, guid: e711d56e280e1cf448d983952b406700,
@@ -955,36 +843,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 844633789116436161, guid: 3d4cf999d6157014faf53d1eea51c24b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 911453368198575673, guid: 3d4cf999d6157014faf53d1eea51c24b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4475095798440665391, guid: 3d4cf999d6157014faf53d1eea51c24b,
         type: 3}
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 1385943247}
-    - target: {fileID: 4475095798440665391, guid: 3d4cf999d6157014faf53d1eea51c24b,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 5867311848947628086, guid: 3d4cf999d6157014faf53d1eea51c24b,
         type: 3}
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 401341161}
-    - target: {fileID: 5867311848947628086, guid: 3d4cf999d6157014faf53d1eea51c24b,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 6968670768436311405, guid: 3d4cf999d6157014faf53d1eea51c24b,
         type: 3}
       propertyPath: m_Name
@@ -1055,16 +923,6 @@ PrefabInstance:
       propertyPath: roomsToEnable.Array.data[1]
       value: 
       objectReference: {fileID: 982225936}
-    - target: {fileID: 6968670768436311407, guid: 3d4cf999d6157014faf53d1eea51c24b,
-        type: 3}
-      propertyPath: soloLevel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6968670768436311407, guid: 3d4cf999d6157014faf53d1eea51c24b,
-        type: 3}
-      propertyPath: duoLevel
-      value: 
-      objectReference: {fileID: 1494471875}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3d4cf999d6157014faf53d1eea51c24b, type: 3}
 --- !u!114 &1494471874 stripped
@@ -1079,12 +937,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1494471875 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 911453368198575673, guid: 3d4cf999d6157014faf53d1eea51c24b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1494471873}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1588252724
 GameObject:
   m_ObjectHideFlags: 0
@@ -1369,7 +1221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: 3b68d98c81d704d4b8afe2b8a78e9754, type: 2}
   m_StaticLightingSkyUniqueID: 3
-  m_SkySettings: {fileID: 1329638439}
+  m_SkySettings: {fileID: 21148259}
   m_SkySettingsFromProfile: {fileID: -4787710561894659649, guid: 3b68d98c81d704d4b8afe2b8a78e9754,
     type: 2}
 --- !u!4 &1755831522
@@ -1448,21 +1300,6 @@ PrefabInstance:
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 2075257518}
-    - target: {fileID: 2772218666549101913, guid: c6d16174cf0437b49ba2932c7e3f521c,
-        type: 3}
-      propertyPath: nbNecessaryPlayers
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4657845145838169328, guid: c6d16174cf0437b49ba2932c7e3f521c,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7576128069141496309, guid: c6d16174cf0437b49ba2932c7e3f521c,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8416922328998276848, guid: c6d16174cf0437b49ba2932c7e3f521c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1523,16 +1360,6 @@ PrefabInstance:
       propertyPath: roomsToEnable.Array.data[0]
       value: 
       objectReference: {fileID: 1494471874}
-    - target: {fileID: 8416922328998276849, guid: c6d16174cf0437b49ba2932c7e3f521c,
-        type: 3}
-      propertyPath: soloLevel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8416922328998276849, guid: c6d16174cf0437b49ba2932c7e3f521c,
-        type: 3}
-      propertyPath: duoLevel
-      value: 
-      objectReference: {fileID: 1807290308}
     - target: {fileID: 8416922328998276851, guid: c6d16174cf0437b49ba2932c7e3f521c,
         type: 3}
       propertyPath: m_Name
@@ -1552,12 +1379,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1807290308 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7576128069141496309, guid: c6d16174cf0437b49ba2932c7e3f521c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1807290306}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1851888796
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -6,6 +6,8 @@ using TMPro;
 
 public class DialogueTrigger : MonoBehaviour
 {
+    public bool mustDisableInput = true;
+
     [Header("-Set every OverHeadGUIs to \"DisplayAndHide\"")]
     public List<OverHeadGUI> guis;
 
@@ -36,10 +38,13 @@ public class DialogueTrigger : MonoBehaviour
     public void StartDialogue()
     {
         //on désactive les inputs des joueurs
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
+        if(mustDisableInput)
         {
-            p.GetComponent<PlayerInput>().active = false;
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject p in players)
+            {
+                p.GetComponent<PlayerInput>().active = false;
+            }
         }
 
         StartCoroutine(StartDelay());
