@@ -97,36 +97,46 @@ public class Vampire : MonoBehaviour, IResetable
         Debug.Log("Attack");
         if (life == 3)//phase 1 : fantôme
         {
-            LaunchExplosive();
+            LaunchExplosive(1);
         }
         else if (life==2)//phase 2 fantôme + 1 explosif laser (joueur aléatoire)
         {
-            LaunchExplosive();
+            LaunchExplosive(2);
         }
         else if (life == 1)//phase 3 + 2 explosif laser (chaque joueur)
         {
-            LaunchExplosive();
+            LaunchExplosive(1);
         }
 
         rdmTimeProjectile = Random.Range(minTimeProjectile, maxTimeProjectile);
         cptTimeProjectile = 0;
     }
 
-    public void LaunchExplosive()
+    public void LaunchExplosive(int nbTarget)
     {
-        //pick a random target
-        PlayerController[] players = FindObjectsOfType<PlayerController>();
-        GameObject targetPlayer = players[Random.Range(0, players.Length)].gameObject;
-        Debug.Log(targetPlayer.name +" targeted");
-
         //launch attack
-        GameObject spawned = Instantiate(explosivePrefab, transform.position, Quaternion.identity);
-        spawned.GetComponent<VampireExplosive>().SetInfos(targetPlayer.transform.position + new Vector3(0, 2, 0),
-            speedProjectile,
-            minNbSubProjectile,
-            maxNbSubProjectile, 
-            speedSubProjectile,
-            lengthSubProjectile);
+        for (int i = 0; i < nbTarget; i++)
+        {
+            GameObject targetPlayer = new GameObject();
+            PlayerController[] players = FindObjectsOfType<PlayerController>();
+            if (nbTarget == 1)
+            {
+                targetPlayer = players[Random.Range(0, players.Length)].gameObject;
+            }
+            else
+            {
+                targetPlayer = players[i].gameObject;
+            }
+
+            GameObject spawned = Instantiate(explosivePrefab, transform.position, Quaternion.identity);
+            spawned.GetComponent<VampireExplosive>().SetInfos(targetPlayer.transform.position + new Vector3(0, 2, 0),
+                speedProjectile,
+                minNbSubProjectile,
+                maxNbSubProjectile,
+                speedSubProjectile,
+                lengthSubProjectile);
+        }
+
     }
 
     public void Move()
