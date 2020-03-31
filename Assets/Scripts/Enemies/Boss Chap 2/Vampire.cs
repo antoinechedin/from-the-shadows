@@ -119,7 +119,7 @@ public class Vampire : MonoBehaviour, IResetable
         Vector3 chosenPos = new Vector3();
         do
         {
-            chosenPos = positions[Random.Range(0, positions.Count - 1)].position;
+            chosenPos = positions[Random.Range(0, positions.Count)].position;
         } while (chosenPos == transform.position);
 
         StartCoroutine(MoveAsync(chosenPos));
