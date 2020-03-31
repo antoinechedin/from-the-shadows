@@ -13,8 +13,10 @@ public class Vampire : MonoBehaviour, IResetable
     public float rotationSpeed;
 
     [Header("Actions")]
-    public float minTimeAction;
-    public float maxTimeAction;
+    public float minTimeProjectile;
+    public float maxTimeProjectile;
+    public float minTimeMove;
+    public float maxTimeMove;
     public GameObject explosivePrefab;
 
     [Header("Projectile explosif")]
@@ -29,8 +31,10 @@ public class Vampire : MonoBehaviour, IResetable
     [Header("Stats")]
     public int maxLife;
 
-    private float cptAction;
-    private float rdmAction;
+    private float cptTimeMove;
+    private float cptTimeProjectile;
+    private float rdmTimeMove;
+    private float rdmTimeProjectile;
 
     private int life;
 
@@ -43,7 +47,8 @@ public class Vampire : MonoBehaviour, IResetable
     void Start()
     {
         animator = GetComponent<Animator>();
-        rdmAction = Random.Range(minTimeAction, maxTimeAction);
+        rdmTimeMove = Random.Range(minTimeMove, maxTimeMove);
+        rdmTimeProjectile = Random.Range(minTimeProjectile, maxTimeProjectile);
         life = maxLife;
     }
 
@@ -52,11 +57,18 @@ public class Vampire : MonoBehaviour, IResetable
     {
         if (!firingLaser)
         {
-            cptAction += Time.deltaTime;
+            cptTimeMove += Time.deltaTime;
 
-            if (cptAction >= rdmAction)
+            if (cptTimeMove >= rdmTimeMove)
             {
-                PickRandomAction();
+                Move();
+            }
+
+            cptTimeProjectile += Time.deltaTime;
+
+            if (cptTimeProjectile >= rdmTimeProjectile)
+            {
+                Attack();
             }
         }
     }
@@ -76,8 +88,8 @@ public class Vampire : MonoBehaviour, IResetable
                 break;
         }
 
-        cptAction = 0;
-        rdmAction = Random.Range(minTimeAction, maxTimeAction);
+        cptTimeMove = 0;
+        //rdmAction = Random.Range(minTimeAction, maxTimeAction);
     }
 
     public void Attack()
@@ -95,6 +107,9 @@ public class Vampire : MonoBehaviour, IResetable
         {
             LaunchExplosive();
         }
+
+        rdmTimeProjectile = Random.Range(minTimeProjectile, maxTimeProjectile);
+        cptTimeProjectile = 0;
     }
 
     public void LaunchExplosive()
@@ -123,6 +138,9 @@ public class Vampire : MonoBehaviour, IResetable
         } while (chosenPos == transform.position);
 
         StartCoroutine(MoveAsync(chosenPos));
+
+        cptTimeMove = 0;
+        rdmTimeMove = Random.Range(minTimeMove, maxTimeMove);
     }
 
     public IEnumerator MoveAsync(Vector3 pos)
@@ -205,7 +223,7 @@ public class Vampire : MonoBehaviour, IResetable
         transform.position = positions[1].position;
         animator.SetTrigger("Reset");
         firingLaser = false;
-        cptAction  = 0;
+        cptTimeMove  = 0;
 
         //on détruit tous les projectiles
         VampireExplosive[] explosives = FindObjectsOfType<VampireExplosive>();
