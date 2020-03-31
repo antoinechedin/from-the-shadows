@@ -94,7 +94,6 @@ public class Vampire : MonoBehaviour, IResetable
 
     public void Attack()
     {
-        Debug.Log("Attack");
         if (life == 3)//phase 1 : fantôme
         {
             LaunchExplosive(1);
@@ -105,7 +104,7 @@ public class Vampire : MonoBehaviour, IResetable
         }
         else if (life == 1)//phase 3 + 2 explosif laser (chaque joueur)
         {
-            LaunchExplosive(1);
+            LaunchExplosive(2);
         }
 
         rdmTimeProjectile = Random.Range(minTimeProjectile, maxTimeProjectile);
