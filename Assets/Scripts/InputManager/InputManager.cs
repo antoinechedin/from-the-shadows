@@ -12,7 +12,8 @@ public enum InputAction
     MoveUp,
     MoveDown,
     Jump,
-    Attack
+    Attack,
+    Interact
 }
 
 /// <summary>
@@ -62,10 +63,12 @@ public class InputManager
         Player1[(int)InputDevice.Keyboard].Add(InputAction.MoveLeft, KeyCode.Q);
         Player1[(int)InputDevice.Keyboard].Add(InputAction.MoveRight, KeyCode.D);
         Player1[(int)InputDevice.Keyboard].Add(InputAction.Jump, KeyCode.Space);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Attack, KeyCode.F);
+        Player1[(int)InputDevice.Keyboard].Add(InputAction.Attack, KeyCode.A);
+        Player1[(int)InputDevice.Keyboard].Add(InputAction.Interact, KeyCode.E);
 
         Player1[(int)InputDevice.Controller].Add(InputAction.Jump, KeyCode.Joystick1Button0);
         Player1[(int)InputDevice.Controller].Add(InputAction.Attack, KeyCode.Joystick1Button1);
+        Player1[(int)InputDevice.Controller].Add(InputAction.Interact, KeyCode.Joystick1Button3);
 
         Player2[(int)InputDevice.Keyboard].Add(InputAction.MoveDown, KeyCode.DownArrow);
         Player2[(int)InputDevice.Keyboard].Add(InputAction.MoveUp, KeyCode.UpArrow);
@@ -73,9 +76,12 @@ public class InputManager
         Player2[(int)InputDevice.Keyboard].Add(InputAction.MoveRight, KeyCode.RightArrow);
         Player2[(int)InputDevice.Keyboard].Add(InputAction.Jump, KeyCode.Return);
         Player2[(int)InputDevice.Keyboard].Add(InputAction.Attack, KeyCode.RightShift);
+        Player2[(int)InputDevice.Keyboard].Add(InputAction.Interact, KeyCode.RightControl);
+
 
         Player2[(int)InputDevice.Controller].Add(InputAction.Jump, KeyCode.Joystick2Button0);
         Player2[(int)InputDevice.Controller].Add(InputAction.Attack, KeyCode.Joystick2Button1);
+        Player2[(int)InputDevice.Controller].Add(InputAction.Interact, KeyCode.Joystick2Button3);
     }
 
     private static bool GetKey(int id, InputAction action, InputDevice device)
