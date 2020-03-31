@@ -5,6 +5,7 @@ using UnityEngine;
 public class LookAt : MonoBehaviour
 {
     public Transform target;
+    public bool lockYAxis = false;
     private bool followInstant = false;
 
     public void SetFollowInstant(bool instant)
@@ -27,6 +28,10 @@ public class LookAt : MonoBehaviour
             else
             {
                 Vector3 targetDirection = target.position - transform.position;
+
+                if(lockYAxis)
+                    targetDirection.y = 0;
+
                 transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(targetDirection), 8 * Time.deltaTime);
             }
         }

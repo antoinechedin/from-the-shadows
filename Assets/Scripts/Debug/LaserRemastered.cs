@@ -64,8 +64,8 @@ public class LaserRemastered : ActivatorListener
             //on set pas le linerenderer mais on fait spawn un prefab de linerenderer à la place
             //lineRenderer.SetPosition(i, points[i]);
             GameObject reflexionLaser = Instantiate(Resources.Load("LaserRenderer"), points[i], Quaternion.identity)as GameObject;
-            reflexionLaser.GetComponent<LaserRemastered>().GetComponent<LineRenderer>().SetPosition(0, reflexionLaser.transform.position);
-            reflexionLaser.GetComponent<LaserRemastered>().GetComponent<LineRenderer>().SetPosition(1, points[i]);
+            reflexionLaser.GetComponent<LineRenderer>().SetPosition(0, reflexionLaser.transform.position);
+            reflexionLaser.GetComponent<LineRenderer>().SetPosition(1, points[i]);
         }
     }
 
