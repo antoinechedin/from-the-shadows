@@ -34,6 +34,7 @@ public class DialogueTrigger : MonoBehaviour
 
         guis[0].ExecuteOnDialogueStart(); // Execute function at start
         started = true;
+        GameManager.Instance.IsInCutscene = true;
     }
     public void StartDialogue()
     {
@@ -87,6 +88,7 @@ public class DialogueTrigger : MonoBehaviour
                         }
                         //on détruit la boîte de dialogue
                         Destroy(gameObject, 1f);
+                        GameManager.Instance.IsInCutscene = false;
                     }
                 }
             }
