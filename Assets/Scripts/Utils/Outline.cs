@@ -7,7 +7,7 @@ public class Outline : MonoBehaviour
     public Material mat;
     public MeshRenderer mesh;
     public int materialIndex;
-    public Color outlineColor;
+    [ColorUsageAttribute(true, true)] public Color outlineColor;
     [Range(0, 0.5f)] public float alphaChange;
 
     private Material instanceMat;
