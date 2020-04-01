@@ -10,15 +10,12 @@ public class MenuChapter : MonoBehaviour
     public MenuCamera menuCamera;
     public MenuLevels menuLevels;
     public Button[] chapterButtons;
-    public Text levelLabel;
     public GameObject chapterButtonsPanel;
     public RectTransform thisPanel;
     public RectTransform saveMenu;
     public MenuManager menuManager;
     public Image metaDataPanel;
     public Image metaDataIcon;
-    public Image rightArrow;
-    public Image leftArrow;
 
     private List<Chapter> chapters;
     private Animator menuChapterAnimator;
@@ -31,9 +28,9 @@ public class MenuChapter : MonoBehaviour
     void Awake()
     {
         chaptersName = new List<string>(new string[] {
-            "CHAPTER 0",
-            "CHAPTER 1",
-            "CHAPTER 2"
+            "Prologue",
+            "Chapter 1",
+            "Chapter 2"
         });
     }
 
@@ -161,11 +158,6 @@ public class MenuChapter : MonoBehaviour
         }
     }
 
-    public void UpdateChapterName(int chapterNumber)
-    {
-        levelLabel.text = chaptersName[chapterNumber].ToUpper();
-    }
-
     public void ResetInteractablesChaptersButtons()
     {
         if (chapterButtons.Length == 0)
@@ -174,15 +166,25 @@ public class MenuChapter : MonoBehaviour
             return;
         }
 
+
         int lastUnlockedChapterId = 0;
         chapterButtons[0].interactable = true;
         chapters = GameManager.Instance.GetChapters();
 
         int i = 1;
-        while (i < Mathf.Min(chapters.Count, chapterButtons.Length) && chapters[i - 1].isCompleted())
+        while (i < Mathf.Min(chapters.Count, chapterButtons.Length))
         {
-            chapterButtons[i].interactable = true;
-            lastUnlockedChapterId = i;
+            if (chapters[i - 1].isCompleted())
+            {
+                chapterButtons[i].interactable = true;
+                chapterButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = chaptersName[i];
+                lastUnlockedChapterId = i;
+            }
+            else
+            {
+                chapterButtons[i].interactable = false;
+                chapterButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = "...";
+            }
             i++;
         }
 
@@ -221,7 +223,7 @@ public class MenuChapter : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         menuCamera.SetChapterSelected(chapterUnlocked);
         GameManager.Instance.CurrentChapter = chapterUnlocked;
-        UpdateChapterName(chapterUnlocked);
+        // UpdateChapterName(chapterUnlocked);
         yield return new WaitForSeconds(0.25f);
         menuCamera.UnlockAnimation(true);
         yield return new WaitForSeconds(3f);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class MenuLevels : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class MenuLevels : MonoBehaviour
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
     public GameObject levelScreenshotsParent;
+    public TextMeshProUGUI levelName;
+    public Image leftArrow;
+    public Image rightArrow;
     public LevelScreenshot levelScreenshotPrefab;
 
     private List<LevelScreenshot> screenshots = new List<LevelScreenshot>();
@@ -31,7 +35,7 @@ public class MenuLevels : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float stickDeadZone;
 
-    private int currentSelectedLevel = 0;
+    private int currentLevelIndex = 0;
 
     private float timeCpt = 0;
     private bool pressed = false;
@@ -56,7 +60,7 @@ public class MenuLevels : MonoBehaviour
 
         //SetMenuLevelInfo(0, screenshots[0]);
         LevelButtonInfosArray levelButtonInfosArray = null;
-        if(chapterNumber < levelButtonInfosMatrix.Length)
+        if (chapterNumber < levelButtonInfosMatrix.Length)
         {
             levelButtonInfosArray = levelButtonInfosMatrix[chapterNumber];
         }
@@ -77,26 +81,60 @@ public class MenuLevels : MonoBehaviour
                 spawnedScreenshot.LevelId = localLevelIndex;
                 spawnedScreenshot.levelIndex = nbLevelSpawned;
                 spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
-                
-                if(levelButtonInfosArray != null && nbLevelSpawned < levelButtonInfosArray.infos.Length)
+
+                if (levelButtonInfosArray != null && nbLevelSpawned < levelButtonInfosArray.infos.Length)
                 {
                     LevelButtonInfos levelButtonInfos = levelButtonInfosArray.infos[nbLevelSpawned];
                     spawnedScreenshot.screenshot.sprite = levelButtonInfos.image;
                 }
 
+                spawnedScreenshot.Init(this);
                 screenshots.Add(spawnedScreenshot);
                 nbLevelSpawned++;
             }
         }
+
+        for (int i = 0; i < screenshots.Count; i++)
+        {
+            Navigation explicitNav = new Navigation();
+            explicitNav.mode = Navigation.Mode.Explicit;
+            if (i > 0)
+            {
+                explicitNav.selectOnLeft = screenshots[i - 1].GetComponent<Button>();
+            }
+            if (i < screenshots.Count - 1)
+            {
+                explicitNav.selectOnRight = screenshots[i + 1].GetComponent<Button>();
+            }
+            screenshots[i].GetComponent<Button>().navigation = explicitNav;
+        }
+
         EventSystem.current.SetSelectedGameObject(screenshots[0].gameObject);
     }
 
     public void SelectCheckpoint(int index)
     {
+        Animator animator = GetComponent<Animator>();
+
         foreach (LevelScreenshot go in screenshots)
         {
             go.destination = new Vector3((go.levelIndex - index) * distanceBetweenScreenshots, 0, 0);
         }
+        levelName.text = levelButtonInfosMatrix[GameManager.Instance.CurrentChapter].infos[index].name;
+
+        if (animator != null)
+        {
+            if (index < currentLevelIndex) animator.SetTrigger("LeftArrowGiggle");
+            else if (index > currentLevelIndex) animator.SetTrigger("RightArrowGiggle");
+        }
+
+        if (index == 0) leftArrow.color = new Color(1, 1, 1, 0);
+        else leftArrow.color = new Color(1, 1, 1, 1);
+
+        if (index == screenshots.Count - 1) rightArrow.color = new Color(1, 1, 1, 0);
+        else rightArrow.color = new Color(1, 1, 1, 1);
+
+        currentLevelIndex = index;
     }
 
     public void SetMenuLevelInfo(int level, LevelScreenshot screenshot)
@@ -158,7 +196,7 @@ public class MenuLevels : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         screenshots = new List<LevelScreenshot>();
-        currentSelectedLevel = 0;
+        currentLevelIndex = 0;
     }
 
     private void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
