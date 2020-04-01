@@ -13,7 +13,7 @@ public class MenuManager : MonoBehaviour
 {
     public RectTransform startMenu;
     public SavesMenu savesMenu;
-    public RectTransform optionsMenu;
+    public OptionsMenu optionsMenu;
     public RectTransform chaptersMenu;
 
     public MenuChapter menuChapter;
@@ -263,10 +263,9 @@ public class MenuManager : MonoBehaviour
         savesMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
 
-        backgroundAnimator.SetBool("fade", true);
-        startMenuBackgroundAnimator.SetBool("fade", false);
+        // backgroundAnimator.SetBool("fade", true);
+        // startMenuBackgroundAnimator.SetBool("fade", false);
 
-        optionsMenu.GetComponent<MenuOptions>().OpenOptionsMenu();
         yield return null;
     }
 
