@@ -128,11 +128,11 @@ public class MenuLevels : MonoBehaviour
             else if (index > currentLevelIndex) animator.SetTrigger("RightArrowGiggle");
         }
 
-        if (index == 0) leftArrow.color = new Color(1, 1, 1, 0);
-        else leftArrow.color = new Color(1, 1, 1, 1);
+        if (index == 0) leftArrow.color = Color.gray;
+        else leftArrow.color = Color.white;
 
-        if (index == screenshots.Count - 1) rightArrow.color = new Color(1, 1, 1, 0);
-        else rightArrow.color = new Color(1, 1, 1, 1);
+        if (index == screenshots.Count - 1) rightArrow.color = Color.gray;
+        else rightArrow.color = Color.white;
 
         currentLevelIndex = index;
     }
