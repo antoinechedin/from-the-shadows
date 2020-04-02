@@ -10,17 +10,18 @@ public class SongManager : MonoBehaviour
     private string _theme = "";
     private FMOD.Studio.EventInstance theme;
 
-    public bool isMainTheme = false;
+    public bool hasStarted = false;
+
     [Header("Levels in which the theme is played. Only relevant if not Main Theme")]
-    public List<int> levelsToPlayTheme;
+    public List<LevelManager> levelsToPlayTheme;
 
     [Header("Levels in which layer appear. For Layered theme only")]
     public bool isLayered = false;
     private int musicLayer = 0;
-    public List<int> levelsToAddLayer;
+    public List<LevelManager> levelsToAddLayer;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         theme = FMODUnity.RuntimeManager.CreateInstance(_theme);
     }
@@ -43,27 +44,27 @@ public class SongManager : MonoBehaviour
     }
 
     // Set Music Layers according to the current level
-    public void SetLayerAccordingToLevel(int level)
-    {
-        foreach (int levelToAddLayer in levelsToAddLayer)
-        {
-            if (level >= levelToAddLayer)
-            {
-                AddLayer();
-            }
-        }
-    }
+    //public void SetLayerAccordingToLevel(int level)
+    //{
+    //    foreach (int levelToAddLayer in levelsToAddLayer)
+    //    {
+    //        if (level >= levelToAddLayer)
+    //        {
+    //            AddLayer();
+    //        }
+    //    }
+    //}
 
     public int GetLevelToAddLayer()
     {
         if(musicLayer < levelsToAddLayer.Count)
-            return levelsToAddLayer[musicLayer];
+            return levelsToAddLayer[musicLayer].id;
         return -1;
     }
 
     public int GetLevelToRemoveLayer()
     {
-        return levelsToAddLayer[musicLayer - 1];
+        return levelsToAddLayer[musicLayer - 1].id;
     }
 
     public FMOD.Studio.EventInstance GetTheme()

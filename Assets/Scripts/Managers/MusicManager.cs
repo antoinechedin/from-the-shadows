@@ -4,18 +4,25 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
-    public List<SongManager> themes;
+    [SerializeField]
+    private List<SongManager> themes;
+
+    [SerializeField]
+    private SongManager currentPlayingTheme;
 
     public SongManager mainTheme;
-    public SongManager currentPlayingTheme;
 
-    void Start()
+
+    private void Awake()
     {
         foreach (Transform child in transform)
         {
             themes.Add(child.GetComponent<SongManager>());
         }
+    }
 
+    void Start()
+    {
         StartMusic(mainTheme);
     }
 
@@ -42,11 +49,11 @@ public class MusicManager : MonoBehaviour
             }
 
             // If not, check if we must change theme
-            if (!theme.isMainTheme)
+            if (theme != mainTheme)
             {
                 for (int i = 0; i < theme.levelsToPlayTheme.Count; i++)
                 {
-                    if (theme.levelsToPlayTheme[i] == newCurrentLevel)
+                    if (theme.levelsToPlayTheme[i].id == newCurrentLevel)
                     {
                         if (theme != currentPlayingTheme) // If newCurrentLevel equals a level in which theme must be changed, change theme
                         {
@@ -76,13 +83,17 @@ public class MusicManager : MonoBehaviour
         Debug.Log("Theme switched to " + newTheme);
 
         PauseMusic(currentPlayingTheme);
-        StartMusic(newTheme);
-        ResumeMusic(newTheme);
+
+        if(!newTheme.hasStarted)
+            StartMusic(newTheme);
+        else
+            ResumeMusic(newTheme);
     }
 
     public void StartMusic(SongManager songManager)
     {
         songManager.GetTheme().start();
+        songManager.hasStarted = true;
         currentPlayingTheme = songManager;
     }
 
