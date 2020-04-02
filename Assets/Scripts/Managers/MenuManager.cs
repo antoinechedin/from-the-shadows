@@ -11,10 +11,10 @@ using UnityEditor;
 
 public class MenuManager : MonoBehaviour
 {
-    public RectTransform startMenu;
+    public MainMenu mainMenu;
     public SavesMenu savesMenu;
     public OptionsMenu optionsMenu;
-    public RectTransform chaptersMenu;
+    public ChaptersMenu chaptersMenu;
 
     public MenuChapter menuChapter;
     public MenuCamera menuCamera;
@@ -38,6 +38,14 @@ public class MenuManager : MonoBehaviour
     // private Dissolve playDissolve;
     // private Dissolve optionsDissolve;
     // private Dissolve quitDissolve;
+
+    private void Awake()
+    {
+        mainMenu.menuManager = this;
+        savesMenu.menuManager = this;
+        optionsMenu.menuManager = this;
+        chaptersMenu.menuManager = this;
+    }
 
     void Start()
     {
@@ -119,7 +127,7 @@ public class MenuManager : MonoBehaviour
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
-        startMenu.gameObject.SetActive(true);
+        mainMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
@@ -131,7 +139,7 @@ public class MenuManager : MonoBehaviour
         // backgroundAnimator.SetBool("fade", false);
         version.text = Application.version + "\n2020 © " + Application.companyName;
 
-        dissolves = startMenu.GetComponentsInChildren<DissolveController>();
+        dissolves = mainMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
@@ -158,13 +166,13 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.sendNavigationEvents = false;
         // yield return StartCoroutine(ButtonsDissolveOut());        
 
-        if (startMenu.gameObject.activeSelf)
+        if (mainMenu.gameObject.activeSelf)
         {
             // startMenuBackgroundAnimator.SetBool("fade", false);
         }
         // backgroundAnimator.SetBool("fade", true);
 
-        DissolveController[] dissolves = startMenu.GetComponentsInChildren<DissolveController>();
+        DissolveController[] dissolves = mainMenu.GetComponentsInChildren<DissolveController>();
 
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
@@ -174,7 +182,7 @@ public class MenuManager : MonoBehaviour
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
-        startMenu.gameObject.SetActive(false);
+        mainMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(true);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
@@ -218,7 +226,7 @@ public class MenuManager : MonoBehaviour
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
 
-        startMenu.gameObject.SetActive(false);
+        mainMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(true);
         optionsMenu.gameObject.SetActive(false);
@@ -261,7 +269,7 @@ public class MenuManager : MonoBehaviour
         optionsMenu.gameObject.SetActive(true);
         chaptersMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(false);
-        startMenu.gameObject.SetActive(false);
+        mainMenu.gameObject.SetActive(false);
         EventSystem.current.SetSelectedGameObject(optionsMenu.GetComponentInChildren<Selectable>().gameObject);
 
         // backgroundAnimator.SetBool("fade", true);
