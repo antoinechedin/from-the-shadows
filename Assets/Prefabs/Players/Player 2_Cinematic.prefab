@@ -212,6 +212,9 @@ GameObject:
   - component: {fileID: 6102876861554154273}
   - component: {fileID: 3511268736126153866}
   - component: {fileID: 9025246321357186777}
+  - component: {fileID: 4070978911427173539}
+  - component: {fileID: 6913339175117849883}
+  - component: {fileID: 6858961651264128995}
   m_Layer: 0
   m_Name: Player 2_Cinematic
   m_TagString: Untagged
@@ -295,6 +298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  lockYAxis: 0
 --- !u!114 &9025246321357186777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,8 +313,86 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cycle: 0
   moveAtStart: 0
+  resetOnChangeTarget: 0
   speed: 2
   target: {fileID: 0}
+  OnTargetReached:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFinalTargetReached:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4070978911427173539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3511268736126153867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5080402a40357b44688f324596c3d620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 530944
+  boxCollider: {fileID: 0}
+  maxSlopeAngle: 60
+  ledgeGrabMask:
+    serializedVersion: 2
+    m_Bits: 6656
+--- !u!114 &6913339175117849883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3511268736126153867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6eff5aae31487245a809fe5baa1bebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 1
+  doubleJump: 0
+  attack: 0
+  attackCollider: {fileID: 0}
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 0
+  debugControl: 0
+  active: 0
+  moveAxis: {x: 0, y: 0}
+  xMoveAxisSign: 1
+  pressedJump: 0
+  releasedJump: 0
+  pressedAttack: 0
+  pressRight: 0
+  pressLeft: 0
+  pressUp: 0
+  pressDown: 0
+--- !u!114 &6858961651264128995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3511268736126153867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b463dfb5525894aa2dff2ce0675a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: 97cf41c297d14b94ab0b792353131e20, type: 2}
+  actor: {fileID: 0}
+  input: {fileID: 0}
+  animator: {fileID: 0}
+  targetVelocity: {x: 0, y: 0}
+  velocity: {x: 0, y: 0}
+  xVelocitySign: 0
+  dead: 0
+  dying: 0
 --- !u!1 &3783414082590308101
 GameObject:
   m_ObjectHideFlags: 0

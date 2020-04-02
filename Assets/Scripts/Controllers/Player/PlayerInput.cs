@@ -13,6 +13,7 @@ public class PlayerInput : MonoBehaviour
 
     public bool debugControl;
     public bool active = true;
+    public bool noJump = false;
 
     public Vector2 moveAxis;
     [HideInInspector] public float xMoveAxisSign = 1f;
@@ -22,11 +23,12 @@ public class PlayerInput : MonoBehaviour
 
     public bool pressRight, pressLeft, pressUp, pressDown;
 
-    private void Awake() {
-        if(attack && attackCollider == null)
+    private void Awake()
+    {
+        if (attack && attackCollider == null)
         {
             attack = false;
-            Debug.LogWarning("WARN PlayerInput.Awake: Player " +  id + " can attack but don't have an attack collider."
+            Debug.LogWarning("WARN PlayerInput.Awake: Player " + id + " can attack but don't have an attack collider."
                             + " Attack is disable.");
         }
     }
@@ -52,8 +54,11 @@ public class PlayerInput : MonoBehaviour
         {
             moveAxis.x = Input.GetAxisRaw("Horizontal_" + id);
             moveAxis.y = Input.GetAxisRaw("Vertical_" + id);
-            pressedJump = Input.GetButtonDown("A_" + id);
-            releasedJump = Input.GetButtonUp("A_" + id);
+            if (!noJump)
+            {
+                pressedJump = Input.GetButtonDown("A_" + id);
+                releasedJump = Input.GetButtonUp("A_" + id);
+            }
             if (attack) pressedAttack = Input.GetButtonDown("Y_" + id);
             if (moveAxis.magnitude > 1) moveAxis.Normalize();
         }
