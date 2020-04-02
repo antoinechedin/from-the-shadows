@@ -51,25 +51,27 @@ public class MusicManager : MonoBehaviour
             // If not, check if we must change theme
             if (theme != mainTheme)
             {
+                bool switchToMainTheme = false;
+
                 for (int i = 0; i < theme.levelsToPlayTheme.Count; i++)
                 {
-                    if (theme.levelsToPlayTheme[i].id == newCurrentLevel)
+                    if (theme.levelsToPlayTheme[i].id == newCurrentLevel) // If newCurrentLevel equals a level in which theme must be changed
                     {
-                        if (theme != currentPlayingTheme) // If newCurrentLevel equals a level in which theme must be changed, change theme
+                        if (theme != currentPlayingTheme) // If the theme is not playing, play it
                         {
                             SwitchTheme(theme);
-                            break;
                         }
+                        switchToMainTheme = false;
+                        break;
                     }
                     else
                     {
-                        if (theme == currentPlayingTheme) // If not, resume to main theme
-                        {
-                            SwitchTheme(mainTheme);
-                            break;
-                        }
+                        switchToMainTheme = true;
                     }
                 }
+
+                if (switchToMainTheme)
+                    SwitchTheme(mainTheme);
             }
         }
     }
@@ -88,6 +90,8 @@ public class MusicManager : MonoBehaviour
             StartMusic(newTheme);
         else
             ResumeMusic(newTheme);
+
+        currentPlayingTheme = newTheme;
     }
 
     public void StartMusic(SongManager songManager)
