@@ -6,17 +6,32 @@ using UnityEngine.EventSystems;
 
 public class OptionsMenu : MonoBehaviour
 {
+    public MenuSlider musicSlider;
+    public MenuSlider soundsSlider;
+
     [HideInInspector] public int currentIndex;
-    public Selectable[] selectables;
+    [HideInInspector] public Selectable[] selectables;
 
     private void Awake()
     {
         currentIndex = -1;
+        selectables = new Selectable[]
+        {
+            musicSlider.GetComponent<Selectable>(),
+            soundsSlider.GetComponent<Selectable>()
+        };
+
+        Init();
+
     }
 
     public void Init()
     {
-        
+        int musicVolume = PlayerPrefs.GetInt("MusicVolume", 10);
+        int soundsVolume = PlayerPrefs.GetInt("SoundsVolume", 10);
+
+        musicSlider.Init(musicVolume);
+        soundsSlider.Init(soundsVolume);
     }
 
     public void HandleSelectTrigger(Selectable selectable)

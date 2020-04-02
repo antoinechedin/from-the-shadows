@@ -29,6 +29,17 @@ public class GameManager : Singleton<GameManager>
     private bool displayedNoSaveFile = false;
     private bool isInCutscene = false;
 
+
+    // Options update
+    public delegate void OnOptionsUpdateDelegate();
+    public event OnOptionsUpdateDelegate optionsUpdateDelegate;
+
+    public void OnOptionUpdate()
+    {
+        if (optionsUpdateDelegate != null)
+            optionsUpdateDelegate();
+    }
+
     // Update is called once per frame
     void Update()
     {
