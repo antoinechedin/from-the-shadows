@@ -1,19 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class OptionsMenu : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    [HideInInspector] public int currentIndex;
+    public Selectable[] selectables;
 
+    private void Awake()
+    {
+        currentIndex = -1;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Init()
     {
+        
+    }
 
+    public void HandleSelectTrigger(Selectable selectable)
+    {
+        int index = 0;
+        for (int i = 0; i < selectables.Length; i++)
+        {
+            if (selectables[i] == selectable)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != currentIndex)
+        {
+            if (currentIndex >= 0) selectables[currentIndex].animator.SetTrigger("Normal");
+            currentIndex = index;
+            selectable.animator.SetTrigger("Selected");
+        }
     }
 }

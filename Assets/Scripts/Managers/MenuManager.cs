@@ -262,7 +262,7 @@ public class MenuManager : MonoBehaviour
         chaptersMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(false);
         startMenu.gameObject.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(GameObject.Find("MusicVolumeSlider"));
+        EventSystem.current.SetSelectedGameObject(optionsMenu.GetComponentInChildren<Selectable>().gameObject);
 
         // backgroundAnimator.SetBool("fade", true);
         // startMenuBackgroundAnimator.SetBool("fade", false);
