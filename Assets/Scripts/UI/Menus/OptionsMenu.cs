@@ -35,6 +35,17 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         soundsSlider.Init(soundsVolume);
     }
 
+    private void Update()
+    {
+        if (EventSystem.current.sendNavigationEvents)
+        {
+            if (Input.GetButtonDown("B_G"))
+            {
+                menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
+            }
+        }
+    }
+
     public void HandleSelectTrigger(Selectable selectable)
     {
         int index = 0;

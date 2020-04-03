@@ -259,6 +259,9 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
         }
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(menuManager.dissolveDuration));
+        
+        newGameChoiceButtons.gameObject.SetActive(false);
+        actionChoiceButtons.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 }
