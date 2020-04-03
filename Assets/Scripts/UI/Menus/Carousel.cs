@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+[RequireComponent(typeof(Animator))]
 public class Carousel : MonoBehaviour
 {
     public GridLayoutGroup buttonsGroup;
@@ -42,6 +43,13 @@ public class Carousel : MonoBehaviour
 
     [Header("Level Buttons Infos")]
     public LevelButtonInfosArray[] levelButtonInfosMatrix;
+
+    [HideInInspector] public Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     public void SetMenuLevels(int chapterNumber)
     {

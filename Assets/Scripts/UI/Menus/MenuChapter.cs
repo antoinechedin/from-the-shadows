@@ -8,10 +8,10 @@ using TMPro;
 public class MenuChapter : MonoBehaviour, IDissolveMenu
 {
     [HideInInspector] public MenuManager menuManager;
-    
-    
+
+
     public MenuCamera menuCamera;
-    public Carousel menuLevels;
+    public Carousel carousel;
     public Button[] chapterButtons;
     public GameObject chapterButtonsPanel;
     public RectTransform thisPanel;
@@ -20,8 +20,6 @@ public class MenuChapter : MonoBehaviour, IDissolveMenu
     public Image metaDataIcon;
 
     private List<Chapter> chapters;
-    private Animator menuChapterAnimator;
-    // private Animator metaDataPanelAnimator;
     private bool chapterMenuIsOpen = false;
     private bool statsOpen = false;
 
@@ -38,7 +36,6 @@ public class MenuChapter : MonoBehaviour, IDissolveMenu
 
     void Start()
     {
-        menuChapterAnimator = gameObject.GetComponent<Animator>();
         // metaDataPanelAnimator = metaDataPanel.gameObject.GetComponent<Animator>();
         // levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
     }
@@ -57,22 +54,20 @@ public class MenuChapter : MonoBehaviour, IDissolveMenu
                 // Close the chapter
                 else if (chapterMenuIsOpen)
                 {
-                    menuLevels.ResetScreenshots();
-                    menuLevels.enabled = false;
+                    carousel.ResetScreenshots();
+                    carousel.enabled = false;
                     chapterMenuIsOpen = false;
                     chapterButtonsPanel.SetActive(true);
                     metaDataIcon.gameObject.SetActive(true);
                     EventSystem.current.SetSelectedGameObject(chapterButtons[GameManager.Instance.CurrentChapter].gameObject);
-                    if (menuChapterAnimator != null)
-                    {
-                        menuChapterAnimator.SetBool("open", false);
-                    }
+                    carousel.animator.SetBool("open", false);
                     menuCamera.SetZoom(false);
                 }
-                else
+                else if (!chapterMenuIsOpen)
                 {
                     menuCamera.SetReturnToSavesMenu(true);
                     // menuManager.OpenSaveMenu();
+                    Debug.Log("chapterMenu closed");
                     menuManager.DissolveFromMenuToMenu(menuManager.chaptersMenu, menuManager.savesMenu);
                 }
             }
@@ -120,47 +115,47 @@ public class MenuChapter : MonoBehaviour, IDissolveMenu
 
         if (!chapterMenuIsOpen)
         {
-            menuLevels.enabled = true;
+            carousel.enabled = true;
             chapterMenuIsOpen = true;
             //chapterButtonsPanel.SetActive(false);
             metaDataIcon.gameObject.SetActive(false);
-            if (menuChapterAnimator != null)
+
+            int nbLightCollectibleTaken = 0;
+            int nbShadowCollectibleTaken = 0;
+
+            int totalNbLightCollectible = 0;
+            int totalNbShadowCollectible = 0;
+
+            int nbCompleted = 0;
+            int totalLevel = 0;
+
+            List<Level> levels = chapters[GameManager.Instance.CurrentChapter].GetLevels();
+            foreach (Level l in levels)
             {
-                int nbLightCollectibleTaken = 0;
-                int nbShadowCollectibleTaken = 0;
-
-                int totalNbLightCollectible = 0;
-                int totalNbShadowCollectible = 0;
-
-                int nbCompleted = 0;
-                int totalLevel = 0;
-
-                List<Level> levels = chapters[GameManager.Instance.CurrentChapter].GetLevels();
-                foreach (Level l in levels)
+                //Light collectibles
+                foreach (bool collectible in l.LightCollectibles)
                 {
-                    //Light collectibles
-                    foreach (bool collectible in l.LightCollectibles)
-                    {
-                        if (collectible == true) nbLightCollectibleTaken++;
-                    }
-                    totalNbLightCollectible += l.LightCollectibles.Length;
-
-                    //shadow collectibles
-                    foreach (bool collectible in l.ShadowCollectibles)
-                    {
-                        if (collectible == true) nbShadowCollectibleTaken++;
-                    }
-                    totalNbShadowCollectible += l.ShadowCollectibles.Length;
-                    if (l.Completed) nbCompleted++;
-                    totalLevel++;
-
+                    if (collectible == true) nbLightCollectibleTaken++;
                 }
+                totalNbLightCollectible += l.LightCollectibles.Length;
 
-                //                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
-                menuChapterAnimator.SetBool("open", true);
-                menuCamera.SetZoom(true);
-                menuLevels.SetMenuLevels(GameManager.Instance.CurrentChapter);
+                //shadow collectibles
+                foreach (bool collectible in l.ShadowCollectibles)
+                {
+                    if (collectible == true) nbShadowCollectibleTaken++;
+                }
+                totalNbShadowCollectible += l.ShadowCollectibles.Length;
+                if (l.Completed) nbCompleted++;
+                totalLevel++;
+
             }
+
+            //                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
+            Debug.Log(carousel.animator);
+            carousel.animator.SetBool("open", true);
+            menuCamera.SetZoom(true);
+            carousel.SetMenuLevels(GameManager.Instance.CurrentChapter);
+
         }
     }
 
@@ -239,6 +234,9 @@ public class MenuChapter : MonoBehaviour, IDissolveMenu
     public IEnumerator DissolveInCoroutine()
     {
         gameObject.SetActive(true);
+        ResetInteractablesChaptersButtons();
+
+        EventSystem.current.SetSelectedGameObject(chapterButtons[0].gameObject);
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {

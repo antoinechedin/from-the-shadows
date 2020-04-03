@@ -14,9 +14,8 @@ public class MenuManager : MonoBehaviour
     public MainMenu mainMenu;
     public SavesMenu savesMenu;
     public OptionsMenu optionsMenu;
-    public ChaptersMenu chaptersMenu;
+    public MenuChapter chaptersMenu;
 
-    public MenuChapter menuChapter;
     public MenuCamera menuCamera;
 
     public Button play;
@@ -253,9 +252,9 @@ public class MenuManager : MonoBehaviour
         // backgroundAnimator.SetBool("fade", false);
 
         menuCamera.SetReturnToSavesMenu(false);
-        menuChapter.ResetInteractablesChaptersButtons();
+        chaptersMenu.ResetInteractablesChaptersButtons();
 
-        EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
+        EventSystem.current.SetSelectedGameObject(chaptersMenu.chapterButtons[chapterIndex].gameObject);
 
         dissolves = chaptersMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
