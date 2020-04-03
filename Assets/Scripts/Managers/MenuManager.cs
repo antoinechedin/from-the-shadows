@@ -14,7 +14,7 @@ public class MenuManager : MonoBehaviour
     public MainMenu mainMenu;
     public SavesMenu savesMenu;
     public OptionsMenu optionsMenu;
-    public MenuChapter chaptersMenu;
+    public ChaptersMenu chaptersMenu;
 
     public MenuCamera menuCamera;
 
