@@ -12,6 +12,11 @@ public class MusicManager : MonoBehaviour
 
     public SongManager mainTheme;
 
+    [Range(0, 100)]
+    public int masterVolume = 50;
+
+    public FMOD.Studio.Bus masterBus;
+
 
     private void Awake()
     {
@@ -23,11 +28,23 @@ public class MusicManager : MonoBehaviour
 
     void Start()
     {
-        StartMusic(mainTheme);
+        masterBus = FMODUnity.RuntimeManager.GetBus("Bus:/");
+        StartTheme(mainTheme);
     }
 
+    private void Update()
+    {
+        SetMasterVolume(masterVolume);
+    }
+
+    public void SetMasterVolume(float volume)
+    {
+        masterBus.setVolume(volume / 100f);
+    }
     public void ManageMusicChange(int currentLevel, int newCurrentLevel)
     {
+        bool themeUpdated = false;
+
         foreach (SongManager theme in themes)
         {
             // First check if we must change layer
@@ -48,7 +65,6 @@ public class MusicManager : MonoBehaviour
                 }
             }
 
-            // If not, check if we must change theme
             if (theme != mainTheme)
             {
                 bool switchToMainTheme = false;
@@ -60,6 +76,7 @@ public class MusicManager : MonoBehaviour
                         if (theme != currentPlayingTheme) // If the theme is not playing, play it
                         {
                             SwitchTheme(theme);
+                            themeUpdated = true;
                         }
                         switchToMainTheme = false;
                         break;
@@ -70,43 +87,49 @@ public class MusicManager : MonoBehaviour
                     }
                 }
 
-                if (switchToMainTheme)
+                if (switchToMainTheme && (currentPlayingTheme != mainTheme) && (theme == currentPlayingTheme))
                     SwitchTheme(mainTheme);
             }
+
+            if (themeUpdated)
+                break;
         }
     }
 
-    /*
-     * TODO :
-     * Add smooth transition between two music
-     */
     public void SwitchTheme(SongManager newTheme)
     {
         Debug.Log("Theme switched to " + newTheme);
 
-        PauseMusic(currentPlayingTheme);
+        StopTheme(currentPlayingTheme, newTheme);
+        StartTheme(newTheme);
+        //PauseTheme(currentPlayingTheme);
 
-        if(!newTheme.hasStarted)
-            StartMusic(newTheme);
-        else
-            ResumeMusic(newTheme);
+        //if (!newTheme.hasStarted)
+        //    StartTheme(newTheme);
+        //else
+        //    ResumeTheme(newTheme);
 
         currentPlayingTheme = newTheme;
     }
 
-    public void StartMusic(SongManager songManager)
+    public void StartTheme(SongManager songManager)
     {
         songManager.GetTheme().start();
-        songManager.hasStarted = true;
         currentPlayingTheme = songManager;
     }
 
-    public void PauseMusic(SongManager songManager)
+    public void StopTheme(SongManager songManager, SongManager newTheme)
+    {
+        songManager.GetTheme().stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        currentPlayingTheme = newTheme;
+    }
+
+    public void PauseTheme(SongManager songManager)
     {
         songManager.GetTheme().setPaused(true);
     }
 
-    public void ResumeMusic(SongManager songManager)
+    public void ResumeTheme(SongManager songManager)
     {
         songManager.GetTheme().setPaused(false);
     }

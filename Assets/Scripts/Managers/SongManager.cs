@@ -10,8 +10,6 @@ public class SongManager : MonoBehaviour
     private string _theme = "";
     private FMOD.Studio.EventInstance theme;
 
-    public bool hasStarted = false;
-
     [Header("Levels in which the theme is played. Only relevant if not Main Theme")]
     public List<LevelManager> levelsToPlayTheme;
 
@@ -20,10 +18,38 @@ public class SongManager : MonoBehaviour
     private int musicLayer = 0;
     public List<LevelManager> levelsToAddLayer;
 
+
+    public float layerVolume = 0f;
+
     // Start is called before the first frame update
     void Awake()
     {
         theme = FMODUnity.RuntimeManager.CreateInstance(_theme);
+    }
+
+    private void LerpVolumeUp()
+    {
+        layerVolume += 0.05f;
+        theme.setParameterByName("Layer" + musicLayer, layerVolume);
+
+        if(layerVolume >= 1f)
+        {
+            theme.setParameterByName("Layer" + musicLayer, 1f);
+            CancelInvoke("LerpVolumeUp");
+        }
+    }
+
+    private void LerpVolumeDown()
+    {
+        layerVolume -= 0.05f;
+        theme.setParameterByName("Layer" + (musicLayer + 1 ), layerVolume);
+
+        if (layerVolume <= 0f)
+        {
+            theme.setParameterByName("Layer" + (musicLayer + 1), 0f);
+            CancelInvoke("LerpVolumeDown");
+        }
+
     }
 
 
@@ -31,29 +57,35 @@ public class SongManager : MonoBehaviour
     public void AddLayer()
     {
         musicLayer++;
-        theme.setParameterByName("Layer" + musicLayer, 1f);
+
+        layerVolume = 0f;
+        InvokeRepeating("LerpVolumeUp", 0f, 0.1f);
+
         Debug.Log("Added layer : now layer " + musicLayer);
     }
 
     // Remove Music Layer to the current music
     public void RemoveLayer()
     {
-        theme.setParameterByName("Layer" + musicLayer, 0f);
         musicLayer--;
+
+        layerVolume = 1f;
+        InvokeRepeating("LerpVolumeDown", 0f, 0.1f);
+
         Debug.Log("Removed layer : now layer " + musicLayer);
     }
 
     // Set Music Layers according to the current level
-    //public void SetLayerAccordingToLevel(int level)
-    //{
-    //    foreach (int levelToAddLayer in levelsToAddLayer)
-    //    {
-    //        if (level >= levelToAddLayer)
-    //        {
-    //            AddLayer();
-    //        }
-    //    }
-    //}
+    public void SetLayerAccordingToLevel(int level)
+    {
+        foreach (LevelManager levelToAddLayer in levelsToAddLayer)
+        {
+            if (level >= levelToAddLayer.id)
+            {
+                AddLayer();
+            }
+        }
+    }
 
     public int GetLevelToAddLayer()
     {
@@ -64,7 +96,9 @@ public class SongManager : MonoBehaviour
 
     public int GetLevelToRemoveLayer()
     {
-        return levelsToAddLayer[musicLayer - 1].id;
+        if(musicLayer > 0)
+            return levelsToAddLayer[musicLayer - 1].id;
+        return -1;
     }
 
     public FMOD.Studio.EventInstance GetTheme()

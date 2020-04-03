@@ -142,6 +142,8 @@ public class ChapterManager : MonoBehaviour
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
+        musicManager.ManageMusicChange(currentLevel, newCurrentLevel);
+
         List<LevelManager> levelsToDisable = new List<LevelManager>();
         foreach (LevelManager lm in levels[currentLevel].roomsToEnable)
         {
@@ -161,7 +163,6 @@ public class ChapterManager : MonoBehaviour
         levels[newCurrentLevel].virtualCamera.gameObject.SetActive(true);
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
 
-        musicManager.ManageMusicChange(currentLevel, newCurrentLevel);
 
         currentLevel = newCurrentLevel;
 
