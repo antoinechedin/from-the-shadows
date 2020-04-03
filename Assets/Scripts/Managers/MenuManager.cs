@@ -14,6 +14,7 @@ public class MenuManager : MonoBehaviour
     public MainMenu mainMenu;
     public SavesMenu savesMenu;
     public OptionsMenu optionsMenu;
+    public CreditsMenu creditsMenu;
     public ChaptersMenu chaptersMenu;
 
     public MenuCamera menuCamera;
@@ -43,6 +44,7 @@ public class MenuManager : MonoBehaviour
         mainMenu.menuManager = this;
         savesMenu.menuManager = this;
         optionsMenu.menuManager = this;
+        creditsMenu.menuManager = this;
         chaptersMenu.menuManager = this;
     }
 

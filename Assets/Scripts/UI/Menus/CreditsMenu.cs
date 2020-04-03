@@ -4,40 +4,28 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour, IDissolveMenu
+public class CreditsMenu : MonoBehaviour, IDissolveMenu
 {
     [HideInInspector] public MenuManager menuManager;
-    public Button playButton;
-    public Button optionsButton;
-    public Button creditsButton;
-    public Button quitButton;
+    public Selectable emptySelectable;
 
-    public GameObject lastSelectedGameObject;
-
-    private void Awake()
+    private void Update()
     {
-        lastSelectedGameObject = playButton.gameObject;
-        playButton.onClick.AddListener(delegate
+        if(EventSystem.current.sendNavigationEvents)
         {
-            lastSelectedGameObject = playButton.gameObject;
-            menuManager.DissolveFromMenuToMenu(this, menuManager.savesMenu);
-        });
-        optionsButton.onClick.AddListener(delegate
-        {
-            lastSelectedGameObject = optionsButton.gameObject;
-            menuManager.DissolveFromMenuToMenu(this, menuManager.optionsMenu);
-        });
-        creditsButton.onClick.AddListener(delegate
-        {
-            lastSelectedGameObject = creditsButton.gameObject;
-            menuManager.DissolveFromMenuToMenu(this, menuManager.creditsMenu);
-        });
+            if(Input.GetButtonDown("B_G"))
+            {
+                menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
+            }
+        }
     }
 
     public IEnumerator DissolveInCoroutine()
     {
         gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(lastSelectedGameObject);
+
+        EventSystem.current.SetSelectedGameObject(emptySelectable.gameObject);
+
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
