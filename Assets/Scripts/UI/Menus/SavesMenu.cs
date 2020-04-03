@@ -166,7 +166,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
             StartCoroutine(dissolve.DissolveOutCoroutine(menuManager.dissolveDuration));
         }
         yield return new WaitForSeconds(menuManager.dissolveDuration);
-        
+
         choiceButtons.gameObject.SetActive(false);
         EventSystem.current.sendNavigationEvents = true;
     }
@@ -243,8 +243,9 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
             yield return new WaitForSeconds(menuManager.dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
         EventSystem.current.sendNavigationEvents = true;
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
     }
 
     public IEnumerator DissolveOutCoroutine()
@@ -259,7 +260,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
         }
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(menuManager.dissolveDuration));
-        
+
         newGameChoiceButtons.gameObject.SetActive(false);
         actionChoiceButtons.gameObject.SetActive(false);
         gameObject.SetActive(false);

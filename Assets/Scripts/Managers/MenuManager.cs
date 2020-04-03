@@ -72,13 +72,13 @@ public class MenuManager : MonoBehaviour
         switch (sceneIndex)
         {
             case 0: // Start menu
-                // StartCoroutine(OpenStartMenuCoroutine());
-                    DissolveFromMenuToMenu(null, mainMenu);
-                
+                    // StartCoroutine(OpenStartMenuCoroutine());
+                DissolveFromMenuToMenu(null, mainMenu);
+
                 break;
             case 1: // Saves menu
-                // StartCoroutine(OpenSaveMenuCoroutine());
-                    DissolveFromMenuToMenu(null, savesMenu);
+                    // StartCoroutine(OpenSaveMenuCoroutine());
+                DissolveFromMenuToMenu(null, savesMenu);
                 break;
             case 2: // Chapters menu
                 if (GameManager.Instance.CurrentChapter != -1)

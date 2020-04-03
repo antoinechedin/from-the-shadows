@@ -244,8 +244,9 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
             yield return new WaitForSeconds(menuManager.dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
         EventSystem.current.sendNavigationEvents = true;
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
     }
 
     public IEnumerator DissolveOutCoroutine()
@@ -262,5 +263,4 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(menuManager.dissolveDuration));
         gameObject.SetActive(false);
     }
-
 }

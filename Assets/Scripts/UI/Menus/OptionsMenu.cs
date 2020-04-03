@@ -77,8 +77,9 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
             yield return new WaitForSeconds(menuManager.dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
         EventSystem.current.sendNavigationEvents = true;
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
     }
 
     public IEnumerator DissolveOutCoroutine()
