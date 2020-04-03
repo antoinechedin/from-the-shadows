@@ -26,7 +26,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     public Image screenshot;
     public Image foreground;
 
-    public MenuLevels menuLevels;
+    public Carousel menuLevels;
     private bool pressed = false;
     private AudioSource audioSource;
 
@@ -52,7 +52,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         HandleAppearence();
     }
 
-    public void Init(MenuLevels menuLevels)
+    public void Init(Carousel menuLevels)
     {
         this.menuLevels = menuLevels;
     }
