@@ -8,9 +8,15 @@ public class Vampire : MonoBehaviour, IResetable
     public List<Transform> positions;
     public float speed;
 
+    [Header("Attaque du boss")]
+    public GameObject laserRotator;
+    public float rotationSpeed;
+
     [Header("Actions")]
-    public float minTimeAction;
-    public float maxTimeAction;
+    public float minTimeProjectile;
+    public float maxTimeProjectile;
+    public float minTimeMove;
+    public float maxTimeMove;
     public GameObject explosivePrefab;
 
     [Header("Projectile explosif")]
@@ -25,29 +31,45 @@ public class Vampire : MonoBehaviour, IResetable
     [Header("Stats")]
     public int maxLife;
 
-    private float cptAction;
-    private float rdmAction;
+    private float cptTimeMove;
+    private float cptTimeProjectile;
+    private float rdmTimeMove;
+    private float rdmTimeProjectile;
 
     private int life;
 
     private Animator animator;
 
+    private bool firingLaser = false;
+    private bool reset = false;
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        rdmAction = Random.Range(minTimeAction, maxTimeAction);
+        rdmTimeMove = Random.Range(minTimeMove, maxTimeMove);
+        rdmTimeProjectile = Random.Range(minTimeProjectile, maxTimeProjectile);
         life = maxLife;
     }
 
     // Update is called once per frame
     void Update()
     {
-        cptAction += Time.deltaTime;
-
-        if (cptAction >= rdmAction)
+        if (!firingLaser)
         {
-            PickRandomAction();
+            cptTimeMove += Time.deltaTime;
+
+            if (cptTimeMove >= rdmTimeMove)
+            {
+                Move();
+            }
+
+            cptTimeProjectile += Time.deltaTime;
+
+            if (cptTimeProjectile >= rdmTimeProjectile)
+            {
+                Attack();
+            }
         }
     }
     public void PickRandomAction()
@@ -66,50 +88,68 @@ public class Vampire : MonoBehaviour, IResetable
                 break;
         }
 
-        cptAction = 0;
-        rdmAction = Random.Range(minTimeAction, maxTimeAction);
+        cptTimeMove = 0;
+        //rdmAction = Random.Range(minTimeAction, maxTimeAction);
     }
 
     public void Attack()
     {
-        Debug.Log("Attack");
         if (life == 3)//phase 1 : fantôme
         {
-            LaunchExplosive();
+            LaunchExplosive(1);
         }
         else if (life==2)//phase 2 fantôme + 1 explosif laser (joueur aléatoire)
         {
-            LaunchExplosive();
+            LaunchExplosive(2);
         }
         else if (life == 1)//phase 3 + 2 explosif laser (chaque joueur)
         {
-            LaunchExplosive();
+            LaunchExplosive(2);
         }
+
+        rdmTimeProjectile = Random.Range(minTimeProjectile, maxTimeProjectile);
+        cptTimeProjectile = 0;
     }
 
-    public void LaunchExplosive()
+    public void LaunchExplosive(int nbTarget)
     {
-        //pick a random target
-        PlayerController[] players = FindObjectsOfType<PlayerController>();
-        GameObject targetPlayer = players[Random.Range(0, players.Length)].gameObject;
-        Debug.Log(targetPlayer.name +" targeted");
-
         //launch attack
-        GameObject spawned = Instantiate(explosivePrefab, transform.position, Quaternion.identity);
-        spawned.GetComponent<VampireExplosive>().SetInfos(targetPlayer.transform.position + new Vector3(0, 2, 0),
-            speedProjectile,
-            minNbSubProjectile,
-            maxNbSubProjectile, 
-            speedSubProjectile,
-            lengthSubProjectile);
+        for (int i = 0; i < nbTarget; i++)
+        {
+            GameObject targetPlayer = new GameObject();
+            PlayerController[] players = FindObjectsOfType<PlayerController>();
+            if (nbTarget == 1)
+            {
+                targetPlayer = players[Random.Range(0, players.Length)].gameObject;
+            }
+            else
+            {
+                targetPlayer = players[i].gameObject;
+            }
+
+            GameObject spawned = Instantiate(explosivePrefab, transform.position, Quaternion.identity);
+            spawned.GetComponent<VampireExplosive>().SetInfos(targetPlayer.transform.position + new Vector3(0, 2, 0),
+                speedProjectile,
+                minNbSubProjectile,
+                maxNbSubProjectile,
+                speedSubProjectile,
+                lengthSubProjectile);
+        }
+
     }
 
     public void Move()
     {
-        Debug.Log("Move");
-        //pick a random pos
-        Vector3 chosenPos = positions[Random.Range(0, positions.Count - 1)].position;
+        Vector3 chosenPos = new Vector3();
+        do
+        {
+            chosenPos = positions[Random.Range(0, positions.Count)].position;
+        } while (chosenPos == transform.position);
+
         StartCoroutine(MoveAsync(chosenPos));
+
+        cptTimeMove = 0;
+        rdmTimeMove = Random.Range(minTimeMove, maxTimeMove);
     }
 
     public IEnumerator MoveAsync(Vector3 pos)
@@ -118,6 +158,47 @@ public class Vampire : MonoBehaviour, IResetable
         {
             transform.position = Vector3.MoveTowards(transform.position, pos, speed);
             yield return null;
+        }
+    }
+
+    public IEnumerator SpiningLasers(float time)
+    {
+        firingLaser = true;
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+
+        //on active le gros laser
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, FindObjectOfType<Prism>().transform.position);
+        lineRenderer.enabled = true;
+
+        float cpt = 0; 
+        laserRotator.GetComponent<Animator>().SetTrigger("Activating");
+        while (cpt < time && !reset)
+        {
+            cpt += Time.deltaTime;
+
+            //rotation
+            laserRotator.transform.Rotate(new Vector3(0, 0, rotationSpeed * Time.deltaTime));
+            yield return null;
+        }
+
+        laserRotator.GetComponent<Animator>().SetTrigger("Disactivating");
+        lineRenderer.enabled = false;
+        firingLaser = false;
+        reset = false;
+
+        ShuffleReflectors();
+    }
+
+    /// <summary>
+    /// Permet de mélanger les positions des reflectors de façon à ne pas pouvoir spam l'attaque sur le boss
+    /// </summary>
+    public void ShuffleReflectors()
+    {
+        Reflector[] reflectors = FindObjectsOfType<Reflector>();
+        foreach (Reflector reflector in reflectors)
+        {
+            reflector.Shuffle();
         }
     }
 
@@ -135,15 +216,7 @@ public class Vampire : MonoBehaviour, IResetable
 
     public void BigAttack()
     {
-        Debug.Log("Big attack");
-        LineRenderer lineRenderer = GetComponent<LineRenderer>();
-
-        //on active le gros laser
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, FindObjectOfType<Prism>().transform.position);
-        lineRenderer.enabled = true;
-
-        StartCoroutine(FindObjectOfType<Prism>().SpiningLasers(5));
+        StartCoroutine(SpiningLasers(5));
     }
 
     public void Die()
@@ -153,7 +226,25 @@ public class Vampire : MonoBehaviour, IResetable
 
     public void Reset()
     {
+        reset = true;
+
         life = maxLife;
-        //TODO : Reset la position
+        transform.position = positions[1].position;
+        animator.SetTrigger("Reset");
+        firingLaser = false;
+        cptTimeMove  = 0;
+
+        //on détruit tous les projectiles
+        VampireExplosive[] explosives = FindObjectsOfType<VampireExplosive>();
+        foreach (VampireExplosive explo in explosives)
+        {
+            Destroy(explo.gameObject);
+        }
+
+        LaserProjectile[] lasers = FindObjectsOfType<LaserProjectile>();
+        foreach (LaserProjectile las in lasers)
+        {
+            Destroy(las.gameObject);
+        }
     }
 }

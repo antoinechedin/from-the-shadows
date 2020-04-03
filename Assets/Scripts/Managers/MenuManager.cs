@@ -57,7 +57,7 @@ public class MenuManager : MonoBehaviour
             GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
         }
 
-        backgroundAnimator = background.gameObject.GetComponent<Animator>();
+        // backgroundAnimator = background.gameObject.GetComponent<Animator>();
         startMenuBackgroundAnimator = startMenuBackground.gameObject.GetComponent<Animator>();
 
         int sceneIndex = GameManager.Instance.LoadingMenuInfos.StartingMenuScene;
@@ -182,6 +182,7 @@ public class MenuManager : MonoBehaviour
         int lastSaveSelected = savesMenu.gameObject.GetComponent<SavesMenu>().LastSelected;
         Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
         EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
+        savesMenu.UpdateButtons();
 
         dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
@@ -232,12 +233,20 @@ public class MenuManager : MonoBehaviour
 
         EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
 
-        if (chapterFirstCompleted >= 0)
+        dissolves = chaptersMenu.GetComponentsInChildren<DissolveController>();
+        for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            menuChapter.UnlockChapter(chapterFirstCompleted + 1);
+            StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
+            yield return new WaitForSeconds(dissolveOffset);
         }
-
         EventSystem.current.sendNavigationEvents = true;
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
+
+        // if (chapterFirstCompleted >= 0)
+        // {
+        //     menuChapter.UnlockChapter(chapterFirstCompleted + 1);
+        // }
+
     }
 
     public void OpenOptionsMenu()

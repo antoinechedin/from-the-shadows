@@ -26,7 +26,7 @@ public class LineRendererDrawForward : MonoBehaviour
             {
                 if (active)
                 {
-                    hit.transform.GetComponent<PlayerController>().Die();
+                    //hit.transform.GetComponent<PlayerController>().Die();
                 }
             }   
             else//on a touché un élément de décors

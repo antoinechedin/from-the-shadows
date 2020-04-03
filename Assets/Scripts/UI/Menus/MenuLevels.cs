@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class MenuLevels : MonoBehaviour
 {
@@ -10,9 +11,13 @@ public class MenuLevels : MonoBehaviour
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
     public GameObject levelScreenshotsParent;
+    public TextMeshProUGUI levelName;
+    public Image leftArrow;
+    public Image rightArrow;
+    public LevelScreenshot levelScreenshotPrefab;
 
-    [Header("Carousel")]
     private List<LevelScreenshot> screenshots = new List<LevelScreenshot>();
+    [Header("Carousel")]
     public float distanceBetweenScreenshots;
     [Range(0.0f, 3.0f)]
     [Tooltip("The minimum size when a level is not selected")]
@@ -20,6 +25,9 @@ public class MenuLevels : MonoBehaviour
     [Range(0.0f, 3.0f)]
     [Tooltip("The size multiplier of the selected level")]
     public float maxSize;
+    [Range(0f, 1f)]
+    [Tooltip("Foreground alpha value when screenshot is unselected")]
+    public float foregroundMaxAlpha;
     [Tooltip("The speed of the carousel")]
     public float speed;
     [Tooltip("time between every possible change (prevents to go too fast if you hold)")]
@@ -27,45 +35,22 @@ public class MenuLevels : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float stickDeadZone;
 
-    private int currentSelectedLevel = 0;
+    private int currentLevelIndex = 0;
 
     private float timeCpt = 0;
     private bool pressed = false;
 
-    private void Update()
-    {
-        if (!pressed) //pour disable les contrôle si on a press un bouton
-        {
-            timeCpt += Time.deltaTime;
-            float moveX = Input.GetAxis("Horizontal_G");
+    [Header("Level Buttons Infos")]
+    public LevelButtonInfosArray[] levelButtonInfosMatrix;
 
-            if (Mathf.Abs(moveX) < stickDeadZone)
-            {
-                timeCpt = repeatDelay;
-            }
-
-            if (timeCpt >= repeatDelay) //pour pas spam trop vite
-            {
-                if (moveX > stickDeadZone)
-                {
-                    SelectNextLevel();
-                }
-                else if (moveX < -stickDeadZone)
-                {
-                    SelectPreviousLevel();
-                }
-            }
-        }
-    }
-
-    public void SetMenuLevels(int chapterNumber, Chapter chapter)
+    public void SetMenuLevels(int chapterNumber)
     {
         ResetScreenshots();
-        
+
         int nbCompleted = 0;
         int totalLevels = 0;
 
-        List<Level> levels = chapter.GetLevels();
+        List<Level> levels = GameManager.Instance.Saves[GameManager.Instance.CurrentSave].Chapters[chapterNumber].GetLevels();
         foreach (Level l in levels)
         {
 
@@ -74,6 +59,11 @@ public class MenuLevels : MonoBehaviour
         }
 
         //SetMenuLevelInfo(0, screenshots[0]);
+        LevelButtonInfosArray levelButtonInfosArray = null;
+        if (chapterNumber < levelButtonInfosMatrix.Length)
+        {
+            levelButtonInfosArray = levelButtonInfosMatrix[chapterNumber];
+        }
 
         int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
@@ -82,48 +72,69 @@ public class MenuLevels : MonoBehaviour
             {
                 int localLevelIndex = i;
                 //TODO : aller chercher le bon srceenshot
-                GameObject levelScreenshot = Resources.Load("LevelScreenshots/LevelScreenshot01") as GameObject;
-                levelScreenshot.name = localLevelIndex.ToString();
-                LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshot, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
+                LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshotPrefab, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
                 SetMenuLevelInfo(i, spawnedScreenshot);
                 spawnedScreenshot.GetComponent<Button>().onClick.AddListener(delegate
                 {
                     LevelButtonClicked(new LoadingChapterInfo(localLevelIndex), spawnedScreenshot);
                 });
-                spawnedScreenshot.LevelIndex = localLevelIndex;
+                spawnedScreenshot.LevelId = localLevelIndex;
+                spawnedScreenshot.levelIndex = nbLevelSpawned;
                 spawnedScreenshot.GetComponent<RectTransform>().localPosition = new Vector3(nbLevelSpawned * distanceBetweenScreenshots, 0, 0);
-                screenshots.Add(spawnedScreenshot);
 
+                if (levelButtonInfosArray != null && nbLevelSpawned < levelButtonInfosArray.infos.Length)
+                {
+                    LevelButtonInfos levelButtonInfos = levelButtonInfosArray.infos[nbLevelSpawned];
+                    spawnedScreenshot.screenshot.sprite = levelButtonInfos.image;
+                }
+
+                spawnedScreenshot.Init(this);
+                screenshots.Add(spawnedScreenshot);
                 nbLevelSpawned++;
             }
         }
+
+        for (int i = 0; i < screenshots.Count; i++)
+        {
+            Navigation explicitNav = new Navigation();
+            explicitNav.mode = Navigation.Mode.Explicit;
+            if (i > 0)
+            {
+                explicitNav.selectOnLeft = screenshots[i - 1].GetComponent<Button>();
+            }
+            if (i < screenshots.Count - 1)
+            {
+                explicitNav.selectOnRight = screenshots[i + 1].GetComponent<Button>();
+            }
+            screenshots[i].GetComponent<Button>().navigation = explicitNav;
+        }
+
         EventSystem.current.SetSelectedGameObject(screenshots[0].gameObject);
     }
 
-    public void SelectNextLevel()
+    public void SelectCheckpoint(int index)
     {
-        if (currentSelectedLevel < screenshots.Count - 1)
-        {
-            foreach (LevelScreenshot go in screenshots)
-            {
-                go.SetNewDestination(new Vector3(-distanceBetweenScreenshots, 0, 0));
-            }
-            currentSelectedLevel++;
-        }
-        timeCpt = 0;
-    }
+        Animator animator = GetComponent<Animator>();
 
-    public void SelectPreviousLevel()
-    {
-        if (currentSelectedLevel > 0)
+        foreach (LevelScreenshot go in screenshots)
         {
-            foreach (LevelScreenshot go in screenshots)
-            {
-                go.SetNewDestination(new Vector3(distanceBetweenScreenshots, 0, 0));
-            }
-            currentSelectedLevel--;
+            go.destination = new Vector3((go.levelIndex - index) * distanceBetweenScreenshots, 0, 0);
         }
-        timeCpt = 0;
+        levelName.text = levelButtonInfosMatrix[GameManager.Instance.CurrentChapter].infos[index].name;
+
+        if (animator != null)
+        {
+            if (index < currentLevelIndex) animator.SetTrigger("LeftArrowGiggle");
+            else if (index > currentLevelIndex) animator.SetTrigger("RightArrowGiggle");
+        }
+
+        if (index == 0) leftArrow.color = new Color(1, 1, 1, 0);
+        else leftArrow.color = new Color(1, 1, 1, 1);
+
+        if (index == screenshots.Count - 1) rightArrow.color = new Color(1, 1, 1, 0);
+        else rightArrow.color = new Color(1, 1, 1, 1);
+
+        currentLevelIndex = index;
     }
 
     public void SetMenuLevelInfo(int level, LevelScreenshot screenshot)
@@ -134,7 +145,7 @@ public class MenuLevels : MonoBehaviour
         {
             if (kv.Key == "light" && kv.Value)
             {
-                Instantiate(collectibleLight, screenshot.collectiblesHolder.transform) ;
+                Instantiate(collectibleLight, screenshot.collectiblesHolder.transform);
             }
             else if (kv.Key == "shadow" && kv.Value)
             {
@@ -173,7 +184,7 @@ public class MenuLevels : MonoBehaviour
                 collectibles.Add(new KeyValuePair<string, bool>("shadow", b));
             }
             level++;
-        } while ( level < ChapterLevels.Count && !ChapterLevels[level].IsCheckpoint);
+        } while (level < ChapterLevels.Count && !ChapterLevels[level].IsCheckpoint);
 
         return collectibles;
     }
@@ -185,13 +196,17 @@ public class MenuLevels : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         screenshots = new List<LevelScreenshot>();
-        currentSelectedLevel = 0;
+        currentLevelIndex = 0;
     }
 
     private void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
     {
-        //load la scene
-        GameManager.Instance.LoadChapter("Chapter" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+        int currentSave = GameManager.Instance.CurrentSave;
+
+        if (GameManager.Instance.Saves[currentSave].NbPlayer == 1)
+            GameManager.Instance.LoadChapter("ChapterSolo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+        else
+            GameManager.Instance.LoadChapter("ChapterDuo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
         //animation
         StartCoroutine(screenshot.PressedAnimation());
         //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
