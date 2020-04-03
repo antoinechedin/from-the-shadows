@@ -9,7 +9,7 @@ using TMPro;
 
 public class SavesMenu : MonoBehaviour, IDissolveMenu
 {
-    public MenuManager menuManager;
+    [HideInInspector] public MenuManager menuManager;
     public RectTransform actionChoiceButtons;
     public RectTransform newGameChoiceButtons;
 
@@ -44,7 +44,8 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
                 }
                 else
                 {
-                    menuManager.OpenStartMenu();
+                    // menuManager.OpenStartMenu();
+                    menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
                 }
                 GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(returnAudioClip);
             }
@@ -188,7 +189,8 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
                 GameManager.Instance.CurrentChapter = i + 1;
             }
         }
-        menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter, -1);
+        // menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter, -1);
+        menuManager.DissolveFromMenuToMenu(this, menuManager.chaptersMenu);
     }
 
     /// <summary>
@@ -230,6 +232,10 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
     public IEnumerator DissolveInCoroutine()
     {
         gameObject.SetActive(true);
+
+        EventSystem.current.SetSelectedGameObject(savesButons[LastSelected].gameObject);
+        UpdateButtons();
+
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {

@@ -58,6 +58,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     public IEnumerator DissolveInCoroutine()
     {
         gameObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(selectables[0].gameObject);
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {

@@ -73,20 +73,25 @@ public class MenuManager : MonoBehaviour
         switch (sceneIndex)
         {
             case 0: // Start menu
-                StartCoroutine(OpenStartMenuCoroutine());
+                // StartCoroutine(OpenStartMenuCoroutine());
+                    DissolveFromMenuToMenu(null, mainMenu);
+                
                 break;
             case 1: // Saves menu
-                StartCoroutine(OpenSaveMenuCoroutine());
+                // StartCoroutine(OpenSaveMenuCoroutine());
+                    DissolveFromMenuToMenu(null, savesMenu);
                 break;
             case 2: // Chapters menu
                 if (GameManager.Instance.CurrentChapter != -1)
                 {
-                    OpenChaptersMenu(GameManager.Instance.CurrentChapter, finishChapterForFirstTime);
+                    DissolveFromMenuToMenu(null, chaptersMenu);
+                    // OpenChaptersMenu(GameManager.Instance.CurrentChapter, finishChapterForFirstTime);
                 }
                 else
                 {
                     Debug.LogWarning("WARN MenuManager.Start: CurrentSave not set. Opening at chapter");
-                    OpenChaptersMenu(0, -1);
+                    DissolveFromMenuToMenu(null, chaptersMenu);
+                    // OpenChaptersMenu(0, -1);
                 }
 
                 break;
@@ -109,10 +114,21 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void OpenStartMenu()
+    public void DissolveFromMenuToMenu(IDissolveMenu from, IDissolveMenu to)
     {
-        StartCoroutine(OpenStartMenuCoroutine());
+        StartCoroutine(DissolveFromMenuToMenuCoroutine(from, to));
     }
+
+    public IEnumerator DissolveFromMenuToMenuCoroutine(IDissolveMenu from, IDissolveMenu to)
+    {
+        if (from != null) yield return StartCoroutine(from.DissolveOutCoroutine());
+        if (to != null) yield return StartCoroutine(to.DissolveInCoroutine());
+    }
+
+    // public void OpenStartMenu()
+    // {
+    //     StartCoroutine(OpenStartMenuCoroutine());
+    // }
 
     private IEnumerator OpenStartMenuCoroutine()
     {
@@ -155,10 +171,10 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.sendNavigationEvents = true;
     }
 
-    public void OpenSaveMenu()
-    {
-        StartCoroutine(OpenSaveMenuCoroutine());
-    }
+    // public void OpenSaveMenu()
+    // {
+    //     StartCoroutine(OpenSaveMenuCoroutine());
+    // }
 
     private IEnumerator OpenSaveMenuCoroutine()
     {
@@ -208,10 +224,10 @@ public class MenuManager : MonoBehaviour
         //yield return StartCoroutine(SavesDissolveIn());
     }
 
-    public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
-    {
-        StartCoroutine(OpenChaptersMenuCoroutine(chapterIndex, chapterFirstCompleted));
-    }
+    // public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
+    // {
+    //     StartCoroutine(OpenChaptersMenuCoroutine(chapterIndex, chapterFirstCompleted));
+    // }
 
     private IEnumerator OpenChaptersMenuCoroutine(int chapterIndex, int chapterFirstCompleted)
     {
@@ -257,10 +273,10 @@ public class MenuManager : MonoBehaviour
 
     }
 
-    public void OpenOptionsMenu()
-    {
-        StartCoroutine(OpenOptionsMenuCoroutine());
-    }
+    // public void OpenOptionsMenu()
+    // {
+    //     StartCoroutine(OpenOptionsMenuCoroutine());
+    // }
 
     private IEnumerator OpenOptionsMenuCoroutine()
     {

@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class ChaptersMenu : MonoBehaviour, IDissolveMenu
 {
-    public MenuManager menuManager;
+    [HideInInspector] public MenuManager menuManager;
 
     public IEnumerator DissolveInCoroutine()
     {

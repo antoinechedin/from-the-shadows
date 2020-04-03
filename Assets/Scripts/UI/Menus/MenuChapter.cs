@@ -68,7 +68,8 @@ public class MenuChapter : MonoBehaviour
             else if (!chapterMenuIsOpen)
             {
                 menuCamera.SetReturnToSavesMenu(true);
-                menuManager.OpenSaveMenu();
+                // menuManager.OpenSaveMenu();
+                menuManager.DissolveFromMenuToMenu(menuManager.chaptersMenu, menuManager.savesMenu);
             }
         }
 
