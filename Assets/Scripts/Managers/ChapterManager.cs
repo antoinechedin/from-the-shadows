@@ -37,6 +37,8 @@ public class ChapterManager : MonoBehaviour
 
         if(GameObject.Find("MusicManager") != null)
             musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+        else
+            Debug.LogWarning("No MusicManager set in the scene");
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
@@ -145,8 +147,6 @@ public class ChapterManager : MonoBehaviour
 
         if (musicManager != null)
             musicManager.ManageMusicChange(currentLevel, newCurrentLevel);
-        else
-            Debug.Log("No MusicManager set in the scene");
 
         List<LevelManager> levelsToDisable = new List<LevelManager>();
         foreach (LevelManager lm in levels[currentLevel].roomsToEnable)
