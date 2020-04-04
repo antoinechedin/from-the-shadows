@@ -169,6 +169,9 @@ public class MenuLevels : MonoBehaviour
             GameManager.Instance.LoadChapter("ChapterSolo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
         else
             GameManager.Instance.LoadChapter("ChapterDuo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+
+
+        GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         //animation
         StartCoroutine(screenshot.PressedAnimation());
         //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
