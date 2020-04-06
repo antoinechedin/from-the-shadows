@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class LevelButton : MonoBehaviour, ISelectHandler
 {
     public int levelNumber;
-    public MenuLevels menuLevels;
+    public Carousel menuLevels;
 
     public void OnSelect(BaseEventData eventData)
     {

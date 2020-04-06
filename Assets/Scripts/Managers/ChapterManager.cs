@@ -80,6 +80,7 @@ public class ChapterManager : MonoBehaviour
         {
             if (currentLevel + 1 < levels.Count)
             {
+                levels[currentLevel].gameObject.SetActive(false);
                 ChangeLevel(currentLevel + 1, true);
                 currentSpawns = levels[currentLevel].playerSpawns[0];
                 SpawnPlayers();
@@ -90,13 +91,14 @@ public class ChapterManager : MonoBehaviour
         {
             if (currentLevel - 1 >= 0)
             {
+                levels[currentLevel].gameObject.SetActive(false);
                 ChangeLevel(currentLevel - 1, true);
                 currentSpawns = levels[currentLevel].playerSpawns[0];
                 SpawnPlayers();
             }
         }
         //kill players
-        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K) && !GameManager.Instance.IsInCutscene)
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }

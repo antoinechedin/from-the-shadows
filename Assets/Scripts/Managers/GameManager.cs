@@ -27,6 +27,18 @@ public class GameManager : Singleton<GameManager>
 
     //debug bools
     private bool displayedNoSaveFile = false;
+    private bool isInCutscene = false;
+
+
+    // Options update
+    public delegate void OnOptionsUpdateDelegate();
+    public event OnOptionsUpdateDelegate optionsUpdateDelegate;
+
+    public void OnOptionUpdate()
+    {
+        if (optionsUpdateDelegate != null)
+            optionsUpdateDelegate();
+    }
 
     // Update is called once per frame
     void Update()
@@ -102,6 +114,12 @@ public class GameManager : Singleton<GameManager>
     {
         get { return currentSave; }
         set { currentSave = value; }
+    }
+
+    public bool IsInCutscene
+    {
+        get { return isInCutscene; }
+        set { isInCutscene = value; }
     }
 
     public Chapter GetCurrentChapter()
