@@ -12,6 +12,8 @@ public class PauseMenu : MonoBehaviour
     public MainPauseMenu mainPauseMenu;
     public OptionsMenu optionsMenu;
 
+    public DissolveController foregroundDissolveController;
+
     private bool optionsOpened;
 
     private void Awake()
@@ -84,16 +86,14 @@ public class PauseMenu : MonoBehaviour
 
     public void Quit()
     {
-        Time.timeScale = 1;
-        GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen");
-        loadingScreen = Instantiate(loadingScreen, transform.parent);
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
         StartCoroutine(Fade());
     }
-    IEnumerator Fade()
+
+    private IEnumerator Fade()
     {
-        yield return new WaitForSeconds(1f);
+        yield return StartCoroutine(foregroundDissolveController.DissolveInCoroutine(3f));
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;
 #else
