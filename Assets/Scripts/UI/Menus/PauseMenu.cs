@@ -19,7 +19,8 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("Start_G")) Resume();
+        if (InputManager.GetActionPressed(1, InputAction.Pause) || InputManager.GetActionPressed(2, InputAction.Pause)) 
+            Resume();
     }
 
     public void Resume()

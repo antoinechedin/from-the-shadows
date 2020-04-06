@@ -50,7 +50,7 @@ public class MenuChapter : MonoBehaviour
     {
         localIndexCurrentChapter = GameManager.Instance.CurrentChapter;
         // Cancel
-        if (Input.GetButtonDown("B_G"))
+        if (InputManager.GetActionPressed(0, InputAction.Return)) //Input.GetButtonDown("B_G"))
         {
             if (statsOpen)
             {
@@ -78,7 +78,8 @@ public class MenuChapter : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Start_G") && !chapterMenuIsOpen)
+        //if (Input.GetButtonDown("Start_G") && !chapterMenuIsOpen)
+        if (InputManager.GetActionPressed(0, InputAction.Pause))
         {
             DisplayStatistics();
         }

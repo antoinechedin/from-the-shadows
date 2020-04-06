@@ -51,7 +51,8 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (started)
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("A_G"))
+            //if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("A_G"))
+            if (InputManager.GetActionPressed(0, InputAction.Select))
             {
                 if(guis[currentDisplayed].canPass)
                 {

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
+    public bool isProController = false;
+    public bool isKeyPad = true;
+
     [Range(1, 2)]
     public int id = 1;
     public bool doubleJump;
@@ -34,7 +37,10 @@ public class PlayerInput : MonoBehaviour
          * Ceci est l'initialisation des boutons pour les deux joueurs
          * A voir où le mettre après
          * ***********************************************************/
+        InputManager.isProController = isProController;
+        InputManager.isKeyPad = isKeyPad;
         InputManager.Init();
+        //Debug.Log(Input.GetJoystickNames()[0]);
     }
     
     private void Update()
