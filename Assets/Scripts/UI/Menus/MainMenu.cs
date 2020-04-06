@@ -41,13 +41,13 @@ public class MainMenu : MonoBehaviour, IDissolveMenu
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(menuManager.dissolveDuration));
-            yield return new WaitForSeconds(menuManager.dissolveOffset);
+            StartCoroutine(dissolves[i].DissolveInCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSeconds(MenuManager.dissolveOffset);
         }
 
         EventSystem.current.sendNavigationEvents = true;
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(MenuManager.dissolveDuration));
     }
 
     public IEnumerator DissolveOutCoroutine()
@@ -57,11 +57,11 @@ public class MainMenu : MonoBehaviour, IDissolveMenu
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(menuManager.dissolveDuration));
-            yield return new WaitForSeconds(menuManager.dissolveOffset);
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSeconds(MenuManager.dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(menuManager.dissolveDuration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
         gameObject.SetActive(false);
     }
 }

@@ -7,14 +7,15 @@ public class DissolveController : MonoBehaviour
 {
     private const float START_OFFSET = 0f;
     private UIDissolve[] dissolves;
+    public bool startDissolved = true;
 
     private void Awake()
     {
         dissolves = GetComponentsInChildren<UIDissolve>();
-        foreach (UIDissolve dissolve in dissolves)
-        {
-            dissolve.effectFactor = 1;
-        }
+        if (startDissolved) foreach (UIDissolve dissolve in dissolves)
+            {
+                dissolve.effectFactor = 1;
+            }
     }
 
     /// <summary>
