@@ -37,7 +37,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
 
     private void Update()
     {
-        if (EventSystem.current.sendNavigationEvents)
+        if (EventSystem.current.sendNavigationEvents && menuManager != null)
         {
             if (Input.GetButtonDown("B_G"))
             {
@@ -74,7 +74,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveInCoroutine(MenuManager.dissolveDuration));
-            yield return new WaitForSeconds(MenuManager.dissolveOffset);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         EventSystem.current.sendNavigationEvents = true;
@@ -90,7 +90,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveOutCoroutine(MenuManager.dissolveDuration));
-            yield return new WaitForSeconds(MenuManager.dissolveOffset);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));

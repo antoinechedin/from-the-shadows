@@ -42,7 +42,7 @@ public class MainMenu : MonoBehaviour, IDissolveMenu
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveInCoroutine(MenuManager.dissolveDuration));
-            yield return new WaitForSeconds(MenuManager.dissolveOffset);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         EventSystem.current.sendNavigationEvents = true;
@@ -58,7 +58,7 @@ public class MainMenu : MonoBehaviour, IDissolveMenu
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveOutCoroutine(MenuManager.dissolveDuration));
-            yield return new WaitForSeconds(MenuManager.dissolveOffset);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));

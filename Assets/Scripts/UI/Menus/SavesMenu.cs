@@ -131,7 +131,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
             {
                 StartCoroutine(dissolve.DissolveInCoroutine(MenuManager.dissolveDuration));
             }
-            yield return new WaitForSeconds(MenuManager.dissolveDuration);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveDuration);
         }
         else if (GameManager.Instance.Saves[index] == null)
         {
@@ -150,7 +150,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
             {
                 StartCoroutine(dissolve.DissolveInCoroutine(MenuManager.dissolveDuration));
             }
-            yield return new WaitForSeconds(MenuManager.dissolveDuration);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveDuration);
         }
         EventSystem.current.sendNavigationEvents = true;
     }
@@ -165,7 +165,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
         {
             StartCoroutine(dissolve.DissolveOutCoroutine(MenuManager.dissolveDuration));
         }
-        yield return new WaitForSeconds(MenuManager.dissolveDuration);
+        yield return new WaitForSecondsRealtime(MenuManager.dissolveDuration);
 
         choiceButtons.gameObject.SetActive(false);
         EventSystem.current.sendNavigationEvents = true;
@@ -240,7 +240,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveInCoroutine(MenuManager.dissolveDuration));
-            yield return new WaitForSeconds(MenuManager.dissolveOffset);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         EventSystem.current.sendNavigationEvents = true;
@@ -256,7 +256,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveOutCoroutine(MenuManager.dissolveDuration));
-            yield return new WaitForSeconds(MenuManager.dissolveOffset);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));

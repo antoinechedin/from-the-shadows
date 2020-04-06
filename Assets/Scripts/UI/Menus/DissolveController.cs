@@ -40,7 +40,7 @@ public class DissolveController : MonoBehaviour
         float timer = 0;
         while (timer < duration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             timer = timer >= duration ? duration : timer;
 
             foreach (UIDissolve dissolve in dissolves)
@@ -61,7 +61,7 @@ public class DissolveController : MonoBehaviour
         float timer = 0;
         while (timer < duration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             timer = timer >= duration ? duration : timer;
 
             foreach (UIDissolve dissolve in dissolves)
