@@ -4,40 +4,17 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour, IDissolveMenu
+public class MainPauseMenu : MonoBehaviour, IDissolveMenu
 {
-    [HideInInspector] public MenuManager menuManager;
-    public Button playButton;
-    public Button optionsButton;
-    public Button creditsButton;
-    public Button quitButton;
-
-    public GameObject lastSelectedGameObject;
-
-    private void Awake()
-    {
-        lastSelectedGameObject = playButton.gameObject;
-        playButton.onClick.AddListener(delegate
-        {
-            lastSelectedGameObject = playButton.gameObject;
-            menuManager.DissolveFromMenuToMenu(this, menuManager.savesMenu);
-        });
-        optionsButton.onClick.AddListener(delegate
-        {
-            lastSelectedGameObject = optionsButton.gameObject;
-            menuManager.DissolveFromMenuToMenu(this, menuManager.optionsMenu);
-        });
-        creditsButton.onClick.AddListener(delegate
-        {
-            lastSelectedGameObject = creditsButton.gameObject;
-            menuManager.DissolveFromMenuToMenu(this, menuManager.creditsMenu);
-        });
-    }
+    public Selectable resumeButton;
+    public Selectable optionsButton;
 
     public IEnumerator DissolveInCoroutine()
     {
         gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(lastSelectedGameObject);
+
+        EventSystem.current.SetSelectedGameObject(optionsButton.gameObject);
+
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
@@ -62,6 +39,7 @@ public class MainMenu : MonoBehaviour, IDissolveMenu
         }
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
+
         gameObject.SetActive(false);
     }
 }
