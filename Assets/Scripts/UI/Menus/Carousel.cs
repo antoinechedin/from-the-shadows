@@ -217,6 +217,8 @@ public class Carousel : MonoBehaviour
             GameManager.Instance.LoadChapter("ChapterDuo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
         //animation
         StartCoroutine(screenshot.PressedAnimation());
+
+        GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
         pressed = true;
         EventSystem.current.SetSelectedGameObject(null);

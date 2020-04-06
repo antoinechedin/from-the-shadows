@@ -27,18 +27,20 @@ public class ChapterManager : MonoBehaviour
     {
         SetLevelsId();
 
+        if (GameObject.Find("MusicManager") != null)
+            musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+
         if (GameManager.Instance.LoadingChapterInfo != null)
         {
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
+
+            if (musicManager != null)
+                musicManager.SetMusicAccordingToLevel(GameManager.Instance.LoadingChapterInfo.StartLevelIndex, levels);
         }
 
         levels[currentLevel].virtualCamera.gameObject.SetActive(true);
         Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
 
-        if(GameObject.Find("MusicManager") != null)
-            musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
-        else
-            Debug.LogWarning("No MusicManager set in the scene");
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
