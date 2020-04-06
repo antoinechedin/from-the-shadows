@@ -224,6 +224,9 @@ public class GameManager : Singleton<GameManager>
         //étape 3 : on affiche la scène. à cette étape, le scène n'est pas encore totalement prête à être révélée.
         asyncLoad.allowSceneActivation = true;
 
+        // TODO : Stop main title music here
+        Debug.Log("Stop Main title");
+
         //on attend que la scène soit complètement prète à être affichée
         while (!asyncLoad.isDone)
         {
