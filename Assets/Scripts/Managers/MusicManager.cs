@@ -15,6 +15,7 @@ public class MusicManager : MonoBehaviour
     [Range(0, 100)]
     public int masterVolume = 50;
 
+    public bool playOnAwake = false;
     public FMOD.Studio.Bus masterBus;
 
 
@@ -24,13 +25,16 @@ public class MusicManager : MonoBehaviour
         {
             themes.Add(child.GetComponent<SongManager>());
         }
+
+        if (playOnAwake)
+            StartTheme(mainTheme);
     }
 
     void Start()
     {
         masterBus = FMODUnity.RuntimeManager.GetBus("Bus:/");
 
-        if(GameManager.Instance.LoadingChapterInfo == null)
+        if(GameManager.Instance.LoadingChapterInfo == null && !playOnAwake)
             StartTheme(mainTheme);
     }
 
