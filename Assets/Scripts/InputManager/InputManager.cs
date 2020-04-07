@@ -160,9 +160,9 @@ public class InputManager
         float xAxis = 0;
 
         if (GetKey(id, InputAction.MoveRight, (int)InputDevice.Keyboard))
-            xAxis = 1;
+            xAxis += 1;
         if (GetKey(id, InputAction.MoveLeft, (int)InputDevice.Keyboard))
-            xAxis = -1;
+            xAxis -= 1;
 
         // Temporary (Controller)
         if (Mathf.Abs(Input.GetAxisRaw("Horizontal_" + id)) > 0)
@@ -181,9 +181,9 @@ public class InputManager
         float yAxis = 0;
 
         if (GetKey(id, InputAction.MoveUp, (int)InputDevice.Keyboard))
-            yAxis = 1;
+            yAxis += 1;
         if (GetKey(id, InputAction.MoveDown, (int)InputDevice.Keyboard))
-            yAxis = -1;
+            yAxis -= 1;
 
         // Temporary (Controller)
         if (Mathf.Abs(Input.GetAxisRaw("Vertical_" + id)) > 0)
