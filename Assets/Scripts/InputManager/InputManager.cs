@@ -159,27 +159,6 @@ public class InputManager
         };
     }
 
-    private static bool GetKey(int id, InputAction action, InputDevice device)
-    {
-        Dictionary<InputAction, KeyCode>[] Player = WhichPlayer(id);
-
-        return Input.GetKey(Player[(int)device][action]);
-    }
-
-    private static Dictionary<InputAction, KeyCode>[] WhichPlayer(int id)
-    {
-        if (id != 1 && id != 2)
-        {
-            Debug.LogError("Player Selection : Error ID Player, player 1 selected");
-            return null;
-        }
-
-        if (id == 1)
-            return Player1;
-
-        return Player2;
-    }
-
     /// <summary>
     /// Get horizontal axis.
     /// </summary>
@@ -189,15 +168,33 @@ public class InputManager
     {
         float xAxis = 0;
 
-        if (GetKey(id, InputAction.MoveRight, (int)InputDevice.Keyboard))
-            xAxis += 1;
-        if (GetKey(id, InputAction.MoveLeft, (int)InputDevice.Keyboard))
-            xAxis -= 1;
+        if (id == 0)
+        {
+            if (
+                Input.GetKey(InputManager.Player1[0][InputAction.MoveRight])
+                || Input.GetKey(InputManager.Player2[0][InputAction.MoveRight])
+            ) xAxis += 1;
+
+            if (
+                Input.GetKey(InputManager.Player1[0][InputAction.MoveLeft])
+                || Input.GetKey(InputManager.Player2[0][InputAction.MoveLeft])
+            ) xAxis -= 1;
+        }
+        else
+        {
+            Dictionary<InputAction, KeyCode>[] Player = id == 1 ? InputManager.Player1 : InputManager.Player2;
+            if (Input.GetKey(Player[0][InputAction.MoveRight]))
+                xAxis += 1;
+            if (Input.GetKey(Player[0][InputAction.MoveLeft]))
+                xAxis -= 1;
+        }
 
         // Temporary (Controller)
-        if (Mathf.Abs(Input.GetAxisRaw("Horizontal_" + id)) > 0)
-            xAxis = Input.GetAxisRaw("Horizontal_" + id);
-
+        string idStr = id == 0 ? "G" : id.ToString();
+        if (Mathf.Abs(Input.GetAxisRaw("Horizontal_" + idStr)) > 0)
+        {
+            xAxis = Input.GetAxisRaw("Horizontal_" + idStr);
+        }
         return xAxis;
     }
 
@@ -210,15 +207,33 @@ public class InputManager
     {
         float yAxis = 0;
 
-        if (GetKey(id, InputAction.MoveUp, (int)InputDevice.Keyboard))
-            yAxis += 1;
-        if (GetKey(id, InputAction.MoveDown, (int)InputDevice.Keyboard))
-            yAxis -= 1;
+        if (id == 0)
+        {
+            if (
+                Input.GetKey(InputManager.Player1[0][InputAction.MoveUp])
+                || Input.GetKey(InputManager.Player2[0][InputAction.MoveUp])
+            ) yAxis += 1;
+
+            if (
+                Input.GetKey(InputManager.Player1[0][InputAction.MoveDown])
+                || Input.GetKey(InputManager.Player2[0][InputAction.MoveDown])
+            ) yAxis -= 1;
+        }
+        else
+        {
+            Dictionary<InputAction, KeyCode>[] Player = id == 1 ? InputManager.Player1 : InputManager.Player2;
+            if (Input.GetKey(Player[0][InputAction.MoveUp]))
+                yAxis += 1;
+            if (Input.GetKey(Player[0][InputAction.MoveDown]))
+                yAxis -= 1;
+        }
 
         // Temporary (Controller)
-        if (Mathf.Abs(Input.GetAxisRaw("Vertical_" + id)) > 0)
-            yAxis = Input.GetAxisRaw("Vertical_" + id);
-
+        string idStr = id == 0 ? "G" : id.ToString();
+        if (Mathf.Abs(Input.GetAxisRaw("Vertical_" + idStr)) > 0)
+        {
+            yAxis = Input.GetAxisRaw("Vertical_" + idStr);
+        }
         return yAxis;
     }
 
@@ -232,14 +247,8 @@ public class InputManager
     {
         bool IsPressed = false;
 
-
         if (id == 0)
         {
-            Dictionary<InputAction, KeyCode>[] Player1;
-            Dictionary<InputAction, KeyCode>[] Player2;
-            Player1 = WhichPlayer(1);
-            Player2 = WhichPlayer(2);
-
             IsPressed = Input.GetKeyDown(Player1[(int)InputDevice.Keyboard][action]);
             IsPressed = IsPressed || Input.GetKeyDown(Player1[(int)InputDevice.Controller][action]);
             IsPressed = IsPressed || Input.GetKeyDown(Player2[(int)InputDevice.Keyboard][action]);
@@ -247,13 +256,14 @@ public class InputManager
         }
         else
         {
-            Dictionary<InputAction, KeyCode>[] Player;
-            Player = WhichPlayer(id);
-
+            Dictionary<InputAction, KeyCode>[] Player = id == 1 ? InputManager.Player1 : InputManager.Player2;
             IsPressed = Input.GetKeyDown(Player[(int)InputDevice.Keyboard][action]);
 
             IsPressed = IsPressed || Input.GetKeyDown(Player[(int)InputDevice.Controller][action]);
         }
+
+        if (action == InputAction.Jump)
+            Debug.Log(IsPressed);
         return IsPressed;
     }
 
@@ -266,13 +276,20 @@ public class InputManager
     public static bool GetActionReleased(int id, InputAction action)
     {
         bool IsReleased = false;
-        Dictionary<InputAction, KeyCode>[] Player;
 
-        Player = WhichPlayer(id);
-
-        IsReleased = Input.GetKeyUp(Player[(int)InputDevice.Keyboard][action]);
-
-        IsReleased = IsReleased || Input.GetKeyUp(Player[(int)InputDevice.Controller][action]);
+        if (id == 0)
+        {
+            IsReleased = Input.GetKeyUp(Player1[(int)InputDevice.Keyboard][action]);
+            IsReleased = IsReleased || Input.GetKeyUp(Player1[(int)InputDevice.Controller][action]);
+            IsReleased = IsReleased || Input.GetKeyUp(Player2[(int)InputDevice.Keyboard][action]);
+            IsReleased = IsReleased || Input.GetKeyUp(Player2[(int)InputDevice.Controller][action]);
+        }
+        else
+        {
+            Dictionary<InputAction, KeyCode>[] Player = id == 1 ? InputManager.Player1 : InputManager.Player2;
+            IsReleased = Input.GetKeyUp(Player[(int)InputDevice.Keyboard][action]);
+            IsReleased = IsReleased || Input.GetKeyUp(Player[(int)InputDevice.Controller][action]);
+        }
 
         //return IsReleased = (Input.GetKeyUp(Player[(int)InputDevice.Keyboard][action]) || Input.GetButtonUp("A_" + id));
         return IsReleased;
@@ -287,10 +304,7 @@ public class InputManager
     /// <returns>KeyCode of the action needed in a specific device</returns>
     public static KeyCode GetActionKeyCode(int id, InputAction action, InputDevice device)
     {
-        Dictionary<InputAction, KeyCode>[] Player;
-
-        Player = WhichPlayer(id);
-
+        Dictionary<InputAction, KeyCode>[] Player = id == 1 ? InputManager.Player1 : InputManager.Player2;
         return Player[(int)device][action];
     }
 
