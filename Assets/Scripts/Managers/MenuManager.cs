@@ -28,8 +28,8 @@ public class MenuManager : MonoBehaviour
     public Image startMenuBackground;
     public TextMeshProUGUI version;
 
-    public const float dissolveDuration = 0.4f;
-    public const float dissolveOffset = 0.1f;
+    public const float dissolveDuration = 0.35f;
+    public const float dissolveOffset = 0.07f;
 
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;

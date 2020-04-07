@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// Actions of the player
@@ -40,10 +41,10 @@ public class InputManager
     {
         new Dictionary<InputAction, KeyCode>
         {
-            { InputAction.MoveDown, KeyCode.S },
-            { InputAction.MoveUp, KeyCode.Z },
-            { InputAction.MoveLeft, KeyCode.Q },
-            { InputAction.MoveRight, KeyCode.D },
+            { InputAction.MoveDown, (KeyCode)PlayerPrefs.GetInt("P1_Down", (int)KeyCode.S) },
+            { InputAction.MoveUp, (KeyCode)PlayerPrefs.GetInt("P1_Up", (int)KeyCode.Z) },
+            { InputAction.MoveLeft, (KeyCode)PlayerPrefs.GetInt("P1_Left", (int)KeyCode.Q) },
+            { InputAction.MoveRight, (KeyCode)PlayerPrefs.GetInt("P1_Right", (int)KeyCode.D) },
             { InputAction.Jump, KeyCode.Space },
             { InputAction.Attack, KeyCode.A },
             { InputAction.Interact, KeyCode.E },
@@ -95,6 +96,68 @@ public class InputManager
             { InputAction.Restart, KeyCode.Joystick2Button6 }
         }
     };
+
+    public static void UpdateKeyMapping()
+    {
+        InputManager.Player1 = new Dictionary<InputAction, KeyCode>[]
+        {
+            new Dictionary<InputAction, KeyCode>
+            {
+                { InputAction.MoveDown, (KeyCode)PlayerPrefs.GetInt("P1_Down", (int)KeyCode.S) },
+                { InputAction.MoveUp, (KeyCode)PlayerPrefs.GetInt("P1_Up", (int)KeyCode.Z) },
+                { InputAction.MoveLeft, (KeyCode)PlayerPrefs.GetInt("P1_Left", (int)KeyCode.Q) },
+                { InputAction.MoveRight, (KeyCode)PlayerPrefs.GetInt("P1_Right", (int)KeyCode.D) },
+                { InputAction.Jump, KeyCode.Space },
+                { InputAction.Attack, KeyCode.A },
+                { InputAction.Interact, KeyCode.E },
+                { InputAction.Switch, KeyCode.Tab },
+                { InputAction.Pause, KeyCode.Escape },
+                { InputAction.Restart, KeyCode.Delete },
+                { InputAction.Select, KeyCode.Return },
+                { InputAction.Return, KeyCode.Escape }
+            },
+            new Dictionary<InputAction, KeyCode>
+            {
+                { InputAction.Jump, KeyCode.Joystick1Button0 },
+                { InputAction.Attack, KeyCode.Joystick1Button1 },
+                { InputAction.Interact, KeyCode.Joystick1Button2 },
+                { InputAction.Switch, KeyCode.Joystick1Button4 },
+                { InputAction.Select, KeyCode.Joystick1Button0 },
+                { InputAction.Return, KeyCode.Joystick1Button1 },
+                { InputAction.Pause, KeyCode.Joystick1Button7 },
+                { InputAction.Restart, KeyCode.Joystick1Button6 }
+            }
+        };
+        InputManager.Player2 = new Dictionary<InputAction, KeyCode>[]
+        {
+            new Dictionary<InputAction, KeyCode>
+            {
+                { InputAction.MoveDown, KeyCode.DownArrow },
+                { InputAction.MoveUp, KeyCode.UpArrow },
+                { InputAction.MoveLeft, KeyCode.LeftArrow },
+                { InputAction.MoveRight, KeyCode.RightArrow },
+                { InputAction.Switch, KeyCode.Tab },
+                { InputAction.Pause, KeyCode.Escape },
+                { InputAction.Restart, KeyCode.Delete },
+                { InputAction.Select, KeyCode.Return },
+                { InputAction.Return, KeyCode.Escape },
+                { InputAction.Jump, KeyCode.Keypad0 },
+                { InputAction.Attack, KeyCode.Keypad8 },
+                { InputAction.Interact, KeyCode.Keypad4 }
+            },
+            new Dictionary<InputAction, KeyCode>
+            {
+                { InputAction.Jump, KeyCode.Joystick2Button0 },
+                { InputAction.Attack, KeyCode.Joystick2Button1 },
+                { InputAction.Interact, KeyCode.Joystick2Button2 },
+                { InputAction.Switch, KeyCode.Joystick1Button4 },
+                { InputAction.Select, KeyCode.Joystick2Button0 },
+                { InputAction.Return, KeyCode.Joystick2Button1 },
+                { InputAction.Pause, KeyCode.Joystick2Button7 },
+                { InputAction.Restart, KeyCode.Joystick2Button6 }
+            }
+        };
+    }
 
     private static bool GetKey(int id, InputAction action, InputDevice device)
     {

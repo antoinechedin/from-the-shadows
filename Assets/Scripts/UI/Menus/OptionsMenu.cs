@@ -3,27 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class OptionsMenu : MonoBehaviour, IDissolveMenu
 {
+    [HideInInspector] public int currentIndex;
+
+    private bool listeningKey = false;
+    private MenuControlsButton currentControlsButton;
+
+
+    [Header("Component refs")]
+    [HideInInspector] public MenuManager menuManager;
     public MenuSlider musicSlider;
     public MenuSlider soundsSlider;
-
-    [HideInInspector] public MenuManager menuManager;
-    [HideInInspector] public int currentIndex;
+    public MenuControlsButton[] controlsButtons;
     [HideInInspector] public Selectable[] selectables;
+    public CanvasGroup PressAKeyCanvasGroup;
 
     private void Awake()
     {
         currentIndex = -1;
-        selectables = new Selectable[]
+        selectables = new Selectable[2 + controlsButtons.Length];
+
+        selectables[0] = musicSlider.GetComponent<Selectable>();
+        selectables[1] = soundsSlider.GetComponent<Selectable>();
+
+        for (int i = 0; i < controlsButtons.Length; i++)
         {
-            musicSlider.GetComponent<Selectable>(),
-            soundsSlider.GetComponent<Selectable>()
-        };
+            selectables[2 + i] = controlsButtons[i].GetComponent<Selectable>();
+        }
 
         Init();
-
     }
 
     public void Init()
@@ -31,8 +42,12 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         int musicVolume = PlayerPrefs.GetInt("MusicVolume", 10);
         int soundsVolume = PlayerPrefs.GetInt("SoundsVolume", 10);
 
-        musicSlider.Init(musicVolume);
-        soundsSlider.Init(soundsVolume);
+        musicSlider.Init(musicVolume, this);
+        soundsSlider.Init(soundsVolume, this);
+        foreach (MenuControlsButton controlsButton in controlsButtons)
+        {
+            controlsButton.Init(this);
+        }
     }
 
     private void Update()
@@ -42,6 +57,26 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
             if (Input.GetButtonDown("B_G"))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
+            }
+        }
+
+        if (listeningKey)
+        {
+            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKeyDown(keyCode))
+                {
+                    Debug.Log("OptionsMenu: " + keyCode.ToString() + " pressed");
+                    PlayerPrefs.SetInt(currentControlsButton.playerPrefsId, (int)keyCode);
+
+                    InputManager.UpdateKeyMapping();
+                    currentControlsButton.UpdateButton();
+
+                    listeningKey = false;
+                    currentControlsButton = null;
+                    PressAKeyCanvasGroup.alpha = 0f;
+                    StartCoroutine(StopListeningKeyCoroutine());
+                }
             }
         }
     }
@@ -64,6 +99,26 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
             currentIndex = index;
             selectable.animator.SetTrigger("Selected");
         }
+    }
+
+    public void StartListeningKey(MenuControlsButton controlsButton)
+    {
+        EventSystem.current.sendNavigationEvents = false;
+        currentControlsButton = controlsButton;
+        PressAKeyCanvasGroup.alpha = 0.9f;
+        StartCoroutine(StartListeningKeyCoroutine());
+    }
+
+    private IEnumerator StartListeningKeyCoroutine()
+    {
+        yield return null;
+        listeningKey = true;
+    }
+
+    private IEnumerator StopListeningKeyCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(0.2f);
+        EventSystem.current.sendNavigationEvents = true;
     }
 
     public IEnumerator DissolveInCoroutine()
