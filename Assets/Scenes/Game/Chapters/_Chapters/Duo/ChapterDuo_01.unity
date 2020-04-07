@@ -1001,6 +1001,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &242415296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81bcacc415a1f743bfdf703afc52027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 0
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  top:
+    m_OverrideState: 0
+    m_Value: {r: 0.5756052, g: 0.581431, b: 0.6132076, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  middle:
+    m_OverrideState: 0
+    m_Value: {r: 0.5187789, g: 0.5286766, b: 0.5471698, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  bottom:
+    m_OverrideState: 0
+    m_Value: {r: 0.5896226, g: 0.63831145, b: 1, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  gradientDiffusion:
+    m_OverrideState: 0
+    m_Value: 1
 --- !u!114 &245292901 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1588117785122600685, guid: f0bfe9d3f126e9d448b451c556a3d7e6,
@@ -1988,7 +2058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: 3b68d98c81d704d4b8afe2b8a78e9754, type: 2}
   m_StaticLightingSkyUniqueID: 3
-  m_SkySettings: {fileID: 2049723746}
+  m_SkySettings: {fileID: 242415296}
   m_SkySettingsFromProfile: {fileID: -4787710561894659649, guid: 3b68d98c81d704d4b8afe2b8a78e9754,
     type: 2}
 --- !u!4 &558250740
@@ -2171,6 +2241,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 697176047, guid: 0197a110582000000a97a11058200000, type: 3}
+      propertyPath: m_Offset.x
+      value: 5.6600723
+      objectReference: {fileID: 0}
+    - target: {fileID: 697176047, guid: 0197a110582000000a97a11058200000, type: 3}
+      propertyPath: m_Size.x
+      value: 51.688232
+      objectReference: {fileID: 0}
     - target: {fileID: 3524245177753680946, guid: 0197a110582000000a97a11058200000,
         type: 3}
       propertyPath: newPlayerSpawns
@@ -2189,17 +2267,17 @@ PrefabInstance:
     - target: {fileID: 3987407061532963154, guid: 0197a110582000000a97a11058200000,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -73.36
+      value: -88.36
       objectReference: {fileID: 0}
     - target: {fileID: 3987407061532963154, guid: 0197a110582000000a97a11058200000,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.4985
+      value: -3.4965
       objectReference: {fileID: 0}
     - target: {fileID: 3987407061532963154, guid: 0197a110582000000a97a11058200000,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.01995
+      value: -0.0099497
       objectReference: {fileID: 0}
     - target: {fileID: 3987407061532963154, guid: 0197a110582000000a97a11058200000,
         type: 3}
@@ -2251,6 +2329,11 @@ PrefabInstance:
       propertyPath: roomsToEnable.Array.data[1]
       value: 
       objectReference: {fileID: 258214704}
+    - target: {fileID: 3987407061532963155, guid: 0197a110582000000a97a11058200000,
+        type: 3}
+      propertyPath: maxCameraDepth
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 7983197364533374266, guid: 0197a110582000000a97a11058200000,
         type: 3}
       propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgument
@@ -6555,6 +6638,21 @@ PrefabInstance:
       propertyPath: OnDialogueStart.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
       objectReference: {fileID: 603782062}
+    - target: {fileID: 4305300429577394112, guid: bc3fac3c9d51c0045a072c522eaf58b3,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305300429577394113, guid: bc3fac3c9d51c0045a072c522eaf58b3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305300429577394119, guid: bc3fac3c9d51c0045a072c522eaf58b3,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5674561850138393961, guid: bc3fac3c9d51c0045a072c522eaf58b3,
         type: 3}
       propertyPath: newPlayerSpawns
@@ -7852,76 +7950,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fdd8c9b8a73aeba4ca7b2de6327ad3af, type: 3}
---- !u!114 &2049723746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a81bcacc415a1f743bfdf703afc52027, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 0
-  exposure:
-    m_OverrideState: 0
-    m_Value: 0
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxColor:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  top:
-    m_OverrideState: 0
-    m_Value: {r: 0.5756052, g: 0.581431, b: 0.6132076, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  middle:
-    m_OverrideState: 0
-    m_Value: {r: 0.5187789, g: 0.5286766, b: 0.5471698, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  bottom:
-    m_OverrideState: 0
-    m_Value: {r: 0.5896226, g: 0.63831145, b: 1, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  gradientDiffusion:
-    m_OverrideState: 0
-    m_Value: 1
 --- !u!1001 &2052799652
 PrefabInstance:
   m_ObjectHideFlags: 0
