@@ -38,96 +38,63 @@ public class InputManager
 
     public static Dictionary<InputAction, KeyCode>[] Player1 = new Dictionary<InputAction, KeyCode>[]
     {
-        new Dictionary<InputAction, KeyCode>(),
-        new Dictionary<InputAction, KeyCode>()
+        new Dictionary<InputAction, KeyCode>
+        {
+            { InputAction.MoveDown, KeyCode.S },
+            { InputAction.MoveUp, KeyCode.Z },
+            { InputAction.MoveLeft, KeyCode.Q },
+            { InputAction.MoveRight, KeyCode.D },
+            { InputAction.Jump, KeyCode.Space },
+            { InputAction.Attack, KeyCode.A },
+            { InputAction.Interact, KeyCode.E },
+            { InputAction.Switch, KeyCode.Tab },
+            { InputAction.Pause, KeyCode.P },
+            { InputAction.Restart, KeyCode.Delete },
+            { InputAction.Select, KeyCode.Return },
+            { InputAction.Return, KeyCode.Escape }
+        },
+        new Dictionary<InputAction, KeyCode>
+        {
+            { InputAction.Jump, KeyCode.Joystick1Button0 },
+            { InputAction.Attack, KeyCode.Joystick1Button1 },
+            { InputAction.Interact, KeyCode.Joystick1Button2 },
+            { InputAction.Switch, KeyCode.Joystick1Button4 },
+            { InputAction.Select, KeyCode.Joystick1Button0 },
+            { InputAction.Return, KeyCode.Joystick1Button1 },
+            { InputAction.Pause, KeyCode.Joystick1Button7 },
+            { InputAction.Restart, KeyCode.Joystick1Button6 }
+        }
     };
 
     public static Dictionary<InputAction, KeyCode>[] Player2 = new Dictionary<InputAction, KeyCode>[]
     {
-        new Dictionary<InputAction, KeyCode>(),
-        new Dictionary<InputAction, KeyCode>()
+        new Dictionary<InputAction, KeyCode>
+        {
+            { InputAction.MoveDown, KeyCode.DownArrow },
+            { InputAction.MoveUp, KeyCode.UpArrow },
+            { InputAction.MoveLeft, KeyCode.LeftArrow },
+            { InputAction.MoveRight, KeyCode.RightArrow },
+            { InputAction.Switch, KeyCode.Tab },
+            { InputAction.Pause, KeyCode.P },
+            { InputAction.Restart, KeyCode.Delete },
+            { InputAction.Select, KeyCode.Return },
+            { InputAction.Return, KeyCode.Escape },
+            { InputAction.Jump, KeyCode.Keypad0 },
+            { InputAction.Attack, KeyCode.Keypad8 },
+            { InputAction.Interact, KeyCode.Keypad4 }
+        },
+        new Dictionary<InputAction, KeyCode>
+        {
+            { InputAction.Jump, KeyCode.Joystick2Button0 },
+            { InputAction.Attack, KeyCode.Joystick2Button1 },
+            { InputAction.Interact, KeyCode.Joystick2Button2 },
+            { InputAction.Switch, KeyCode.Joystick1Button4 },
+            { InputAction.Select, KeyCode.Joystick2Button0 },
+            { InputAction.Return, KeyCode.Joystick2Button1 },
+            { InputAction.Pause, KeyCode.Joystick2Button7 },
+            { InputAction.Restart, KeyCode.Joystick2Button6 }
+        }
     };
-
-    /// <summary>
-    /// Initialize inputs of players.
-    /// </summary>
-    public static void Init()
-    {
-
-        Player1[(int)InputDevice.Keyboard].Clear();
-        Player1[(int)InputDevice.Controller].Clear();
-        Player2[(int)InputDevice.Keyboard].Clear();
-        Player2[(int)InputDevice.Controller].Clear();
-
-        // Keyboard mapping
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.MoveDown, KeyCode.S);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.MoveUp, KeyCode.Z);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.MoveLeft, KeyCode.Q);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.MoveRight, KeyCode.D);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Jump, KeyCode.Space);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Attack, KeyCode.A);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Interact, KeyCode.E);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Switch, KeyCode.Tab);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Pause, KeyCode.P);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Restart, KeyCode.Delete);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Select, KeyCode.Return);
-        Player1[(int)InputDevice.Keyboard].Add(InputAction.Return, KeyCode.Escape);
-
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.MoveDown, KeyCode.DownArrow);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.MoveUp, KeyCode.UpArrow);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.MoveLeft, KeyCode.LeftArrow);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.MoveRight, KeyCode.RightArrow);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.Switch, KeyCode.Tab);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.Pause, KeyCode.P);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.Restart, KeyCode.Delete);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.Select, KeyCode.Return);
-        Player2[(int)InputDevice.Keyboard].Add(InputAction.Return, KeyCode.Escape);
-  
-        if(isKeyPad)
-        {
-            Player2[(int)InputDevice.Keyboard].Add(InputAction.Jump, KeyCode.Keypad0);
-            Player2[(int)InputDevice.Keyboard].Add(InputAction.Attack, KeyCode.Keypad8);
-            Player2[(int)InputDevice.Keyboard].Add(InputAction.Interact, KeyCode.Keypad4);
-        }
-        else
-        {
-            Player2[(int)InputDevice.Keyboard].Add(InputAction.Jump, KeyCode.Return);
-            Player2[(int)InputDevice.Keyboard].Add(InputAction.Attack, KeyCode.RightShift);
-            Player2[(int)InputDevice.Keyboard].Add(InputAction.Interact, KeyCode.RightControl);
-        }
-
-        // Controller mapping
-        Player1[(int)InputDevice.Controller].Add(InputAction.Jump, KeyCode.Joystick1Button0);
-        Player1[(int)InputDevice.Controller].Add(InputAction.Attack, KeyCode.Joystick1Button1);
-        Player1[(int)InputDevice.Controller].Add(InputAction.Interact, KeyCode.Joystick1Button2);
-        Player1[(int)InputDevice.Controller].Add(InputAction.Switch, KeyCode.Joystick1Button4);
-        Player1[(int)InputDevice.Controller].Add(InputAction.Select, KeyCode.Joystick1Button0);
-        Player1[(int)InputDevice.Controller].Add(InputAction.Return, KeyCode.Joystick1Button1);
-
-        Player2[(int)InputDevice.Controller].Add(InputAction.Jump, KeyCode.Joystick2Button0);
-        Player2[(int)InputDevice.Controller].Add(InputAction.Attack, KeyCode.Joystick2Button1);
-        Player2[(int)InputDevice.Controller].Add(InputAction.Interact, KeyCode.Joystick2Button2);
-        Player2[(int)InputDevice.Controller].Add(InputAction.Switch, KeyCode.Joystick1Button4);
-        Player2[(int)InputDevice.Controller].Add(InputAction.Select, KeyCode.Joystick2Button0);
-        Player2[(int)InputDevice.Controller].Add(InputAction.Return, KeyCode.Joystick2Button1);
-
-        if (isProController)
-        {
-            Player1[(int)InputDevice.Controller].Add(InputAction.Pause, KeyCode.Joystick1Button9);
-            Player1[(int)InputDevice.Controller].Add(InputAction.Restart, KeyCode.Joystick1Button8);
-
-            Player2[(int)InputDevice.Controller].Add(InputAction.Pause, KeyCode.Joystick2Button9);
-            Player2[(int)InputDevice.Controller].Add(InputAction.Restart, KeyCode.Joystick2Button8);
-        }
-        else
-        {
-            Player1[(int)InputDevice.Controller].Add(InputAction.Pause, KeyCode.Joystick1Button7);
-            Player1[(int)InputDevice.Controller].Add(InputAction.Restart, KeyCode.Joystick1Button6);
-
-            Player2[(int)InputDevice.Controller].Add(InputAction.Pause, KeyCode.Joystick2Button7);
-            Player2[(int)InputDevice.Controller].Add(InputAction.Restart, KeyCode.Joystick2Button6);
-        }
-    }
 
     private static bool GetKey(int id, InputAction action, InputDevice device)
     {
@@ -201,7 +168,7 @@ public class InputManager
     public static bool GetActionPressed(int id, InputAction action)
     {
         bool IsPressed = false;
-        
+
 
         if (id == 0)
         {
@@ -210,8 +177,10 @@ public class InputManager
             Player1 = WhichPlayer(1);
             Player2 = WhichPlayer(2);
 
-            IsPressed = Input.GetKeyDown(Player1[(int)InputDevice.Keyboard][action]) || Input.GetKeyDown(Player1[(int)InputDevice.Controller][action]) ||
-                        Input.GetKeyDown(Player2[(int)InputDevice.Keyboard][action]) || Input.GetKeyDown(Player2[(int)InputDevice.Controller][action]);
+            IsPressed = Input.GetKeyDown(Player1[(int)InputDevice.Keyboard][action]);
+            IsPressed = IsPressed || Input.GetKeyDown(Player1[(int)InputDevice.Controller][action]);
+            IsPressed = IsPressed || Input.GetKeyDown(Player2[(int)InputDevice.Keyboard][action]);
+            IsPressed = IsPressed || Input.GetKeyDown(Player2[(int)InputDevice.Controller][action]);
         }
         else
         {

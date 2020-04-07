@@ -32,14 +32,7 @@ public class PlayerInput : MonoBehaviour
             Debug.LogWarning("WARN PlayerInput.Awake: Player " +  id + " can attack but don't have an attack collider."
                             + " Attack is disable.");
         }
-
-        /**************************************************************
-         * Ceci est l'initialisation des boutons pour les deux joueurs
-         * A voir où le mettre après
-         * ***********************************************************/
-        InputManager.isProController = isProController;
-        InputManager.isKeyPad = isKeyPad;
-        InputManager.Init();
+        
         //Debug.Log(Input.GetJoystickNames()[0]);
     }
     
