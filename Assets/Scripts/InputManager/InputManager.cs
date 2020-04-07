@@ -48,7 +48,7 @@ public class InputManager
             { InputAction.Attack, KeyCode.A },
             { InputAction.Interact, KeyCode.E },
             { InputAction.Switch, KeyCode.Tab },
-            { InputAction.Pause, KeyCode.P },
+            { InputAction.Pause, KeyCode.Escape },
             { InputAction.Restart, KeyCode.Delete },
             { InputAction.Select, KeyCode.Return },
             { InputAction.Return, KeyCode.Escape }
@@ -75,7 +75,7 @@ public class InputManager
             { InputAction.MoveLeft, KeyCode.LeftArrow },
             { InputAction.MoveRight, KeyCode.RightArrow },
             { InputAction.Switch, KeyCode.Tab },
-            { InputAction.Pause, KeyCode.P },
+            { InputAction.Pause, KeyCode.Escape },
             { InputAction.Restart, KeyCode.Delete },
             { InputAction.Select, KeyCode.Return },
             { InputAction.Return, KeyCode.Escape },
