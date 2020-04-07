@@ -32,7 +32,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
     {
         if (EventSystem.current.sendNavigationEvents)
         {
-            if (Input.GetButtonDown("B_G"))
+            if (InputManager.GetActionPressed(0, InputAction.Return)) //Input.GetButtonDown("B_G"))
             {
                 if (actionChoiceButtons != null && actionChoiceButtons.gameObject.activeSelf)
                 {

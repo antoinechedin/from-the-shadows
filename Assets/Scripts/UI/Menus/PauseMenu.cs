@@ -30,17 +30,20 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if (EventSystem.current.sendNavigationEvents)
         {
+        if (EventSystem.current.sendNavigationEvents)
             if (optionsOpened)
             {
-                if (Input.GetButtonDown("Start_G") || Input.GetButtonDown("B_G")) CloseOptions();
+                if (InputManager.GetActionPressed(1, InputAction.Pause) || InputManager.GetActionPressed(2, InputAction.Pause)) 
+                    CloseOptions();
             }
             else
             {
-                if (Input.GetButtonDown("Start_G")) Resume();
+                if (InputManager.GetActionPressed(1, InputAction.Pause) || InputManager.GetActionPressed(2, InputAction.Pause)) 
+                    Resume();
             }
         }
+        
     }
 
     public void Resume()

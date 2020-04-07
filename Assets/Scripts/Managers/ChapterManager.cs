@@ -62,14 +62,15 @@ public class ChapterManager : MonoBehaviour
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
 
         // Position moyenne des deux joueurs
-
-        if (Input.GetButtonDown("Start_G"))
+        //if (Input.GetButtonDown("Start_G"))
+        if (InputManager.GetActionPressed(0, InputAction.Pause))
         {
             pauseMenu.gameObject.SetActive(true);
             pauseMenu.OpenPauseMenu();
         }
 
-        if (Input.GetButtonDown("Select_G"))
+        //if (Input.GetButtonDown("Select_G"))
+        if (InputManager.GetActionPressed(0, InputAction.Restart))
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }
