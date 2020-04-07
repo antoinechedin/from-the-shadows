@@ -5,8 +5,18 @@ using UnityEngine;
 
 public class DissolveController : MonoBehaviour
 {
-
     private const float START_OFFSET = 0f;
+    private UIDissolve[] dissolves;
+    public bool startDissolved = true;
+
+    private void Awake()
+    {
+        dissolves = GetComponentsInChildren<UIDissolve>();
+        if (startDissolved) foreach (UIDissolve dissolve in dissolves)
+            {
+                dissolve.effectFactor = 1;
+            }
+    }
 
     /// <summary>
     /// Set the dissolve effect factor for all UIDissovle children.
@@ -14,7 +24,6 @@ public class DissolveController : MonoBehaviour
     /// <param name="value">The new effect factor value.</param>
     public void SetEffectFactor(float value)
     {
-        UIDissolve[] dissolves = GetComponentsInChildren<UIDissolve>();
         foreach (UIDissolve dissolve in dissolves)
         {
             dissolve.effectFactor = value;
@@ -28,11 +37,10 @@ public class DissolveController : MonoBehaviour
     /// <returns></returns>
     public IEnumerator DissolveInCoroutine(float duration)
     {
-        UIDissolve[] dissolves = GetComponentsInChildren<UIDissolve>();
         float timer = 0;
         while (timer < duration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             timer = timer >= duration ? duration : timer;
 
             foreach (UIDissolve dissolve in dissolves)
@@ -50,11 +58,10 @@ public class DissolveController : MonoBehaviour
     /// <returns></returns>
     public IEnumerator DissolveOutCoroutine(float duration)
     {
-        UIDissolve[] dissolves = GetComponentsInChildren<UIDissolve>();
         float timer = 0;
         while (timer < duration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             timer = timer >= duration ? duration : timer;
 
             foreach (UIDissolve dissolve in dissolves)

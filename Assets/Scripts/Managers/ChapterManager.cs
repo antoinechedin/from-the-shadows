@@ -9,6 +9,8 @@ public class ChapterManager : MonoBehaviour
     public PauseMenu pauseMenu;
     private int currentLevel = 0; // indice du niveau actuel
 
+    private MusicManager musicManager;
+
     private float timeSinceBegin = 0;
     private GameObject currentSpawns;
 
@@ -32,6 +34,11 @@ public class ChapterManager : MonoBehaviour
 
         levels[currentLevel].virtualCamera.gameObject.SetActive(true);
         Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
+
+        if(GameObject.Find("MusicManager") != null)
+            musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+        else
+            Debug.LogWarning("No MusicManager set in the scene");
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
@@ -140,6 +147,9 @@ public class ChapterManager : MonoBehaviour
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
+        if (musicManager != null)
+            musicManager.ManageMusicChange(currentLevel, newCurrentLevel);
+
         List<LevelManager> levelsToDisable = new List<LevelManager>();
         foreach (LevelManager lm in levels[currentLevel].roomsToEnable)
         {
@@ -158,6 +168,7 @@ public class ChapterManager : MonoBehaviour
 
         levels[newCurrentLevel].virtualCamera.gameObject.SetActive(true);
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
+
 
         currentLevel = newCurrentLevel;
 

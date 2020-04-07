@@ -6,13 +6,13 @@ public class MovingKillZone : MonoBehaviour, IResetable
 {
     public GameObject killZone;
     [Header("Parent object containing the checkpoints")]
-    public List<GameObject> checkPoints;
+    public GameObject startingCheckpoint;
 
     private Transform targetPos;
     private float maxSpeed;
     private float timeToMaxSpeed;
 
-    private float currentSpeed = 0;
+    public float currentSpeed = 0;
     
     private MovingKillZoneCP currentResetCheckPoint;
     private MovingKillZoneCP currentCheckPoint;
@@ -47,7 +47,7 @@ public class MovingKillZone : MonoBehaviour, IResetable
     //}
     void OnEnable()
     {
-        SetNewInfos(checkPoints[0].GetComponent<MovingKillZoneCP>());
+        SetNewInfos(startingCheckpoint.GetComponent<MovingKillZoneCP>());
     }
 
 
@@ -72,6 +72,7 @@ public class MovingKillZone : MonoBehaviour, IResetable
         this.targetPos = cp.targetPos;
         this.maxSpeed = cp. maxSpeed;
         this.timeToMaxSpeed = cp.timeToMaxSpeed;
+
         if (cp.mustReset)
         {
             currentResetPoint = cp.resetPoint;
@@ -83,6 +84,6 @@ public class MovingKillZone : MonoBehaviour, IResetable
     {
         SetNewInfos(currentResetCheckPoint);
         killZone.transform.position = currentResetPoint.position;
-        currentSpeed = 0;
+        currentSpeed = currentResetCheckPoint.resetSpeed;
     }
 }

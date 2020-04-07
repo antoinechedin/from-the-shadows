@@ -65,7 +65,7 @@ public class LevelManager : MonoBehaviour
             virtualCamera = defaultVirtualCamera.GetComponent<CinemachineVirtualCamera>();
             virtualCamera.gameObject.SetActive(false);
             virtualCamera.transform.SetParent(transform);
-            Debug.Log("Virtual Camera is not set. Create a default one.");
+            //Debug.Log("Virtual Camera is not set. Create a default one.");
         }
         else
         {
