@@ -6,6 +6,8 @@ using TMPro;
 
 public class DialogueTrigger : MonoBehaviour
 {
+    public bool mustDisableInput = true;
+
     [Header("-Set every OverHeadGUIs to \"DisplayAndHide\"")]
     public List<OverHeadGUI> guis;
 
@@ -32,14 +34,18 @@ public class DialogueTrigger : MonoBehaviour
 
         guis[0].ExecuteOnDialogueStart(); // Execute function at start
         started = true;
+        GameManager.Instance.IsInCutscene = true;
     }
     public void StartDialogue()
     {
         //on désactive les inputs des joueurs
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
+        if(mustDisableInput)
         {
-            p.GetComponent<PlayerInput>().active = false;
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject p in players)
+            {
+                p.GetComponent<PlayerInput>().active = false;
+            }
         }
 
         StartCoroutine(StartDelay());
@@ -83,6 +89,7 @@ public class DialogueTrigger : MonoBehaviour
                         }
                         //on détruit la boîte de dialogue
                         Destroy(gameObject, 1f);
+                        GameManager.Instance.IsInCutscene = false;
                     }
                 }
             }

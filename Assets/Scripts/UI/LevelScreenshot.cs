@@ -23,10 +23,10 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
     /// </summary>
     [HideInInspector] public int levelIndex;
 
+    public Image screenshot;
     public Image foreground;
 
-    [HideInInspector]
-    public MenuLevels menuLevels;
+    public Carousel menuLevels;
     private bool pressed = false;
     private AudioSource audioSource;
 
@@ -43,7 +43,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         audioSource = GetComponent<AudioSource>();
         canvasGroup = GetComponent<CanvasGroup>();
 
-        menuLevels = GameObject.FindObjectOfType<MenuLevels>();
+
         rt = GetComponent<RectTransform>();
 
         startScale = rt.localScale;
@@ -51,6 +51,12 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
 
         HandleAppearence();
     }
+
+    public void Init(Carousel menuLevels)
+    {
+        this.menuLevels = menuLevels;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -90,7 +96,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         foregroungAlpha = Mathf.Clamp(foregroungAlpha, 0, menuLevels.foregroundMaxAlpha);
         foreground.color = new Color(0, 0, 0, foregroungAlpha);
 
-        float overallAlpha = 2 - Mathf.Abs(pos.x) / menuLevels.distanceBetweenScreenshots;
+        float overallAlpha = (menuLevels.distanceBetweenScreenshots - Mathf.Abs(pos.x)) / (0.9f * menuLevels.distanceBetweenScreenshots) + 1;
         overallAlpha = Mathf.Clamp(overallAlpha, 0f, 1f);
         canvasGroup.alpha = overallAlpha;
     }

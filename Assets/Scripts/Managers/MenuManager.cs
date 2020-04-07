@@ -11,12 +11,12 @@ using UnityEditor;
 
 public class MenuManager : MonoBehaviour
 {
-    public RectTransform startMenu;
+    public MainMenu mainMenu;
     public SavesMenu savesMenu;
-    public RectTransform optionsMenu;
-    public RectTransform chaptersMenu;
+    public OptionsMenu optionsMenu;
+    public CreditsMenu creditsMenu;
+    public ChaptersMenu chaptersMenu;
 
-    public MenuChapter menuChapter;
     public MenuCamera menuCamera;
 
     public Button play;
@@ -28,8 +28,8 @@ public class MenuManager : MonoBehaviour
     public Image startMenuBackground;
     public TextMeshProUGUI version;
 
-    public float dissolveDuration;
-    public float dissolveOffset;
+    public const float dissolveDuration = 0.4f;
+    public const float dissolveOffset = 0.1f;
 
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
@@ -38,6 +38,15 @@ public class MenuManager : MonoBehaviour
     // private Dissolve playDissolve;
     // private Dissolve optionsDissolve;
     // private Dissolve quitDissolve;
+
+    private void Awake()
+    {
+        mainMenu.menuManager = this;
+        savesMenu.menuManager = this;
+        optionsMenu.menuManager = this;
+        creditsMenu.menuManager = this;
+        chaptersMenu.menuManager = this;
+    }
 
     void Start()
     {
@@ -65,20 +74,25 @@ public class MenuManager : MonoBehaviour
         switch (sceneIndex)
         {
             case 0: // Start menu
-                StartCoroutine(OpenStartMenuCoroutine());
+                    // StartCoroutine(OpenStartMenuCoroutine());
+                DissolveFromMenuToMenu(null, mainMenu);
+
                 break;
             case 1: // Saves menu
-                StartCoroutine(OpenSaveMenuCoroutine());
+                    // StartCoroutine(OpenSaveMenuCoroutine());
+                DissolveFromMenuToMenu(null, savesMenu);
                 break;
             case 2: // Chapters menu
                 if (GameManager.Instance.CurrentChapter != -1)
                 {
-                    OpenChaptersMenu(GameManager.Instance.CurrentChapter, finishChapterForFirstTime);
+                    DissolveFromMenuToMenu(null, chaptersMenu);
+                    // OpenChaptersMenu(GameManager.Instance.CurrentChapter, finishChapterForFirstTime);
                 }
                 else
                 {
                     Debug.LogWarning("WARN MenuManager.Start: CurrentSave not set. Opening at chapter");
-                    OpenChaptersMenu(0, -1);
+                    DissolveFromMenuToMenu(null, chaptersMenu);
+                    // OpenChaptersMenu(0, -1);
                 }
 
                 break;
@@ -101,10 +115,21 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void OpenStartMenu()
+    public void DissolveFromMenuToMenu(IDissolveMenu from, IDissolveMenu to)
     {
-        StartCoroutine(OpenStartMenuCoroutine());
+        StartCoroutine(DissolveFromMenuToMenuCoroutine(from, to));
     }
+
+    public IEnumerator DissolveFromMenuToMenuCoroutine(IDissolveMenu from, IDissolveMenu to)
+    {
+        if (from != null) yield return StartCoroutine(from.DissolveOutCoroutine());
+        if (to != null) yield return StartCoroutine(to.DissolveInCoroutine());
+    }
+
+    // public void OpenStartMenu()
+    // {
+    //     StartCoroutine(OpenStartMenuCoroutine());
+    // }
 
     private IEnumerator OpenStartMenuCoroutine()
     {
@@ -119,7 +144,7 @@ public class MenuManager : MonoBehaviour
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
-        startMenu.gameObject.SetActive(true);
+        mainMenu.gameObject.SetActive(true);
         savesMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
@@ -131,7 +156,7 @@ public class MenuManager : MonoBehaviour
         // backgroundAnimator.SetBool("fade", false);
         version.text = Application.version + "\n2020 © " + Application.companyName;
 
-        dissolves = startMenu.GetComponentsInChildren<DissolveController>();
+        dissolves = mainMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
             StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
@@ -147,10 +172,10 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.sendNavigationEvents = true;
     }
 
-    public void OpenSaveMenu()
-    {
-        StartCoroutine(OpenSaveMenuCoroutine());
-    }
+    // public void OpenSaveMenu()
+    // {
+    //     StartCoroutine(OpenSaveMenuCoroutine());
+    // }
 
     private IEnumerator OpenSaveMenuCoroutine()
     {
@@ -158,13 +183,13 @@ public class MenuManager : MonoBehaviour
         EventSystem.current.sendNavigationEvents = false;
         // yield return StartCoroutine(ButtonsDissolveOut());        
 
-        if (startMenu.gameObject.activeSelf)
+        if (mainMenu.gameObject.activeSelf)
         {
             // startMenuBackgroundAnimator.SetBool("fade", false);
         }
         // backgroundAnimator.SetBool("fade", true);
 
-        DissolveController[] dissolves = startMenu.GetComponentsInChildren<DissolveController>();
+        DissolveController[] dissolves = mainMenu.GetComponentsInChildren<DissolveController>();
 
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
@@ -174,7 +199,7 @@ public class MenuManager : MonoBehaviour
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
-        startMenu.gameObject.SetActive(false);
+        mainMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(true);
         chaptersMenu.gameObject.SetActive(false);
         optionsMenu.gameObject.SetActive(false);
@@ -200,10 +225,10 @@ public class MenuManager : MonoBehaviour
         //yield return StartCoroutine(SavesDissolveIn());
     }
 
-    public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
-    {
-        StartCoroutine(OpenChaptersMenuCoroutine(chapterIndex, chapterFirstCompleted));
-    }
+    // public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
+    // {
+    //     StartCoroutine(OpenChaptersMenuCoroutine(chapterIndex, chapterFirstCompleted));
+    // }
 
     private IEnumerator OpenChaptersMenuCoroutine(int chapterIndex, int chapterFirstCompleted)
     {
@@ -218,7 +243,7 @@ public class MenuManager : MonoBehaviour
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
 
 
-        startMenu.gameObject.SetActive(false);
+        mainMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(false);
         chaptersMenu.gameObject.SetActive(true);
         optionsMenu.gameObject.SetActive(false);
@@ -229,9 +254,9 @@ public class MenuManager : MonoBehaviour
         // backgroundAnimator.SetBool("fade", false);
 
         menuCamera.SetReturnToSavesMenu(false);
-        menuChapter.ResetInteractablesChaptersButtons();
+        chaptersMenu.ResetInteractablesChaptersButtons();
 
-        EventSystem.current.SetSelectedGameObject(menuChapter.chapterButtons[chapterIndex].gameObject);
+        EventSystem.current.SetSelectedGameObject(chaptersMenu.chapterButtons[chapterIndex].gameObject);
 
         dissolves = chaptersMenu.GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
@@ -249,10 +274,10 @@ public class MenuManager : MonoBehaviour
 
     }
 
-    public void OpenOptionsMenu()
-    {
-        StartCoroutine(OpenOptionsMenuCoroutine());
-    }
+    // public void OpenOptionsMenu()
+    // {
+    //     StartCoroutine(OpenOptionsMenuCoroutine());
+    // }
 
     private IEnumerator OpenOptionsMenuCoroutine()
     {
@@ -261,12 +286,12 @@ public class MenuManager : MonoBehaviour
         optionsMenu.gameObject.SetActive(true);
         chaptersMenu.gameObject.SetActive(false);
         savesMenu.gameObject.SetActive(false);
-        startMenu.gameObject.SetActive(false);
+        mainMenu.gameObject.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(optionsMenu.GetComponentInChildren<Selectable>().gameObject);
 
-        backgroundAnimator.SetBool("fade", true);
-        startMenuBackgroundAnimator.SetBool("fade", false);
+        // backgroundAnimator.SetBool("fade", true);
+        // startMenuBackgroundAnimator.SetBool("fade", false);
 
-        optionsMenu.GetComponent<MenuOptions>().OpenOptionsMenu();
         yield return null;
     }
 

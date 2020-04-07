@@ -129,8 +129,7 @@ public class OverHeadGUI : MonoBehaviour
 
         if(isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
         {
-            if ((FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
-                || (FindObjectOfType<PlayerSwitch>().GetCurrentPlayer() != null && FindObjectOfType<PlayerSwitch>().GetCurrentPlayer() == "Shadow"))
+            if (FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
             {
                 transform.Find("Content/DialogueBoxBackground/SpeakerName").GetComponent<TextMeshProUGUI>().text = "Shadow";
                 transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().shadowDialogueIcon;

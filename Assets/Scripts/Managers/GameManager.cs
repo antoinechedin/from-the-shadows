@@ -27,6 +27,19 @@ public class GameManager : Singleton<GameManager>
 
     //debug bools
     private bool displayedNoSaveFile = false;
+    private bool isInCutscene = false;
+
+
+    // Options update
+    public delegate void OnOptionsUpdateDelegate();
+    public event OnOptionsUpdateDelegate optionsUpdateDelegate;
+
+    public void OnOptionUpdate()
+    {
+        Debug.Log("OnOptionUpdate() called");
+        if (optionsUpdateDelegate != null)
+            optionsUpdateDelegate();
+    }
 
     // Update is called once per frame
     void Update()
@@ -102,6 +115,12 @@ public class GameManager : Singleton<GameManager>
     {
         get { return currentSave; }
         set { currentSave = value; }
+    }
+
+    public bool IsInCutscene
+    {
+        get { return isInCutscene; }
+        set { isInCutscene = value; }
     }
 
     public Chapter GetCurrentChapter()
@@ -205,6 +224,9 @@ public class GameManager : Singleton<GameManager>
 
         //étape 3 : on affiche la scène. à cette étape, le scène n'est pas encore totalement prête à être révélée.
         asyncLoad.allowSceneActivation = true;
+
+        // TODO : Stop main title music here
+        Debug.Log("Stop Main title");
 
         //on attend que la scène soit complètement prète à être affichée
         while (!asyncLoad.isDone)

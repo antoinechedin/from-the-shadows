@@ -7,9 +7,9 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using TMPro;
 
-public class SavesMenu : MonoBehaviour
+public class SavesMenu : MonoBehaviour, IDissolveMenu
 {
-    public MenuManager menuManager;
+    [HideInInspector] public MenuManager menuManager;
     public RectTransform actionChoiceButtons;
     public RectTransform newGameChoiceButtons;
 
@@ -44,7 +44,8 @@ public class SavesMenu : MonoBehaviour
                 }
                 else
                 {
-                    menuManager.OpenStartMenu();
+                    // menuManager.OpenStartMenu();
+                    menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
                 }
                 GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(returnAudioClip);
             }
@@ -128,9 +129,9 @@ public class SavesMenu : MonoBehaviour
             DissolveController[] dissolves = actionChoiceButtons.GetComponentsInChildren<DissolveController>();
             foreach (DissolveController dissolve in dissolves)
             {
-                StartCoroutine(dissolve.DissolveInCoroutine(menuManager.dissolveDuration));
+                StartCoroutine(dissolve.DissolveInCoroutine(MenuManager.dissolveDuration));
             }
-            yield return new WaitForSeconds(menuManager.dissolveDuration);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveDuration);
         }
         else if (GameManager.Instance.Saves[index] == null)
         {
@@ -147,9 +148,9 @@ public class SavesMenu : MonoBehaviour
             DissolveController[] dissolves = newGameChoiceButtons.GetComponentsInChildren<DissolveController>();
             foreach (DissolveController dissolve in dissolves)
             {
-                StartCoroutine(dissolve.DissolveInCoroutine(menuManager.dissolveDuration));
+                StartCoroutine(dissolve.DissolveInCoroutine(MenuManager.dissolveDuration));
             }
-            yield return new WaitForSeconds(menuManager.dissolveDuration);
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveDuration);
         }
         EventSystem.current.sendNavigationEvents = true;
     }
@@ -162,10 +163,10 @@ public class SavesMenu : MonoBehaviour
         DissolveController[] dissolves = choiceButtons.GetComponentsInChildren<DissolveController>();
         foreach (DissolveController dissolve in dissolves)
         {
-            StartCoroutine(dissolve.DissolveOutCoroutine(menuManager.dissolveDuration));
+            StartCoroutine(dissolve.DissolveOutCoroutine(MenuManager.dissolveDuration));
         }
-        yield return new WaitForSeconds(menuManager.dissolveDuration);
-        
+        yield return new WaitForSecondsRealtime(MenuManager.dissolveDuration);
+
         choiceButtons.gameObject.SetActive(false);
         EventSystem.current.sendNavigationEvents = true;
     }
@@ -188,7 +189,8 @@ public class SavesMenu : MonoBehaviour
                 GameManager.Instance.CurrentChapter = i + 1;
             }
         }
-        menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter, -1);
+        // menuManager.OpenChaptersMenu(GameManager.Instance.CurrentChapter, -1);
+        menuManager.DissolveFromMenuToMenu(this, menuManager.chaptersMenu);
     }
 
     /// <summary>
@@ -225,5 +227,42 @@ public class SavesMenu : MonoBehaviour
     {
         get => lastSelected;
         set => lastSelected = value;
+    }
+
+    public IEnumerator DissolveInCoroutine()
+    {
+        gameObject.SetActive(true);
+
+        EventSystem.current.SetSelectedGameObject(savesButons[LastSelected].gameObject);
+        UpdateButtons();
+
+        DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
+        for (int i = 0; i < dissolves.Length - 1; i++)
+        {
+            StartCoroutine(dissolves[i].DissolveInCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
+        }
+
+        EventSystem.current.sendNavigationEvents = true;
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(MenuManager.dissolveDuration));
+    }
+
+    public IEnumerator DissolveOutCoroutine()
+    {
+        EventSystem.current.sendNavigationEvents = false;
+
+        DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
+        for (int i = 0; i < dissolves.Length - 1; i++)
+        {
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
+        }
+
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
+
+        newGameChoiceButtons.gameObject.SetActive(false);
+        actionChoiceButtons.gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 }
