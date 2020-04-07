@@ -56,8 +56,6 @@ public class PauseMenu : MonoBehaviour
 
     public void Home()
     {
-        Input.ResetInputAxes();
-        Time.timeScale = 1;
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
         GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
