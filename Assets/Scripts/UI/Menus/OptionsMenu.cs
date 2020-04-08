@@ -18,13 +18,15 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     public MenuSlider musicSlider;
     public MenuSlider soundsSlider;
     public MenuControlsButton[] controlsButtons;
+    public OptionsButton saveButton;
+    public OptionsButton resetButton;
     [HideInInspector] public Selectable[] selectables;
     public CanvasGroup PressAKeyCanvasGroup;
 
     private void Awake()
     {
         currentIndex = -1;
-        selectables = new Selectable[2 + controlsButtons.Length];
+        selectables = new Selectable[4 + controlsButtons.Length];
 
         selectables[0] = musicSlider.GetComponent<Selectable>();
         selectables[1] = soundsSlider.GetComponent<Selectable>();
@@ -33,6 +35,9 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         {
             selectables[2 + i] = controlsButtons[i].GetComponent<Selectable>();
         }
+
+        selectables[selectables.Length - 2] = saveButton.GetComponent<Selectable>();
+        selectables[selectables.Length - 1] = resetButton.GetComponent<Selectable>();
 
         Init();
     }
@@ -48,6 +53,8 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         {
             controlsButton.Init(this);
         }
+        saveButton.Init(this);
+        resetButton.Init(this);
     }
 
     private void Update()

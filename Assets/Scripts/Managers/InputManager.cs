@@ -8,18 +8,18 @@ using System;
 /// </summary>
 public enum InputAction
 {
-    MoveLeft,
-    MoveRight,
-    MoveUp,
-    MoveDown,
+    Up,
+    Down,
+    Left,
+    Right,
     Jump,
-    Attack,
     Interact,
     Switch,
+    Attack,
     Pause,
-    Restart,
     Select,
-    Return
+    Return,
+    Restart,
 }
 
 /// <summary>
@@ -37,126 +37,91 @@ public class InputManager
     public static bool isProController = false;
     public static bool isKeyPad = false;
 
-    public static Dictionary<InputAction, KeyCode>[] Player1 = new Dictionary<InputAction, KeyCode>[]
-    {
-        new Dictionary<InputAction, KeyCode>
-        {
-            { InputAction.MoveDown, (KeyCode)PlayerPrefs.GetInt("P1_Down", (int)KeyCode.S) },
-            { InputAction.MoveUp, (KeyCode)PlayerPrefs.GetInt("P1_Up", (int)KeyCode.Z) },
-            { InputAction.MoveLeft, (KeyCode)PlayerPrefs.GetInt("P1_Left", (int)KeyCode.Q) },
-            { InputAction.MoveRight, (KeyCode)PlayerPrefs.GetInt("P1_Right", (int)KeyCode.D) },
-            { InputAction.Jump, KeyCode.Space },
-            { InputAction.Attack, KeyCode.A },
-            { InputAction.Interact, KeyCode.E },
-            { InputAction.Switch, KeyCode.Tab },
-            { InputAction.Pause, KeyCode.Escape },
-            { InputAction.Restart, KeyCode.Delete },
-            { InputAction.Select, KeyCode.Return },
-            { InputAction.Return, KeyCode.Escape }
-        },
-        new Dictionary<InputAction, KeyCode>
-        {
-            { InputAction.Jump, KeyCode.Joystick1Button0 },
-            { InputAction.Attack, KeyCode.Joystick1Button1 },
-            { InputAction.Interact, KeyCode.Joystick1Button2 },
-            { InputAction.Switch, KeyCode.Joystick1Button4 },
-            { InputAction.Select, KeyCode.Joystick1Button0 },
-            { InputAction.Return, KeyCode.Joystick1Button1 },
-            { InputAction.Pause, KeyCode.Joystick1Button7 },
-            { InputAction.Restart, KeyCode.Joystick1Button6 }
-        }
-    };
+    public static Dictionary<InputAction, KeyCode>[] Player1 = GetKeyMappingFromPlayerPrefs(1);
 
-    public static Dictionary<InputAction, KeyCode>[] Player2 = new Dictionary<InputAction, KeyCode>[]
+    public static Dictionary<InputAction, KeyCode>[] Player2 = GetKeyMappingFromPlayerPrefs(2);
+
+    private static Dictionary<InputAction, KeyCode>[] GetKeyMappingFromPlayerPrefs(int id)
     {
-        new Dictionary<InputAction, KeyCode>
+        if (id != 1 && id != 2)
         {
-            { InputAction.MoveDown, KeyCode.DownArrow },
-            { InputAction.MoveUp, KeyCode.UpArrow },
-            { InputAction.MoveLeft, KeyCode.LeftArrow },
-            { InputAction.MoveRight, KeyCode.RightArrow },
-            { InputAction.Switch, KeyCode.Tab },
-            { InputAction.Pause, KeyCode.Escape },
-            { InputAction.Restart, KeyCode.Delete },
-            { InputAction.Select, KeyCode.Return },
-            { InputAction.Return, KeyCode.Escape },
-            { InputAction.Jump, KeyCode.Keypad0 },
-            { InputAction.Attack, KeyCode.Keypad8 },
-            { InputAction.Interact, KeyCode.Keypad4 }
-        },
-        new Dictionary<InputAction, KeyCode>
-        {
-            { InputAction.Jump, KeyCode.Joystick2Button0 },
-            { InputAction.Attack, KeyCode.Joystick2Button1 },
-            { InputAction.Interact, KeyCode.Joystick2Button2 },
-            { InputAction.Switch, KeyCode.Joystick1Button4 },
-            { InputAction.Select, KeyCode.Joystick2Button0 },
-            { InputAction.Return, KeyCode.Joystick2Button1 },
-            { InputAction.Pause, KeyCode.Joystick2Button7 },
-            { InputAction.Restart, KeyCode.Joystick2Button6 }
+            Debug.LogError("InputManager.GetKeyMappingFromPlayerPrefs: id isn't 1 or 2");
+            return null;
         }
-    };
+
+        Dictionary<InputAction, KeyCode>[] keymap = new Dictionary<InputAction, KeyCode>[]
+        {
+            new Dictionary<InputAction, KeyCode>
+            {
+                {
+                    InputAction.Up,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Up", (int)(id == 1 ? KeyCode.Z : KeyCode.UpArrow))
+                },
+                {
+                    InputAction.Down,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Down", (int)(id == 1 ? KeyCode.S : KeyCode.DownArrow))
+                },
+                {
+                    InputAction.Left,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Left", (int)(id == 1 ? KeyCode.Q : KeyCode.LeftArrow))
+                },
+                {
+                    InputAction.Right,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Right", (int)(id == 1 ? KeyCode.D : KeyCode.RightArrow))
+                },
+                {
+                    InputAction.Jump,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Jump", (int)(id == 1 ? KeyCode.Space : KeyCode.RightControl))
+                },
+                {
+                    InputAction.Interact,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Interact", (int)(id == 1 ? KeyCode.E : KeyCode.RightShift))
+                },
+                {
+                    InputAction.Switch,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Switch", (int)(id == 1 ? KeyCode.LeftShift : KeyCode.Keypad0))
+                },
+                {
+                    InputAction.Attack,
+                    (KeyCode)PlayerPrefs.GetInt("P" + id + "_Attack", (int)(id == 1 ? KeyCode.F : KeyCode.Keypad1))
+                },
+                {
+                    InputAction.Pause,
+                    KeyCode.Escape
+                },
+                {
+                    InputAction.Select,
+                    KeyCode.Return
+                },
+                {
+                    InputAction.Return,
+                    KeyCode.Escape
+                },
+                {
+                    InputAction.Restart,
+                    KeyCode.Delete
+                },
+            },
+            new Dictionary<InputAction, KeyCode>
+            {
+                { InputAction.Jump, id == 1 ? KeyCode.Joystick1Button0 : KeyCode.Joystick2Button0 },
+                { InputAction.Attack, id == 1 ? KeyCode.Joystick1Button1 : KeyCode.Joystick2Button1 },
+                { InputAction.Interact, id == 1 ? KeyCode.Joystick1Button2 : KeyCode.Joystick2Button2 },
+                { InputAction.Switch, id == 1 ? KeyCode.Joystick1Button4 : KeyCode.Joystick2Button4 },
+                { InputAction.Select, id == 1 ? KeyCode.Joystick1Button0 : KeyCode.Joystick2Button0 },
+                { InputAction.Return, id == 1 ? KeyCode.Joystick1Button1 : KeyCode.Joystick2Button1 },
+                { InputAction.Pause, id == 1 ? KeyCode.Joystick1Button7 : KeyCode.Joystick2Button7 },
+                { InputAction.Restart, id == 1 ? KeyCode.Joystick1Button6 : KeyCode.Joystick2Button6 }
+                
+            }
+        };
+        return keymap;
+    }
 
     public static void UpdateKeyMapping()
     {
-        InputManager.Player1 = new Dictionary<InputAction, KeyCode>[]
-        {
-            new Dictionary<InputAction, KeyCode>
-            {
-                { InputAction.MoveDown, (KeyCode)PlayerPrefs.GetInt("P1_Down", (int)KeyCode.S) },
-                { InputAction.MoveUp, (KeyCode)PlayerPrefs.GetInt("P1_Up", (int)KeyCode.Z) },
-                { InputAction.MoveLeft, (KeyCode)PlayerPrefs.GetInt("P1_Left", (int)KeyCode.Q) },
-                { InputAction.MoveRight, (KeyCode)PlayerPrefs.GetInt("P1_Right", (int)KeyCode.D) },
-                { InputAction.Jump, KeyCode.Space },
-                { InputAction.Attack, KeyCode.A },
-                { InputAction.Interact, KeyCode.E },
-                { InputAction.Switch, KeyCode.Tab },
-                { InputAction.Pause, KeyCode.Escape },
-                { InputAction.Restart, KeyCode.Delete },
-                { InputAction.Select, KeyCode.Return },
-                { InputAction.Return, KeyCode.Escape }
-            },
-            new Dictionary<InputAction, KeyCode>
-            {
-                { InputAction.Jump, KeyCode.Joystick1Button0 },
-                { InputAction.Attack, KeyCode.Joystick1Button1 },
-                { InputAction.Interact, KeyCode.Joystick1Button2 },
-                { InputAction.Switch, KeyCode.Joystick1Button4 },
-                { InputAction.Select, KeyCode.Joystick1Button0 },
-                { InputAction.Return, KeyCode.Joystick1Button1 },
-                { InputAction.Pause, KeyCode.Joystick1Button7 },
-                { InputAction.Restart, KeyCode.Joystick1Button6 }
-            }
-        };
-        InputManager.Player2 = new Dictionary<InputAction, KeyCode>[]
-        {
-            new Dictionary<InputAction, KeyCode>
-            {
-                { InputAction.MoveDown, KeyCode.DownArrow },
-                { InputAction.MoveUp, KeyCode.UpArrow },
-                { InputAction.MoveLeft, KeyCode.LeftArrow },
-                { InputAction.MoveRight, KeyCode.RightArrow },
-                { InputAction.Switch, KeyCode.Tab },
-                { InputAction.Pause, KeyCode.Escape },
-                { InputAction.Restart, KeyCode.Delete },
-                { InputAction.Select, KeyCode.Return },
-                { InputAction.Return, KeyCode.Escape },
-                { InputAction.Jump, KeyCode.Keypad0 },
-                { InputAction.Attack, KeyCode.Keypad8 },
-                { InputAction.Interact, KeyCode.Keypad4 }
-            },
-            new Dictionary<InputAction, KeyCode>
-            {
-                { InputAction.Jump, KeyCode.Joystick2Button0 },
-                { InputAction.Attack, KeyCode.Joystick2Button1 },
-                { InputAction.Interact, KeyCode.Joystick2Button2 },
-                { InputAction.Switch, KeyCode.Joystick1Button4 },
-                { InputAction.Select, KeyCode.Joystick2Button0 },
-                { InputAction.Return, KeyCode.Joystick2Button1 },
-                { InputAction.Pause, KeyCode.Joystick2Button7 },
-                { InputAction.Restart, KeyCode.Joystick2Button6 }
-            }
-        };
+        InputManager.Player1 = GetKeyMappingFromPlayerPrefs(1);
+        InputManager.Player2 = GetKeyMappingFromPlayerPrefs(2);
     }
 
     /// <summary>
@@ -171,21 +136,21 @@ public class InputManager
         if (id == 0)
         {
             if (
-                Input.GetKey(InputManager.Player1[0][InputAction.MoveRight])
-                || Input.GetKey(InputManager.Player2[0][InputAction.MoveRight])
+                Input.GetKey(InputManager.Player1[0][InputAction.Right])
+                || Input.GetKey(InputManager.Player2[0][InputAction.Right])
             ) xAxis += 1;
 
             if (
-                Input.GetKey(InputManager.Player1[0][InputAction.MoveLeft])
-                || Input.GetKey(InputManager.Player2[0][InputAction.MoveLeft])
+                Input.GetKey(InputManager.Player1[0][InputAction.Left])
+                || Input.GetKey(InputManager.Player2[0][InputAction.Left])
             ) xAxis -= 1;
         }
         else
         {
             Dictionary<InputAction, KeyCode>[] Player = id == 1 ? InputManager.Player1 : InputManager.Player2;
-            if (Input.GetKey(Player[0][InputAction.MoveRight]))
+            if (Input.GetKey(Player[0][InputAction.Right]))
                 xAxis += 1;
-            if (Input.GetKey(Player[0][InputAction.MoveLeft]))
+            if (Input.GetKey(Player[0][InputAction.Left]))
                 xAxis -= 1;
         }
 
@@ -210,21 +175,21 @@ public class InputManager
         if (id == 0)
         {
             if (
-                Input.GetKey(InputManager.Player1[0][InputAction.MoveUp])
-                || Input.GetKey(InputManager.Player2[0][InputAction.MoveUp])
+                Input.GetKey(InputManager.Player1[0][InputAction.Up])
+                || Input.GetKey(InputManager.Player2[0][InputAction.Up])
             ) yAxis += 1;
 
             if (
-                Input.GetKey(InputManager.Player1[0][InputAction.MoveDown])
-                || Input.GetKey(InputManager.Player2[0][InputAction.MoveDown])
+                Input.GetKey(InputManager.Player1[0][InputAction.Down])
+                || Input.GetKey(InputManager.Player2[0][InputAction.Down])
             ) yAxis -= 1;
         }
         else
         {
             Dictionary<InputAction, KeyCode>[] Player = id == 1 ? InputManager.Player1 : InputManager.Player2;
-            if (Input.GetKey(Player[0][InputAction.MoveUp]))
+            if (Input.GetKey(Player[0][InputAction.Up]))
                 yAxis += 1;
-            if (Input.GetKey(Player[0][InputAction.MoveDown]))
+            if (Input.GetKey(Player[0][InputAction.Down]))
                 yAxis -= 1;
         }
 
