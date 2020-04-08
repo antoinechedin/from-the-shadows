@@ -61,7 +61,9 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     {
         if (EventSystem.current.sendNavigationEvents && menuManager != null)
         {
-            if (Input.GetButtonDown("B_G"))
+            if (InputManager.GetActionPressed(0, InputAction.Return)
+                || Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
             }
@@ -85,6 +87,20 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                     StartCoroutine(StopListeningKeyCoroutine());
                 }
             }
+        }
+    }
+
+    public void ResetControls()
+    {
+        foreach (InputAction action in Enum.GetValues(typeof(InputAction)))
+        {
+            PlayerPrefs.DeleteKey("P1_" + action.ToString());
+            PlayerPrefs.DeleteKey("P2_" + action.ToString());
+        }
+        InputManager.UpdateKeyMapping();
+        foreach (MenuControlsButton button in controlsButtons)
+        {
+            button.UpdateButton();
         }
     }
 

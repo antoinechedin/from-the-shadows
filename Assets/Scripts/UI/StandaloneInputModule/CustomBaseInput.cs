@@ -22,11 +22,14 @@ public class CustomBaseInput : BaseInput
     {
         if (buttonName == "Submit")
         {
-            return InputManager.GetActionPressed(0, InputAction.Jump);
+            return InputManager.GetActionPressed(0, InputAction.Jump)
+                || Input.GetKeyDown(KeyCode.Return);
         }
         else if (buttonName == "Cancel")
         {
-            return InputManager.GetActionPressed(0, InputAction.Return);
+            return InputManager.GetActionPressed(0, InputAction.Return)
+                || Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Backspace);
         }
         return false;
     }
