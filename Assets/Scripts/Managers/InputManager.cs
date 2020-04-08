@@ -261,9 +261,6 @@ public class InputManager
 
             IsPressed = IsPressed || Input.GetKeyDown(Player[(int)InputDevice.Controller][action]);
         }
-
-        if (action == InputAction.Jump)
-            Debug.Log(IsPressed);
         return IsPressed;
     }
 
