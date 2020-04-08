@@ -18,6 +18,7 @@ public class MenuSlider : MonoBehaviour, ISelectHandler
     public Image rightArrowImage;
 
     private Animator animator;
+    [HideInInspector] public OptionsMenu optionsMenu;
 
     private void Awake()
     {
@@ -55,8 +56,10 @@ public class MenuSlider : MonoBehaviour, ISelectHandler
         }
     }
 
-    public void Init(int value)
+    public void Init(int value, OptionsMenu optionsMenu)
     {
+        this.optionsMenu = optionsMenu;
+
         currentValue = Mathf.Clamp(value, minValue, maxValue);
         sliderText.text = currentValue.ToString();
 
@@ -69,10 +72,6 @@ public class MenuSlider : MonoBehaviour, ISelectHandler
 
     public void OnSelect(BaseEventData eventData)
     {
-        OptionsMenu optionMenu = GetComponentInParent<OptionsMenu>();
-        if (optionMenu != null)
-        {
-            optionMenu.HandleSelectTrigger(GetComponent<Selectable>());
-        }
+        optionsMenu.HandleSelectTrigger(GetComponent<Selectable>());
     }
 }

@@ -34,12 +34,15 @@ public class PauseMenu : MonoBehaviour
         if (EventSystem.current.sendNavigationEvents)
             if (optionsOpened)
             {
-                if (InputManager.GetActionPressed(1, InputAction.Pause) || InputManager.GetActionPressed(2, InputAction.Pause)) 
+                if (InputManager.GetActionPressed(0, InputAction.Return)
+                || Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Backspace)) 
                     CloseOptions();
             }
             else
             {
-                if (InputManager.GetActionPressed(1, InputAction.Pause) || InputManager.GetActionPressed(2, InputAction.Pause)) 
+                if (InputManager.GetActionPressed(0, InputAction.Pause)
+                || Input.GetKeyDown(KeyCode.Escape)) 
                     Resume();
             }
         }
