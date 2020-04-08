@@ -13,7 +13,9 @@ public class CreditsMenu : MonoBehaviour, IDissolveMenu
     {
         if(EventSystem.current.sendNavigationEvents)
         {
-            if(Input.GetButtonDown("B_G"))
+            if(InputManager.GetActionPressed(0, InputAction.Return)
+                || Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
             }
