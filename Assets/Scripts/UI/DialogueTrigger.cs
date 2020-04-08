@@ -45,6 +45,7 @@ public class DialogueTrigger : MonoBehaviour
             foreach (GameObject p in players)
             {
                 p.GetComponent<PlayerInput>().active = false;
+                p.GetComponent<PlayerInput>().noJump = false;
             }
         }
 
@@ -78,7 +79,6 @@ public class DialogueTrigger : MonoBehaviour
                         //on cache la dernière boîte de dialogue
                         guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
                         guis[currentDisplayed].HideUI();
-
 
                         //on active les inputs des joueurs
                         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
