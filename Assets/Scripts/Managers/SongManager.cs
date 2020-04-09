@@ -85,6 +85,7 @@ public class SongManager : MonoBehaviour
                 AddLayer();
             }
         }
+        Debug.Log("Layer set to layer : " + musicLayer);
     }
 
     public int GetLevelToAddLayer()

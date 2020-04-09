@@ -15,6 +15,7 @@ public class MusicManager : MonoBehaviour
     [Range(0, 100)]
     public int masterVolume = 50;
 
+    public bool playOnAwake = false;
     public FMOD.Studio.Bus masterBus;
 
 
@@ -24,17 +25,62 @@ public class MusicManager : MonoBehaviour
         {
             themes.Add(child.GetComponent<SongManager>());
         }
+
+        if (playOnAwake)
+            StartTheme(mainTheme);
     }
 
     void Start()
     {
         masterBus = FMODUnity.RuntimeManager.GetBus("Bus:/");
-        StartTheme(mainTheme);
+
+        if(GameManager.Instance.LoadingChapterInfo == null && !playOnAwake)
+            StartTheme(mainTheme);
     }
 
     private void Update()
     {
         SetMasterVolume(masterVolume);
+    }
+
+    // Set music according to the current level (in case of loading a specified level and not starting from the beginning)
+    public void SetMusicAccordingToLevel(int loadedLevelId, List<LevelManager> levels)
+    {
+        Debug.Log("Music set to level " + loadedLevelId);
+
+        bool mustPlayMainTheme = true;
+
+        foreach(SongManager theme in themes)
+        {
+            foreach(LevelManager level in theme.levelsToPlayTheme)
+            {
+                if(loadedLevelId == level.id)
+                {
+                    Debug.Log("Must play theme : " + theme);
+                    StartTheme(theme);
+                    mustPlayMainTheme = false;
+                    break;
+                }
+            }
+            if (!mustPlayMainTheme)
+                break;
+        }
+
+        mainTheme.SetLayerAccordingToLevel(loadedLevelId);
+
+        if (mustPlayMainTheme)
+        {
+            Debug.Log("Must play main theme");
+            StartTheme(mainTheme);
+        }
+
+        //foreach (LevelManager levelToAddLayer in levelsToAddLayer)
+        //{
+        //    if (level >= levelToAddLayer.id)
+        //    {
+        //        AddLayer();
+        //    }
+        //}
     }
 
     public void SetMasterVolume(float volume)
