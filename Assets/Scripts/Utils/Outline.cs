@@ -24,6 +24,7 @@ public class Outline : MonoBehaviour
         alpha = instanceMat.GetFloat("_Alpha");
 
         nPlayerIn = 0;
+        StartCoroutine(HideOutline());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

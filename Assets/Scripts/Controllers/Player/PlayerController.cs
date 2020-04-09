@@ -82,16 +82,6 @@ public class PlayerController : MonoBehaviour
         );
     }
 
-    public void DisableJump()
-    {
-        input.noJump = true;
-    }
-
-    public void EnableJump()
-    {
-        input.noJump = false;
-    }
-
     public void Die()
     {
         if (!dying)
