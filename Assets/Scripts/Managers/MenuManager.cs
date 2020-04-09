@@ -28,8 +28,8 @@ public class MenuManager : MonoBehaviour
     public Image startMenuBackground;
     public TextMeshProUGUI version;
 
-    public float dissolveDuration;
-    public float dissolveOffset;
+    public const float dissolveDuration = 0.5f;
+    public const float dissolveOffset = 0.1f;
 
     private Animator backgroundAnimator;
     private Animator startMenuBackgroundAnimator;
@@ -126,173 +126,9 @@ public class MenuManager : MonoBehaviour
         if (to != null) yield return StartCoroutine(to.DissolveInCoroutine());
     }
 
-    // public void OpenStartMenu()
-    // {
-    //     StartCoroutine(OpenStartMenuCoroutine());
-    // }
-
-    private IEnumerator OpenStartMenuCoroutine()
+    public void SaveOptions()
     {
-        EventSystem.current.sendNavigationEvents = false;
-
-        DissolveController[] dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
-        for (int i = 0; i < dissolves.Length - 1; i++)
-        {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(dissolveDuration));
-            yield return new WaitForSeconds(dissolveOffset);
-        }
-
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
-
-        mainMenu.gameObject.SetActive(true);
-        savesMenu.gameObject.SetActive(false);
-        chaptersMenu.gameObject.SetActive(false);
-        optionsMenu.gameObject.SetActive(false);
-
-        EventSystem.current.SetSelectedGameObject(play.gameObject);
-
-        // startMenuBackground.gameObject.SetActive(true);
-        // startMenuBackgroundAnimator.SetBool("fade", true);
-        // backgroundAnimator.SetBool("fade", false);
-        version.text = Application.version + "\n2020 © " + Application.companyName;
-
-        dissolves = mainMenu.GetComponentsInChildren<DissolveController>();
-        for (int i = 0; i < dissolves.Length - 1; i++)
-        {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
-            yield return new WaitForSeconds(dissolveOffset);
-        }
-
-        EventSystem.current.sendNavigationEvents = true;
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
-
-        menuCamera.SetReturnToStartMenu(true);
-        // yield return StartCoroutine(ButtonsDissolveIn());
-
-        EventSystem.current.sendNavigationEvents = true;
-    }
-
-    // public void OpenSaveMenu()
-    // {
-    //     StartCoroutine(OpenSaveMenuCoroutine());
-    // }
-
-    private IEnumerator OpenSaveMenuCoroutine()
-    {
-
-        EventSystem.current.sendNavigationEvents = false;
-        // yield return StartCoroutine(ButtonsDissolveOut());        
-
-        if (mainMenu.gameObject.activeSelf)
-        {
-            // startMenuBackgroundAnimator.SetBool("fade", false);
-        }
-        // backgroundAnimator.SetBool("fade", true);
-
-        DissolveController[] dissolves = mainMenu.GetComponentsInChildren<DissolveController>();
-
-        for (int i = 0; i < dissolves.Length - 1; i++)
-        {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(dissolveDuration));
-            yield return new WaitForSeconds(dissolveOffset);
-        }
-
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
-
-        mainMenu.gameObject.SetActive(false);
-        savesMenu.gameObject.SetActive(true);
-        chaptersMenu.gameObject.SetActive(false);
-        optionsMenu.gameObject.SetActive(false);
-
-        int lastSaveSelected = savesMenu.gameObject.GetComponent<SavesMenu>().LastSelected;
-        Button lastButtonSelected = savesMenu.gameObject.GetComponent<SavesMenu>().savesButons[lastSaveSelected];
-        EventSystem.current.SetSelectedGameObject(lastButtonSelected.gameObject);
-        savesMenu.UpdateButtons();
-
-        dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
-        for (int i = 0; i < dissolves.Length - 1; i++)
-        {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
-            yield return new WaitForSeconds(dissolveOffset);
-        }
-
-        EventSystem.current.sendNavigationEvents = true;
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
-
-        menuCamera.SetReturnToStartMenu(false);
-        menuCamera.SetReturnToSavesMenu(true);
-
-        //yield return StartCoroutine(SavesDissolveIn());
-    }
-
-    // public void OpenChaptersMenu(int chapterIndex, int chapterFirstCompleted)
-    // {
-    //     StartCoroutine(OpenChaptersMenuCoroutine(chapterIndex, chapterFirstCompleted));
-    // }
-
-    private IEnumerator OpenChaptersMenuCoroutine(int chapterIndex, int chapterFirstCompleted)
-    {
-        EventSystem.current.sendNavigationEvents = false;
-
-        DissolveController[] dissolves = savesMenu.GetComponentsInChildren<DissolveController>();
-        for (int i = 0; i < dissolves.Length - 1; i++)
-        {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(dissolveDuration));
-            yield return new WaitForSeconds(dissolveOffset);
-        }
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(dissolveDuration));
-
-
-        mainMenu.gameObject.SetActive(false);
-        savesMenu.gameObject.SetActive(false);
-        chaptersMenu.gameObject.SetActive(true);
-        optionsMenu.gameObject.SetActive(false);
-
-        savesMenu.actionChoiceButtons.gameObject.SetActive(false);
-        savesMenu.newGameChoiceButtons.gameObject.SetActive(false);
-
-        // backgroundAnimator.SetBool("fade", false);
-
-        menuCamera.SetReturnToSavesMenu(false);
-        chaptersMenu.ResetInteractablesChaptersButtons();
-
-        EventSystem.current.SetSelectedGameObject(chaptersMenu.chapterButtons[chapterIndex].gameObject);
-
-        dissolves = chaptersMenu.GetComponentsInChildren<DissolveController>();
-        for (int i = 0; i < dissolves.Length - 1; i++)
-        {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(dissolveDuration));
-            yield return new WaitForSeconds(dissolveOffset);
-        }
-        EventSystem.current.sendNavigationEvents = true;
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(dissolveDuration));
-
-        // if (chapterFirstCompleted >= 0)
-        // {
-        //     menuChapter.UnlockChapter(chapterFirstCompleted + 1);
-        // }
-
-    }
-
-    // public void OpenOptionsMenu()
-    // {
-    //     StartCoroutine(OpenOptionsMenuCoroutine());
-    // }
-
-    private IEnumerator OpenOptionsMenuCoroutine()
-    {
-        // yield return StartCoroutine(ButtonsDissolveOut());
-
-        optionsMenu.gameObject.SetActive(true);
-        chaptersMenu.gameObject.SetActive(false);
-        savesMenu.gameObject.SetActive(false);
-        mainMenu.gameObject.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(optionsMenu.GetComponentInChildren<Selectable>().gameObject);
-
-        // backgroundAnimator.SetBool("fade", true);
-        // startMenuBackgroundAnimator.SetBool("fade", false);
-
-        yield return null;
+        DissolveFromMenuToMenu(optionsMenu, mainMenu);
     }
 
     public void Quit()
@@ -309,32 +145,6 @@ public class MenuManager : MonoBehaviour
         StartCoroutine(Fade());
         yield return null;
     }
-
-    // IEnumerator ButtonsDissolveIn()
-    // {
-    //     StartCoroutine(titleDissolve.DissolveIn());
-    //     StartCoroutine(playDissolve.DissolveIn());
-    //     StartCoroutine(optionsDissolve.DissolveIn());        
-    //     yield return StartCoroutine(quitDissolve.DissolveIn());
-    // }
-
-    // IEnumerator ButtonsDissolveOut()
-    // {
-    //     StartCoroutine(titleDissolve.DissolveOut());
-    //     StartCoroutine(optionsDissolve.DissolveOut());
-    //     StartCoroutine(quitDissolve.DissolveOut());        
-    //     yield return StartCoroutine(playDissolve.DissolveOut());
-    // }
-
-    // IEnumerator SavesDissolveIn()
-    // {
-    //     Dissolve ng1 = savesMenu.Find("New Game 1").Find("Rectangle").GetComponent<Dissolve>();
-    //     Dissolve ng2 = savesMenu.Find("New Game 2").Find("Rectangle").GetComponent<Dissolve>();
-    //     Dissolve ng3 = savesMenu.Find("New Game 3").Find("Rectangle").GetComponent<Dissolve>();
-    //     StartCoroutine(ng1.DissolveIn());
-    //     StartCoroutine(ng2.DissolveIn());
-    //     yield return StartCoroutine(ng3.DissolveIn());
-    // }
 
     IEnumerator Fade()
     {

@@ -45,7 +45,9 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
         if (EventSystem.current.sendNavigationEvents)
         {
             // Cancel
-            if (Input.GetButtonDown("B_G"))
+            if (InputManager.GetActionPressed(0, InputAction.Return)
+                || Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Backspace))
             {
                 if (statsOpen)
                 {
@@ -240,13 +242,13 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(menuManager.dissolveDuration));
-            yield return new WaitForSeconds(menuManager.dissolveOffset);
+            StartCoroutine(dissolves[i].DissolveInCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         EventSystem.current.sendNavigationEvents = true;
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(MenuManager.dissolveDuration));
     }
 
     public IEnumerator DissolveOutCoroutine()
@@ -256,11 +258,11 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(menuManager.dissolveDuration));
-            yield return new WaitForSeconds(menuManager.dissolveOffset);
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(menuManager.dissolveDuration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
         gameObject.SetActive(false);
     }
 }

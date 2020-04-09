@@ -3,27 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class OptionsMenu : MonoBehaviour, IDissolveMenu
 {
+    [HideInInspector] public int currentIndex;
+
+    private bool listeningKey = false;
+    private MenuControlsButton currentControlsButton;
+
+
+    [Header("Component refs")]
+    [HideInInspector] public MenuManager menuManager;
     public MenuSlider musicSlider;
     public MenuSlider soundsSlider;
-
-    [HideInInspector] public MenuManager menuManager;
-    [HideInInspector] public int currentIndex;
+    public MenuControlsButton[] controlsButtons;
+    public OptionsButton saveButton;
+    public OptionsButton resetButton;
     [HideInInspector] public Selectable[] selectables;
+    public CanvasGroup PressAKeyCanvasGroup;
 
     private void Awake()
     {
         currentIndex = -1;
-        selectables = new Selectable[]
+        selectables = new Selectable[4 + controlsButtons.Length];
+
+        selectables[0] = musicSlider.GetComponent<Selectable>();
+        selectables[1] = soundsSlider.GetComponent<Selectable>();
+
+        for (int i = 0; i < controlsButtons.Length; i++)
         {
-            musicSlider.GetComponent<Selectable>(),
-            soundsSlider.GetComponent<Selectable>()
-        };
+            selectables[2 + i] = controlsButtons[i].GetComponent<Selectable>();
+        }
+
+        selectables[selectables.Length - 2] = saveButton.GetComponent<Selectable>();
+        selectables[selectables.Length - 1] = resetButton.GetComponent<Selectable>();
 
         Init();
-
     }
 
     public void Init()
@@ -31,18 +47,60 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         int musicVolume = PlayerPrefs.GetInt("MusicVolume", 10);
         int soundsVolume = PlayerPrefs.GetInt("SoundsVolume", 10);
 
-        musicSlider.Init(musicVolume);
-        soundsSlider.Init(soundsVolume);
+        musicSlider.Init(musicVolume, this);
+        soundsSlider.Init(soundsVolume, this);
+        foreach (MenuControlsButton controlsButton in controlsButtons)
+        {
+            controlsButton.Init(this);
+        }
+        saveButton.Init(this);
+        resetButton.Init(this);
     }
 
     private void Update()
     {
-        if (EventSystem.current.sendNavigationEvents)
+        if (EventSystem.current.sendNavigationEvents && menuManager != null)
         {
-            if (Input.GetButtonDown("B_G"))
+            if (InputManager.GetActionPressed(0, InputAction.Return)
+                || Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
             }
+        }
+
+        if (listeningKey)
+        {
+            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKeyDown(keyCode))
+                {
+                    Debug.Log("OptionsMenu: " + keyCode.ToString() + " pressed");
+                    PlayerPrefs.SetInt(currentControlsButton.playerPrefsId, (int)keyCode);
+
+                    InputManager.UpdateKeyMapping();
+                    currentControlsButton.UpdateButton();
+
+                    listeningKey = false;
+                    currentControlsButton = null;
+                    PressAKeyCanvasGroup.alpha = 0f;
+                    StartCoroutine(StopListeningKeyCoroutine());
+                }
+            }
+        }
+    }
+
+    public void ResetControls()
+    {
+        foreach (InputAction action in Enum.GetValues(typeof(InputAction)))
+        {
+            PlayerPrefs.DeleteKey("P1_" + action.ToString());
+            PlayerPrefs.DeleteKey("P2_" + action.ToString());
+        }
+        InputManager.UpdateKeyMapping();
+        foreach (MenuControlsButton button in controlsButtons)
+        {
+            button.UpdateButton();
         }
     }
 
@@ -66,6 +124,26 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         }
     }
 
+    public void StartListeningKey(MenuControlsButton controlsButton)
+    {
+        EventSystem.current.sendNavigationEvents = false;
+        currentControlsButton = controlsButton;
+        PressAKeyCanvasGroup.alpha = 0.9f;
+        StartCoroutine(StartListeningKeyCoroutine());
+    }
+
+    private IEnumerator StartListeningKeyCoroutine()
+    {
+        yield return null;
+        listeningKey = true;
+    }
+
+    private IEnumerator StopListeningKeyCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(0.2f);
+        EventSystem.current.sendNavigationEvents = true;
+    }
+
     public IEnumerator DissolveInCoroutine()
     {
         gameObject.SetActive(true);
@@ -73,13 +151,13 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveInCoroutine(menuManager.dissolveDuration));
-            yield return new WaitForSeconds(menuManager.dissolveOffset);
+            StartCoroutine(dissolves[i].DissolveInCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
         EventSystem.current.sendNavigationEvents = true;
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(menuManager.dissolveDuration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveInCoroutine(MenuManager.dissolveDuration));
     }
 
     public IEnumerator DissolveOutCoroutine()
@@ -89,11 +167,11 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
         {
-            StartCoroutine(dissolves[i].DissolveOutCoroutine(menuManager.dissolveDuration));
-            yield return new WaitForSeconds(menuManager.dissolveOffset);
+            StartCoroutine(dissolves[i].DissolveOutCoroutine(MenuManager.dissolveDuration));
+            yield return new WaitForSecondsRealtime(MenuManager.dissolveOffset);
         }
 
-        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(menuManager.dissolveDuration));
+        yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
         gameObject.SetActive(false);
     }
 }

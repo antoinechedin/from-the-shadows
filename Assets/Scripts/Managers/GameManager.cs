@@ -36,6 +36,7 @@ public class GameManager : Singleton<GameManager>
 
     public void OnOptionUpdate()
     {
+        Debug.Log("OnOptionUpdate() called");
         if (optionsUpdateDelegate != null)
             optionsUpdateDelegate();
     }

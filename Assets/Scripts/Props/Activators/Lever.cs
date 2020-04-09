@@ -77,14 +77,14 @@ public class Lever : Activator, IResetable
     /// </summary>
     public void Update()
     {
-        if (canPlayer1Activate && Input.GetButtonDown("X_1"))
+        if (canPlayer1Activate && InputManager.GetActionPressed(1, InputAction.Interact))//Input.GetButtonDown("X_1"))
         {
             if (!active)
                 On(false);
             else
                 Off();                
         }
-        if (canPlayer2Activate && Input.GetButtonDown("X_2"))
+        if (canPlayer2Activate && InputManager.GetActionPressed(2, InputAction.Interact))//Input.GetButtonDown("X_2"))
         {
             if (!active)
                 On(false);
