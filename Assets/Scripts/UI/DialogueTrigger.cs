@@ -45,6 +45,7 @@ public class DialogueTrigger : MonoBehaviour
             foreach (GameObject p in players)
             {
                 p.GetComponent<PlayerInput>().active = false;
+                p.GetComponent<PlayerInput>().noJump = false;
             }
         }
 
