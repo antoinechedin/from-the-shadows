@@ -11,6 +11,8 @@ public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce, DisplayAfter
 
 public class OverHeadGUI : MonoBehaviour
 {
+    private const float timeBetweenCharacter = 0.1f;
+
     GameObject canvasGO;
     GameObject textGO;
     GameObject imageGO;
@@ -47,13 +49,16 @@ public class OverHeadGUI : MonoBehaviour
     private float timeCount = 0;
 
     private Animator animator;
-
+    private TextMeshProUGUI textUGUI;
+    private string textLine;
 
     public UnityEvent OnDialogueStart, OnDialogueEnd;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
+        textLine = textUGUI.text;
         canPass = false;
     }
 
@@ -74,6 +79,20 @@ public class OverHeadGUI : MonoBehaviour
     {
         yield return new WaitForSeconds(timeBeforePass);
         canPass = true;
+    }
+
+    private IEnumerator PrintTextLineCoroutine()
+    {
+        int i = 1;
+        while (i <= textLine.Length)
+        {
+            textUGUI.text = "<alpha=\"#FF\">" + textLine.Substring(0, i)
+                + "<alpha=\"#00\">" + textLine.Substring(i, i - textLine.Length);
+
+            float timeToWait = Char.IsPunctuation(textLine[i - 1]) ? timeBetweenCharacter * 2 : timeBetweenCharacter;
+            yield return new WaitForSeconds(timeToWait);
+            i++;
+        }
     }
 
     private void Update()
@@ -127,7 +146,7 @@ public class OverHeadGUI : MonoBehaviour
         animator.SetBool("display", true);
         animator.SetBool("hide", false);
 
-        if(isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
+        if (isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
         {
             if (FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
             {
@@ -140,6 +159,7 @@ public class OverHeadGUI : MonoBehaviour
                 transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().lightDialogueIcon;
             }
         }
+        StartCoroutine(PrintTextLineCoroutine());
         StartCoroutine(CanPassDialogue());
         //content.SetActive(UIActive);
     }
