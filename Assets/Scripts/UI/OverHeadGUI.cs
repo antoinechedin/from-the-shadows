@@ -53,6 +53,7 @@ public class OverHeadGUI : MonoBehaviour
     private TextMeshProUGUI textUGUI;
     private string textLine;
     [HideInInspector] public bool textLineFullyDisplayed = false;
+    private bool skipTextLineAnimation;
 
     public UnityEvent OnDialogueStart, OnDialogueEnd;
 
@@ -64,6 +65,7 @@ public class OverHeadGUI : MonoBehaviour
         textLine = textUGUI.text;
         animationEnded = false;
         textLineFullyDisplayed = false;
+        skipTextLineAnimation = false;
     }
 
 
@@ -91,7 +93,7 @@ public class OverHeadGUI : MonoBehaviour
         int i = 1;
         while (i < textLine.Length)
         {
-            if (InputManager.GetActionPressed(0, InputAction.Jump)) break;
+            if (skipTextLineAnimation) break;
 
             textUGUI.text = GenerateTMPTextLine(textLine, i);
             float timeToWait = Char.IsPunctuation(textLine[i - 1]) ? timeBetweenCharacter * 7 : timeBetweenCharacter;
@@ -128,6 +130,8 @@ public class OverHeadGUI : MonoBehaviour
                 DisplayUI();
             }
         }
+
+        if(InputManager.GetActionPressed(0, InputAction.Jump) && ! skipTextLineAnimation) skipTextLineAnimation = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
