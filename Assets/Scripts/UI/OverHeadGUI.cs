@@ -11,7 +11,7 @@ public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce, DisplayAfter
 
 public class OverHeadGUI : MonoBehaviour
 {
-    private const float timeBetweenCharacter = 0.1f;
+    private const float timeBetweenCharacter = 0.03f;
 
     GameObject canvasGO;
     GameObject textGO;
@@ -33,8 +33,8 @@ public class OverHeadGUI : MonoBehaviour
     public int nbPlayerNeeded;
 
     [Header("Time before the player can pass the dialogue box")]
-    public float timeBeforePass = 0f;
-    public bool canPass = false;
+    public float animationDuration = 0f;
+    [HideInInspector] public bool animationEnded = false;
 
     [Header("Note : set the target to \"this\" to make it static.")]
     [Space(-10)]
@@ -48,18 +48,22 @@ public class OverHeadGUI : MonoBehaviour
     private bool UIActive = false;
     private float timeCount = 0;
 
+    private AudioSource parentAudioSource;
     private Animator animator;
     private TextMeshProUGUI textUGUI;
     private string textLine;
+    [HideInInspector] public bool textLineFullyDisplayed = false;
 
     public UnityEvent OnDialogueStart, OnDialogueEnd;
 
     private void Awake()
     {
+        parentAudioSource = GetComponentInParent<AudioSource>();
         animator = GetComponent<Animator>();
         textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
         textLine = textUGUI.text;
-        canPass = false;
+        animationEnded = false;
+        textLineFullyDisplayed = false;
     }
 
 
@@ -77,22 +81,34 @@ public class OverHeadGUI : MonoBehaviour
 
     IEnumerator CanPassDialogue()
     {
-        yield return new WaitForSeconds(timeBeforePass);
-        canPass = true;
+        yield return new WaitForSeconds(animationDuration);
+        animationEnded = true;
     }
 
     private IEnumerator PrintTextLineCoroutine()
     {
+        yield return null;
         int i = 1;
-        while (i <= textLine.Length)
+        while (i < textLine.Length)
         {
-            textUGUI.text = "<alpha=\"#FF\">" + textLine.Substring(0, i)
-                + "<alpha=\"#00\">" + textLine.Substring(i, i - textLine.Length);
+            if (InputManager.GetActionPressed(0, InputAction.Jump)) break;
 
-            float timeToWait = Char.IsPunctuation(textLine[i - 1]) ? timeBetweenCharacter * 2 : timeBetweenCharacter;
+            textUGUI.text = GenerateTMPTextLine(textLine, i);
+            float timeToWait = Char.IsPunctuation(textLine[i - 1]) ? timeBetweenCharacter * 7 : timeBetweenCharacter;
+
+            if (i % 2 == 0) parentAudioSource.Play();
             yield return new WaitForSeconds(timeToWait);
             i++;
         }
+
+        i = textLine.Length;
+        textUGUI.text = GenerateTMPTextLine(textLine, i);
+        textLineFullyDisplayed = true;
+    }
+
+    private static string GenerateTMPTextLine(string textLine, int i)
+    {
+        return "<alpha=#FF>" + textLine.Substring(0, i) + "<alpha=#00>" + textLine.Substring(i, textLine.Length - i);
     }
 
     private void Update()

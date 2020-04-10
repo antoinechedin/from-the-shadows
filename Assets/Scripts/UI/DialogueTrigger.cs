@@ -36,10 +36,11 @@ public class DialogueTrigger : MonoBehaviour
         started = true;
         GameManager.Instance.IsInCutscene = true;
     }
+
     public void StartDialogue()
     {
         //on désactive les inputs des joueurs
-        if(mustDisableInput)
+        if (mustDisableInput)
         {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject p in players)
@@ -58,15 +59,15 @@ public class DialogueTrigger : MonoBehaviour
         if (started)
         {
             //if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("A_G"))
-            if (InputManager.GetActionPressed(0, InputAction.Select))
+            if (InputManager.GetActionPressed(0, InputAction.Jump))
             {
-                if(guis[currentDisplayed].canPass)
+                if (guis[currentDisplayed].animationEnded && guis[currentDisplayed].textLineFullyDisplayed)
                 {
                     if (currentDisplayed < guis.Count - 1) //Si c'est pas le dernier, on passe au texte suivant
                     {
                         guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
                         guis[currentDisplayed].HideUI();
-                        guis[currentDisplayed].canPass = false;
+                        guis[currentDisplayed].animationEnded = false;
 
                         currentDisplayed++;
 
