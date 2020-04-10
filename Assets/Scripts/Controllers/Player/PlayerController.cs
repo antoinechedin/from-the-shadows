@@ -104,6 +104,15 @@ public class PlayerController : MonoBehaviour
 
         animator.Rebind();
     }
+    public void DisableJump()
+    {
+        input.noJump = true;
+    }
+
+    public void EnableJump()
+    {
+        input.noJump = false;
+    }
 
     /// <summary>
     /// Gives the position and rotation of t to the player

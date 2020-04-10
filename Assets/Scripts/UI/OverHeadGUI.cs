@@ -11,6 +11,8 @@ public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce, DisplayAfter
 
 public class OverHeadGUI : MonoBehaviour
 {
+    private const float timeBetweenCharacter = 0.03f;
+
     GameObject canvasGO;
     GameObject textGO;
     GameObject imageGO;
@@ -31,8 +33,8 @@ public class OverHeadGUI : MonoBehaviour
     public int nbPlayerNeeded;
 
     [Header("Time before the player can pass the dialogue box")]
-    public float timeBeforePass = 0f;
-    public bool canPass = false;
+    public float animationDuration = 0f;
+    [HideInInspector] public bool animationEnded = false;
 
     [Header("Note : set the target to \"this\" to make it static.")]
     [Space(-10)]
@@ -46,15 +48,22 @@ public class OverHeadGUI : MonoBehaviour
     private bool UIActive = false;
     private float timeCount = 0;
 
+    private AudioSource parentAudioSource;
     private Animator animator;
-
+    private TextMeshProUGUI textUGUI;
+    private string textLine;
+    [HideInInspector] public bool textLineFullyDisplayed = false;
 
     public UnityEvent OnDialogueStart, OnDialogueEnd;
 
     private void Awake()
     {
+        parentAudioSource = GetComponentInParent<AudioSource>();
         animator = GetComponent<Animator>();
-        canPass = false;
+        textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
+        textLine = textUGUI.text;
+        animationEnded = false;
+        textLineFullyDisplayed = false;
     }
 
 
@@ -72,8 +81,34 @@ public class OverHeadGUI : MonoBehaviour
 
     IEnumerator CanPassDialogue()
     {
-        yield return new WaitForSeconds(timeBeforePass);
-        canPass = true;
+        yield return new WaitForSeconds(animationDuration);
+        animationEnded = true;
+    }
+
+    private IEnumerator PrintTextLineCoroutine()
+    {
+        yield return null;
+        int i = 1;
+        while (i < textLine.Length)
+        {
+            if (InputManager.GetActionPressed(0, InputAction.Jump)) break;
+
+            textUGUI.text = GenerateTMPTextLine(textLine, i);
+            float timeToWait = Char.IsPunctuation(textLine[i - 1]) ? timeBetweenCharacter * 7 : timeBetweenCharacter;
+
+            if (i % 2 == 0) parentAudioSource.Play();
+            yield return new WaitForSeconds(timeToWait);
+            i++;
+        }
+
+        i = textLine.Length;
+        textUGUI.text = GenerateTMPTextLine(textLine, i);
+        textLineFullyDisplayed = true;
+    }
+
+    private static string GenerateTMPTextLine(string textLine, int i)
+    {
+        return "<alpha=#FF>" + textLine.Substring(0, i) + "<alpha=#00>" + textLine.Substring(i, textLine.Length - i);
     }
 
     private void Update()
@@ -127,7 +162,7 @@ public class OverHeadGUI : MonoBehaviour
         animator.SetBool("display", true);
         animator.SetBool("hide", false);
 
-        if(isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
+        if (isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
         {
             if (FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
             {
@@ -140,6 +175,7 @@ public class OverHeadGUI : MonoBehaviour
                 transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().lightDialogueIcon;
             }
         }
+        StartCoroutine(PrintTextLineCoroutine());
         StartCoroutine(CanPassDialogue());
         //content.SetActive(UIActive);
     }
