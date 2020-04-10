@@ -233,6 +233,7 @@ public class GameManager : Singleton<GameManager>
 
         //étape 4 : On enlève l'écran de chargement
         loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true); //on fade out le loading screen
+        DiscordController.Instance.SetActivity();
     }
     #endregion
 

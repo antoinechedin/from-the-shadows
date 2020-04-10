@@ -4,18 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using Discord;
 
-public class DiscordController : MonoBehaviour
+public class DiscordController : Singleton<DiscordController>
 {
     private static long CLIENT_ID = 680874741497987089;
-
-    public Discord.Discord discord;
+    private Discord.Discord discord;
     private Discord.ActivityManager activityManager;
-    private DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    private static DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    private string state;
+    private string details;
+    private string smallImage;
+    private string smallText;
 
     void Start()
     {
         discord = new Discord.Discord(CLIENT_ID, (System.UInt64)Discord.CreateFlags.Default);
-        UpdatePresence();
+        SetActivity();
     }
 
     void Update()
@@ -28,8 +32,8 @@ public class DiscordController : MonoBehaviour
         activityManager = discord.GetActivityManager();
         var activity = new Discord.Activity
         {
-            State = "Chapter 1",
-            Details = "Playing Solo",
+            State = state,
+            Details = details,
             Timestamps = new Discord.ActivityTimestamps
             {
                 Start = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds / 1000
@@ -38,8 +42,8 @@ public class DiscordController : MonoBehaviour
             {
                 LargeImage = "default",
                 LargeText = "From the Shadows",
-                SmallImage = "default",
-                SmallText = "Chapter 1"
+                SmallImage = smallImage,
+                SmallText = smallText
             }
         };
         activityManager.UpdateActivity(activity, (res) =>
@@ -55,9 +59,41 @@ public class DiscordController : MonoBehaviour
         });
     }
 
-    public Discord.ActivityManager ActivityManager
+    public void SetActivity()
     {
-        get => activityManager;
-        set => activityManager = value;
+        int chapter = GameManager.Instance.CurrentChapter;
+        if (chapter >= 0)
+        {
+            switch (chapter)
+            {
+                case 0:
+                    state = "Prologue";
+                    break;
+                case 1:
+                    state = "Chapter 1";
+                    break;
+                case 2:
+                    state = "Chapter 2";
+                    break;
+                default:
+                    state = null;
+                    break;
+            }
+        }
+        else
+        {
+            state = "Main menu";
+        }
+        int save = GameManager.Instance.CurrentSave;
+        if (save >= 0)
+        {
+            int nbPlayer = GameManager.Instance.Saves[GameManager.Instance.CurrentSave].NbPlayer;
+            details = nbPlayer == 1 ? "Playing Solo" : "Playing Duo";
+        }
+        else
+        {
+            details = null;
+        }
+        UpdatePresence();
     }
 }
