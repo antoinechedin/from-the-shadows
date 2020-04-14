@@ -54,6 +54,7 @@ public class OverHeadGUI : MonoBehaviour
     private string textLine;
     [HideInInspector] public bool textLineFullyDisplayed = false;
     private bool skipTextLineAnimation;
+    private int textLineIndex;
 
     public UnityEvent OnDialogueStart, OnDialogueEnd;
 
@@ -66,6 +67,7 @@ public class OverHeadGUI : MonoBehaviour
         animationEnded = false;
         textLineFullyDisplayed = false;
         skipTextLineAnimation = false;
+        textLineIndex = 0;
     }
 
 
@@ -90,21 +92,23 @@ public class OverHeadGUI : MonoBehaviour
     private IEnumerator PrintTextLineCoroutine()
     {
         yield return null;
-        int i = 1;
-        while (i < textLine.Length)
+        textLineIndex = 1;
+        while (textLineIndex < textLine.Length)
         {
             if (skipTextLineAnimation) break;
 
-            textUGUI.text = GenerateTMPTextLine(textLine, i);
-            float timeToWait = Char.IsPunctuation(textLine[i - 1]) ? timeBetweenCharacter * 7 : timeBetweenCharacter;
+            textUGUI.text = GenerateTMPTextLine(textLine, textLineIndex);
+            float timeToWait = 
+                ".,?!;".Contains(textLine[textLineIndex - 1].ToString()) ? 
+                timeBetweenCharacter * 7 : timeBetweenCharacter;
 
-            if (i % 2 == 0) parentAudioSource.Play();
+            if (textLineIndex % 2 == 0) parentAudioSource.Play();
             yield return new WaitForSeconds(timeToWait);
-            i++;
+            textLineIndex++;
         }
 
-        i = textLine.Length;
-        textUGUI.text = GenerateTMPTextLine(textLine, i);
+        textLineIndex = textLine.Length;
+        textUGUI.text = GenerateTMPTextLine(textLine, textLineIndex);
         textLineFullyDisplayed = true;
     }
 
@@ -131,7 +135,8 @@ public class OverHeadGUI : MonoBehaviour
             }
         }
 
-        if(InputManager.GetActionPressed(0, InputAction.Jump) && ! skipTextLineAnimation) skipTextLineAnimation = true;
+        if (!skipTextLineAnimation && textLineIndex > 0 && InputManager.GetActionPressed(0, InputAction.Jump)) 
+            skipTextLineAnimation = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
