@@ -16,10 +16,13 @@ public class DiscordController : Singleton<DiscordController>
     private string smallImage;
     private string smallText;
 
-    void Start()
+    public void Init()
     {
-        discord = new Discord.Discord(CLIENT_ID, (System.UInt64)Discord.CreateFlags.Default);
-        SetActivity();
+        if (discord == null)
+        {
+            discord = new Discord.Discord(CLIENT_ID, (System.UInt64)Discord.CreateFlags.Default);
+            SetActivity();
+        }
     }
 
     void Update()
@@ -61,38 +64,46 @@ public class DiscordController : Singleton<DiscordController>
 
     public void SetActivity()
     {
-        int chapter = GameManager.Instance.CurrentChapter;
-        if (chapter >= 0)
+        if (GameObject.FindObjectOfType<MenuManager>() != null)
         {
+            details = "Main menu";
+            state = null;
+            smallImage = "mainmenu";
+            smallText = details;
+        }
+        else
+        {
+            int chapter = GameManager.Instance.CurrentChapter;
             switch (chapter)
             {
                 case 0:
-                    state = "Prologue";
+                    details = "Prologue";
+                    smallImage = "chapter0";
                     break;
                 case 1:
-                    state = "Chapter 1";
+                    details = "Chapter 1";
+                    smallImage = "chapter1";
                     break;
                 case 2:
-                    state = "Chapter 2";
+                    details = "Chapter 2";
+                    smallImage = "chapter2";
                     break;
                 default:
-                    state = null;
+                    details = "Main menu";
+                    smallImage = "mainmenu";
                     break;
             }
-        }
-        else
-        {
-            state = "Main menu";
-        }
-        int save = GameManager.Instance.CurrentSave;
-        if (save >= 0)
-        {
-            int nbPlayer = GameManager.Instance.Saves[GameManager.Instance.CurrentSave].NbPlayer;
-            details = nbPlayer == 1 ? "Playing Solo" : "Playing Duo";
-        }
-        else
-        {
-            details = null;
+            int save = GameManager.Instance.CurrentSave;
+            if (save >= 0)
+            {
+                int nbPlayer = GameManager.Instance.Saves[GameManager.Instance.CurrentSave].NbPlayer;
+                state = nbPlayer == 1 ? "Playing Solo" : "Playing Duo";
+            }
+            else
+            {
+                state = null;
+            }
+            smallText = details;
         }
         UpdatePresence();
     }
