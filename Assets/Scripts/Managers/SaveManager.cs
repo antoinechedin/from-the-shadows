@@ -164,9 +164,6 @@ public class SaveManager : Singleton<SaveManager>
             List<Level> lvlPrologque_Solo = new List<Level>();
             lvlPrologque_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, true));
             lvlPrologque_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
-            lvlPrologque_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
-            lvlPrologque_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
-            lvlPrologque_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
 
             List<Level> lvlChap1_Solo = new List<Level>();
             lvlChap1_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //0   - The entrance - 2 Collectibles
