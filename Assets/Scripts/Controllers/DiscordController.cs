@@ -15,19 +15,34 @@ public class DiscordController : Singleton<DiscordController>
     private string details;
     private string smallImage;
     private string smallText;
+    private bool discordEnabled = true;
 
     public void Init()
     {
-        if (discord == null)
+        if (discord == null && discordEnabled)
         {
-            discord = new Discord.Discord(CLIENT_ID, (System.UInt64)Discord.CreateFlags.Default);
+            try
+            {
+                discord = new Discord.Discord(CLIENT_ID, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
+            }
+            catch (ResultException e)
+            {
+                Debug.LogWarning(e);
+            }
+            discordEnabled = (discord != null);
+        }
+        if (discordEnabled)
+        {
             SetActivity();
         }
     }
 
     void Update()
     {
-        discord.RunCallbacks();
+        if (discordEnabled)
+        {
+            discord.RunCallbacks();
+        }
     }
 
     void UpdatePresence()
@@ -57,54 +72,57 @@ public class DiscordController : Singleton<DiscordController>
             }
             else
             {
-                Debug.LogError("Failed");
+                Debug.LogWarning("Failed");
             }
         });
     }
 
     public void SetActivity()
     {
-        if (GameObject.FindObjectOfType<MenuManager>() != null)
+        if (discordEnabled)
         {
-            details = "Main menu";
-            state = null;
-            smallImage = "mainmenu";
-            smallText = details;
-        }
-        else
-        {
-            int chapter = GameManager.Instance.CurrentChapter;
-            switch (chapter)
+            if (GameObject.FindObjectOfType<MenuManager>() != null)
             {
-                case 0:
-                    details = "Prologue";
-                    smallImage = "chapter0";
-                    break;
-                case 1:
-                    details = "Chapter 1";
-                    smallImage = "chapter1";
-                    break;
-                case 2:
-                    details = "Chapter 2";
-                    smallImage = "chapter2";
-                    break;
-                default:
-                    details = "Main menu";
-                    smallImage = "mainmenu";
-                    break;
-            }
-            int save = GameManager.Instance.CurrentSave;
-            if (save >= 0)
-            {
-                int nbPlayer = GameManager.Instance.Saves[GameManager.Instance.CurrentSave].NbPlayer;
-                state = nbPlayer == 1 ? "Playing Solo" : "Playing Duo";
+                details = "Main menu";
+                state = null;
+                smallImage = "mainmenu";
+                smallText = details;
             }
             else
             {
+                int chapter = GameManager.Instance.CurrentChapter;
+                switch (chapter)
+                {
+                    case 0:
+                        details = "Prologue";
+                        smallImage = "chapter0";
+                        break;
+                    case 1:
+                        details = "Chapter 1";
+                        smallImage = "chapter1";
+                        break;
+                    case 2:
+                        details = "Chapter 2";
+                        smallImage = "chapter2";
+                        break;
+                    default:
+                        details = "Main menu";
+                        smallImage = "mainmenu";
+                        break;
+                }
                 state = null;
+                int save = GameManager.Instance.CurrentSave;
+                if (save >= 0)
+                {
+                    if (GameManager.Instance.Saves[save] != null)
+                    {
+                        int nbPlayer = GameManager.Instance.Saves[save].NbPlayer;
+                        state = nbPlayer == 1 ? "Playing Solo" : "Playing Duo";
+                    }
+                }
+                smallText = details;
             }
-            smallText = details;
+            UpdatePresence();
         }
-        UpdatePresence();
     }
 }
