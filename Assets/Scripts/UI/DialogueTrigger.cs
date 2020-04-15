@@ -66,7 +66,8 @@ public class DialogueTrigger : MonoBehaviour
                 {
                     if (currentDisplayed < guis.Count - 1) //Si c'est pas le dernier, on passe au texte suivant
                     {
-                        guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
+                        if(guis[currentDisplayed].UIActive)
+                            guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
                         guis[currentDisplayed].HideUI();
                         guis[currentDisplayed].animationEnded = false;
 
@@ -79,7 +80,8 @@ public class DialogueTrigger : MonoBehaviour
                     else //Sinon le dialogue est terminé
                     {
                         //on cache la dernière boîte de dialogue
-                        guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
+                        if (guis[currentDisplayed].UIActive)
+                            guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
                         guis[currentDisplayed].HideUI();
 
 
