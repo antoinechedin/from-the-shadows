@@ -41,7 +41,7 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         Debug.Log("Boss fight starting");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Appear");
-        InvokeRepeating("TriggerAttack", 15, timeBetweenAttacks);
+        InvokeRepeating("TriggerAttack", 10, timeBetweenAttacks);
         //spawnGhostObject.GetComponent<SpawnGhost>().StartSpawningGhost();
     }
 
