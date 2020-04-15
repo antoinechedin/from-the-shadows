@@ -24,7 +24,6 @@ public class OverHeadGUI : MonoBehaviour
     public bool isSoloPlayerSpeaking = false;
 
     public GUIType type;
-    private bool useAnimator;
 
     [Header("Place in \"content\" the canvas containing all the UI elements you wish to display")]
     public GameObject content;
@@ -44,6 +43,7 @@ public class OverHeadGUI : MonoBehaviour
     public bool faceCamera;
     [Header("(Active only if the type is set to DisplayAfterTime)")]
     public float timeBeforeDisplay;
+
     private int currentNbPlayer = 0;
     public bool UIActive = false;
     private float timeCount = 0;
@@ -62,15 +62,14 @@ public class OverHeadGUI : MonoBehaviour
     {
         parentAudioSource = GetComponentInParent<AudioSource>();
         animator = GetComponent<Animator>();
-        if(animator == null) useAnimator = false; else useAnimator = true;
         textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
         textLine = textUGUI.text;
-        textUGUI.text = "";
         animationEnded = false;
         textLineFullyDisplayed = false;
         skipTextLineAnimation = false;
         textLineIndex = 0;
     }
+
 
     private void Start()
     {
@@ -99,8 +98,8 @@ public class OverHeadGUI : MonoBehaviour
             if (skipTextLineAnimation) break;
 
             textUGUI.text = GenerateTMPTextLine(textLine, textLineIndex);
-            float timeToWait =
-                ".,?!;".Contains(textLine[textLineIndex - 1].ToString()) ?
+            float timeToWait = 
+                ".,?!;".Contains(textLine[textLineIndex - 1].ToString()) ? 
                 timeBetweenCharacter * 7 : timeBetweenCharacter;
 
             if (textLineIndex % 2 == 0) parentAudioSource.Play();
@@ -120,7 +119,7 @@ public class OverHeadGUI : MonoBehaviour
 
     private void Update()
     {
-        if (UIActive && useAnimator)
+        if (UIActive)
         {
             content.transform.position = target.position;
             if (faceCamera)
@@ -136,7 +135,7 @@ public class OverHeadGUI : MonoBehaviour
             }
         }
 
-        if (!skipTextLineAnimation && textLineIndex > 0 && InputManager.GetActionPressed(0, InputAction.Jump))
+        if (!skipTextLineAnimation && textLineIndex > 0 && InputManager.GetActionPressed(0, InputAction.Jump)) 
             skipTextLineAnimation = true;
     }
 
@@ -169,11 +168,9 @@ public class OverHeadGUI : MonoBehaviour
     public void DisplayUI()
     {
         UIActive = true;
-        if (useAnimator)
-        {
-            animator.SetBool("display", true);
-            animator.SetBool("hide", false);
-        }
+        animator.SetBool("display", true);
+        animator.SetBool("hide", false);
+
         if (isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
         {
             if (FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
@@ -189,18 +186,15 @@ public class OverHeadGUI : MonoBehaviour
         }
         StartCoroutine(PrintTextLineCoroutine());
         StartCoroutine(CanPassDialogue());
-        content.SetActive(UIActive);
+        //content.SetActive(UIActive);
     }
 
     public void HideUI()
     {
         UIActive = false;
-        if (useAnimator)
-        {
-            animator.SetBool("hide", true);
-            animator.SetBool("display", false);
-        }
-        content.SetActive(UIActive);
+        animator.SetBool("hide", true);
+        animator.SetBool("display", false);
+        //content.SetActive(UIActive);
     }
 
     public virtual void ExecuteOnDialogueStart()
