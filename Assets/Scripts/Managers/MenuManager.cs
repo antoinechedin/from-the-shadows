@@ -66,6 +66,8 @@ public class MenuManager : MonoBehaviour
             GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
         }
 
+        DiscordController.Instance.Init();
+
         // backgroundAnimator = background.gameObject.GetComponent<Animator>();
         startMenuBackgroundAnimator = startMenuBackground.gameObject.GetComponent<Animator>();
 
