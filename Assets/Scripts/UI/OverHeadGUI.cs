@@ -45,7 +45,7 @@ public class OverHeadGUI : MonoBehaviour
     public float timeBeforeDisplay;
 
     private int currentNbPlayer = 0;
-    private bool UIActive = false;
+    public bool UIActive = false;
     private float timeCount = 0;
 
     private AudioSource parentAudioSource;

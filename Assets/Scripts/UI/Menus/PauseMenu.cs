@@ -60,6 +60,7 @@ public class PauseMenu : MonoBehaviour
     public void Home()
     {
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
+        GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         SaveManager.Instance.WriteSaveFile();
         GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
     }
