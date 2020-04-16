@@ -31,7 +31,8 @@ public class Outline : MonoBehaviour
         nPlayerIn++;
         if (nPlayerIn > 0)
         {
-            StartCoroutine(DisplayOutline());
+            if (gameObject.activeSelf)
+                StartCoroutine(DisplayOutline());
         }
     }
 
@@ -40,7 +41,8 @@ public class Outline : MonoBehaviour
         nPlayerIn--;
         if (nPlayerIn <= 0)
         {
-            StartCoroutine(HideOutline());
+            if(gameObject.activeSelf)
+                StartCoroutine(HideOutline());
             nPlayerIn = 0;
         }
     }
