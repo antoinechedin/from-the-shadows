@@ -5,12 +5,15 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using Coffee.UIExtensions;
+using UnityEngine.Video;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 public class MenuManager : MonoBehaviour
 {
+    public VideoPlayer introCinematic;
+    public TtileMenu tileMenu;
     public MainMenu mainMenu;
     public SavesMenu savesMenu;
     public OptionsMenu optionsMenu;
@@ -32,7 +35,7 @@ public class MenuManager : MonoBehaviour
     public const float dissolveOffset = 0.1f;
 
     private Animator backgroundAnimator;
-    private Animator startMenuBackgroundAnimator;
+    // private Animator startMenuBackgroundAnimator;
 
     // private Dissolve titleDissolve;
     // private Dissolve playDissolve;
@@ -56,6 +59,7 @@ public class MenuManager : MonoBehaviour
         // quitDissolve = quit.GetComponentInChildren<Dissolve>();
 
         SaveManager.Instance.LoadAllSaveFiles();
+        DiscordController.Instance.Init();
 
         // play.onClick.AddListener(delegate { StartCoroutine(OpenSaveMenuCoroutine()); });
         // options.onClick.AddListener(delegate { StartCoroutine(OpenOptionsMenuCoroutine()); });
@@ -63,14 +67,35 @@ public class MenuManager : MonoBehaviour
 
         if (GameManager.Instance.LoadingMenuInfos == null)
         {
-            GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
+            StartCoroutine(WaitForIntroCinematic());
         }
 
-        DiscordController.Instance.Init();
-
         // backgroundAnimator = background.gameObject.GetComponent<Animator>();
-        startMenuBackgroundAnimator = startMenuBackground.gameObject.GetComponent<Animator>();
+        // startMenuBackgroundAnimator = startMenuBackground.gameObject.GetComponent<Animator>();
+        else
+        {
+            DisplayMenu();
+        }
+    }
 
+    private IEnumerator WaitForIntroCinematic()
+    {
+        GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
+
+        introCinematic.Prepare();
+        while(!introCinematic.isPrepared) yield return null;
+        introCinematic.Play();
+        yield return new WaitForSeconds(0.1f);
+        
+        tileMenu.gameObject.SetActive(false);
+        yield return new WaitForSeconds(8);
+        introCinematic.Stop();
+        DisplayMenu();
+    }
+
+    private void DisplayMenu()
+    {
+        tileMenu.gameObject.SetActive(false);
         int sceneIndex = GameManager.Instance.LoadingMenuInfos.StartingMenuScene;
         int finishChapterForFirstTime = GameManager.Instance.LoadingMenuInfos.FinishChapterForFirstTime;
         switch (sceneIndex)

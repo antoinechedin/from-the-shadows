@@ -34,8 +34,8 @@ public class MusicManager : MonoBehaviour
     {
         masterBus = FMODUnity.RuntimeManager.GetBus("Bus:/");
 
-        if(GameManager.Instance.LoadingChapterInfo == null && !playOnAwake)
-            StartTheme(mainTheme);
+        // if(GameManager.Instance.LoadingChapterInfo == null && !playOnAwake)
+        //     StartTheme(mainTheme);
     }
 
     private void Update()
