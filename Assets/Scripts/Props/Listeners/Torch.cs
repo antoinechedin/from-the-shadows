@@ -12,6 +12,7 @@ public class Torch : ActivatorListener, IResetable
     public bool activeAtStart;
     public float lightRadius;
     public bool neverStatic = false;
+    public bool disableSoundOnce = true;
 
     private bool isMute = true;
     public bool active;
@@ -41,6 +42,8 @@ public class Torch : ActivatorListener, IResetable
     {
         audioSource = GetComponent<AudioSource>();
 
+        isMute = true;
+
         if (activeAtStart)
         {
             lightSource.GetComponent<NewLightSource>().lightRadius = 0f;
@@ -69,8 +72,11 @@ public class Torch : ActivatorListener, IResetable
         targetRadius = lightRadius;
         if (isTorch) particles.Play();
         active = true;
-        if (audioSource != null && !isMute)
+        if (audioSource != null && !isMute && !disableSoundOnce)
+        {
             audioSource.PlayOneShot(soundOn);
+            disableSoundOnce = false;
+        }
     }
 
     public override void OnDeactivate()
@@ -79,8 +85,11 @@ public class Torch : ActivatorListener, IResetable
         if (isTorch) particles.Stop();
         targetRadius = 0.01f;
         active = false;
-        if (audioSource != null && !isMute)
+        if (audioSource != null && !isMute && !disableSoundOnce)
+        {
             audioSource.PlayOneShot(soundOff);
+            disableSoundOnce = false;
+        }
     }
 
     public void Reset()

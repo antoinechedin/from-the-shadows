@@ -28,6 +28,9 @@ public class Lever : Activator, IResetable
         audioSource = GetComponent<AudioSource>();
         child = transform.Find("Child").gameObject;
         active = activeAtStart;
+
+        isMute = true;
+
         if (activeAtStart)
         {
             On(true);
