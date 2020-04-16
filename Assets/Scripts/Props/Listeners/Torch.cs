@@ -55,6 +55,7 @@ public class Torch : ActivatorListener, IResetable
         }
 
         isMute = false;
+        disableSoundOnce = false;
     }
 
     private void LateUpdate()
@@ -75,7 +76,6 @@ public class Torch : ActivatorListener, IResetable
         if (audioSource != null && !isMute && !disableSoundOnce)
         {
             audioSource.PlayOneShot(soundOn);
-            disableSoundOnce = false;
         }
     }
 
@@ -88,7 +88,6 @@ public class Torch : ActivatorListener, IResetable
         if (audioSource != null && !isMute && !disableSoundOnce)
         {
             audioSource.PlayOneShot(soundOff);
-            disableSoundOnce = false;
         }
     }
 
