@@ -13,12 +13,14 @@ using UnityEditor;
 public class MenuManager : MonoBehaviour
 {
     public VideoPlayer introCinematic;
-    public TtileMenu tileMenu;
+    public CinematicMenu cinematicMenu;
+    public GameObject startMenu;
     public MainMenu mainMenu;
     public SavesMenu savesMenu;
     public OptionsMenu optionsMenu;
     public CreditsMenu creditsMenu;
     public ChaptersMenu chaptersMenu;
+    public MusicManager musicManager;
 
     public MenuCamera menuCamera;
 
@@ -42,6 +44,8 @@ public class MenuManager : MonoBehaviour
     // private Dissolve optionsDissolve;
     // private Dissolve quitDissolve;
 
+    private Coroutine introCinematicCoroutine;
+
     private void Awake()
     {
         mainMenu.menuManager = this;
@@ -60,6 +64,8 @@ public class MenuManager : MonoBehaviour
 
         SaveManager.Instance.LoadAllSaveFiles();
         DiscordController.Instance.Init();
+        cinematicMenu.gameObject.SetActive(true);
+        cinematicMenu.Init();
 
         // play.onClick.AddListener(delegate { StartCoroutine(OpenSaveMenuCoroutine()); });
         // options.onClick.AddListener(delegate { StartCoroutine(OpenOptionsMenuCoroutine()); });
@@ -67,7 +73,9 @@ public class MenuManager : MonoBehaviour
 
         if (GameManager.Instance.LoadingMenuInfos == null)
         {
-            StartCoroutine(WaitForIntroCinematic());
+            Debug.Log("MenuManager.Start: no loading menu infos in game manager. Start intro cinematic");
+            introCinematicCoroutine = StartCoroutine(StartIntroCinematic());
+            startMenu.SetActive(false);
         }
 
         // backgroundAnimator = background.gameObject.GetComponent<Animator>();
@@ -78,24 +86,29 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitForIntroCinematic()
+    private IEnumerator StartIntroCinematic()
     {
         GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
 
         introCinematic.Prepare();
-        while(!introCinematic.isPrepared) yield return null;
+        while (!introCinematic.isPrepared) yield return null;
         introCinematic.Play();
         yield return new WaitForSeconds(0.1f);
-        
-        tileMenu.gameObject.SetActive(false);
-        yield return new WaitForSeconds(8);
+        cinematicMenu.SetForegroundAlpha(0);
+        yield return new WaitForSeconds((float)introCinematic.length);
+
+        cinematicMenu.SetForegroundAlpha(1);
+        introCinematicCoroutine = null;
         introCinematic.Stop();
         DisplayMenu();
     }
 
     private void DisplayMenu()
     {
-        tileMenu.gameObject.SetActive(false);
+        startMenu.SetActive(true);
+        StartCoroutine(cinematicMenu.FadeOutCinematicMenuCoroutine());
+        musicManager.StartTheme(musicManager.mainTheme);
+
         int sceneIndex = GameManager.Instance.LoadingMenuInfos.StartingMenuScene;
         int finishChapterForFirstTime = GameManager.Instance.LoadingMenuInfos.FinishChapterForFirstTime;
         switch (sceneIndex)
@@ -131,14 +144,21 @@ public class MenuManager : MonoBehaviour
 
     private void Update()
     {
-        // Debug
-        if (Input.GetKeyDown(KeyCode.I))
+        if (introCinematicCoroutine != null && Input.anyKeyDown)
         {
-            // StartCoroutine(ButtonsDissolveIn());
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            // StartCoroutine(ButtonsDissolveOut());
+            if (!cinematicMenu.canSkip)
+            {
+                cinematicMenu.ShowSkipText();
+            }
+            else
+            {
+                Debug.Log("Stop cinematic");
+                StopCoroutine(introCinematicCoroutine);
+                introCinematicCoroutine = null;
+                cinematicMenu.SetForegroundAlpha(1);
+                introCinematic.Stop();
+                DisplayMenu();
+            }
         }
     }
 
@@ -150,6 +170,7 @@ public class MenuManager : MonoBehaviour
     public IEnumerator DissolveFromMenuToMenuCoroutine(IDissolveMenu from, IDissolveMenu to)
     {
         if (from != null) yield return StartCoroutine(from.DissolveOutCoroutine());
+        else yield return new WaitForSecondsRealtime(0.3f);
         if (to != null) yield return StartCoroutine(to.DissolveInCoroutine());
     }
 
