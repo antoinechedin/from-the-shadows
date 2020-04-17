@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 54057341}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.0148865795, g: 0.0072800345, b: 0.096918516, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -439,6 +439,107 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 46890399}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &49669025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: 957a03e8662b3be488989c1fbbf1a590, type: 3}
+  enableBackplate:
+    m_OverrideState: 0
+    m_Value: 0
+  backplateType:
+    m_OverrideState: 0
+    m_Value: 0
+  groundLevel:
+    m_OverrideState: 0
+    m_Value: 0
+  scale:
+    m_OverrideState: 0
+    m_Value: {x: 32, y: 32}
+  projectionDistance:
+    m_OverrideState: 0
+    m_Value: 16
+    min: 0.0000001
+  plateRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexOffset:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0}
+  blendAmount:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 100
+  shadowTint:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
+  pointLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  dirLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  rectLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!1 &51280867
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,10 +599,9 @@ MonoBehaviour:
   m_text: Level Design
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
-  m_sharedMaterial: {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
+  - {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -608,7 +708,7 @@ MonoBehaviour:
   m_Softness: 1
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_ColorMode: 0
-  m_NoiseTexture: {fileID: 2800000, guid: 9e2cf6f2178523b4a9bbbc8f7e72e0b7, type: 3}
+  m_NoiseTexture: {fileID: 2800000, guid: 3e04c247fb2604af186173fce0bc62de, type: 3}
   m_EffectArea: 1
   m_KeepAspectRatio: 1
   m_Player:
@@ -1171,10 +1271,9 @@ MonoBehaviour:
   m_text: Special thanks
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
-  m_sharedMaterial: {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
+  - {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -1281,7 +1380,7 @@ MonoBehaviour:
   m_Softness: 1
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_ColorMode: 0
-  m_NoiseTexture: {fileID: 2800000, guid: 9e2cf6f2178523b4a9bbbc8f7e72e0b7, type: 3}
+  m_NoiseTexture: {fileID: 2800000, guid: 3e04c247fb2604af186173fce0bc62de, type: 3}
   m_EffectArea: 1
   m_KeepAspectRatio: 1
   m_Player:
@@ -4920,8 +5019,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4293783021
-  m_fontColor: {r: 0.93, g: 0.93, b: 0.93, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -4939,12 +5038,12 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 0
+  m_fontSizeMax: 0
   m_fontStyle: 0
   m_textAlignment: 514
   m_characterSpacing: 0
@@ -4953,14 +5052,14 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
-  m_enableKerning: 1
+  m_enableKerning: 0
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -4980,10 +5079,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 483159648}
-    characterCount: 23
+    characterCount: 25
     spriteCount: 0
-    spaceCount: 3
-    wordCount: 4
+    spaceCount: 4
+    wordCount: 5
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -5548,7 +5647,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -403}
-  m_SizeDelta: {x: 808.8, y: 120.7}
+  m_SizeDelta: {x: 616.6, y: 81.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &600847949
 GameObject:
@@ -12041,10 +12140,9 @@ MonoBehaviour:
   m_text: '  D Artists'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
-  m_sharedMaterial: {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
+  - {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -12151,7 +12249,7 @@ MonoBehaviour:
   m_Softness: 1
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_ColorMode: 0
-  m_NoiseTexture: {fileID: 2800000, guid: 9e2cf6f2178523b4a9bbbc8f7e72e0b7, type: 3}
+  m_NoiseTexture: {fileID: 2800000, guid: 3e04c247fb2604af186173fce0bc62de, type: 3}
   m_EffectArea: 1
   m_KeepAspectRatio: 1
   m_Player:
@@ -14037,107 +14135,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1175681151}
   m_CullTransparentMesh: 0
---- !u!114 &1191144991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 0
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxColor:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: 957a03e8662b3be488989c1fbbf1a590, type: 3}
-  enableBackplate:
-    m_OverrideState: 0
-    m_Value: 0
-  backplateType:
-    m_OverrideState: 0
-    m_Value: 0
-  groundLevel:
-    m_OverrideState: 0
-    m_Value: 0
-  scale:
-    m_OverrideState: 0
-    m_Value: {x: 32, y: 32}
-  projectionDistance:
-    m_OverrideState: 0
-    m_Value: 16
-    min: 0.0000001
-  plateRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexOffset:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0}
-  blendAmount:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 100
-  shadowTint:
-    m_OverrideState: 0
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    hdr: 0
-    showAlpha: 1
-    showEyeDropper: 1
-  pointLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  dirLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  rectLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
 --- !u!1 &1213142238
 GameObject:
   m_ObjectHideFlags: 0
@@ -15819,10 +15816,9 @@ MonoBehaviour:
   m_text: Playtests
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
-  m_sharedMaterial: {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
+  - {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -15929,7 +15925,7 @@ MonoBehaviour:
   m_Softness: 1
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_ColorMode: 0
-  m_NoiseTexture: {fileID: 2800000, guid: 9e2cf6f2178523b4a9bbbc8f7e72e0b7, type: 3}
+  m_NoiseTexture: {fileID: 2800000, guid: 3e04c247fb2604af186173fce0bc62de, type: 3}
   m_EffectArea: 1
   m_KeepAspectRatio: 1
   m_Player:
@@ -18211,7 +18207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: 34f6da731b273794abb7aa28ed032491, type: 2}
   m_StaticLightingSkyUniqueID: 1
-  m_SkySettings: {fileID: 1191144991}
+  m_SkySettings: {fileID: 49669025}
   m_SkySettingsFromProfile: {fileID: 1075922185724273575, guid: 34f6da731b273794abb7aa28ed032491,
     type: 2}
 --- !u!4 &1593669074
@@ -20607,10 +20603,9 @@ MonoBehaviour:
   m_text: Music
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
-  m_sharedMaterial: {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
+  - {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -20717,7 +20712,7 @@ MonoBehaviour:
   m_Softness: 1
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_ColorMode: 0
-  m_NoiseTexture: {fileID: 2800000, guid: 9e2cf6f2178523b4a9bbbc8f7e72e0b7, type: 3}
+  m_NoiseTexture: {fileID: 2800000, guid: 3e04c247fb2604af186173fce0bc62de, type: 3}
   m_EffectArea: 1
   m_KeepAspectRatio: 1
   m_Player:
@@ -22307,10 +22302,9 @@ MonoBehaviour:
   m_text: Sound Design
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
-  m_sharedMaterial: {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
+  - {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -22417,7 +22411,7 @@ MonoBehaviour:
   m_Softness: 1
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_ColorMode: 0
-  m_NoiseTexture: {fileID: 2800000, guid: 9e2cf6f2178523b4a9bbbc8f7e72e0b7, type: 3}
+  m_NoiseTexture: {fileID: 2800000, guid: 3e04c247fb2604af186173fce0bc62de, type: 3}
   m_EffectArea: 1
   m_KeepAspectRatio: 1
   m_Player:
@@ -22639,7 +22633,7 @@ MonoBehaviour:
   m_Softness: 1
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_ColorMode: 0
-  m_NoiseTexture: {fileID: 2800000, guid: 9e2cf6f2178523b4a9bbbc8f7e72e0b7, type: 3}
+  m_NoiseTexture: {fileID: 2800000, guid: 3e04c247fb2604af186173fce0bc62de, type: 3}
   m_EffectArea: 1
   m_KeepAspectRatio: 1
   m_Player:
@@ -22671,10 +22665,9 @@ MonoBehaviour:
   m_text: Programming
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
-  m_sharedMaterial: {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 5045657916505999001, guid: 6c7be6dfaba0f3645af9edb45773f03a, type: 2}
+  - {fileID: 2100000, guid: 3a79a9e1732b9da48b176436707bc124, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -22750,7 +22743,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}
