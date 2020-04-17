@@ -73,10 +73,11 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
                 }
 
                 string saveName = "Save " + (i + 1).ToString();
+                string nbPlayers = GameManager.Instance.Saves[i].NbPlayer == 1 ? "(Solo)" : "(Duo)";
                 string completion = (int)(GameManager.Instance.Saves[i].GetCompletion() * 100) + "%";
                 string timePlayed = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm");
 
-                buttonText.text = saveName + "  " + completion + " " + timePlayed;
+                buttonText.text = saveName + " " + nbPlayers + "  " + completion + " " + timePlayed;
             }
             else
             {
@@ -145,7 +146,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
             soloButton.onClick.AddListener(delegate { NewGame(1, index); });
             duoButton.onClick.RemoveAllListeners();
             duoButton.onClick.AddListener(delegate { NewGame(2, index); });
-            EventSystem.current.SetSelectedGameObject(soloButton.gameObject);
+            EventSystem.current.SetSelectedGameObject(duoButton.gameObject);
 
             DissolveController[] dissolves = newGameChoiceButtons.GetComponentsInChildren<DissolveController>();
             foreach (DissolveController dissolve in dissolves)

@@ -30,10 +30,10 @@ public class DiscordController : Singleton<DiscordController>
                 Debug.LogWarning(e);
             }
             discordEnabled = (discord != null);
-        }
-        if (discordEnabled)
-        {
-            SetActivity();
+            if (discordEnabled)
+            {
+                SetActivity();
+            }
         }
     }
 
