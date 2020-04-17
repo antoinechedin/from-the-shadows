@@ -85,10 +85,18 @@ public class Laser : ActivatorListener
                 // If it is a reflector : continue
                 Vector3 dir = Vector3.Reflect(-direction, hit.collider.transform.up);
                 float angle = Vector3.Angle(-direction, dir);
-                if (angle != 180)
+                if (angle > -22.5f && angle < 22.5f)
+                {
+                    // Case where the laser goes backward
+                    DrawRays(index + 1);
+                    if (toDeactivate != null)
+                        toDeactivate.Off(gameObject);
+                }
+                else if (angle != 180)
                 {
                     CalculateRays(new Vector3(hit.point.x, hit.point.y, transform.parent.position.z) + (dir * 0.15f), dir, index + 1);
-                } else
+                } 
+                else 
                 {
                     // Case where the laser is parallele to the reflector
                     DrawRays(index + 1);

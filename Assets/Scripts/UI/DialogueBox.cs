@@ -14,7 +14,7 @@ public class DialogueBox : MonoBehaviour
     }
     private void Update()
     {
-        if (this.GetComponent<OverHeadGUI>().canPass)
+        if (this.GetComponent<OverHeadGUI>().animationEnded && this.GetComponent<OverHeadGUI>().textLineFullyDisplayed)
             passDialogueImage.SetActive(true);
         else
             passDialogueImage.SetActive(false);

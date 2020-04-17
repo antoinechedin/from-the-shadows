@@ -7,16 +7,12 @@ public class Outline : MonoBehaviour
     public Material mat;
     public MeshRenderer mesh;
     public int materialIndex;
-    public Color outlineColor;
+    [ColorUsageAttribute(true, true)] public Color outlineColor;
     [Range(0, 0.5f)] public float alphaChange;
 
     private Material instanceMat;
     private float alpha;
-    private bool animating = false;
-
     private int nPlayerIn;
-
-    Coroutine dCor, hCor;
 
     private void Awake()
     {
@@ -28,7 +24,6 @@ public class Outline : MonoBehaviour
         alpha = instanceMat.GetFloat("_Alpha");
 
         nPlayerIn = 0;
-        hCor = StartCoroutine(HideOutline());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -36,7 +31,8 @@ public class Outline : MonoBehaviour
         nPlayerIn++;
         if (nPlayerIn > 0)
         {
-            dCor = StartCoroutine(DisplayOutline());
+            if (gameObject.activeSelf)
+                StartCoroutine(DisplayOutline());
         }
     }
 
@@ -45,7 +41,9 @@ public class Outline : MonoBehaviour
         nPlayerIn--;
         if (nPlayerIn <= 0)
         {
-            hCor = StartCoroutine(HideOutline());
+            if(gameObject.activeSelf)
+                StartCoroutine(HideOutline());
+            nPlayerIn = 0;
         }
     }
 

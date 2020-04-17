@@ -8,6 +8,9 @@ public class MovingKillZoneCP : MonoBehaviour
     public Transform resetPoint;
     public float maxSpeed;
     public float timeToMaxSpeed;
+
+    public float resetSpeed = 0f;
+
     public bool mustReset;
 
     public MovingKillZone movingKillZone;
@@ -29,6 +32,7 @@ public class MovingKillZoneCP : MonoBehaviour
             if (mustReset)
             {
                 movingKillZone.killZone.transform.position = resetPoint.position;
+                movingKillZone.currentSpeed = resetSpeed;
             }
         }
     }

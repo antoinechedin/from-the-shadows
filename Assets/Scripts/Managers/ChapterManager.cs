@@ -9,6 +9,8 @@ public class ChapterManager : MonoBehaviour
     public PauseMenu pauseMenu;
     private int currentLevel = 0; // indice du niveau actuel
 
+    private MusicManager musicManager;
+
     private float timeSinceBegin = 0;
     private GameObject currentSpawns;
 
@@ -25,13 +27,20 @@ public class ChapterManager : MonoBehaviour
     {
         SetLevelsId();
 
+        if (GameObject.Find("MusicManager") != null)
+            musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+
         if (GameManager.Instance.LoadingChapterInfo != null)
         {
             currentLevel = GameManager.Instance.LoadingChapterInfo.StartLevelIndex;
+
+            if (musicManager != null)
+                musicManager.SetMusicAccordingToLevel(GameManager.Instance.LoadingChapterInfo.StartLevelIndex, levels);
         }
 
         levels[currentLevel].virtualCamera.gameObject.SetActive(true);
         Camera.main.GetComponent<CameraManager>().cameraTarget.GetComponent<CameraTarget>().Offset = levels[currentLevel].cameraOffset;
+
 
         currentSpawns = levels[currentLevel].playerSpawns[0];
         SpawnPlayers();
@@ -55,14 +64,15 @@ public class ChapterManager : MonoBehaviour
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
 
         // Position moyenne des deux joueurs
-
-        if (Input.GetButtonDown("Start_G"))
+        //if (Input.GetButtonDown("Start_G"))
+        if (InputManager.GetActionPressed(0, InputAction.Pause))
         {
             pauseMenu.gameObject.SetActive(true);
             pauseMenu.OpenPauseMenu();
         }
 
-        if (Input.GetButtonDown("Select_G"))
+        //if (Input.GetButtonDown("Select_G"))
+        if (InputManager.GetActionPressed(0, InputAction.Restart))
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }
@@ -73,6 +83,7 @@ public class ChapterManager : MonoBehaviour
         {
             if (currentLevel + 1 < levels.Count)
             {
+                levels[currentLevel].gameObject.SetActive(false);
                 ChangeLevel(currentLevel + 1, true);
                 currentSpawns = levels[currentLevel].playerSpawns[0];
                 SpawnPlayers();
@@ -83,13 +94,14 @@ public class ChapterManager : MonoBehaviour
         {
             if (currentLevel - 1 >= 0)
             {
+                levels[currentLevel].gameObject.SetActive(false);
                 ChangeLevel(currentLevel - 1, true);
                 currentSpawns = levels[currentLevel].playerSpawns[0];
                 SpawnPlayers();
             }
         }
         //kill players
-        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K) && !GameManager.Instance.IsInCutscene)
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }
@@ -138,6 +150,9 @@ public class ChapterManager : MonoBehaviour
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
+        if (musicManager != null)
+            musicManager.ManageMusicChange(currentLevel, newCurrentLevel);
+
         List<LevelManager> levelsToDisable = new List<LevelManager>();
         foreach (LevelManager lm in levels[currentLevel].roomsToEnable)
         {
@@ -156,6 +171,7 @@ public class ChapterManager : MonoBehaviour
 
         levels[newCurrentLevel].virtualCamera.gameObject.SetActive(true);
         levels[currentLevel].virtualCamera.gameObject.SetActive(false);
+
 
         currentLevel = newCurrentLevel;
 

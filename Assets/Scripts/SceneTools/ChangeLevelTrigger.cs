@@ -36,6 +36,7 @@ public class ChangeLevelTrigger : MonoBehaviour
                 //si c'est la fin du chapitre
                 if (finishChapter)
                 {
+                    GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
                     chapterManager.FinishChapter();
                 }
                 //sinon on passe au niveau suivant

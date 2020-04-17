@@ -24,14 +24,14 @@ public class CinematicPlayerSwitch : MonoBehaviour
         }
     }
 
-    private void PlayLight()
+    public void PlayLight()
     {
         mesh.material = playerSwitch.lightMat;
         lightSourceGO.SetActive(true);
         playerState = "Light";
     }
 
-    private void PlayShadow()
+    public void PlayShadow()
     {
         mesh.material = playerSwitch.shadowMat;
         lightSourceGO.SetActive(false);
