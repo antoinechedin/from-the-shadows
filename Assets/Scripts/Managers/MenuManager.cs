@@ -53,6 +53,8 @@ public class MenuManager : MonoBehaviour
         optionsMenu.menuManager = this;
         creditsMenu.menuManager = this;
         chaptersMenu.menuManager = this;
+
+        version.text = Application.version + "\n2020 © Gamagora";
     }
 
     void Start()
