@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Skeleton : MonoBehaviour, IResetable
 {
-    public Transform[] points;
+    // public Transform[] points;  old system
+    public GameObject[] targetZones;
 
     public bool isSolo = false;
 
-    public float timeBetweenAttacks;
-    public float timeBetweenDoubleAttacks;
+    public float timeBeforeFirstAttack = 10;
+    public float timeBeforeAttack = 12;
+    public float timeBeforeDoubleAttack = 8;
     public GameObject hands;
     public GameObject player1;
     public GameObject player2;
@@ -23,42 +25,70 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject middleZoneSpikes;
     public GameObject middleZoneSpikesAnim;
     //public GameObject spawnGhostObject;
-
     public GameObject bottomKillZone;
     public GameObject endChapterTrigger;
+    [HideInInspector]
+    public int idTargetZone;
 
     private int hp = 3;
     private int laneToAttack = 0;
     private string stringDirection;
+    private GameObject playerTarget;
+    private bool isTargetting = false;
 
     // Start is called before the first frame update
     void Start()
     {
         // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+
+        //TODO donner this aux targetzone
+    }
+
+    void Update()
+    {
+        //Update laneToAttack and stringDirection to match the playerTarget actual position
+        if(playerTarget != null && isTargetting)
+        {
+            //TODO choisir ou attaquer en fonction de la targetzoneid
+
+
+        }
+
     }
 
     public void Appear()
     {
         Debug.Log("Boss fight starting");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Appear");
-        InvokeRepeating("TriggerAttack", 10, timeBetweenAttacks);
-        //spawnGhostObject.GetComponent<SpawnGhost>().StartSpawningGhost();
+        Invoke("PrepareAttack", timeBeforeFirstAttack);
+        // InvokeRepeating("PrepareAttack", timeBeforeFirstAttack, timeBetweenAttacks); old system
+    }
+
+    public void PrepareAttack()
+    {
+        isTargetting = true;
+        ChoosePlayerTarget();
+        // TODO dans l'update je regarde en permanence ou va etre la prochaine attaque
+        Invoke("TriggerAttack", timeBeforeAttack);
     }
 
     public void TriggerAttack()
     {
-        FindTarget();
+        isTargetting = false;
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
+        Invoke("PrepareAttack", 5);
+        //TODO ajuster ce timing
     }
 
     public void TriggerDoubleAttack()
     {
-        FindDoubleTarget();
+        //TODO selection de la cible et invoke 
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
     }
 
+    /*  Old system for choosing lane to attack and direction
     public void FindDoubleTarget()
     {
         float minL = Mathf.Infinity;
@@ -101,7 +131,44 @@ public class Skeleton : MonoBehaviour, IResetable
         else
             laneToAttack = 1;
     }
+    */
 
+    public void ChoosePlayerTarget()
+    {
+        // If solo mode the target is player1
+        if (isSolo)
+        {
+            playerTarget = player1;
+        }
+
+        // Else in duo mode        
+        else
+        {
+            // If it is the first attack the choice is random
+            if (playerTarget == null)
+            {
+                int rand = Random.Range(0, 2);
+                if (rand == 0)
+                    playerTarget = player1;
+                else
+                    playerTarget = player2;
+            }
+            else
+            {
+                // Else the target alternates between the two players
+                if (playerTarget == player1)
+                    playerTarget = player2;
+                else
+                    playerTarget = player2;
+            }
+        }
+
+        Debug.Log("The target is player "+ playerTarget.GetComponent<PlayerInput>().id);    
+        //TODO donner la target aux targetZone
+        
+    }
+
+    /*  Old system for choosing nearest player
     public void FindTarget()
     {
         float min = Mathf.Infinity;
@@ -136,6 +203,7 @@ public class Skeleton : MonoBehaviour, IResetable
             }
         }
     }
+    */
     
     public void GetHurt()
     {
@@ -160,7 +228,7 @@ public class Skeleton : MonoBehaviour, IResetable
             Invoke("StartFallingPlatform", 1.8f);
             Invoke("ActiveMiddleZoneSpikes", 4);
 
-            InvokeRepeating("TriggerDoubleAttack", 5, timeBetweenDoubleAttacks);
+            InvokeRepeating("TriggerDoubleAttack", 5, timeBeforeDoubleAttack);
         }
 
         if (hp == 2 || hp == 1)
@@ -188,7 +256,7 @@ public class Skeleton : MonoBehaviour, IResetable
         CancelInvoke();
 
         // Restart hand attack
-        InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+        Invoke("PrepareAttack", timeBeforeFirstAttack);
 
         //Reactivate destructible platforms
         leftZone.SetActive(true);
