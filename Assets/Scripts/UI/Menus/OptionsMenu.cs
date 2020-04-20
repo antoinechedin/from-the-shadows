@@ -147,7 +147,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     public IEnumerator DissolveInCoroutine()
     {
         currentIndex = -1;
-        menuManager.menuCamera.SetReturnToStartMenu(true);
+        if(menuManager != null) menuManager.menuCamera.SetReturnToStartMenu(true);
         gameObject.SetActive(true);
         EventSystem.current.SetSelectedGameObject(selectables[0].gameObject);
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
@@ -175,6 +175,6 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
         gameObject.SetActive(false);
-        menuManager.menuCamera.SetReturnToStartMenu(false);
+        if(menuManager != null) menuManager.menuCamera.SetReturnToStartMenu(false);
     }
 }

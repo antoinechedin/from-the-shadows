@@ -162,7 +162,6 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
             return;
         }
 
-
         int lastUnlockedChapterId = 0;
         chapterButtons[0].interactable = true;
         chapters = GameManager.Instance.GetChapters();
