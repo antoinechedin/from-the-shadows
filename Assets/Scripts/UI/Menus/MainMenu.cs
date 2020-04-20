@@ -36,6 +36,7 @@ public class MainMenu : MonoBehaviour, IDissolveMenu
 
     public IEnumerator DissolveInCoroutine()
     {
+        menuManager.menuCamera.SetReturnToStartMenu(true);
         gameObject.SetActive(true);
         EventSystem.current.SetSelectedGameObject(lastSelectedGameObject);
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
@@ -63,5 +64,6 @@ public class MainMenu : MonoBehaviour, IDissolveMenu
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
         gameObject.SetActive(false);
+        menuManager.menuCamera.SetReturnToStartMenu(false);
     }
 }
