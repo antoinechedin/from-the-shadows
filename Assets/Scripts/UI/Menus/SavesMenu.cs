@@ -267,5 +267,6 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
         newGameChoiceButtons.gameObject.SetActive(false);
         actionChoiceButtons.gameObject.SetActive(false);
         gameObject.SetActive(false);
+        menuManager.menuCamera.SetReturnToSavesMenu(false);
     }
 }
