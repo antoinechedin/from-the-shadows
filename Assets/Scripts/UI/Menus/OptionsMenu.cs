@@ -146,6 +146,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
 
     public IEnumerator DissolveInCoroutine()
     {
+        currentIndex = -1;
         menuManager.menuCamera.SetReturnToStartMenu(true);
         gameObject.SetActive(true);
         EventSystem.current.SetSelectedGameObject(selectables[0].gameObject);
