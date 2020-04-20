@@ -10,7 +10,12 @@ public class InteractOnTrigger : MonoBehaviour
     public UnityEvent OnEnter;
     
     public float delay = 5f;
-    public UnityEvent OnEnterDelayed, OnExit;
+    public UnityEvent OnEnterDelayed;
+
+    public List<DelayedEvent> delayedEvents;
+
+    [Space(15)]
+    public UnityEvent OnExit;
     new Collider2D collider;
 
     void Reset()
@@ -25,7 +30,11 @@ public class InteractOnTrigger : MonoBehaviour
         if (0 != (layers.value & 1 << other.gameObject.layer))
         {
             ExecuteOnEnter(other);
-            StartCoroutine(ExecuteOnEnterDelayed());
+
+            StartCoroutine(ExecuteOnEnterDelayed(delay));
+
+            foreach (DelayedEvent delayedEvent in delayedEvents)
+                StartCoroutine(delayedEvent.ExecuteOnEnterDelayed(delayedEvent.delay));
         }
     }
 
@@ -34,9 +43,9 @@ public class InteractOnTrigger : MonoBehaviour
         OnEnter.Invoke();
     }
 
-    IEnumerator ExecuteOnEnterDelayed()
+    IEnumerator ExecuteOnEnterDelayed(float _delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(_delay);
         OnEnterDelayed.Invoke();
     }
     void OnTriggerExit2D(Collider2D other)
@@ -51,4 +60,24 @@ public class InteractOnTrigger : MonoBehaviour
     {
         OnExit.Invoke();
     }
+
+    [System.Serializable]
+    public class DelayedEvent
+    {
+        public float delay;
+        public UnityEvent OnDelayEvent;
+
+        public DelayedEvent()
+        {
+
+        }
+
+        public IEnumerator ExecuteOnEnterDelayed(float _delay)
+        {
+            yield return new WaitForSeconds(_delay);
+            OnDelayEvent.Invoke();
+        }
+
+    }
+
 }

@@ -34,16 +34,19 @@ public class DialogueTrigger : MonoBehaviour
 
         guis[0].ExecuteOnDialogueStart(); // Execute function at start
         started = true;
+        GameManager.Instance.IsInCutscene = true;
     }
+
     public void StartDialogue()
     {
         //on désactive les inputs des joueurs
-        if(mustDisableInput)
+        if (mustDisableInput)
         {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject p in players)
             {
                 p.GetComponent<PlayerInput>().active = false;
+                p.GetComponent<PlayerInput>().noJump = false;
             }
         }
 
@@ -56,15 +59,17 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (started)
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("A_G"))
+            //if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("A_G"))
+            if (InputManager.GetActionPressed(0, InputAction.Jump))
             {
-                if(guis[currentDisplayed].canPass)
+                if (guis[currentDisplayed].animationEnded && guis[currentDisplayed].textLineFullyDisplayed)
                 {
                     if (currentDisplayed < guis.Count - 1) //Si c'est pas le dernier, on passe au texte suivant
                     {
-                        guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
+                        if(guis[currentDisplayed].UIActive)
+                            guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
                         guis[currentDisplayed].HideUI();
-                        guis[currentDisplayed].canPass = false;
+                        guis[currentDisplayed].animationEnded = false;
 
                         currentDisplayed++;
 
@@ -75,7 +80,8 @@ public class DialogueTrigger : MonoBehaviour
                     else //Sinon le dialogue est terminé
                     {
                         //on cache la dernière boîte de dialogue
-                        guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
+                        if (guis[currentDisplayed].UIActive)
+                            guis[currentDisplayed].ExecuteOnDialogueEnd(); // Execute OnDialogueEnd functions
                         guis[currentDisplayed].HideUI();
 
 
@@ -87,6 +93,7 @@ public class DialogueTrigger : MonoBehaviour
                         }
                         //on détruit la boîte de dialogue
                         Destroy(gameObject, 1f);
+                        GameManager.Instance.IsInCutscene = false;
                     }
                 }
             }

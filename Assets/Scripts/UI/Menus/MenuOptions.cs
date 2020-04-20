@@ -42,7 +42,7 @@ public class MenuOptions : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("B_G"))
+        if (InputManager.GetActionPressed(0, InputAction.Return)) //Input.GetButtonDown("B_G"))
         {
             Return();
         }
@@ -71,7 +71,8 @@ public class MenuOptions : MonoBehaviour
     public void Return()
     {
         if (menuManager != null)
-           menuManager.OpenStartMenu();
+        //    menuManager.OpenStartMenu();
+        ;
         else
             gameObject.SetActive(false);
     }

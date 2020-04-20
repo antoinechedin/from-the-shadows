@@ -44,19 +44,19 @@ public class Reflector : MonoBehaviour, IResetable
 
     public void Update()
     {
-        if (canPlayer1Activate && Input.GetButtonDown("X_1"))
+        if (canPlayer1Activate && InputManager.GetActionPressed(1, InputAction.Interact)) //Input.GetButtonDown("X_1"))
         {
             Rotate(angleRotation);
         }
-        if (canPlayer2Activate && Input.GetButtonDown("X_2"))
+        if (canPlayer2Activate && InputManager.GetActionPressed(2, InputAction.Interact)) //Input.GetButtonDown("X_2"))
         {
             Rotate(angleRotation);   
         }
-        if (canPlayer1Activate && Input.GetButtonDown("Y_1"))
+        if (canPlayer1Activate && InputManager.GetActionPressed(1, InputAction.Attack)) //Input.GetButtonDown("Y_1"))
         {
             Rotate(-angleRotation);
         }
-        if (canPlayer2Activate && Input.GetButtonDown("Y_2"))
+        if (canPlayer2Activate && InputManager.GetActionPressed(2, InputAction.Attack)) //Input.GetButtonDown("Y_2"))
         {
             Rotate(-angleRotation); 
         }

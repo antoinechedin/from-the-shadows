@@ -27,6 +27,19 @@ public class GameManager : Singleton<GameManager>
 
     //debug bools
     private bool displayedNoSaveFile = false;
+    private bool isInCutscene = false;
+
+
+    // Options update
+    public delegate void OnOptionsUpdateDelegate();
+    public event OnOptionsUpdateDelegate optionsUpdateDelegate;
+
+    public void OnOptionUpdate()
+    {
+        Debug.Log("OnOptionUpdate() called");
+        if (optionsUpdateDelegate != null)
+            optionsUpdateDelegate();
+    }
 
     // Update is called once per frame
     void Update()
@@ -102,6 +115,12 @@ public class GameManager : Singleton<GameManager>
     {
         get { return currentSave; }
         set { currentSave = value; }
+    }
+
+    public bool IsInCutscene
+    {
+        get { return isInCutscene; }
+        set { isInCutscene = value; }
     }
 
     public Chapter GetCurrentChapter()
@@ -214,6 +233,7 @@ public class GameManager : Singleton<GameManager>
 
         //étape 4 : On enlève l'écran de chargement
         loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true); //on fade out le loading screen
+        DiscordController.Instance.SetActivity();
     }
     #endregion
 

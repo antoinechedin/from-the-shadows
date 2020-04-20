@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class MenuCamera : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class MenuCamera : MonoBehaviour
 
     public RectTransform chapterMenu;
     public Canvas canvas;
+    public CinemachineVirtualCamera virtualCamera;
 
     private int chapterSelected;
     private bool isMoving = false;
@@ -58,11 +60,11 @@ public class MenuCamera : MonoBehaviour
                 Vector3 velocity = Vector3.zero;
 
                 // Move the camera
-                transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, cameraSpeed / 100f);
+                virtualCamera.transform.position = Vector3.SmoothDamp(virtualCamera.transform.position, targetPosition, ref velocity, cameraSpeed / 100f);
 
                 // Rotate the camera
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
+                virtualCamera.transform.rotation = Quaternion.Slerp(
+                    virtualCamera.transform.rotation,
                     targetRotation.rotation,
                     Time.deltaTime * cameraSpeed
                 );
@@ -71,8 +73,8 @@ public class MenuCamera : MonoBehaviour
             }
             else
             {
-                transform.position = targetPosition;
-                transform.rotation = targetRotation.rotation;
+                virtualCamera.transform.position = targetPosition;
+                virtualCamera.transform.rotation = targetRotation.rotation;
                 isMoving = false;
             }
 

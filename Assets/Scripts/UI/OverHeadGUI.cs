@@ -11,6 +11,8 @@ public enum GUIType { AlwaysDisplayed, DisplayAndHide, DisplayOnce, DisplayAfter
 
 public class OverHeadGUI : MonoBehaviour
 {
+    private const float timeBetweenCharacter = 0.03f;
+
     GameObject canvasGO;
     GameObject textGO;
     GameObject imageGO;
@@ -22,6 +24,7 @@ public class OverHeadGUI : MonoBehaviour
     public bool isSoloPlayerSpeaking = false;
 
     public GUIType type;
+    private bool useAnimator;
 
     [Header("Place in \"content\" the canvas containing all the UI elements you wish to display")]
     public GameObject content;
@@ -31,8 +34,8 @@ public class OverHeadGUI : MonoBehaviour
     public int nbPlayerNeeded;
 
     [Header("Time before the player can pass the dialogue box")]
-    public float timeBeforePass = 0f;
-    public bool canPass = false;
+    public float animationDuration = 0f;
+    [HideInInspector] public bool animationEnded = false;
 
     [Header("Note : set the target to \"this\" to make it static.")]
     [Space(-10)]
@@ -41,22 +44,33 @@ public class OverHeadGUI : MonoBehaviour
     public bool faceCamera;
     [Header("(Active only if the type is set to DisplayAfterTime)")]
     public float timeBeforeDisplay;
-
     private int currentNbPlayer = 0;
-    private bool UIActive = false;
+    public bool UIActive = false;
     private float timeCount = 0;
 
+    private AudioSource parentAudioSource;
     private Animator animator;
-
+    private TextMeshProUGUI textUGUI;
+    private string textLine;
+    [HideInInspector] public bool textLineFullyDisplayed = false;
+    private bool skipTextLineAnimation;
+    private int textLineIndex;
 
     public UnityEvent OnDialogueStart, OnDialogueEnd;
 
     private void Awake()
     {
+        parentAudioSource = GetComponentInParent<AudioSource>();
         animator = GetComponent<Animator>();
-        canPass = false;
+        if(animator == null) useAnimator = false; else useAnimator = true;
+        textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
+        textLine = textUGUI.text;
+        textUGUI.text = "";
+        animationEnded = false;
+        textLineFullyDisplayed = false;
+        skipTextLineAnimation = false;
+        textLineIndex = 0;
     }
-
 
     private void Start()
     {
@@ -72,13 +86,41 @@ public class OverHeadGUI : MonoBehaviour
 
     IEnumerator CanPassDialogue()
     {
-        yield return new WaitForSeconds(timeBeforePass);
-        canPass = true;
+        yield return new WaitForSeconds(animationDuration);
+        animationEnded = true;
+    }
+
+    private IEnumerator PrintTextLineCoroutine()
+    {
+        yield return null;
+        textLineIndex = 1;
+        while (textLineIndex < textLine.Length)
+        {
+            if (skipTextLineAnimation) break;
+
+            textUGUI.text = GenerateTMPTextLine(textLine, textLineIndex);
+            float timeToWait =
+                ".,?!;".Contains(textLine[textLineIndex - 1].ToString()) ?
+                timeBetweenCharacter * 7 : timeBetweenCharacter;
+
+            if (textLineIndex % 2 == 0) parentAudioSource.Play();
+            yield return new WaitForSeconds(timeToWait);
+            textLineIndex++;
+        }
+
+        textLineIndex = textLine.Length;
+        textUGUI.text = GenerateTMPTextLine(textLine, textLineIndex);
+        textLineFullyDisplayed = true;
+    }
+
+    private static string GenerateTMPTextLine(string textLine, int i)
+    {
+        return "<alpha=#FF>" + textLine.Substring(0, i) + "<alpha=#00>" + textLine.Substring(i, textLine.Length - i);
     }
 
     private void Update()
     {
-        if (UIActive)
+        if (UIActive && useAnimator)
         {
             content.transform.position = target.position;
             if (faceCamera)
@@ -93,6 +135,9 @@ public class OverHeadGUI : MonoBehaviour
                 DisplayUI();
             }
         }
+
+        if (!skipTextLineAnimation && textLineIndex > 0 && InputManager.GetActionPressed(0, InputAction.Jump))
+            skipTextLineAnimation = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -124,10 +169,12 @@ public class OverHeadGUI : MonoBehaviour
     public void DisplayUI()
     {
         UIActive = true;
-        animator.SetBool("display", true);
-        animator.SetBool("hide", false);
-
-        if(isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
+        if (useAnimator)
+        {
+            animator.SetBool("display", true);
+            animator.SetBool("hide", false);
+        }
+        if (isSoloPlayerSpeaking) // Set the right name & image according to the player state in solo mode
         {
             if (FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
             {
@@ -140,16 +187,20 @@ public class OverHeadGUI : MonoBehaviour
                 transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().lightDialogueIcon;
             }
         }
+        StartCoroutine(PrintTextLineCoroutine());
         StartCoroutine(CanPassDialogue());
-        //content.SetActive(UIActive);
+        content.SetActive(UIActive);
     }
 
     public void HideUI()
     {
         UIActive = false;
-        animator.SetBool("hide", true);
-        animator.SetBool("display", false);
-        //content.SetActive(UIActive);
+        if (useAnimator)
+        {
+            animator.SetBool("hide", true);
+            animator.SetBool("display", false);
+        }
+        content.SetActive(UIActive);
     }
 
     public virtual void ExecuteOnDialogueStart()
