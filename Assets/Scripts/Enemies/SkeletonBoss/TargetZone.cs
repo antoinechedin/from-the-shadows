@@ -8,20 +8,32 @@ public class TargetZone : MonoBehaviour
     public int id;
 
     [HideInInspector]
-
     public GameObject skeleton;
+    private GameObject particle;
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void Start()
     {
-        if (skeleton != null && collision.gameObject == skeleton.GetComponent<Skeleton>().playerTarget )
+        particle = transform.GetChild(0).gameObject;
+    }
+
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        if (skeleton != null && collision.gameObject == skeleton.GetComponent<Skeleton>().playerTarget
+            && skeleton.GetComponent<Skeleton>().isTargetting)
         {
             skeleton.GetComponent<Skeleton>().idTargetZone = id;
-            Debug.Log("Zone à attaquer : "+ id);
+            if (!particle.active)
+                particle.SetActive(true);            
         }
+    }
 
-        if (skeleton == null)
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (skeleton != null && collision.gameObject == skeleton.GetComponent<Skeleton>().playerTarget
+            && skeleton.GetComponent<Skeleton>().isTargetting)
         {
-            Debug.Log("skeleton is null");
+            if (particle.active)
+                particle.SetActive(false);
         }
     }
 }

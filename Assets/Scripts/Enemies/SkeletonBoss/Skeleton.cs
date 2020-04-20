@@ -28,9 +28,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject bottomKillZone;
     public GameObject endChapterTrigger;
 
-    public Texture2D targetIcon;
-    public Texture2D targetIconLeft;
-    public Texture2D targetIconRight;
+    public GameObject targetForPlayer;
 
     [HideInInspector]
     public int idTargetZone;
@@ -39,7 +37,8 @@ public class Skeleton : MonoBehaviour, IResetable
     private string stringDirection;
     [HideInInspector]
     public GameObject playerTarget;
-    private bool isTargetting = false;
+    [HideInInspector]
+    public bool isTargetting = false;
     private Camera camera;
     [HideInInspector]
     public GUIStyle gui;
@@ -54,7 +53,10 @@ public class Skeleton : MonoBehaviour, IResetable
         foreach (GameObject zone in targetZones)
         {
             zone.GetComponent<TargetZone>().skeleton = this.gameObject;
+            zone.transform.GetChild(0).gameObject.SetActive(false);
         }
+
+        targetForPlayer.SetActive(false);
     }
 
     void Update()
@@ -89,21 +91,34 @@ public class Skeleton : MonoBehaviour, IResetable
                     stringDirection = "Right";
                     break;
             }
+
+            // Display particle on targeted player
+            targetForPlayer.transform.position = playerTarget.transform.position;
+            targetForPlayer.SetActive(true);
+
+        }
+        else
+        {
+            targetForPlayer.SetActive(false);
+            foreach (GameObject zone in targetZones)
+            {
+                zone.transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
     }
 
-    public void OnGUI()
+    /*public void OnGUI()
     {
         if (playerTarget != null && isTargetting)
         {
-            Vector2 targetIconPosition = new Vector2(camera.WorldToScreenPoint(playerTarget.transform.position).x,
+            Vector2 targetForPlayerPosition = new Vector2(camera.WorldToScreenPoint(playerTarget.transform.position).x,
                 Screen.height - camera.WorldToScreenPoint(playerTarget.transform.position).y);
-            targetIconPosition.y -= iconSize * 0.8f;
-            targetIconPosition.x -= iconSize / 2;
-            GUI.Box(new Rect(targetIconPosition.x, targetIconPosition.y, iconSize,iconSize),
-                    targetIcon, gui);
+            targetForPlayerPosition.y -= iconSize * 0.8f;
+            targetForPlayerPosition.x -= iconSize / 2;
+            GUI.Box(new Rect(targetForPlayerPosition.x, targetForPlayerPosition.y, iconSize,iconSize),
+                    targetForPlayer, gui);
         }
-    }
+    } */
 
     public void Appear()
     {
