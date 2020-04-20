@@ -7,13 +7,13 @@ using UnityEngine.UI;
 public class CreditsMenu : MonoBehaviour, IDissolveMenu
 {
     [HideInInspector] public MenuManager menuManager;
-    public Selectable emptySelectable;
+    public Button backButton;
 
     private void Update()
     {
-        if(EventSystem.current.sendNavigationEvents)
+        if (EventSystem.current.sendNavigationEvents)
         {
-            if(InputManager.GetActionPressed(0, InputAction.Return)
+            if (InputManager.GetActionPressed(0, InputAction.Return)
                 || Input.GetKeyDown(KeyCode.Escape)
                 || Input.GetKeyDown(KeyCode.Backspace))
             {
@@ -27,7 +27,8 @@ public class CreditsMenu : MonoBehaviour, IDissolveMenu
         menuManager.menuCamera.SetReturnToStartMenu(true);
         gameObject.SetActive(true);
 
-        EventSystem.current.SetSelectedGameObject(emptySelectable.gameObject);
+        EventSystem.current.SetSelectedGameObject(backButton.gameObject);
+        backButton.onClick.AddListener(delegate { menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu); });
 
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
         for (int i = 0; i < dissolves.Length - 1; i++)
