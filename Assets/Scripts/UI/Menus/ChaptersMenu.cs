@@ -56,10 +56,9 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
                 // Close the chapter
                 if (chapterMenuIsOpen)
                 {
-                    carousel.ResetScreenshots();
+                    // carousel.ResetScreenshots();
                     carousel.enabled = false;
                     chapterMenuIsOpen = false;
-                    chapterButtonsPanel.SetActive(true);
                     // metaDataIcon.gameObject.SetActive(true);
                     EventSystem.current.SetSelectedGameObject(chapterButtons[GameManager.Instance.CurrentChapter].gameObject);
                     carousel.animator.SetBool("open", false);
@@ -111,15 +110,12 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
     {
         GameManager.Instance.CurrentChapter = chapterId;
         Debug.Log("Open chapter: " + chapterId);
-        Debug.Log("Current chapter: " + GameManager.Instance.CurrentChapter);
         menuCamera.SetChapterSelected(chapterId);
 
         if (!chapterMenuIsOpen)
         {
             carousel.enabled = true;
             chapterMenuIsOpen = true;
-            //chapterButtonsPanel.SetActive(false);
-            metaDataIcon.gameObject.SetActive(false);
 
             int nbLightCollectibleTaken = 0;
             int nbShadowCollectibleTaken = 0;
@@ -155,7 +151,6 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
             carousel.animator.SetBool("open", true);
             // menuCamera.SetZoom(true);
             carousel.SetMenuLevels(GameManager.Instance.CurrentChapter);
-
         }
     }
 
