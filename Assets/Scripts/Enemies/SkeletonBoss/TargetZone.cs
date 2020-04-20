@@ -8,17 +8,20 @@ public class TargetZone : MonoBehaviour
     public int id;
 
     [HideInInspector]
-    public GameObject playerTarget;
+
     public GameObject skeleton;
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == playerTarget && skeleton != null)
+        if (skeleton != null && collision.gameObject == skeleton.GetComponent<Skeleton>().playerTarget )
         {
             skeleton.GetComponent<Skeleton>().idTargetZone = id;
             Debug.Log("Zone à attaquer : "+ id);
         }
+
+        if (skeleton == null)
+        {
+            Debug.Log("skeleton is null");
+        }
     }
-
-
 }

@@ -27,21 +27,34 @@ public class Skeleton : MonoBehaviour, IResetable
     //public GameObject spawnGhostObject;
     public GameObject bottomKillZone;
     public GameObject endChapterTrigger;
+
+    public Texture2D targetIcon;
+    public Texture2D targetIconLeft;
+    public Texture2D targetIconRight;
+
     [HideInInspector]
     public int idTargetZone;
-
     private int hp = 3;
     private int laneToAttack = 0;
     private string stringDirection;
-    private GameObject playerTarget;
+    [HideInInspector]
+    public GameObject playerTarget;
     private bool isTargetting = false;
+    private Camera camera;
+    [HideInInspector]
+    public GUIStyle gui;
+    private float iconSize = 140f;
 
     // Start is called before the first frame update
     void Start()
     {
-        // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);
+        // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);    old system
+        camera = Camera.main;
 
-        //TODO donner this aux targetzone
+        foreach (GameObject zone in targetZones)
+        {
+            zone.GetComponent<TargetZone>().skeleton = this.gameObject;
+        }
     }
 
     void Update()
@@ -49,16 +62,52 @@ public class Skeleton : MonoBehaviour, IResetable
         //Update laneToAttack and stringDirection to match the playerTarget actual position
         if(playerTarget != null && isTargetting)
         {
-            //TODO choisir ou attaquer en fonction de la targetzoneid
-
-
+            switch (idTargetZone)
+            {
+                case 0:
+                    laneToAttack = 0;
+                    stringDirection = "Left";
+                    break;
+                case 1:
+                    laneToAttack = 0;
+                    stringDirection = "Right";
+                    break;
+                case 2:
+                    laneToAttack = 1;
+                    stringDirection = "Left";
+                    break;
+                case 3:
+                    laneToAttack = 1;
+                    stringDirection = "Right";
+                    break;
+                case 4:
+                    laneToAttack = 2;
+                    stringDirection = "Left";
+                    break;
+                case 5:
+                    laneToAttack = 2;
+                    stringDirection = "Right";
+                    break;
+            }
         }
+    }
 
+    public void OnGUI()
+    {
+        if (playerTarget != null && isTargetting)
+        {
+            Vector2 targetIconPosition = new Vector2(camera.WorldToScreenPoint(playerTarget.transform.position).x,
+                Screen.height - camera.WorldToScreenPoint(playerTarget.transform.position).y);
+            targetIconPosition.y -= iconSize * 0.8f;
+            targetIconPosition.x -= iconSize / 2;
+            GUI.Box(new Rect(targetIconPosition.x, targetIconPosition.y, iconSize,iconSize),
+                    targetIcon, gui);
+        }
     }
 
     public void Appear()
     {
-        Debug.Log("Boss fight starting");
+        // Debug.Log("Boss fight starting");
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Appear");
         Invoke("PrepareAttack", timeBeforeFirstAttack);
         // InvokeRepeating("PrepareAttack", timeBeforeFirstAttack, timeBetweenAttacks); old system
@@ -68,7 +117,6 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         isTargetting = true;
         ChoosePlayerTarget();
-        // TODO dans l'update je regarde en permanence ou va etre la prochaine attaque
         Invoke("TriggerAttack", timeBeforeAttack);
     }
 
@@ -77,7 +125,7 @@ public class Skeleton : MonoBehaviour, IResetable
         isTargetting = false;
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
-        Invoke("PrepareAttack", 5);
+        Invoke("PrepareAttack", 7);
         //TODO ajuster ce timing
     }
 
@@ -159,13 +207,11 @@ public class Skeleton : MonoBehaviour, IResetable
                 if (playerTarget == player1)
                     playerTarget = player2;
                 else
-                    playerTarget = player2;
+                    playerTarget = player1;
             }
         }
 
-        Debug.Log("The target is player "+ playerTarget.GetComponent<PlayerInput>().id);    
-        //TODO donner la target aux targetZone
-        
+        // Debug.Log("The target is player "+ playerTarget.GetComponent<PlayerInput>().id);           
     }
 
     /*  Old system for choosing nearest player
