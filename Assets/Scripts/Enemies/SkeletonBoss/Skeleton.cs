@@ -24,7 +24,6 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject leftKillZone;
     public GameObject middleZoneSpikes;
     public GameObject middleZoneSpikesAnim;
-    //public GameObject spawnGhostObject;
     public GameObject bottomKillZone;
     public GameObject endChapterTrigger;
 
@@ -44,18 +43,17 @@ public class Skeleton : MonoBehaviour, IResetable
     public GUIStyle gui;
     private float iconSize = 140f;
 
-    // Start is called before the first frame update
     void Start()
     {
         // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);    old system
         camera = Camera.main;
 
+        // Deactive all particles and initialise targetZones
         foreach (GameObject zone in targetZones)
         {
             zone.GetComponent<TargetZone>().skeleton = this.gameObject;
             zone.transform.GetChild(0).gameObject.SetActive(false);
         }
-
         targetForPlayer.SetActive(false);
     }
 
@@ -99,6 +97,7 @@ public class Skeleton : MonoBehaviour, IResetable
         }
         else
         {
+            // Deactivate particles 
             targetForPlayer.SetActive(false);
             foreach (GameObject zone in targetZones)
             {
@@ -141,14 +140,23 @@ public class Skeleton : MonoBehaviour, IResetable
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
         Invoke("PrepareAttack", 7);
-        //TODO ajuster ce timing
+        // timing may need adjustement
+    }
+
+    public void PrepareDoubleAttack()
+    {
+        isTargetting = true;
+        ChoosePlayerTarget();
+        Invoke("TriggerSimpleAttack", timeBeforeDoubleAttack);
     }
 
     public void TriggerDoubleAttack()
     {
-        //TODO selection de la cible et invoke 
+        isTargetting = false;
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
+        Invoke("PrepareDoubleAttack", 4);
+        // timing may need adjustement
     }
 
     /*  Old system for choosing lane to attack and direction
@@ -344,6 +352,13 @@ public class Skeleton : MonoBehaviour, IResetable
         //Reactivate killzone
         leftKillZone.SetActive(true);
         rightKillZone.SetActive(true);
+
+        // Deactive all particles and initialise targetZones
+        foreach (GameObject zone in targetZones)
+        {
+            zone.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        targetForPlayer.SetActive(false);
     }
 
     public void DestroyLeftZone()
