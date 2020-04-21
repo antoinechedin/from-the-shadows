@@ -12,7 +12,7 @@ public class PlayerSwitch : MonoBehaviour
     public Material lightMat;
     public SkinnedMeshRenderer mesh;
     public GameObject lightSourceGO;
-    public GameObject shadowCaster;
+    public GameObject shadowPointLight;
 
     private CurrentPlayer currentPlayer;
 
@@ -47,8 +47,7 @@ public class PlayerSwitch : MonoBehaviour
         currentPlayer = CurrentPlayer.Light;
         mesh.material = lightMat;
         lightSourceGO.SetActive(true);
-        shadowCaster.transform.GetChild(0).gameObject.SetActive(false);
-        shadowCaster.transform.GetChild(1).gameObject.SetActive(true);
+        shadowPointLight.SetActive(false);
     }
 
     private void PlayShadow()
@@ -56,8 +55,7 @@ public class PlayerSwitch : MonoBehaviour
         currentPlayer = CurrentPlayer.Shadow;
         mesh.material = shadowMat;
         lightSourceGO.SetActive(false);
-        shadowCaster.transform.GetChild(1).gameObject.SetActive(false);
-        shadowCaster.transform.GetChild(0).gameObject.SetActive(true);
+        shadowPointLight.SetActive(true);
     }
 
     public string GetCurrentPlayer()
