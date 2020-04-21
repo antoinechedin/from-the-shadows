@@ -52,7 +52,7 @@ public class Skeleton : MonoBehaviour, IResetable
         foreach (GameObject zone in targetZones)
         {
             zone.GetComponent<TargetZone>().skeleton = this.gameObject;
-            zone.transform.GetChild(0).gameObject.SetActive(false);
+            //zone.transform.GetChild(0).gameObject.SetActive(false);
         }
         targetForPlayer.SetActive(false);
     }
@@ -131,7 +131,7 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         isTargetting = true;
         ChoosePlayerTarget();
-        Invoke("TriggerAttack", timeBeforeAttack);
+        //Invoke("TriggerAttack", timeBeforeAttack);
     }
 
     public void TriggerAttack()
