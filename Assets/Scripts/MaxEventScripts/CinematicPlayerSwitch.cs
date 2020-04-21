@@ -6,7 +6,7 @@ public class CinematicPlayerSwitch : MonoBehaviour
 {
     public SkinnedMeshRenderer mesh;
     public GameObject lightSourceGO;
-
+    public GameObject shadowPointLight;
     public PlayerSwitch playerSwitch;
 
     [HideInInspector]
@@ -29,6 +29,7 @@ public class CinematicPlayerSwitch : MonoBehaviour
         mesh.material = playerSwitch.lightMat;
         lightSourceGO.SetActive(true);
         playerState = "Light";
+        shadowPointLight.SetActive(false);
     }
 
     public void PlayShadow()
@@ -36,5 +37,6 @@ public class CinematicPlayerSwitch : MonoBehaviour
         mesh.material = playerSwitch.shadowMat;
         lightSourceGO.SetActive(false);
         playerState = "Shadow";
+        shadowPointLight.SetActive(true);
     }
 }
