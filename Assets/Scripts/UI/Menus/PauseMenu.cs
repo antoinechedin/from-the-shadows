@@ -12,14 +12,13 @@ public class PauseMenu : MonoBehaviour
     public MainPauseMenu mainPauseMenu;
     public OptionsMenu optionsMenu;
 
-    public DissolveController foregroundDissolveController;
+    public Image foreground;
 
     private bool optionsOpened;
 
     private void Awake()
     {
         optionsOpened = false;
-        gameObject.SetActive(false);
     }
 
     public void OpenPauseMenu()
@@ -31,22 +30,22 @@ public class PauseMenu : MonoBehaviour
     private void Update()
     {
         {
-        if (EventSystem.current.sendNavigationEvents)
-            if (optionsOpened)
-            {
-                if (InputManager.GetActionPressed(0, InputAction.Return)
-                || Input.GetKeyDown(KeyCode.Escape)
-                || Input.GetKeyDown(KeyCode.Backspace)) 
-                    CloseOptions();
-            }
-            else
-            {
-                if (InputManager.GetActionPressed(0, InputAction.Pause)
-                || Input.GetKeyDown(KeyCode.Escape)) 
-                    Resume();
-            }
+            if (EventSystem.current.sendNavigationEvents)
+                if (optionsOpened)
+                {
+                    if (InputManager.GetActionPressed(0, InputAction.Return)
+                    || Input.GetKeyDown(KeyCode.Escape)
+                    || Input.GetKeyDown(KeyCode.Backspace))
+                        CloseOptions();
+                }
+                else
+                {
+                    if (InputManager.GetActionPressed(0, InputAction.Pause)
+                    || Input.GetKeyDown(KeyCode.Escape))
+                        Resume();
+                }
         }
-        
+
     }
 
     public void Resume()
@@ -59,6 +58,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Home()
     {
+        EventSystem.current.sendNavigationEvents = false;
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         SaveManager.Instance.WriteSaveFile();
@@ -91,6 +91,8 @@ public class PauseMenu : MonoBehaviour
 
     public void Quit()
     {
+        EventSystem.current.sendNavigationEvents = false;
+        GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
         StartCoroutine(Fade());
@@ -98,7 +100,18 @@ public class PauseMenu : MonoBehaviour
 
     private IEnumerator Fade()
     {
-        yield return StartCoroutine(foregroundDissolveController.DissolveInCoroutine(3f));
+        float timer = 0;
+        float DURATION = 3f;
+
+        while (timer < DURATION)
+        {
+            timer += Time.deltaTime;
+            if (timer > DURATION) timer = DURATION;
+
+            float alpha = timer / DURATION;
+            foreground.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;
 #else

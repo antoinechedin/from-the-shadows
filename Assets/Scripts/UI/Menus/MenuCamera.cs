@@ -76,6 +76,7 @@ public class MenuCamera : MonoBehaviour
                 virtualCamera.transform.position = targetPosition;
                 virtualCamera.transform.rotation = targetRotation.rotation;
                 isMoving = false;
+                SmoothTransition = true;
             }
 
             // Cursor on UI follow world points
