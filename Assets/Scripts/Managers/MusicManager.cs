@@ -7,8 +7,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField]
     private List<SongManager> themes;
 
-    [SerializeField]
-    private SongManager currentPlayingTheme;
+    public SongManager currentPlayingTheme;
 
     public SongManager mainTheme;
 

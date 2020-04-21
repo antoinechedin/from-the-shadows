@@ -150,7 +150,7 @@ public class ChapterManager : MonoBehaviour
             ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, currentLevel);
 
-        if (musicManager != null)
+        if (musicManager.currentPlayingTheme != null)
             musicManager.ManageMusicChange(currentLevel, newCurrentLevel);
 
         List<LevelManager> levelsToDisable = new List<LevelManager>();
