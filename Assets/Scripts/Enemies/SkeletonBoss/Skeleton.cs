@@ -11,7 +11,7 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public float timeBeforeFirstAttack = 10;
     public float timeBeforeAttack = 12;
-    public float timeBeforeDoubleAttack = 8;
+    public float timeBeforeDoubleAttack = 10;
     public GameObject hands;
     public GameObject player1;
     public GameObject player2;
@@ -147,7 +147,7 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         isTargetting = true;
         ChoosePlayerTarget();
-        Invoke("TriggerSimpleAttack", timeBeforeDoubleAttack);
+        Invoke("TriggerDoubleAttack", timeBeforeDoubleAttack);
     }
 
     public void TriggerDoubleAttack()
@@ -155,7 +155,7 @@ public class Skeleton : MonoBehaviour, IResetable
         isTargetting = false;
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
-        Invoke("PrepareDoubleAttack", 4);
+        Invoke("PrepareDoubleAttack", 6);
         // timing may need adjustement
     }
 
@@ -297,7 +297,7 @@ public class Skeleton : MonoBehaviour, IResetable
             Invoke("StartFallingPlatform", 1.8f);
             Invoke("ActiveMiddleZoneSpikes", 4);
 
-            InvokeRepeating("TriggerDoubleAttack", 5, timeBeforeDoubleAttack);
+            Invoke("PrepareDoubleAttack", timeBeforeDoubleAttack);
         }
 
         if (hp == 2 || hp == 1)
