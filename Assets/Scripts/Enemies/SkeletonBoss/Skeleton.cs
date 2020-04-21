@@ -131,7 +131,7 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         isTargetting = true;
         ChoosePlayerTarget();
-        //Invoke("TriggerAttack", timeBeforeAttack);
+        Invoke("TriggerAttack", timeBeforeAttack);
     }
 
     public void TriggerAttack()
