@@ -24,8 +24,8 @@ public class PauseMenu : MonoBehaviour
 
     public void OpenPauseMenu()
     {
-        Time.timeScale = 0;
         EventSystem.current.SetSelectedGameObject(mainPauseMenu.resumeButton.gameObject);
+        Time.timeScale = 0;
     }
 
     private void Update()
