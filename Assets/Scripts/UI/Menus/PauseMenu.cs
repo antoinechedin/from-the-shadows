@@ -19,7 +19,6 @@ public class PauseMenu : MonoBehaviour
     private void Awake()
     {
         optionsOpened = false;
-        gameObject.SetActive(false);
     }
 
     public void OpenPauseMenu()
@@ -59,6 +58,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Home()
     {
+        EventSystem.current.sendNavigationEvents = false;
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         SaveManager.Instance.WriteSaveFile();
@@ -91,7 +91,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Quit()
     {
-        
+        EventSystem.current.sendNavigationEvents = false;
         GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
