@@ -234,6 +234,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
 
     public IEnumerator DissolveInCoroutine()
     {
+        menuManager.menuCamera.SetReturnToSavesMenu(true);
         gameObject.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(savesButons[LastSelected].gameObject);
@@ -267,5 +268,6 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
         newGameChoiceButtons.gameObject.SetActive(false);
         actionChoiceButtons.gameObject.SetActive(false);
         gameObject.SetActive(false);
+        menuManager.menuCamera.SetReturnToSavesMenu(false);
     }
 }

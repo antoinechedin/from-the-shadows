@@ -21,7 +21,7 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
 
     private List<Chapter> chapters;
     private bool chapterMenuIsOpen = false;
-    private bool statsOpen = false;
+    // private bool statsOpen = false;
 
     private List<string> chaptersName;
 
@@ -49,35 +49,33 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
                 || Input.GetKeyDown(KeyCode.Escape)
                 || Input.GetKeyDown(KeyCode.Backspace))
             {
-                if (statsOpen)
-                {
-                    DisplayStatistics();
-                }
+                // if (statsOpen)
+                // {
+                //     DisplayStatistics();
+                // }
                 // Close the chapter
-                else if (chapterMenuIsOpen)
+                if (chapterMenuIsOpen)
                 {
-                    carousel.ResetScreenshots();
+                    // carousel.ResetScreenshots();
                     carousel.enabled = false;
                     chapterMenuIsOpen = false;
-                    chapterButtonsPanel.SetActive(true);
-                    metaDataIcon.gameObject.SetActive(true);
+                    // metaDataIcon.gameObject.SetActive(true);
                     EventSystem.current.SetSelectedGameObject(chapterButtons[GameManager.Instance.CurrentChapter].gameObject);
                     carousel.animator.SetBool("open", false);
                     menuCamera.SetZoom(false);
                 }
-                else if (!chapterMenuIsOpen)
+                else
                 {
-                    menuCamera.SetReturnToSavesMenu(true);
                     // menuManager.OpenSaveMenu();
                     Debug.Log("chapterMenu closed");
                     menuManager.DissolveFromMenuToMenu(menuManager.chaptersMenu, menuManager.savesMenu);
                 }
             }
 
-            if (Input.GetButtonDown("Start_G") && !chapterMenuIsOpen)
-            {
-                DisplayStatistics();
-            }
+            // if (Input.GetButtonDown("Start_G") && !chapterMenuIsOpen)
+            // {
+            //     DisplayStatistics();
+            // }
 
             // leftArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
             // rightArrow.GetComponent<Image>().color = new Color(255, 255, 255, 1);
@@ -97,30 +95,27 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
         }
     }
 
-    public void DisplayStatistics()
-    {
-        statsOpen = !statsOpen;
-        EventSystem.current.SetSelectedGameObject(null);
-        chapterButtonsPanel.SetActive(!chapterButtonsPanel.activeSelf);
-        menuCamera.cursor.gameObject.SetActive(!menuCamera.cursor.gameObject.activeSelf);
-        metaDataIcon.gameObject.SetActive(!metaDataIcon.gameObject.activeSelf);
-        EventSystem.current.SetSelectedGameObject(chapterButtons[GameManager.Instance.CurrentChapter].gameObject);
-        // metaDataPanelAnimator.SetBool("open", !metaDataPanelAnimator.GetBool("open"));
-    }
+    // public void DisplayStatistics()
+    // {
+    //     statsOpen = !statsOpen;
+    //     EventSystem.current.SetSelectedGameObject(null);
+    //     chapterButtonsPanel.SetActive(!chapterButtonsPanel.activeSelf);
+    //     menuCamera.cursor.gameObject.SetActive(!menuCamera.cursor.gameObject.activeSelf);
+    //     metaDataIcon.gameObject.SetActive(!metaDataIcon.gameObject.activeSelf);
+    //     EventSystem.current.SetSelectedGameObject(chapterButtons[GameManager.Instance.CurrentChapter].gameObject);
+    //     // metaDataPanelAnimator.SetBool("open", !metaDataPanelAnimator.GetBool("open"));
+    // }
 
     public void OpenChapterMenu(int chapterId)
     {
         GameManager.Instance.CurrentChapter = chapterId;
         Debug.Log("Open chapter: " + chapterId);
-        Debug.Log("Current chapter: " + GameManager.Instance.CurrentChapter);
         menuCamera.SetChapterSelected(chapterId);
 
         if (!chapterMenuIsOpen)
         {
             carousel.enabled = true;
             chapterMenuIsOpen = true;
-            //chapterButtonsPanel.SetActive(false);
-            metaDataIcon.gameObject.SetActive(false);
 
             int nbLightCollectibleTaken = 0;
             int nbShadowCollectibleTaken = 0;
@@ -153,11 +148,9 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
             }
 
             //                levelLabel.text = chaptersName[localIndexCurrentChapter].ToUpper();
-            Debug.Log(carousel.animator);
             carousel.animator.SetBool("open", true);
-            menuCamera.SetZoom(true);
+            // menuCamera.SetZoom(true);
             carousel.SetMenuLevels(GameManager.Instance.CurrentChapter);
-
         }
     }
 
@@ -168,7 +161,6 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
             Debug.LogError("ERROR MenuChaputer.ResetInteractablesChaptersButtons(): There's no chapter buttons");
             return;
         }
-
 
         int lastUnlockedChapterId = 0;
         chapterButtons[0].interactable = true;
@@ -264,5 +256,6 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
         gameObject.SetActive(false);
+        menuCamera.SetReturnToSavesMenu(true);
     }
 }

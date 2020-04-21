@@ -79,7 +79,6 @@ public class Carousel : MonoBehaviour
             if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
             {
                 int localLevelIndex = i;
-                //TODO : aller chercher le bon srceenshot
                 LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshotPrefab, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
                 SetMenuLevelInfo(i, spawnedScreenshot);
                 spawnedScreenshot.GetComponent<Button>().onClick.AddListener(delegate
