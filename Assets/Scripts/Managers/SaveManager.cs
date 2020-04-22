@@ -215,7 +215,7 @@ public class SaveManager : Singleton<SaveManager>
             lvlChap1_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //43 - The confrontation - 0 Collectibles
 
             chapters.Add(new Chapter(lvlPrologque_Solo));
-            chapters.Add(new Chapter(lvlChap1_Solo));
+            chapters.Add(new Chapter(lvlChap1_Solo)); 
         }
 
         if (nbPlayer == 2)
