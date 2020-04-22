@@ -33,7 +33,6 @@ public class Lever : Activator, IResetable
 
         if (activeAtStart)
         {
-            On(true);
             if (withAnimation)
             {
                 GetComponentInChildren<Animator>().SetBool("OFF", false);
@@ -41,7 +40,6 @@ public class Lever : Activator, IResetable
         }
         else
         {
-            Off();
             if (withAnimation)
             {
                 GetComponentInChildren<Animator>().SetBool("OFF", true);
