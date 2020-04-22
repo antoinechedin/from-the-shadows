@@ -24,6 +24,7 @@ public class OverHeadGUI : MonoBehaviour
     public bool isSoloPlayerSpeaking = false;
 
     public GUIType type;
+    public bool isOverhead = false;
     private bool useAnimator;
 
     [Header("Place in \"content\" the canvas containing all the UI elements you wish to display")]
@@ -63,9 +64,12 @@ public class OverHeadGUI : MonoBehaviour
         parentAudioSource = GetComponentInParent<AudioSource>();
         animator = GetComponent<Animator>();
         if(animator == null) useAnimator = false; else useAnimator = true;
-        textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
-        textLine = textUGUI.text;
-        textUGUI.text = "";
+        if(!isOverhead)
+        {
+            textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
+            textLine = textUGUI.text;
+            textUGUI.text = "";
+        }
         animationEnded = false;
         textLineFullyDisplayed = false;
         skipTextLineAnimation = false;
@@ -187,8 +191,12 @@ public class OverHeadGUI : MonoBehaviour
                 transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().lightDialogueIcon;
             }
         }
-        StartCoroutine(PrintTextLineCoroutine());
-        StartCoroutine(CanPassDialogue());
+
+        if(!isOverhead)
+        {
+            StartCoroutine(PrintTextLineCoroutine());
+            StartCoroutine(CanPassDialogue());
+        }
         content.SetActive(UIActive);
     }
 
