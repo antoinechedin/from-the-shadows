@@ -18,7 +18,7 @@ public class NewLightSource : MonoBehaviour
     private void Start()
     {
         lightMaterial.SetFloat("Vector1_22436CA3", lightRadius - 0.1f);
-        lightMaterial.SetColor("Color_5C96105C", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
+        lightMaterial.SetColor("Color_5C96105C", new Color(1, 0.7589114f, 0.3066038f, 0.5f));
         UpdateMesh();
     }
 
@@ -40,7 +40,7 @@ public class NewLightSource : MonoBehaviour
         GetComponent<MeshFilter>().sharedMesh = m;
         GetComponent<MeshRenderer>().material = lightMaterial;
         lightMaterial.SetFloat("Vector1_22436CA3", lightRadius - 0.1f);
-        lightMaterial.SetColor("Color_5C96105C", new Color(1, 0.7589114f, 0.3066038f, 0.09019608f));
+        lightMaterial.SetColor("Color_5C96105C", new Color(1, 0.7589114f, 0.3066038f, 0.5f));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
