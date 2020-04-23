@@ -29,8 +29,18 @@ public class GameManager : Singleton<GameManager>
     private bool displayedNoSaveFile = false;
     private bool isInCutscene = false;
 
+    // Detect controller used
     public InputDevice player1InputDevice = InputDevice.Keyboard;
     public InputDevice player2InputDevice = InputDevice.Controller;
+    public delegate void OnControllerChangeDelegate();
+    public event OnControllerChangeDelegate controllerChangeDelegate;
+
+    public void OnControllerChange()
+    {
+        Debug.Log("OnControllerChange() called");
+        if (controllerChangeDelegate != null)
+            controllerChangeDelegate();
+    }
 
     // Options update
     public delegate void OnOptionsUpdateDelegate();
@@ -66,8 +76,11 @@ public class GameManager : Singleton<GameManager>
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Switch])
         )
         {
-            player1InputDevice = InputDevice.Keyboard;
-            Debug.Log("Player 1 Keyboard");
+            if (player1InputDevice != InputDevice.Keyboard)
+            {
+                player1InputDevice = InputDevice.Keyboard;
+                OnControllerChange();
+            }
         }
         if (
             Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Up]) ||
@@ -79,8 +92,11 @@ public class GameManager : Singleton<GameManager>
             Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Switch])
         )
         {
-            player2InputDevice = InputDevice.Keyboard;
-            Debug.Log("Player 2 Keyboard");
+            if (player2InputDevice != InputDevice.Keyboard)
+            {
+                player2InputDevice = InputDevice.Keyboard;
+                OnControllerChange();
+            }
         }
         if (
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Return]) ||
@@ -90,8 +106,11 @@ public class GameManager : Singleton<GameManager>
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Switch])
         )
         {
-            player1InputDevice = InputDevice.Controller;
-            Debug.Log("Player 1 Controller");
+            if (player1InputDevice != InputDevice.Controller)
+            {
+                player1InputDevice = InputDevice.Controller;
+                OnControllerChange();
+            }
         }
         if (
             Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Return]) ||
@@ -101,18 +120,27 @@ public class GameManager : Singleton<GameManager>
             Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Switch])
         )
         {
-            player2InputDevice = InputDevice.Controller;
-            Debug.Log("Player 2 Controller");
+            if (player2InputDevice != InputDevice.Controller)
+            {
+                player2InputDevice = InputDevice.Controller;
+                OnControllerChange();
+            }
         }
         if (Input.GetAxisRaw("Horizontal_1") != 0 || Input.GetAxisRaw("Vertical_1") != 0)
         {
-            player1InputDevice = InputDevice.Controller;
-            Debug.Log("Player 1 Controller");
+            if (player1InputDevice != InputDevice.Controller)
+            {
+                player1InputDevice = InputDevice.Controller;
+                OnControllerChange();
+            }
         }
         if (Input.GetAxisRaw("Horizontal_2") != 0 || Input.GetAxisRaw("Vertical_2") != 0)
         {
-            player2InputDevice = InputDevice.Controller;
-            Debug.Log("Player 2 Controller");
+            if (player2InputDevice != InputDevice.Controller)
+            {
+                player2InputDevice = InputDevice.Controller;
+                OnControllerChange();
+            }
         }
     }
 
