@@ -83,10 +83,8 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("Player 2 Keyboard");
         }
         if (
-            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Up]) ||
-            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Down]) ||
-            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Left]) ||
-            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Return]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Pause]) ||
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Jump]) ||
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Interact]) ||
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Switch])
@@ -96,14 +94,22 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("Player 1 Controller");
         }
         if (
-            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Up]) ||
-            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Down]) ||
-            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Left]) ||
-            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Return]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Pause]) ||
             Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Jump]) ||
             Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Interact]) ||
             Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Switch])
         )
+        {
+            player2InputDevice = InputDevice.Controller;
+            Debug.Log("Player 2 Controller");
+        }
+        if (Input.GetAxisRaw("Horizontal_1") != 0 || Input.GetAxisRaw("Vertical_1") != 0)
+        {
+            player1InputDevice = InputDevice.Controller;
+            Debug.Log("Player 1 Controller");
+        }
+        if (Input.GetAxisRaw("Horizontal_2") != 0 || Input.GetAxisRaw("Vertical_2") != 0)
         {
             player2InputDevice = InputDevice.Controller;
             Debug.Log("Player 2 Controller");
