@@ -29,6 +29,8 @@ public class GameManager : Singleton<GameManager>
     private bool displayedNoSaveFile = false;
     private bool isInCutscene = false;
 
+    public InputDevice player1InputDevice = InputDevice.Keyboard;
+    public InputDevice player2InputDevice = InputDevice.Controller;
 
     // Options update
     public delegate void OnOptionsUpdateDelegate();
@@ -53,6 +55,58 @@ public class GameManager : Singleton<GameManager>
         {
             Instantiate((GameObject)Resources.Load("DebugCanvas"), Vector3.zero, Quaternion.identity, transform);
             debugCanvasExist = true;
+        }
+        if (
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Up]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Down]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Left]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Switch])
+        )
+        {
+            player1InputDevice = InputDevice.Keyboard;
+            Debug.Log("Player 1 Keyboard");
+        }
+        if (
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Up]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Down]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Left]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Switch])
+        )
+        {
+            player2InputDevice = InputDevice.Keyboard;
+            Debug.Log("Player 2 Keyboard");
+        }
+        if (
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Up]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Down]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Left]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Switch])
+        )
+        {
+            player1InputDevice = InputDevice.Controller;
+            Debug.Log("Player 1 Controller");
+        }
+        if (
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Up]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Down]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Left]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Switch])
+        )
+        {
+            player2InputDevice = InputDevice.Controller;
+            Debug.Log("Player 2 Controller");
         }
     }
 
