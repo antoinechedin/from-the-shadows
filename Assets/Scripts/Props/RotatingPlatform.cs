@@ -24,6 +24,11 @@ public class RotatingPlatform : ActivatorListener
     void Update()
     {
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * speedRotation);
+
+        if (transform.rotation != startRotation)
+            ActivateKillZone();
+        else
+            DeactivateKillZone();
     }
 
     public override void OnActivate()
