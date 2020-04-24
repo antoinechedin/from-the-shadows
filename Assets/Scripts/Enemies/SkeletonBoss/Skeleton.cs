@@ -31,7 +31,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
     [HideInInspector]
     public int idTargetZone;
-    private int hp = 3;
+    [HideInInspector]
+    public int hp = 3;
     private int laneToAttack = 0;
     private string stringDirection;
     [HideInInspector]
