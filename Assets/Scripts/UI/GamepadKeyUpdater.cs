@@ -31,6 +31,8 @@ public class GamepadKeyUpdater : MonoBehaviour
                 return gamepadKeySprites[8];
             case InputAction.Interact:
                 return gamepadKeySprites[15];
+            case InputAction.Switch:
+                return gamepadKeySprites[7];
             default:
                 return gamepadKeySprites[14];
         }
