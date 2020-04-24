@@ -31,12 +31,12 @@ public class GameManager : Singleton<GameManager>
 
     // Detect controller used
     public InputDevice player1InputDevice = InputDevice.Keyboard;
-    public InputDevice player2InputDevice = InputDevice.Controller;
+    public InputDevice player2InputDevice = InputDevice.Keyboard;
     public delegate void OnControllerChangeDelegate();
     public event OnControllerChangeDelegate controllerChangeDelegate;
 
     public void OnControllerChange()
-    {
+    { 
         Debug.Log("OnControllerChange() called");
         if (controllerChangeDelegate != null)
             controllerChangeDelegate();
@@ -66,6 +66,8 @@ public class GameManager : Singleton<GameManager>
             Instantiate((GameObject)Resources.Load("DebugCanvas"), Vector3.zero, Quaternion.identity, transform);
             debugCanvasExist = true;
         }
+
+        bool controllerChange = false;
         if (
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Up]) ||
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Down]) ||
@@ -79,7 +81,7 @@ public class GameManager : Singleton<GameManager>
             if (player1InputDevice != InputDevice.Keyboard)
             {
                 player1InputDevice = InputDevice.Keyboard;
-                OnControllerChange();
+                controllerChange = true;
             }
         }
         if (
@@ -95,7 +97,7 @@ public class GameManager : Singleton<GameManager>
             if (player2InputDevice != InputDevice.Keyboard)
             {
                 player2InputDevice = InputDevice.Keyboard;
-                OnControllerChange();
+                controllerChange = true;
             }
         }
         if (
@@ -109,7 +111,7 @@ public class GameManager : Singleton<GameManager>
             if (player1InputDevice != InputDevice.Controller)
             {
                 player1InputDevice = InputDevice.Controller;
-                OnControllerChange();
+                controllerChange = true;
             }
         }
         if (
@@ -123,7 +125,7 @@ public class GameManager : Singleton<GameManager>
             if (player2InputDevice != InputDevice.Controller)
             {
                 player2InputDevice = InputDevice.Controller;
-                OnControllerChange();
+                controllerChange = true;
             }
         }
         if (Input.GetAxisRaw("Horizontal_1") != 0 || Input.GetAxisRaw("Vertical_1") != 0)
@@ -131,7 +133,7 @@ public class GameManager : Singleton<GameManager>
             if (player1InputDevice != InputDevice.Controller)
             {
                 player1InputDevice = InputDevice.Controller;
-                OnControllerChange();
+                controllerChange = true;
             }
         }
         if (Input.GetAxisRaw("Horizontal_2") != 0 || Input.GetAxisRaw("Vertical_2") != 0)
@@ -139,9 +141,11 @@ public class GameManager : Singleton<GameManager>
             if (player2InputDevice != InputDevice.Controller)
             {
                 player2InputDevice = InputDevice.Controller;
-                OnControllerChange();
+                controllerChange = true;
             }
         }
+
+        if (controllerChange) OnControllerChange();
     }
 
     #region getters / setters
