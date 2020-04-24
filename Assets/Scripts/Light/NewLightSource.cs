@@ -40,9 +40,9 @@ public class NewLightSource : MonoBehaviour
         // RippleDistance
         lightMaterial.SetFloat("Vector1_22436CA3", lightRadius - 0.1f);
         // Color
-        lightMaterial.SetColor("Color_5C96105C", new Color(1, 0.7589114f, 0.3066038f, 0.5f));
+        lightMaterial.SetColor("Color_5C96105C", new Color(1, 0.7589114f, 0.3066038f, 0.3f));
         // MinDistance
-        lightMaterial.SetFloat("Vector1_A69BC7A9", lightRadius - 1f);
+        lightMaterial.SetFloat("Vector1_A69BC7A9", lightRadius - 2.5f);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
