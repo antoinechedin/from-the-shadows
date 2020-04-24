@@ -54,7 +54,6 @@ public class DoubleKeyIndicator : MonoBehaviour
                 keyboard.gameObject.SetActive(false);
             }
         }
-        // LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
     }
 
     private void OnDisable()
