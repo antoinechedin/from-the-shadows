@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class DoubleKeyIndicator : MonoBehaviour
 {
-    public InputAction action;
-
     private KeyIndicator keyboard;
     private KeyIndicator gamepad;
 
@@ -35,19 +33,19 @@ public class DoubleKeyIndicator : MonoBehaviour
             keyboard.gameObject.SetActive(true);
 
             keyboard.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            keyboard.UpdateIndicator(InputDevice.Keyboard, action);
+            keyboard.UpdateIndicator(InputDevice.Keyboard);
 
         }
         else
         {
             gamepad.gameObject.SetActive(true);
-            gamepad.UpdateIndicator(InputDevice.Controller, action);
+            gamepad.UpdateIndicator(InputDevice.Controller);
 
             if (GameManager.Instance.player1InputDevice != GameManager.Instance.player2InputDevice)
             {
                 keyboard.gameObject.SetActive(true);
                 keyboard.GetComponent<RectTransform>().anchoredPosition = Vector2.left * 85f;
-                keyboard.UpdateIndicator(InputDevice.Keyboard, action);
+                keyboard.UpdateIndicator(InputDevice.Keyboard);
             }
             else
             {

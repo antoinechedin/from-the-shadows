@@ -6,13 +6,22 @@ using UnityEngine.UI;
 
 public class KeyIndicator : MonoBehaviour
 {
+    public bool shouldListenOnControllerChange;
     [Range(1, 2)] public int playerId = 1;
-    [SerializeField] private Sprite[] gamepadKeySprites;
-    
+
     [Header("Components")]
-    public GameObject keycap;
-    public TextMeshProUGUI keyText;
-    public GameObject gamepadKey;
+    public KeyCapUpdater[] keycaps;
+    public GamepadKeyUpdater[] gamepadKeys;
+
+    private void OnEnable()
+    {
+        if (shouldListenOnControllerChange)
+        {
+            GameManager.Instance.controllerChangeDelegate += UpdateIndicator;
+            GameManager.Instance.optionsUpdateDelegate += UpdateIndicator;
+            UpdateIndicator();
+        }
+    }
 
     private void Awake()
     {
@@ -24,44 +33,51 @@ public class KeyIndicator : MonoBehaviour
         }
     }
 
-    public void UpdateIndicator(InputDevice device, InputAction action)
+    public void UpdateIndicator()
+    {
+        InputDevice device =
+            playerId == 1 ? GameManager.Instance.player1InputDevice : GameManager.Instance.player2InputDevice;
+        UpdateIndicator(device);
+    }
+
+    public void UpdateIndicator(InputDevice device)
     {
         if (device == InputDevice.Keyboard)
         {
-            keycap.SetActive(true);
-            gamepadKey.SetActive(false);
-
-            KeyCode keyCode = playerId == 1 ? InputManager.Player1[0][action] : InputManager.Player2[0][action];
-            keyText.text = keyCode.ToString();
-
-            if (keyText.text.Length > 1)
+            foreach (var keycap in keycaps)
             {
-                keyText.fontSize = 40;
-                keyText.fontStyle = FontStyles.Normal;
-                keyText.alignment = TextAlignmentOptions.TopLeft;
+                keycap.gameObject.SetActive(true);
+                keycap.UpdateKeyText(playerId);
             }
+            foreach (var gamepadKey in gamepadKeys)
+            {
+                gamepadKey.gameObject.SetActive(false);
+            }
+
         }
         else
         {
-            keycap.SetActive(false);
-            gamepadKey.SetActive(true);
-
-            gamepadKey.GetComponent<Image>().sprite = GetGamepadKeySprite(action);
+            foreach (var keycap in keycaps)
+            {
+                keycap.gameObject.SetActive(false);
+            }
+            foreach (var gamepadKey in gamepadKeys)
+            {
+                gamepadKey.gameObject.SetActive(true);
+                gamepadKey.UpdateGamepadKeyImage();
+            }
         }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(keycap.GetComponent<RectTransform>());
     }
 
-    private Sprite GetGamepadKeySprite(InputAction action)
+    private void OnDisable()
     {
-        switch (action)
+        if (GameManager.Instance != null)
         {
-            case InputAction.Jump:
-            case InputAction.Select:
-                return gamepadKeySprites[0];
-            case InputAction.Return:
-                return gamepadKeySprites[1];
-            default:
-                return gamepadKeySprites[14];
+            if (shouldListenOnControllerChange)
+            {
+                GameManager.Instance.controllerChangeDelegate -= UpdateIndicator;
+                GameManager.Instance.optionsUpdateDelegate -= UpdateIndicator;
+            }
         }
     }
 }

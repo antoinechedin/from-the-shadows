@@ -63,8 +63,8 @@ public class OverHeadGUI : MonoBehaviour
     {
         parentAudioSource = GetComponentInParent<AudioSource>();
         animator = GetComponent<Animator>();
-        if(animator == null) useAnimator = false; else useAnimator = true;
-        if(!isOverhead)
+        if (animator == null) useAnimator = false; else useAnimator = true;
+        if (!isOverhead)
         {
             textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
             textLine = textUGUI.text;
@@ -192,11 +192,23 @@ public class OverHeadGUI : MonoBehaviour
             }
         }
 
-        if(!isOverhead)
+        if (!isOverhead)
         {
             StartCoroutine(PrintTextLineCoroutine());
             StartCoroutine(CanPassDialogue());
         }
+        else
+        {
+            KeyIndicator[] keyIndicators = GetComponentsInChildren<KeyIndicator>();
+            if (keyIndicators != null)
+            {
+                foreach (var keyIndicator in keyIndicators)
+                {
+                    keyIndicator.UpdateIndicator();
+                }
+            }
+        }
+
         content.SetActive(UIActive);
     }
 
