@@ -6,6 +6,7 @@ using UnityEngine;
 public class TargetZone : MonoBehaviour
 {
     public int id;
+    public GameObject otherDirection;
 
     [HideInInspector]
     public GameObject skeleton;
@@ -23,7 +24,13 @@ public class TargetZone : MonoBehaviour
         {
             skeleton.GetComponent<Skeleton>().idTargetZone = id;
             if (!particle.active)
-                particle.SetActive(true);            
+                particle.SetActive(true);   
+            
+            // When double attack, activate the other direction lane
+            if(otherDirection != null && !otherDirection.GetComponent<TargetZone>().particle.active)
+            {
+                otherDirection.GetComponent<TargetZone>().particle.SetActive(true);
+            }
         }
     }
 
@@ -34,6 +41,12 @@ public class TargetZone : MonoBehaviour
         {
             if (particle.active)
                 particle.SetActive(false);
+
+            // Deactivate other lane when double attack
+            if (otherDirection != null && otherDirection.GetComponent<TargetZone>().particle.active)
+            {
+                otherDirection.GetComponent<TargetZone>().particle.SetActive(false);
+            }
         }
     }
 }
