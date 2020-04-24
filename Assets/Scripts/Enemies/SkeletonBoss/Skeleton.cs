@@ -25,7 +25,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public GameObject middleZoneSpikes;
     public GameObject middleZoneSpikesAnim;
     public GameObject bottomKillZone;
-    public GameObject endChapterTrigger;
+    public GameObject cinematicTrigger;
 
     public GameObject targetForPlayer;
 
@@ -286,8 +286,8 @@ public class Skeleton : MonoBehaviour, IResetable
         if (hp == 0)
         {
             Die();
-            Invoke("DestroyMiddleZone", 3);
-            Invoke("DestroyOtherZones", 4);
+            //Invoke("DestroyMiddleZone", 3);
+            //Invoke("DestroyOtherZones", 4);
         }
 
         if (hp == 1)
@@ -313,9 +313,15 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Die()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
+        
+        foreach(DestructiblePlatform destructiblePlatform in middleZoneSpikes.GetComponentsInChildren<DestructiblePlatform>())
+        {
+            destructiblePlatform.Destruct();
+        }
+        cinematicTrigger.SetActive(true);
         CancelInvoke();
     }
-
+    
     public void Reset()
     {
         hp = 3;        
@@ -397,7 +403,6 @@ public class Skeleton : MonoBehaviour, IResetable
     public void DestroyMiddleZone()
     {
         bottomKillZone.SetActive(false);
-        endChapterTrigger.SetActive(true);
         middleZone.SetActive(false);
         middleZoneSpikes.SetActive(false);
     }

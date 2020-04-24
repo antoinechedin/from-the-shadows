@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class InteractOnTrigger : MonoBehaviour
 {
     public LayerMask layers;
+    public bool triggerOnEnable = false;
     public UnityEvent OnEnter;
     
     public float delay = 5f;
@@ -25,11 +26,11 @@ public class InteractOnTrigger : MonoBehaviour
         collider.isTrigger = true;
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnEnable()
     {
-        if (0 != (layers.value & 1 << other.gameObject.layer))
+        if(triggerOnEnable)
         {
-            ExecuteOnEnter(other);
+            ExecuteOnEnter();
 
             StartCoroutine(ExecuteOnEnterDelayed(delay));
 
@@ -38,7 +39,20 @@ public class InteractOnTrigger : MonoBehaviour
         }
     }
 
-    protected virtual void ExecuteOnEnter(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (0 != (layers.value & 1 << other.gameObject.layer))
+        {
+            ExecuteOnEnter();
+
+            StartCoroutine(ExecuteOnEnterDelayed(delay));
+
+            foreach (DelayedEvent delayedEvent in delayedEvents)
+                StartCoroutine(delayedEvent.ExecuteOnEnterDelayed(delayedEvent.delay));
+        }
+    }
+
+    protected virtual void ExecuteOnEnter()
     {
         OnEnter.Invoke();
     }
@@ -52,11 +66,11 @@ public class InteractOnTrigger : MonoBehaviour
     {
         if (0 != (layers.value & 1 << other.gameObject.layer))
         {
-            ExecuteOnExit(other);
+            ExecuteOnExit();
         }
     }
 
-    protected virtual void ExecuteOnExit(Collider2D other)
+    protected virtual void ExecuteOnExit()
     {
         OnExit.Invoke();
     }
