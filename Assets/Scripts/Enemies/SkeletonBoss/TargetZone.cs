@@ -27,7 +27,7 @@ public class TargetZone : MonoBehaviour
                 particle.SetActive(true);   
             
             // When double attack, activate the other direction lane
-            if(otherDirection != null && !otherDirection.GetComponent<TargetZone>().particle.active)
+            if(skeleton.GetComponent<Skeleton>().hp == 1 && otherDirection != null && !otherDirection.GetComponent<TargetZone>().particle.active)
             {
                 otherDirection.GetComponent<TargetZone>().particle.SetActive(true);
             }
