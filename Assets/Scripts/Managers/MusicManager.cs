@@ -33,13 +33,11 @@ public class MusicManager : MonoBehaviour
     {
         masterBus = FMODUnity.RuntimeManager.GetBus("Bus:/");
 
+        GameManager.Instance.optionsUpdateDelegate += SetMusicVolume;
+        SetMusicVolume();
+
         // if(GameManager.Instance.LoadingChapterInfo == null && !playOnAwake)
         //     StartTheme(mainTheme);
-    }
-
-    private void Update()
-    {
-        SetMasterVolume(masterVolume);
     }
 
     // Set music according to the current level (in case of loading a specified level and not starting from the beginning)
@@ -82,10 +80,14 @@ public class MusicManager : MonoBehaviour
         //}
     }
 
-    public void SetMasterVolume(float volume)
+    public void SetMusicVolume()
     {
-        masterBus.setVolume(volume / 100f);
+        if (PlayerPrefs.HasKey("MusicVolume"))
+        {
+            masterBus.setVolume((masterVolume * ((float)PlayerPrefs.GetInt("MusicVolume") / 10f)) / 100f);
+        }
     }
+
     public void ManageMusicChange(int currentLevel, int newCurrentLevel)
     {
         bool themeUpdated = false;
@@ -185,6 +187,12 @@ public class MusicManager : MonoBehaviour
     public void ResumeTheme(SongManager songManager)
     {
         songManager.GetTheme().setPaused(false);
+    }
+
+    void OnDisable()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.optionsUpdateDelegate -= SetMusicVolume;
     }
 
 }

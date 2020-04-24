@@ -55,7 +55,7 @@ public class PlayerInput : MonoBehaviour
             if (pressUp) moveAxis.y += 1;
             if (pressDown) moveAxis.y -= 1;
         }
-        else
+        else if(Time.timeScale > 0)
         {
             /*moveAxis.x = Input.GetAxisRaw("Horizontal_" + id);
             moveAxis.y = Input.GetAxisRaw("Vertical_" + id);

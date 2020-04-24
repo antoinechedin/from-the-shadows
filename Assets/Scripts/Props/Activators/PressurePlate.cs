@@ -28,7 +28,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
         {
-            updateNbObjectsOnPlate(+1);
+            UpdateNbObjectsOnPlate(+1);
         }            
     }
 
@@ -39,7 +39,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
         {
-            updateNbObjectsOnPlate(-1);
+            UpdateNbObjectsOnPlate(-1);
         }
     }
 
@@ -74,12 +74,14 @@ public class PressurePlate : Activator
         }
     }
 
-    void updateNbObjectsOnPlate(int i)
+    void UpdateNbObjectsOnPlate(int i)
     {
         nbObjectsOnPlate += i;
 
-        if(nbObjectsOnPlate == 1)
+        if(i > 0 && nbObjectsOnPlate == 1)
+        {
             On();
+        }
         if(nbObjectsOnPlate == 0)
         {
             Off();

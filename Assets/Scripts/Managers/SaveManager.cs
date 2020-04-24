@@ -163,8 +163,8 @@ public class SaveManager : Singleton<SaveManager>
             //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
             List<Level> lvlPrologque_Solo = new List<Level>();
             lvlPrologque_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, true));
+            lvlPrologque_Solo.Add(new Level(false, new bool[] { false }, new bool[] { false }, false));
             lvlPrologque_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
-            lvlPrologque_Solo.Add(new Level(false, new bool[] { false }, new bool[] { }, false));
 
             List<Level> lvlChap1_Solo = new List<Level>();
             lvlChap1_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //0   - The entrance - 2 Collectibles
@@ -215,7 +215,7 @@ public class SaveManager : Singleton<SaveManager>
             lvlChap1_Solo.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //43 - The confrontation - 0 Collectibles
 
             chapters.Add(new Chapter(lvlPrologque_Solo));
-            chapters.Add(new Chapter(lvlChap1_Solo));
+            chapters.Add(new Chapter(lvlChap1_Solo)); 
         }
 
         if (nbPlayer == 2)
@@ -227,8 +227,8 @@ public class SaveManager : Singleton<SaveManager>
             //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
             List<Level> lvlPrologque_Duo = new List<Level>();
             lvlPrologque_Duo.Add(new Level(false, new bool[] { }, new bool[] { }, true));
-            lvlPrologque_Duo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
             lvlPrologque_Duo.Add(new Level(false, new bool[] { false }, new bool[] { }, false));
+            lvlPrologque_Duo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
 
             List<Level> lvlChap1_Duo = new List<Level>();
             lvlChap1_Duo.Add(new Level(false, new bool[] { }, new bool[] { }, true)); //0   - The entrance - 2 Collectibles

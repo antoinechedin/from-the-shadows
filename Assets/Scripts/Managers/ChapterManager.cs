@@ -72,10 +72,10 @@ public class ChapterManager : MonoBehaviour
         }
 
         //if (Input.GetButtonDown("Select_G"))
-        if (InputManager.GetActionPressed(0, InputAction.Restart))
-        {
-            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
-        }
+        // if (InputManager.GetActionPressed(0, InputAction.Restart))
+        // {
+        //     GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
+        // }
 
         #region CheatCodes
         //next level
