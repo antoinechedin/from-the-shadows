@@ -380,7 +380,7 @@ public class Skeleton : MonoBehaviour, IResetable
         isTargetting = false;
 
         // Restart hand attack
-        Invoke("PrepareAttack", timeBeforeFirstAttack);
+        Invoke("PrepareAttack", 5f);
 
         //Reactivate destructible platforms
         leftZone.SetActive(true);
