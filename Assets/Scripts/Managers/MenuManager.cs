@@ -20,6 +20,7 @@ public class MenuManager : MonoBehaviour
     public OptionsMenu optionsMenu;
     public CreditsMenu creditsMenu;
     public ChaptersMenu chaptersMenu;
+    public GameObject footer;
     public MusicManager musicManager;
 
     public MenuCamera menuCamera;
@@ -93,6 +94,9 @@ public class MenuManager : MonoBehaviour
     {
         GameManager.Instance.LoadingMenuInfos = new LoadingMenuInfo(0);
 
+        footer.SetActive(false);
+        introCinematic.gameObject.SetActive(true);
+
         introCinematic.Prepare();
         while (!introCinematic.isPrepared) yield return null;
         introCinematic.Play();
@@ -108,6 +112,8 @@ public class MenuManager : MonoBehaviour
 
     private void DisplayMenu()
     {
+        footer.SetActive(true);
+        introCinematic.gameObject.SetActive(false);
         startMenu.SetActive(true);
         StartCoroutine(cinematicMenu.FadeOutCinematicMenuCoroutine());
         musicManager.StartTheme(musicManager.mainTheme);

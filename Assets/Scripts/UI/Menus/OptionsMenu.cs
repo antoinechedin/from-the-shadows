@@ -85,6 +85,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                     currentControlsButton = null;
                     PressAKeyCanvasGroup.alpha = 0f;
                     StartCoroutine(StopListeningKeyCoroutine());
+                    GameManager.Instance.OnOptionUpdate();
                 }
             }
         }

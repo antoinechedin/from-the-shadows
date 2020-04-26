@@ -6,8 +6,12 @@ public class SoundsManager : MonoBehaviour
 {
     void Awake()
     {
-        GameManager.Instance.optionsUpdateDelegate += SetSoundsVolume;
         SetSoundsVolume();
+    }
+
+    private void OnEnable()
+    {
+        GameManager.Instance.optionsUpdateDelegate += SetSoundsVolume;
     }
 
     public void SetSoundsVolume()

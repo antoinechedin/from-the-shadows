@@ -113,7 +113,7 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         {
             timer += Time.deltaTime;
             if (timer > DURATION) timer = DURATION;
-            float scale = originalScale + (Mathf.Pow(1 - timer / DURATION, 3)) * 0.1f * originalScale;
+            float scale = originalScale + (Mathf.Pow(1 - timer / DURATION, 3)) * 0.05f * originalScale;
             transform.localScale = new Vector3(scale, scale, 1);
 
             yield return null;
