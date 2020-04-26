@@ -180,6 +180,7 @@ public class PlayerAirborne : IPlayerState
             player.state = new PlayerStanding();
 
             // Landing
+            player.particles.Play();
             player.animator.SetTrigger("land");
             return;
         }
