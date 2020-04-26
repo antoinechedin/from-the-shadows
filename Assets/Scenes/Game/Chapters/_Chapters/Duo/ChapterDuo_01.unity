@@ -748,7 +748,7 @@ MonoBehaviour:
   levelsToPlayTheme:
   - {fileID: 139886283}
   - {fileID: 1907154073}
-  - {fileID: 168262645}
+  - {fileID: 2016704045}
   isLayered: 0
   levelsToAddLayer: []
   layerVolume: 0
@@ -1370,6 +1370,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &369937543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81bcacc415a1f743bfdf703afc52027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 0
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  top:
+    m_OverrideState: 0
+    m_Value: {r: 0.5756052, g: 0.581431, b: 0.6132076, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  middle:
+    m_OverrideState: 0
+    m_Value: {r: 0.5187789, g: 0.5286766, b: 0.5471698, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  bottom:
+    m_OverrideState: 0
+    m_Value: {r: 0.5896226, g: 0.63831145, b: 1, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  gradientDiffusion:
+    m_OverrideState: 0
+    m_Value: 1
 --- !u!1 &392869709 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5400754177488074888, guid: cbb8e5eed14502641bfe87de9cbffda5,
@@ -1420,8 +1490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _theme: event:/Chapter1_Boss
-  levelsToPlayTheme:
-  - {fileID: 2016704045}
+  levelsToPlayTheme: []
   isLayered: 0
   levelsToAddLayer: []
   layerVolume: 0
@@ -1849,7 +1918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: 3b68d98c81d704d4b8afe2b8a78e9754, type: 2}
   m_StaticLightingSkyUniqueID: 3
-  m_SkySettings: {fileID: 1102638138}
+  m_SkySettings: {fileID: 369937543}
   m_SkySettingsFromProfile: {fileID: -4787710561894659649, guid: 3b68d98c81d704d4b8afe2b8a78e9754,
     type: 2}
 --- !u!4 &558250740
@@ -2137,6 +2206,11 @@ PrefabInstance:
       propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 603782063}
+    - target: {fileID: 6815052479967626127, guid: 0197a110582000000a97a11058200000,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8790568616046390525, guid: 0197a110582000000a97a11058200000,
         type: 3}
       propertyPath: OnTargetReached.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -2728,6 +2802,7 @@ MonoBehaviour:
   - {fileID: 514336825}
   - {fileID: 368555896}
   - {fileID: 219029795}
+  - {fileID: 168262645}
   isLayered: 1
   levelsToAddLayer:
   - {fileID: 514336825}
@@ -3873,6 +3948,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &985423636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 985423638}
+  - component: {fileID: 985423637}
+  m_Layer: 0
+  m_Name: BossDeath
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &985423637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985423636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abb455301dd967e4ea63d61c3fe2e266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _theme: event:/Chapter1_BossDeath
+  levelsToPlayTheme: []
+  isLayered: 0
+  levelsToAddLayer: []
+  layerVolume: 0
+--- !u!4 &985423638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985423636}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1457788221}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &990407784 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6539126561810263818, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
@@ -4237,76 +4360,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8165e3105075b92409cf014217a3fa70, type: 3}
---- !u!114 &1102638138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a81bcacc415a1f743bfdf703afc52027, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 0
-  exposure:
-    m_OverrideState: 0
-    m_Value: 0
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxColor:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  top:
-    m_OverrideState: 0
-    m_Value: {r: 0.5756052, g: 0.581431, b: 0.6132076, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  middle:
-    m_OverrideState: 0
-    m_Value: {r: 0.5187789, g: 0.5286766, b: 0.5471698, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  bottom:
-    m_OverrideState: 0
-    m_Value: {r: 0.5896226, g: 0.63831145, b: 1, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
-  gradientDiffusion:
-    m_OverrideState: 0
-    m_Value: 1
 --- !u!1 &1113606565 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7453939506021335392, guid: 5433b0bf8ddef8440adb57b7b86d8b85,
@@ -5815,6 +5868,81 @@ PrefabInstance:
       propertyPath: player2
       value: 
       objectReference: {fileID: 603782064}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnterDelayed.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: delay
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnterDelayed.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnterDelayed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnterDelayed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1457788220}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnterDelayed.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SwitchTheme
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnterDelayed.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: SongManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnterDelayed.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 399811508}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2021431978}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: set_enabled
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384674181687844646, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2385245334667407021, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -6877,6 +7005,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
         type: 3}
+      propertyPath: delayedEvents.Array.data[7].OnDelayEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
       propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 1577281592}
@@ -7005,6 +7143,66 @@ PrefabInstance:
       propertyPath: delayedEvents.Array.data[15].OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 990407784}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: delayedEvents.Array.data[7].OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: delayedEvents.Array.data[7].OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: delayedEvents.Array.data[7].OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 1457788220}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: delayedEvents.Array.data[7].OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: SwitchTheme
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: delayedEvents.Array.data[7].OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: SongManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: delayedEvents.Array.data[7].OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 985423637}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[17].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[17].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[17].m_Target
+      value: 
+      objectReference: {fileID: 1457788220}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[17].m_MethodName
+      value: SwitchTheme
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[17].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: SongManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4757212725544660855, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[17].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 195399026}
     - target: {fileID: 4764047744093443651, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -9475,7 +9673,7 @@ MonoBehaviour:
   currentPlayingTheme: {fileID: 0}
   mainTheme: {fileID: 629563749}
   masterVolume: 50
-  playOnAwake: 0
+  playOnAwake: 1
 --- !u!4 &1457788221
 Transform:
   m_ObjectHideFlags: 0
@@ -9493,6 +9691,7 @@ Transform:
   - {fileID: 648899450}
   - {fileID: 399811507}
   - {fileID: 195399025}
+  - {fileID: 985423638}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11853,6 +12052,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level30
       objectReference: {fileID: 0}
+    - target: {fileID: 8873313153826231475, guid: f0bfe9d3f126e9d448b451c556a3d7e6,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 128
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0bfe9d3f126e9d448b451c556a3d7e6, type: 3}
 --- !u!114 &2016704045 stripped
@@ -11867,6 +12071,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02dcad025359254997269d3abb0cebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!61 &2021431978 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 1280638160, guid: 6a95b7aeb38a5c64a9abc1a7bc0daa1f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1269881588}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2028502339 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4991022324942946887, guid: 7e45e5cf5161fd44185bc461c7ea358d,
@@ -11898,6 +12108,16 @@ PrefabInstance:
       propertyPath: movingKillZone
       value: 
       objectReference: {fileID: 1134576560}
+    - target: {fileID: 820782027804280820, guid: cbb8e5eed14502641bfe87de9cbffda5,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1457788220}
+    - target: {fileID: 820782027804280820, guid: cbb8e5eed14502641bfe87de9cbffda5,
+        type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 195399026}
     - target: {fileID: 5400754176915756924, guid: cbb8e5eed14502641bfe87de9cbffda5,
         type: 3}
       propertyPath: m_Name
