@@ -20,7 +20,6 @@ public class DestructiblePlatform : MonoBehaviour, IResetable
                 float rdmY = Random.Range(GetComponent<Collider2D>().bounds.min.y, GetComponent<Collider2D>().bounds.max.y);
                 Vector3 rdmPos = new Vector3(rdmX, rdmY, gameObject.transform.position.z);
                 Instantiate(Resources.Load("DestroyPlatform"), rdmPos, Quaternion.identity);
-                Debug.Log(Resources.Load("DestroyPlatform"));
             }
         }
     }
