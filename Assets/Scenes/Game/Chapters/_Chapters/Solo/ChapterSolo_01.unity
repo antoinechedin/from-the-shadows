@@ -588,6 +588,76 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &799229376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81bcacc415a1f743bfdf703afc52027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 0
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  top:
+    m_OverrideState: 0
+    m_Value: {r: 0.5756052, g: 0.581431, b: 0.6132076, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  middle:
+    m_OverrideState: 0
+    m_Value: {r: 0.5187789, g: 0.5286766, b: 0.5471698, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  bottom:
+    m_OverrideState: 0
+    m_Value: {r: 0.5896226, g: 0.63831145, b: 1, a: 1}
+    hdr: 1
+    showAlpha: 0
+    showEyeDropper: 1
+  gradientDiffusion:
+    m_OverrideState: 0
+    m_Value: 1
 --- !u!1 &823783276
 GameObject:
   m_ObjectHideFlags: 11
@@ -3398,11 +3468,6 @@ PrefabInstance:
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 3270104698934305987}
-    - target: {fileID: 4725577911054926379, guid: 6f8f84b7063a2c945b9313548813edf9,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6122711010902377520, guid: 6f8f84b7063a2c945b9313548813edf9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4185,6 +4250,11 @@ PrefabInstance:
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 2577044306914105830}
+    - target: {fileID: 4328195572910823007, guid: 7a8d3e5373ebf1944a69f7f429445fa4,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 128
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a8d3e5373ebf1944a69f7f429445fa4, type: 3}
 --- !u!1 &3667687016200975207 stripped
@@ -6386,11 +6456,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2176080740806206640, guid: 12f7dd001d07be647a7481a74e428d83,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3098879703217856712, guid: 12f7dd001d07be647a7481a74e428d83,
         type: 3}
       propertyPath: OnFinalTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -6401,11 +6466,6 @@ PrefabInstance:
       propertyPath: OnFinalTargetReached.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1284431586}
-    - target: {fileID: 3113181309507913065, guid: 12f7dd001d07be647a7481a74e428d83,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3521165227314373601, guid: 12f7dd001d07be647a7481a74e428d83,
         type: 3}
       propertyPath: newPlayerSpawns
@@ -6717,11 +6777,6 @@ PrefabInstance:
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 2047357856904773883}
-    - target: {fileID: 6096512203189077375, guid: 7b4dc8279e8ff2e44955318691ef9262,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6442330865508756908, guid: 7b4dc8279e8ff2e44955318691ef9262,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7224,11 +7279,6 @@ PrefabInstance:
       propertyPath: newPlayerSpawns
       value: 
       objectReference: {fileID: 2328548428147340021}
-    - target: {fileID: 8418876628287161018, guid: 35227be6c1975a74db47551a3551ac1b,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35227be6c1975a74db47551a3551ac1b, type: 3}
 --- !u!1 &8517272398782505149 stripped

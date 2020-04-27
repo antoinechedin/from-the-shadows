@@ -362,17 +362,12 @@ public class Skeleton : MonoBehaviour, IResetable
     
     public void Reset()
     {
-        hp = 3;        
+        hp = 3;
 
         // Cancel hand attack
-        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().StopHand();
-        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().StopHand();
+        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().Reset();
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().Reset();
 
-        hands.transform.Find("IdlingRightHand").gameObject.SetActive(true);
-        hands.transform.Find("IdlingRightHand").GetComponent<Animator>().SetTrigger("Reset");
-
-        hands.transform.Find("IdlingLeftHand").gameObject.SetActive(true);
-        hands.transform.Find("IdlingLeftHand").GetComponent<Animator>().SetTrigger("Reset");
 
 
         CancelInvoke();
