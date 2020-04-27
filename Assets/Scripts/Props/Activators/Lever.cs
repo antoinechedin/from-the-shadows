@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Lever : Activator, IResetable
 {
-    public AudioClip soundOn;
-    public AudioClip soundOff;
+    public List<AudioClip> soundsOn;
+    public List<AudioClip> soundsOff;
     public Material activeMat;
     public Material inactiveMat;
     public Material timerMat;
@@ -109,8 +109,8 @@ public class Lever : Activator, IResetable
 
             active = true;
             TryActivate();
-            if (audioSource != null && !isMute)
-                audioSource.PlayOneShot(soundOn);
+            if (audioSource != null && !isMute && soundsOn.Count > 0)
+                audioSource.PlayOneShot(soundsOn[Random.Range(0, soundsOn.Count-1)]);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
@@ -140,8 +140,8 @@ public class Lever : Activator, IResetable
             active = false;
             StopCoroutine("Flash");
             TryDeactivate();            
-            if (audioSource != null && !isMute)
-                audioSource.PlayOneShot(soundOff);
+            if (audioSource != null && !isMute && soundsOff.Count > 0)
+                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count-1)]);
             if (child != null)
             {
                 child.GetComponent<MeshRenderer>().material = inactiveMat;
