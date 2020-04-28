@@ -105,7 +105,7 @@ public class PauseMenu : MonoBehaviour
 
         while (timer < DURATION)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             if (timer > DURATION) timer = DURATION;
 
             float alpha = timer / DURATION;
