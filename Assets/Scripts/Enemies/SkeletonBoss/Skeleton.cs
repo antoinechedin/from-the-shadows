@@ -29,6 +29,13 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public GameObject targetForPlayer;
 
+    private AudioSource audioSource;
+
+    public AudioClip soundHit;
+    public List<AudioClip> soundPrepareAttack;
+    public AudioClip soundDeath;
+
+
     [HideInInspector]
     public int idTargetZone;
     [HideInInspector]
@@ -48,6 +55,8 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);    old system
         camera = Camera.main;
+
+        audioSource = GetComponent<AudioSource>();
 
         // Deactive all particles and initialise targetZones
         foreach (GameObject zone in targetZones)
@@ -148,18 +157,24 @@ public class Skeleton : MonoBehaviour, IResetable
     public void EnableHand1()
     {
         hands.transform.GetChild(0).gameObject.SetActive(true);
+        hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
     }
     public void EnableHand2()
     {
         hands.transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
+        hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
+
     }
     public void EnableHand3()
     {
         hands.transform.GetChild(2).GetChild(0).gameObject.SetActive(true);
+        hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
+
     }
     public void EnableHand4()
     {
         hands.transform.GetChild(1).gameObject.SetActive(true);
+        hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
     }
 
 
@@ -175,9 +190,23 @@ public class Skeleton : MonoBehaviour, IResetable
         isTargetting = false;
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
+
+        StartCoroutine(PlayHandAttackSound(hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<HandCollision>()));
         Invoke("PrepareAttack", 7);
         // timing may need adjustement
     }
+
+    IEnumerator PlayHandAttackSound(HandCollision handCollision)
+    {
+        AudioClip randomPlayedClip = handCollision.soundHandStart[Random.Range(0, 1)];
+
+        handCollision.audioSource.PlayOneShot(randomPlayedClip);
+
+        yield return new WaitForSeconds(randomPlayedClip.length - 0.5f);
+
+        handCollision.audioSource.PlayOneShot(handCollision.soundHandEnd);
+    }
+
 
     public void PrepareDoubleAttack()
     {
@@ -191,6 +220,10 @@ public class Skeleton : MonoBehaviour, IResetable
         isTargetting = false;
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
+
+        hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
+        hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
+
         Invoke("PrepareDoubleAttack", 6);
         // timing may need adjustement
     }
@@ -270,6 +303,7 @@ public class Skeleton : MonoBehaviour, IResetable
             }
         }
 
+        audioSource.PlayOneShot(soundPrepareAttack[Random.Range(0, soundPrepareAttack.Count - 1)]);
         // Debug.Log("The target is player "+ playerTarget.GetComponent<PlayerInput>().id);           
     }
 
@@ -309,7 +343,7 @@ public class Skeleton : MonoBehaviour, IResetable
         }
     }
     */
-    
+
     public void GetHurt()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
@@ -317,6 +351,8 @@ public class Skeleton : MonoBehaviour, IResetable
         //hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
 
         hp--;
+
+        audioSource.PlayOneShot(soundHit);
 
         if (hp == 0)
         {
@@ -349,6 +385,8 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
 
+        audioSource.PlayOneShot(soundDeath);
+
         hands.transform.Find("RightHandSkeleton").gameObject.SetActive(false);
         hands.transform.Find("LeftHandSkeleton").gameObject.SetActive(false);
 
@@ -368,6 +406,7 @@ public class Skeleton : MonoBehaviour, IResetable
         hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().Reset();
         hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().Reset();
 
+        audioSource.Stop();
 
 
         CancelInvoke();
@@ -416,6 +455,7 @@ public class Skeleton : MonoBehaviour, IResetable
         leftKillZone.SetActive(false);
         //hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().isDestructor = true;
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("VerticalLeft");
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().soundVerticalDestruction);
         Invoke("ActiveLeftZoneBis", 4.5f);
     }
 
@@ -431,6 +471,7 @@ public class Skeleton : MonoBehaviour, IResetable
         rightKillZone.SetActive(false);
         //hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().isDestructor = true;
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("VerticalRight");
+        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().soundVerticalDestruction);
         Invoke("ActiveRightZoneBis", 4.5f);
     }
 

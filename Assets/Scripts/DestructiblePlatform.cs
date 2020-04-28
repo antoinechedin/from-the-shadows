@@ -14,6 +14,7 @@ public class DestructiblePlatform : MonoBehaviour, IResetable
             FindObjectOfType<ChapterManager>().ShakeFor(1f, 1f, 2f);
             gameObject.SetActive(false);
 
+
             for (int i = 0; i < 5; i++)
             {
                 float rdmX = Random.Range(GetComponent<Collider2D>().bounds.min.x, GetComponent<Collider2D>().bounds.max.x);
