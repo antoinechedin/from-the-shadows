@@ -241,15 +241,18 @@ public class GameManager : Singleton<GameManager>
 
     public void SaveCollectibleTaken(int chap, int lvl, Collectible.Type type, int index)
     {
+        Debug.Log("SaveCollectibleTaken");
         if (CurrentChapter != -1)
         {
             if (type == Collectible.Type.Light)
             {
                 saves[currentSave].Chapters[chap].GetLevels()[lvl].LightCollectibles[index] = true;
+                Debug.Log("light saved");
             }
             else if (type == Collectible.Type.Shadow)
             {
                 saves[currentSave].Chapters[chap].GetLevels()[lvl].ShadowCollectibles[index] = true;
+                Debug.Log("shadow saved");
             }
         }
     }

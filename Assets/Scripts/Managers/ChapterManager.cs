@@ -22,11 +22,13 @@ public class ChapterManager : MonoBehaviour
         set { currentSpawns = value; }
     }
 
+    private void Awake()
+    {
+        SetLevelsId();
+    }
     // Update is called once per frame
     void Start()
     {
-        SetLevelsId();
-
         if (GameObject.Find("MusicManager") != null)
             musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
 

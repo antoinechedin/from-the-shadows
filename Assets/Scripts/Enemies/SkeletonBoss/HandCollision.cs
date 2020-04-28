@@ -96,6 +96,13 @@ public class HandCollision : MonoBehaviour
         isKillable = true;
     }
 
+    public void Reset()
+    {
+        CancelInvoke();
+        StopHand();
+        replacingHand.SetActive(true);
+        replacingHand.GetComponent<Animator>().SetTrigger("Reset");
+    }
     public void StopHand()
     {
         GetComponent<Animator>().SetTrigger("Idle");

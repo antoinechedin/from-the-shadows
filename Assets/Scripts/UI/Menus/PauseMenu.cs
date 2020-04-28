@@ -92,7 +92,7 @@ public class PauseMenu : MonoBehaviour
     public void Quit()
     {
         EventSystem.current.sendNavigationEvents = false;
-        GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
+        //GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         GameObject.FindObjectOfType<ChapterManager>().CollectMetaData();
         SaveManager.Instance.WriteSaveFile();
         StartCoroutine(Fade());
