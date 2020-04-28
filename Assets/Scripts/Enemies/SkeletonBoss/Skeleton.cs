@@ -223,6 +223,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
         hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
         hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().soundVerticalDestruction);
+
 
         Invoke("PrepareDoubleAttack", 6);
         // timing may need adjustement
