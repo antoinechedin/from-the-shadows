@@ -15,9 +15,16 @@ public class HandCollision : MonoBehaviour
     [HideInInspector]
     public bool isKillable = true;
 
+    public AudioSource audioSource;
+    public List<AudioClip> soundHandStart;
+    public AudioClip soundHandEnd;
+    public AudioClip soundVerticalDestruction;
+    public List<AudioClip> soundDestruction;
+
     public void Start()
     {
         otherHandScript = GetComponent<HandCollision>();
+        audioSource = GetComponent<AudioSource>();
     }
     public void OnTriggerEnter2D(Collider2D collider)
     {
@@ -71,6 +78,7 @@ public class HandCollision : MonoBehaviour
             Debug.Log("Case destruction");
             // When the hand destroys a platform
             collider.gameObject.GetComponent<DestructiblePlatform>().StartCoroutine("Destruct");
+            audioSource.PlayOneShot(soundDestruction[Random.Range(0, soundDestruction.Count - 1)]);
         }
     }
 
@@ -100,6 +108,7 @@ public class HandCollision : MonoBehaviour
     {
         CancelInvoke();
         StopHand();
+        audioSource.Stop();
         replacingHand.SetActive(true);
         replacingHand.GetComponent<Animator>().SetTrigger("Reset");
     }
