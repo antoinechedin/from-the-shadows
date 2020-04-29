@@ -34,6 +34,9 @@ public class MenuManager : MonoBehaviour
     public Image startMenuBackground;
     public TextMeshProUGUI version;
 
+    public AudioClip uiPress;
+    public AudioClip uiSelect;
+
     public const float dissolveDuration = 0.5f;
     public const float dissolveOffset = 0.1f;
 

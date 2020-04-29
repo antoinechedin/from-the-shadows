@@ -49,7 +49,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
                     // menuManager.OpenStartMenu();
                     menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
                 }
-                GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(returnAudioClip);
+                GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
             }
         }
     }

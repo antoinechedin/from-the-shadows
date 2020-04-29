@@ -66,6 +66,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                 || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
+                GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
             }
         }
 
@@ -86,6 +87,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                     PressAKeyCanvasGroup.alpha = 0f;
                     StartCoroutine(StopListeningKeyCoroutine());
                     GameManager.Instance.OnOptionUpdate();
+                    GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
                 }
             }
         }

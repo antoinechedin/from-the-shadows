@@ -18,6 +18,7 @@ public class CreditsMenu : MonoBehaviour, IDissolveMenu
                 || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
+                GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
             }
         }
     }
