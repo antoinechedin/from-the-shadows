@@ -115,25 +115,12 @@ public class Skeleton : MonoBehaviour, IResetable
             }
         }
 
-        // A SUPPRIMER
+        //TODO A SUPPRIMER
         if(Input.GetKeyDown(KeyCode.G))
         {
             Invoke("GetHurt", 0);
         }
     }
-
-    /*public void OnGUI()
-    {
-        if (playerTarget != null && isTargetting)
-        {
-            Vector2 targetForPlayerPosition = new Vector2(camera.WorldToScreenPoint(playerTarget.transform.position).x,
-                Screen.height - camera.WorldToScreenPoint(playerTarget.transform.position).y);
-            targetForPlayerPosition.y -= iconSize * 0.8f;
-            targetForPlayerPosition.x -= iconSize / 2;
-            GUI.Box(new Rect(targetForPlayerPosition.x, targetForPlayerPosition.y, iconSize,iconSize),
-                    targetForPlayer, gui);
-        }
-    } */
 
     public void Appear()
     {
@@ -143,7 +130,6 @@ public class Skeleton : MonoBehaviour, IResetable
 
         // Make hands appear here
         Invoke("EnableHands", 6f);
-        // InvokeRepeating("PrepareAttack", timeBeforeFirstAttack, timeBetweenAttacks); old system
     }
 
     public void EnableHands()
