@@ -53,17 +53,18 @@ public class Skeleton : MonoBehaviour, IResetable
 
     void Start()
     {
-        // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);    old system
         camera = Camera.main;
 
         audioSource = GetComponent<AudioSource>();
 
-        // Deactive all particles and initialise targetZones
+        // Initialize targetZones
         foreach (GameObject zone in targetZones)
         {
             zone.GetComponent<TargetZone>().skeleton = this.gameObject;
-            //zone.transform.GetChild(0).gameObject.SetActive(false);
+
         }
+
+        // Deactivate particle system for target player
         targetForPlayer.SetActive(false);
     }
 
@@ -111,7 +112,9 @@ public class Skeleton : MonoBehaviour, IResetable
             targetForPlayer.SetActive(false);
             foreach (GameObject zone in targetZones)
             {
-                zone.transform.GetChild(0).gameObject.SetActive(false);
+                //zone.transform.GetChild(0).gameObject.SetActive(false);
+                TargetZone targetZone = zone.GetComponent<TargetZone>();
+                targetZone.StopParticles(targetZone.particle);
             }
         }
 
@@ -216,51 +219,6 @@ public class Skeleton : MonoBehaviour, IResetable
         // timing may need adjustement
     }
 
-    /*  Old system for choosing lane to attack and direction
-    public void FindDoubleTarget()
-    {
-        float minL = Mathf.Infinity;
-        float minR = Mathf.Infinity;
-        int laneR = -1;
-        int laneL = -1;
-        for (int i = 0; i < points.Length / 2; i++)
-        {
-            float minLeft = 0f;
-            float minRight = 0f;
-
-            if (isSolo)
-            {
-                minLeft = Vector3.Distance(player1.transform.position, points[i * 2].position);
-                minRight = Vector3.Distance(player1.transform.position, points[i * 2 + 1].position);
-            }
-            else
-            {
-                minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
-                          Vector3.Distance(player2.transform.position, points[i * 2].position));
-                minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
-                                           Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
-            }
-            if (minLeft < minL)
-            {
-                minL = minLeft;
-                laneL = i;
-            }
-            if (minRight < minR)
-            {
-                minR = minRight;
-                laneR = i;
-            }
-        }
-
-        if (laneR != 1)
-            laneToAttack = laneR;
-        else if (laneL != 1)
-            laneToAttack = laneL;
-        else
-            laneToAttack = 1;
-    }
-    */
-
     public void ChoosePlayerTarget()
     {
         // If solo mode the target is player1
@@ -294,43 +252,6 @@ public class Skeleton : MonoBehaviour, IResetable
         audioSource.PlayOneShot(soundPrepareAttack[Random.Range(0, soundPrepareAttack.Count - 1)]);
         // Debug.Log("The target is player "+ playerTarget.GetComponent<PlayerInput>().id);           
     }
-
-    /*  Old system for choosing nearest player
-    public void FindTarget()
-    {
-        float min = Mathf.Infinity;
-        for (int i = 0; i < points.Length / 2; i++) {
-
-            float minLeft = 0f;
-            float minRight = 0f;
-
-            if(isSolo)
-            {
-                minLeft = Vector3.Distance(player1.transform.position, points[i * 2].position);
-                minRight = Vector3.Distance(player1.transform.position, points[i * 2 + 1].position);
-            }
-            else
-            {
-                minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
-                          Vector3.Distance(player2.transform.position, points[i * 2].position));
-                minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
-                                           Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
-            }
-
-            if (minLeft < min && minLeft < minRight)
-            {
-                min = minLeft;
-                laneToAttack = i;
-                stringDirection = "Left";
-            } else if (minRight < min && minRight < minLeft)
-            {
-                min = minRight;
-                laneToAttack = i;
-                stringDirection = "Right";
-            }
-        }
-    }
-    */
 
     public void GetHurt()
     {
@@ -433,7 +354,9 @@ public class Skeleton : MonoBehaviour, IResetable
         // Deactive all particles and initialise targetZones
         foreach (GameObject zone in targetZones)
         {
-            zone.transform.GetChild(0).gameObject.SetActive(false);
+            //zone.transform.GetChild(0).gameObject.SetActive(false);
+            TargetZone targetZone = zone.GetComponent<TargetZone>();
+            targetZone.StopParticles(targetZone.particle);
         }
         targetForPlayer.SetActive(false);
     }
