@@ -12,6 +12,9 @@ public class PauseMenu : MonoBehaviour
     public MainPauseMenu mainPauseMenu;
     public OptionsMenu optionsMenu;
 
+    public AudioClip uiPress;
+    public AudioClip uiSelect;
+
     public Image foreground;
 
     private bool optionsOpened;
@@ -54,6 +57,7 @@ public class PauseMenu : MonoBehaviour
         gameObject.SetActive(false);
         Input.ResetInputAxes();
         Time.timeScale = 1;
+        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(uiPress);
     }
 
     public void Home()
@@ -79,6 +83,7 @@ public class PauseMenu : MonoBehaviour
 
     public void CloseOptions()
     {
+        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(uiPress);
         StartCoroutine(CloseOptionsCoroutine());
     }
 

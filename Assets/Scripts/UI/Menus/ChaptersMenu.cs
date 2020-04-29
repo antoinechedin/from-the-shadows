@@ -70,6 +70,7 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
                     Debug.Log("chapterMenu closed");
                     menuManager.DissolveFromMenuToMenu(menuManager.chaptersMenu, menuManager.savesMenu);
                 }
+                GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
             }
 
             // if (Input.GetButtonDown("Start_G") && !chapterMenuIsOpen)
