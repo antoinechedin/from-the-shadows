@@ -50,8 +50,10 @@ public class MovingKillZone : MonoBehaviour, IResetable
         SetNewInfos(startingCheckpoint.GetComponent<MovingKillZoneCP>());
     }
 
-
-
+    private void OnDisable()
+    {
+        GetComponent<AudioSource>().Stop();
+    }
     // Update is called once per frame
     void Update()
     {

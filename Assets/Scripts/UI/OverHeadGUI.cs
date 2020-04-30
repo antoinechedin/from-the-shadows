@@ -24,6 +24,7 @@ public class OverHeadGUI : MonoBehaviour
     public bool isSoloPlayerSpeaking = false;
 
     public GUIType type;
+    public bool isOverhead = false;
     private bool useAnimator;
 
     [Header("Place in \"content\" the canvas containing all the UI elements you wish to display")]
@@ -62,10 +63,13 @@ public class OverHeadGUI : MonoBehaviour
     {
         parentAudioSource = GetComponentInParent<AudioSource>();
         animator = GetComponent<Animator>();
-        if(animator == null) useAnimator = false; else useAnimator = true;
-        textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
-        textLine = textUGUI.text;
-        textUGUI.text = "";
+        if (animator == null) useAnimator = false; else useAnimator = true;
+        if (!isOverhead)
+        {
+            textUGUI = transform.Find("Content/DialogueBoxBackground/MainText").GetComponent<TextMeshProUGUI>();
+            textLine = textUGUI.text;
+            textUGUI.text = "";
+        }
         animationEnded = false;
         textLineFullyDisplayed = false;
         skipTextLineAnimation = false;
@@ -179,16 +183,32 @@ public class OverHeadGUI : MonoBehaviour
             if (FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
             {
                 transform.Find("Content/DialogueBoxBackground/SpeakerName").GetComponent<TextMeshProUGUI>().text = "Shadow";
-                transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().shadowDialogueIcon;
             }
             else
             {
                 transform.Find("Content/DialogueBoxBackground/SpeakerName").GetComponent<TextMeshProUGUI>().text = "Light";
-                transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().lightDialogueIcon;
+                transform.Find("Content/DialogueBoxBackground/SpeakerImage").gameObject.SetActive(false);
+                transform.Find("Content/DialogueBoxBackground/SpeakerImage_Light_Solo").gameObject.SetActive(true);
             }
         }
-        StartCoroutine(PrintTextLineCoroutine());
-        StartCoroutine(CanPassDialogue());
+
+        if (!isOverhead)
+        {
+            StartCoroutine(PrintTextLineCoroutine());
+            StartCoroutine(CanPassDialogue());
+        }
+        else
+        {
+            KeyIndicator[] keyIndicators = GetComponentsInChildren<KeyIndicator>();
+            if (keyIndicators != null)
+            {
+                foreach (var keyIndicator in keyIndicators)
+                {
+                    keyIndicator.UpdateIndicator();
+                }
+            }
+        }
+
         content.SetActive(UIActive);
     }
 

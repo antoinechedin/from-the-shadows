@@ -89,6 +89,7 @@ public class LevelManager : MonoBehaviour
 
     public void Start()
     {
+        //Debug.Log(id);
         // Fetch collectibles
         Transform parentCollectibles = transform.Find("Collectibles");
         if (parentCollectibles != null)
@@ -98,10 +99,12 @@ public class LevelManager : MonoBehaviour
                 if (parentCollectibles.GetChild(i).GetComponent<Collectible>().type == Collectible.Type.Light)
                 {
                     lightCollectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                    //Debug.Log("Level " + id + " loaded " + lightCollectibles.Count + " light collectibles");
                 }
                 else if (parentCollectibles.GetChild(i).GetComponent<Collectible>().type == Collectible.Type.Shadow)
                 {
                     shadowCollectibles.Add(parentCollectibles.GetChild(i).gameObject);
+                    //Debug.Log("Level " + id + " loaded " + shadowCollectibles.Count + " shadow collectibles");
                 }
 
             }

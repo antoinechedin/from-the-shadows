@@ -7,14 +7,13 @@ public class Torch : ActivatorListener, IResetable
 
     public GameObject lightSource;
     public GameObject pointLight;
-    public AudioClip soundOn;
-    public AudioClip soundOff;
+    public List<AudioClip> soundsOn;
+    public List<AudioClip> soundsOff;
     public bool activeAtStart;
     public float lightRadius;
     public bool neverStatic = false;
-    public bool disableSoundOnce = true;
 
-    private bool isMute = true;
+    public bool isMute = true;
     public bool active;
     private AudioSource audioSource;
     private float targetRadius = 0.01f;
@@ -55,7 +54,6 @@ public class Torch : ActivatorListener, IResetable
         }
 
         isMute = false;
-        disableSoundOnce = false;
     }
 
     private void LateUpdate()
@@ -73,9 +71,10 @@ public class Torch : ActivatorListener, IResetable
         targetRadius = lightRadius;
         if (isTorch) particles.Play();
         active = true;
-        if (audioSource != null && !isMute && !disableSoundOnce)
+
+        if (audioSource != null && !isMute && soundsOn.Count > 0)
         {
-            audioSource.PlayOneShot(soundOn);
+            audioSource.PlayOneShot(soundsOn[Random.Range(0, soundsOn.Count-1)]);
         }
     }
 
@@ -85,9 +84,10 @@ public class Torch : ActivatorListener, IResetable
         if (isTorch) particles.Stop();
         targetRadius = 0.01f;
         active = false;
-        if (audioSource != null && !isMute && !disableSoundOnce)
+
+        if (audioSource != null && !isMute && soundsOff.Count > 0)
         {
-            audioSource.PlayOneShot(soundOff);
+            audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count-1)]);
         }
     }
 

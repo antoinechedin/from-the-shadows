@@ -29,6 +29,18 @@ public class GameManager : Singleton<GameManager>
     private bool displayedNoSaveFile = false;
     private bool isInCutscene = false;
 
+    // Detect controller used
+    public InputDevice player1InputDevice = InputDevice.Keyboard;
+    public InputDevice player2InputDevice = InputDevice.Keyboard;
+    public delegate void OnControllerChangeDelegate();
+    public event OnControllerChangeDelegate controllerChangeDelegate;
+
+    public void OnControllerChange()
+    { 
+        Debug.Log("OnControllerChange() called");
+        if (controllerChangeDelegate != null)
+            controllerChangeDelegate();
+    }
 
     // Options update
     public delegate void OnOptionsUpdateDelegate();
@@ -54,6 +66,86 @@ public class GameManager : Singleton<GameManager>
             Instantiate((GameObject)Resources.Load("DebugCanvas"), Vector3.zero, Quaternion.identity, transform);
             debugCanvasExist = true;
         }
+
+        bool controllerChange = false;
+        if (
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Up]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Down]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Left]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Switch])
+        )
+        {
+            if (player1InputDevice != InputDevice.Keyboard)
+            {
+                player1InputDevice = InputDevice.Keyboard;
+                controllerChange = true;
+            }
+        }
+        if (
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Up]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Down]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Left]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Right]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Keyboard][InputAction.Switch])
+        )
+        {
+            if (player2InputDevice != InputDevice.Keyboard)
+            {
+                player2InputDevice = InputDevice.Keyboard;
+                controllerChange = true;
+            }
+        }
+        if (
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Return]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Pause]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Controller][InputAction.Switch])
+        )
+        {
+            if (player1InputDevice != InputDevice.Controller)
+            {
+                player1InputDevice = InputDevice.Controller;
+                controllerChange = true;
+            }
+        }
+        if (
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Return]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Pause]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Jump]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Interact]) ||
+            Input.GetKeyDown(InputManager.Player2[(int)InputDevice.Controller][InputAction.Switch])
+        )
+        {
+            if (player2InputDevice != InputDevice.Controller)
+            {
+                player2InputDevice = InputDevice.Controller;
+                controllerChange = true;
+            }
+        }
+        if (Input.GetAxisRaw("Horizontal_1") != 0 || Input.GetAxisRaw("Vertical_1") != 0)
+        {
+            if (player1InputDevice != InputDevice.Controller)
+            {
+                player1InputDevice = InputDevice.Controller;
+                controllerChange = true;
+            }
+        }
+        if (Input.GetAxisRaw("Horizontal_2") != 0 || Input.GetAxisRaw("Vertical_2") != 0)
+        {
+            if (player2InputDevice != InputDevice.Controller)
+            {
+                player2InputDevice = InputDevice.Controller;
+                controllerChange = true;
+            }
+        }
+
+        if (controllerChange) OnControllerChange();
     }
 
     #region getters / setters
@@ -149,15 +241,18 @@ public class GameManager : Singleton<GameManager>
 
     public void SaveCollectibleTaken(int chap, int lvl, Collectible.Type type, int index)
     {
+        Debug.Log("SaveCollectibleTaken");
         if (CurrentChapter != -1)
         {
             if (type == Collectible.Type.Light)
             {
                 saves[currentSave].Chapters[chap].GetLevels()[lvl].LightCollectibles[index] = true;
+                Debug.Log("light saved");
             }
             else if (type == Collectible.Type.Shadow)
             {
                 saves[currentSave].Chapters[chap].GetLevels()[lvl].ShadowCollectibles[index] = true;
+                Debug.Log("shadow saved");
             }
         }
     }

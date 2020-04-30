@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public ActorController actor;
     [HideInInspector] public PlayerInput input;
     [HideInInspector] public Animator animator;
+    public ParticleSystem particles;
     public IPlayerState state;
     public IPlayerState attackState;
     public Vector2 targetVelocity;

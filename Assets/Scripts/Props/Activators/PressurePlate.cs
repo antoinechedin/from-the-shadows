@@ -1,11 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class PressurePlate : Activator
 {
-    public AudioClip sound;
+    public List<AudioClip> soundsOn;
+    public List<AudioClip> soundsOff;
     public Material activeMat;
     public Material inactiveMat;
     public string tagInteractObject;
@@ -28,7 +29,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
         {
-            updateNbObjectsOnPlate(+1);
+            UpdateNbObjectsOnPlate(+1);
         }            
     }
 
@@ -39,7 +40,7 @@ public class PressurePlate : Activator
     {        
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag(tagInteractObject))
         {
-            updateNbObjectsOnPlate(-1);
+            UpdateNbObjectsOnPlate(-1);
         }
     }
 
@@ -52,8 +53,8 @@ public class PressurePlate : Activator
         {
             active = true;
             TryActivate();            
-            if (audioSource != null)
-                audioSource.PlayOneShot(sound);
+            if (audioSource != null  && soundsOn.Count > 0)
+                audioSource.PlayOneShot(soundsOn[Random.Range(0, soundsOn.Count-1)]);
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
@@ -68,18 +69,22 @@ public class PressurePlate : Activator
         if (TryDeactivate != null)
         {
             active = false;
-            TryDeactivate();            
+            TryDeactivate();
+            if (audioSource != null  && soundsOff.Count > 0)
+                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count-1)]);
             if (child != null)            
                 child.GetComponent<MeshRenderer>().material = inactiveMat;            
         }
     }
 
-    void updateNbObjectsOnPlate(int i)
+    void UpdateNbObjectsOnPlate(int i)
     {
         nbObjectsOnPlate += i;
 
-        if(nbObjectsOnPlate == 1)
+        if(i > 0 && nbObjectsOnPlate == 1)
+        {
             On();
+        }
         if(nbObjectsOnPlate == 0)
         {
             Off();

@@ -8,6 +8,7 @@ using TMPro;
 [RequireComponent(typeof(Animator))]
 public class Carousel : MonoBehaviour
 {
+    public MenuManager menuManager;
     public GridLayoutGroup buttonsGroup;
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
@@ -79,7 +80,6 @@ public class Carousel : MonoBehaviour
             if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
             {
                 int localLevelIndex = i;
-                //TODO : aller chercher le bon srceenshot
                 LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshotPrefab, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
                 SetMenuLevelInfo(i, spawnedScreenshot);
                 spawnedScreenshot.GetComponent<Button>().onClick.AddListener(delegate
@@ -123,6 +123,7 @@ public class Carousel : MonoBehaviour
     public void SelectCheckpoint(int index)
     {
         Animator animator = GetComponent<Animator>();
+        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiSelect);
 
         foreach (LevelScreenshot go in screenshots)
         {
@@ -209,6 +210,8 @@ public class Carousel : MonoBehaviour
 
     private void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
     {
+        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
+
         int currentSave = GameManager.Instance.CurrentSave;
 
         if (GameManager.Instance.Saves[currentSave].NbPlayer == 1)

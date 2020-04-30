@@ -8,15 +8,23 @@ public class HandCollision : MonoBehaviour
 {
     public GameObject skeleton;
     public GameObject otherHand;
+    public GameObject replacingHand;
     private HandCollision otherHandScript;
     [HideInInspector]
     public bool isDestructor = false;
     [HideInInspector]
     public bool isKillable = true;
 
+    public AudioSource audioSource;
+    public List<AudioClip> soundHandStart;
+    public AudioClip soundHandEnd;
+    public AudioClip soundVerticalDestruction;
+    public List<AudioClip> soundDestruction;
+
     public void Start()
     {
         otherHandScript = GetComponent<HandCollision>();
+        audioSource = GetComponent<AudioSource>();
     }
     public void OnTriggerEnter2D(Collider2D collider)
     {
@@ -29,8 +37,13 @@ public class HandCollision : MonoBehaviour
         else if (collider.gameObject.tag == "HurtBoss" && isKillable)
         {
             Debug.Log("Case Hurt Boss");
+
+            collider.GetComponentInParent<DestructiblePlatform>().Destruct();
             // Stop the hand animation
-            GetComponent<Animator>().SetTrigger("Die");
+            this.GetComponent<Animator>().SetTrigger("Die");
+
+            if (replacingHand.activeSelf)
+                Invoke("ReplaceHand", 2f);
 
             // When hurt, the hand can not kill or be killed
             // For the time to destroy the platforms
@@ -65,7 +78,25 @@ public class HandCollision : MonoBehaviour
             Debug.Log("Case destruction");
             // When the hand destroys a platform
             collider.gameObject.GetComponent<DestructiblePlatform>().StartCoroutine("Destruct");
+            audioSource.PlayOneShot(soundDestruction[Random.Range(0, soundDestruction.Count - 1)]);
         }
+    }
+
+    public void SetDestructor()
+    {
+        isDestructor = true;
+    }
+
+    public void ReplaceHand()
+    {
+        Debug.Log(replacingHand);
+        replacingHand.GetComponent<Animator>().SetTrigger("ReplaceHand");
+        Invoke("HandReappear", 1.5f);
+    }
+    public void HandReappear()
+    {
+        replacingHand.SetActive(false);
+        GetComponent<Animator>().SetTrigger("Idle");
     }
 
     public void ActivateKillable()
@@ -73,9 +104,17 @@ public class HandCollision : MonoBehaviour
         isKillable = true;
     }
 
+    public void Reset()
+    {
+        CancelInvoke();
+        StopHand();
+        audioSource.Stop();
+        replacingHand.SetActive(true);
+        replacingHand.GetComponent<Animator>().SetTrigger("Reset");
+    }
     public void StopHand()
     {
-        GetComponent<Animator>().SetTrigger("Die");
+        GetComponent<Animator>().SetTrigger("Idle");
         isKillable = false;
 
         Invoke("ActivateKillable", 1);

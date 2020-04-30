@@ -16,7 +16,7 @@ public class Slide : ActivatorListener
     [Range(0,10)]
     public float speed;
     public float distance;
-    public AudioClip sound;
+    public List<AudioClip> sounds;
 
     public GameObject objectToMove;
 
@@ -59,8 +59,8 @@ public class Slide : ActivatorListener
             targetPosition = stopPosition;
             if (direction == Direction.Depth)
                 transform.Find("Cube").GetComponent<Collider2D>().enabled = false;
-            if (audioSource != null && !isMute)
-                audioSource.PlayOneShot(sound);
+            if (audioSource != null && !isMute  && sounds.Count > 0)
+                audioSource.PlayOneShot(sounds[Random.Range(0, sounds.Count-1)]);
         }
     }
 
@@ -74,8 +74,8 @@ public class Slide : ActivatorListener
             {
                 transform.Find("Cube").GetComponent<Collider2D>().enabled = true;
             }
-            if (audioSource != null && !isMute)
-                audioSource.PlayOneShot(sound);
+            if (audioSource != null && !isMute  && sounds.Count > 0)
+                audioSource.PlayOneShot(sounds[Random.Range(0, sounds.Count-1)]);
         }
     }
 

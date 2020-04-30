@@ -106,19 +106,16 @@ public class LevelScreenshot : MonoBehaviour, ISelectHandler
         audioSource.Play();
         pressed = true;
 
-        float timeCount = 0;
-        while (timeCount < 0.06f)
+        float timer = 0;
+        float DURATION = 0.25f;
+        float originalScale = transform.localScale.x;
+        while (timer < DURATION)
         {
-            transform.localScale *= 1.03f;
-            timeCount += Time.deltaTime;
-            yield return null;
-        }
+            timer += Time.deltaTime;
+            if (timer > DURATION) timer = DURATION;
+            float scale = originalScale + (Mathf.Pow(1 - timer / DURATION, 3)) * 0.05f * originalScale;
+            transform.localScale = new Vector3(scale, scale, 1);
 
-        timeCount = 0;
-        while (timeCount < 0.06f)
-        {
-            transform.localScale /= 1.03f;
-            timeCount += Time.deltaTime;
             yield return null;
         }
     }
