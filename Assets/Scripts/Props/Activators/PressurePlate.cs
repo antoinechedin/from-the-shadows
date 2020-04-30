@@ -58,6 +58,8 @@ public class PressurePlate : Activator
             if (child != null)
                 child.GetComponent<MeshRenderer>().material = activeMat;
 
+            GetComponent<Animator>().SetTrigger("On");
+
         }
     }
 
@@ -73,7 +75,9 @@ public class PressurePlate : Activator
             if (audioSource != null  && soundsOff.Count > 0)
                 audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count-1)]);
             if (child != null)            
-                child.GetComponent<MeshRenderer>().material = inactiveMat;            
+                child.GetComponent<MeshRenderer>().material = inactiveMat;
+
+            GetComponent<Animator>().SetTrigger("Off");
         }
     }
 
