@@ -17,6 +17,7 @@ public class HandCollision : MonoBehaviour
 
     public AudioSource audioSource;
     public List<AudioClip> soundHandStart;
+    public List<AudioClip> soundHandPrepare;
     public AudioClip soundHandEnd;
     public AudioClip soundVerticalDestruction;
     public List<AudioClip> soundDestruction;
