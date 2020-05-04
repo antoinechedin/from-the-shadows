@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour
     public void DisableJump()
     {
         input.noJump = true;
+        input.pressedJump = false;
     }
 
     public void EnableJump()
