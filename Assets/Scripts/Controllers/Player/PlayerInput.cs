@@ -68,8 +68,9 @@ public class PlayerInput : MonoBehaviour
             if (!noJump)
             {
                 pressedJump = InputManager.GetActionPressed(id, InputAction.Jump);
-                releasedJump = InputManager.GetActionReleased(id, InputAction.Jump);
             }
+            releasedJump = InputManager.GetActionReleased(id, InputAction.Jump);
+
             if (attack) pressedAttack = InputManager.GetActionPressed(id, InputAction.Attack);
             if (moveAxis.magnitude > 1) moveAxis.Normalize();
         }

@@ -227,7 +227,7 @@ public class SaveManager : Singleton<SaveManager>
             //On créer les chapitres et les tableaux, puis on l'écrit sur le nouveau fichier.
             List<Level> lvlPrologque_Duo = new List<Level>();
             lvlPrologque_Duo.Add(new Level(false, new bool[] { }, new bool[] { }, true));
-            lvlPrologque_Duo.Add(new Level(false, new bool[] { false }, new bool[] { }, false));
+            lvlPrologque_Duo.Add(new Level(false, new bool[] { false }, new bool[] { false }, false));
             lvlPrologque_Duo.Add(new Level(false, new bool[] { }, new bool[] { }, false));
 
             List<Level> lvlChap1_Duo = new List<Level>();
