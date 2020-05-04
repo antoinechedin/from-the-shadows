@@ -31,7 +31,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
     private AudioSource audioSource;
 
-    public AudioClip soundHit;
+    public List<AudioClip> randomlyPlayedSound;
+    public List<AudioClip> soundHit;
     public List<AudioClip> soundPrepareAttack;
     public AudioClip soundDeath;
 
@@ -66,6 +67,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
         // Deactivate particle system for target player
         targetForPlayer.SetActive(false);
+
+        StartCoroutine(PlaySoundRandomly(15));
     }
 
     void Update()
@@ -174,6 +177,14 @@ public class Skeleton : MonoBehaviour, IResetable
         Invoke("TriggerAttack", timeBeforeAttack);
     }
 
+    IEnumerator PlaySoundRandomly(int timer)
+    {
+        yield return new WaitForSeconds(timer);
+        audioSource.PlayOneShot(randomlyPlayedSound[Random.Range(0, randomlyPlayedSound.Count)]);
+
+        StartCoroutine(PlaySoundRandomly(Random.Range(5, 13)));
+    }
+
     public void TriggerAttack()
     {
         isTargetting = false;
@@ -189,10 +200,12 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         AudioClip randomPlayedClip = handCollision.soundHandStart[Random.Range(0, 1)];
 
+        handCollision.audioSource.PlayOneShot(handCollision.soundHandPrepare[Random.Range(0, 1)]);
         handCollision.audioSource.PlayOneShot(randomPlayedClip);
 
         yield return new WaitForSeconds(randomPlayedClip.length - 0.5f);
 
+        handCollision.audioSource.PlayOneShot(handCollision.soundVerticalDestruction);
         handCollision.audioSource.PlayOneShot(handCollision.soundHandEnd);
     }
 
@@ -261,7 +274,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
         hp--;
 
-        audioSource.PlayOneShot(soundHit);
+        if(hp == 2)
+            audioSource.PlayOneShot(soundHit[0]);
 
         if (hp == 0)
         {
@@ -274,6 +288,9 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             //Cancel Trigger simple attack and start double attack
             CancelInvoke();
+
+            audioSource.PlayOneShot(soundHit[1]);
+
             Invoke("ActiveMiddleZoneSpikesAnim", 1);
             Invoke("StartFallingPlatform", 1.8f);
             Invoke("ActiveMiddleZoneSpikes", 4);
@@ -294,6 +311,7 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
 
+        audioSource.PlayOneShot(soundHit[2]);
         audioSource.PlayOneShot(soundDeath);
 
         hands.transform.Find("RightHandSkeleton").gameObject.SetActive(false);
