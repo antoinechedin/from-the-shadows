@@ -217,7 +217,7 @@ public class PlayerLedgeGrab : IPlayerState
             player.animator.SetTrigger("fall");
         }
 
-        if (input.pressedJump)
+        if (input.pressedJump || input.moveAxis.y > 0.7f)
         {
             player.state = new PlayerAirborne(true, false, player);
 
