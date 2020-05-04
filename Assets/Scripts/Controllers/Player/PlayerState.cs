@@ -60,18 +60,18 @@ public class PlayerStanding : IPlayerState
         //player.animator.SetFloat("RunSpeedMultiplier", Mathf.Abs(player.input.moveAxis.x) + 0.1f);
         player.animator.SetFloat("speedBlend", Mathf.Abs(player.velocity.x) / player.settings.moveSpeed);
         player.animator.SetFloat("speed", Mathf.Abs(player.velocity.x));
-
-        if (Mathf.Abs(player.velocity.x) > 0 && player.input.moveAxis.x != 0 && Mathf.Sign(player.input.moveAxis.x) != player.xVelocitySign)
-        {
-            if (Mathf.Sign(player.input.moveAxis.x) == 1)
-                player.animator.transform.eulerAngles = Vector3.up * 90;
-            else
-                player.animator.transform.eulerAngles = Vector3.up * -90;
-            if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("Turn"))
-                player.animator.SetTrigger("turn");
-        }
-
-        else
+        
+        // Turning animation
+        // if (Mathf.Abs(player.velocity.x) > 0 && player.input.moveAxis.x != 0 && Mathf.Sign(player.input.moveAxis.x) != player.xVelocitySign)
+        // {
+        //     if (Mathf.Sign(player.input.moveAxis.x) == 1)
+        //         player.animator.transform.eulerAngles = Vector3.up * 90;
+        //     else
+        //         player.animator.transform.eulerAngles = Vector3.up * -90;
+        //     if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("Turn"))
+        //         player.animator.SetTrigger("turn");
+        // }
+        // else
         {
             if (player.xVelocitySign == 1)
                 player.animator.transform.eulerAngles = Vector3.up * 90;
@@ -217,7 +217,7 @@ public class PlayerLedgeGrab : IPlayerState
             player.animator.SetTrigger("fall");
         }
 
-        if (input.pressedJump)
+        if (input.pressedJump || input.moveAxis.y > 0.7f)
         {
             player.state = new PlayerAirborne(true, false, player);
 
@@ -272,7 +272,7 @@ public class MeleAttackState : IPlayerState
             int results = input.attackCollider.OverlapCollider(filter, hits);
             for (int i = 0; i < results; i++)
             {
-                if(hits[i] == player.actor.boxCollider) continue;
+                if (hits[i] == player.actor.boxCollider) continue;
                 AttackListener listener = hits[i].GetComponent<AttackListener>();
                 if (listener != null) listener.ReceiveAttack(player.transform.position, AttackType.Player);
             }
