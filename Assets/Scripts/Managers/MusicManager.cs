@@ -175,7 +175,8 @@ public class MusicManager : MonoBehaviour
     // Stop current playing theme
     public void StopTheme()
     {
-        currentPlayingTheme.GetTheme().stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        if(currentPlayingTheme != null)
+            currentPlayingTheme.GetTheme().stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         currentPlayingTheme = null;
     }
 

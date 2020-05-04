@@ -277,7 +277,7 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaFloat(MetaTag.TOTAL_TIME_PLAYED, timeSinceBegin); //collecte du temps de jeu
         timeSinceBegin = 0;
     }
-
+    
     /// <summary>
     /// The player died : displays all deaths animations (player, screen, etc...) and reset all Resetable Objects
     /// </summary>
