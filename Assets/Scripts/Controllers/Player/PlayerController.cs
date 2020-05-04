@@ -126,4 +126,14 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = t.position;
     }
+
+    public void PlayJumpSound()
+    {
+        playerSounds.PlayRandomJump();
+    }
+
+    public void PlayLandSound()
+    {
+        playerSounds.PlayRandomAtterrissage();
+    }
 }

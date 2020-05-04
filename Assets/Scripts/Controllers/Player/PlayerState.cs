@@ -38,6 +38,7 @@ public class PlayerStanding : IPlayerState
 
             // Set Animator Jump
             player.animator.SetTrigger("jump");
+            player.PlayJumpSound();
         }
     }
 
@@ -182,6 +183,7 @@ public class PlayerAirborne : IPlayerState
             // Landing
             player.particles.Play();
             player.animator.SetTrigger("land");
+            player.PlayLandSound();
             return;
         }
 
@@ -228,6 +230,7 @@ public class PlayerLedgeGrab : IPlayerState
 
             // Set Animator Jump
             player.animator.SetTrigger("jump");
+            player.PlayJumpSound();
         }
     }
 
