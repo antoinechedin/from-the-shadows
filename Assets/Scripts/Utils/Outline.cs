@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Outline : MonoBehaviour
 {
-    public Material mat;
     public MeshRenderer mesh;
     public int materialIndex;
     [ColorUsageAttribute(true, true)] public Color outlineColor;
@@ -31,8 +30,10 @@ public class Outline : MonoBehaviour
         nPlayerIn++;
         if (nPlayerIn > 0)
         {
-            if (gameObject.activeSelf)
+            if (gameObject.activeInHierarchy)
+            {
                 StartCoroutine(DisplayOutline());
+            }
         }
     }
 
@@ -41,8 +42,10 @@ public class Outline : MonoBehaviour
         nPlayerIn--;
         if (nPlayerIn <= 0)
         {
-            if(gameObject.activeSelf)
+            if (gameObject.activeInHierarchy)
+            {
                 StartCoroutine(HideOutline());
+            }
             nPlayerIn = 0;
         }
     }
