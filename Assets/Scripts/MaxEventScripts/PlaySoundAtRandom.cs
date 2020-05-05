@@ -27,6 +27,10 @@ public class PlaySoundAtRandom : MonoBehaviour
     IEnumerator PlayRandomSound()
     {
         AudioClip randomlyPlayedSound = randomSounds[Random.Range(0, randomSounds.Count)];
+
+        if(GameObject.Find("Player 1") != null
+            || GameObject.Find("Player 2") != null
+            || GameObject.Find("SoloPlayer") != null)
         audioSource.PlayOneShot(randomlyPlayedSound);
 
         float randomTimeToWait = Random.Range(min, max);
