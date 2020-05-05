@@ -24,6 +24,7 @@ public class Collectible : MonoBehaviour, IResetable
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+
         Animator animator = GetComponent<Animator>();
         if (animator != null)
             animator.Play("Default", 0, animationOffset);
@@ -63,6 +64,8 @@ public class Collectible : MonoBehaviour, IResetable
     {
         if (child != null)
             child.SetActive(isVisible);
+
+        audioSource.clip = null;
     }
 
     public void Reset()
