@@ -9,7 +9,6 @@ public class PressurePlate : Activator
     public List<AudioClip> soundsOff;
     public string tagInteractObject;
 
-    private GameObject child;
     private AudioSource audioSource;
     private int nbObjectsOnPlate;
 
@@ -69,7 +68,6 @@ public class PressurePlate : Activator
             TryDeactivate();
             if (audioSource != null  && soundsOff.Count > 0)
                 audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count-1)]);
-
             GetComponent<Animator>().SetTrigger("Off");
         }
     }
