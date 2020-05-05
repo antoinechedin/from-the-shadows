@@ -133,6 +133,11 @@ public class PlayerController : MonoBehaviour
         playerSounds.PlayRandomJump();
     }
 
+    public void PlayDoubleJumpSound()
+    {
+        playerSounds.PlayRandomDoubleJump();
+    }
+
     public void PlayLandSound()
     {
         playerSounds.PlayRandomAtterrissage();
