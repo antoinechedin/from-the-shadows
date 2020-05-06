@@ -49,6 +49,7 @@ public class Carousel : MonoBehaviour
 
     private void Awake()
     {
+        pressed = false;
         animator = GetComponent<Animator>();
     }
 
@@ -210,20 +211,23 @@ public class Carousel : MonoBehaviour
 
     private void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
     {
-        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
+        if(!pressed)
+        {
+            GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
 
-        int currentSave = GameManager.Instance.CurrentSave;
+            int currentSave = GameManager.Instance.CurrentSave;
 
-        if (GameManager.Instance.Saves[currentSave].NbPlayer == 1)
-            GameManager.Instance.LoadChapter("ChapterSolo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
-        else
-            GameManager.Instance.LoadChapter("ChapterDuo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
-        //animation
-        StartCoroutine(screenshot.PressedAnimation());
+            if (GameManager.Instance.Saves[currentSave].NbPlayer == 1)
+                GameManager.Instance.LoadChapter("ChapterSolo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+            else
+                GameManager.Instance.LoadChapter("ChapterDuo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+            //animation
+            StartCoroutine(screenshot.PressedAnimation());
 
-        GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
-        //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
-        pressed = true;
-        EventSystem.current.SetSelectedGameObject(null);
+            GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
+            //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
+            pressed = true;
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 }

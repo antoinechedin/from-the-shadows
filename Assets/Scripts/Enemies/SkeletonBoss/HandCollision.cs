@@ -17,9 +17,9 @@ public class HandCollision : MonoBehaviour
 
     public AudioSource audioSource;
     public List<AudioClip> soundHandStart;
-    public List<AudioClip> soundHandPrepare;
-    public AudioClip soundHandEnd;
+
     public AudioClip soundVerticalDestruction;
+
     public List<AudioClip> soundDestruction;
 
     public void Start()
@@ -79,7 +79,9 @@ public class HandCollision : MonoBehaviour
             Debug.Log("Case destruction");
             // When the hand destroys a platform
             collider.gameObject.GetComponent<DestructiblePlatform>().StartCoroutine("Destruct");
-            audioSource.PlayOneShot(soundDestruction[Random.Range(0, soundDestruction.Count - 1)]);
+
+            if(collider.gameObject.GetComponent<DestructiblePlatform>().mustPlaySound)
+                audioSource.PlayOneShot(soundDestruction[Random.Range(0, soundDestruction.Count - 1)]);
         }
     }
 
