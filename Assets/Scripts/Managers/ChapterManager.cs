@@ -71,6 +71,7 @@ public class ChapterManager : MonoBehaviour
         {
             pauseMenu.gameObject.SetActive(true);
             pauseMenu.OpenPauseMenu();
+            pauseMenu.StopAllSounds(musicManager, levels[currentLevel]);
         }
 
         //if (Input.GetButtonDown("Select_G"))
