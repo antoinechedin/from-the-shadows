@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,9 +16,18 @@ public class PauseMenu : MonoBehaviour
     public AudioClip uiPress;
     public AudioClip uiSelect;
 
+    public Selectable resumeButton;
+    public Selectable mainMenuButton;
+    public Selectable restartScreenButton;
+    public Selectable optionsButton;
+    public Selectable quitButton;
+
     public Image foreground;
 
     private bool optionsOpened;
+
+    private MusicManager musicManager;
+    private LevelManager currentLevel;
 
     private void Awake()
     {
@@ -28,12 +38,65 @@ public class PauseMenu : MonoBehaviour
     {
         EventSystem.current.SetSelectedGameObject(mainPauseMenu.resumeButton.gameObject);
         Time.timeScale = 0;
+
+        InitRestartScreenButton();
+    }
+
+    public void StopAllSounds(MusicManager _musicManager, LevelManager _currentLevel)
+    {
+        musicManager = _musicManager;
+        currentLevel = _currentLevel;
+
+        musicManager.PauseTheme();
+        
+        foreach(AudioSource audioSource in _currentLevel.GetComponentsInChildren<AudioSource>())
+        {
+            audioSource.Pause();
+        }
+    }
+
+    private void ResumeAllSounds()
+    {
+        musicManager.ResumeTheme();
+        foreach (AudioSource audioSource in currentLevel.GetComponentsInChildren<AudioSource>())
+        {
+            audioSource.UnPause();
+        }
+
+    }
+
+    private void InitRestartScreenButton()
+    {
+        Navigation mainMenuExplicitNav = new Navigation();
+        mainMenuExplicitNav.mode = Navigation.Mode.Explicit;
+        mainMenuExplicitNav.selectOnUp = resumeButton;
+
+        Navigation optionsExplicitNav = new Navigation();
+        optionsExplicitNav.mode = Navigation.Mode.Explicit;
+        optionsExplicitNav.selectOnDown = quitButton;
+
+        if (GameObject.FindGameObjectWithTag("Player") == null)
+        {
+            mainMenuExplicitNav.selectOnDown = optionsButton;
+            optionsExplicitNav.selectOnUp = mainMenuButton;
+            restartScreenButton.interactable = false;
+        }
+        else
+        {
+            mainMenuExplicitNav.selectOnDown = restartScreenButton;
+            optionsExplicitNav.selectOnUp = restartScreenButton;
+            restartScreenButton.interactable = true;
+        }
+
+        mainMenuButton.navigation = mainMenuExplicitNav;
+        optionsButton.navigation = optionsExplicitNav;
     }
 
     private void Update()
     {
         {
             if (EventSystem.current.sendNavigationEvents)
+            {
                 if (optionsOpened)
                 {
                     if (InputManager.GetActionPressed(0, InputAction.Return)
@@ -47,8 +110,8 @@ public class PauseMenu : MonoBehaviour
                     || Input.GetKeyDown(KeyCode.Escape))
                         Resume();
                 }
+            }
         }
-
     }
 
     public void Resume()
@@ -57,7 +120,10 @@ public class PauseMenu : MonoBehaviour
         gameObject.SetActive(false);
         Input.ResetInputAxes();
         Time.timeScale = 1;
-        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(uiPress);
+
+        ResumeAllSounds();
+
+        //GetComponent<AudioSource>().PlayOneShot(uiPress);
     }
 
     public void Home()
@@ -67,6 +133,16 @@ public class PauseMenu : MonoBehaviour
         GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
         SaveManager.Instance.WriteSaveFile();
         GameManager.Instance.LoadMenu("MainMenu", new LoadingMenuInfo(2));
+    }
+
+    public void RestartScreen()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.GetComponent<PlayerController>().Die();
+            Resume();
+        }
     }
 
     public void OpenOptions()
@@ -106,7 +182,7 @@ public class PauseMenu : MonoBehaviour
     private IEnumerator Fade()
     {
         float timer = 0;
-        float DURATION = 3f;
+        float DURATION = 1f;
 
         while (timer < DURATION)
         {

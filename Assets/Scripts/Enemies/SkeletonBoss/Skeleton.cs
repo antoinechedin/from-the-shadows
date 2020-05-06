@@ -7,6 +7,8 @@ public class Skeleton : MonoBehaviour, IResetable
     // public Transform[] points;  old system
     public GameObject[] targetZones;
 
+    private bool dead = false;
+
     public bool isSolo = false;
 
     public float timeBeforeFirstAttack = 10;
@@ -31,7 +33,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
     private AudioSource audioSource;
 
-    public AudioClip soundHit;
+    public List<AudioClip> randomlyPlayedSound;
+    public List<AudioClip> soundHit;
     public List<AudioClip> soundPrepareAttack;
     public AudioClip soundDeath;
 
@@ -66,6 +69,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
         // Deactivate particle system for target player
         targetForPlayer.SetActive(false);
+
+        StartCoroutine(PlaySoundRandomly(15));
     }
 
     void Update()
@@ -116,12 +121,6 @@ public class Skeleton : MonoBehaviour, IResetable
                 TargetZone targetZone = zone.GetComponent<TargetZone>();
                 targetZone.StopParticles(targetZone.particle);
             }
-        }
-
-        //TODO A SUPPRIMER
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            Invoke("GetHurt", 0);
         }
     }
 
@@ -174,6 +173,16 @@ public class Skeleton : MonoBehaviour, IResetable
         Invoke("TriggerAttack", timeBeforeAttack);
     }
 
+    IEnumerator PlaySoundRandomly(int timer)
+    {
+        yield return new WaitForSeconds(timer);
+
+        if(!dead)
+            audioSource.PlayOneShot(randomlyPlayedSound[Random.Range(0, randomlyPlayedSound.Count)]);
+
+        StartCoroutine(PlaySoundRandomly(Random.Range(5, 13)));
+    }
+
     public void TriggerAttack()
     {
         isTargetting = false;
@@ -190,10 +199,9 @@ public class Skeleton : MonoBehaviour, IResetable
         AudioClip randomPlayedClip = handCollision.soundHandStart[Random.Range(0, 1)];
 
         handCollision.audioSource.PlayOneShot(randomPlayedClip);
+        handCollision.audioSource.PlayOneShot(handCollision.soundVerticalDestruction);
 
-        yield return new WaitForSeconds(randomPlayedClip.length - 0.5f);
-
-        handCollision.audioSource.PlayOneShot(handCollision.soundHandEnd);
+        yield return new WaitForSeconds(1f);
     }
 
 
@@ -210,9 +218,8 @@ public class Skeleton : MonoBehaviour, IResetable
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
 
-        hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
-        hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
-        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().soundVerticalDestruction);
+        StartCoroutine(PlayHandAttackSound(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>()));
+        //StartCoroutine(PlayHandAttackSound(hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>()));
 
 
         Invoke("PrepareDoubleAttack", 6);
@@ -261,7 +268,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
         hp--;
 
-        audioSource.PlayOneShot(soundHit);
+        if(hp == 2)
+            audioSource.PlayOneShot(soundHit[0]);
 
         if (hp == 0)
         {
@@ -274,6 +282,9 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             //Cancel Trigger simple attack and start double attack
             CancelInvoke();
+
+            audioSource.PlayOneShot(soundHit[1]);
+
             Invoke("ActiveMiddleZoneSpikesAnim", 1);
             Invoke("StartFallingPlatform", 1.8f);
             Invoke("ActiveMiddleZoneSpikes", 4);
@@ -293,7 +304,8 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Die()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
-
+        dead = true;
+        audioSource.PlayOneShot(soundHit[2]);
         audioSource.PlayOneShot(soundDeath);
 
         hands.transform.Find("RightHandSkeleton").gameObject.SetActive(false);

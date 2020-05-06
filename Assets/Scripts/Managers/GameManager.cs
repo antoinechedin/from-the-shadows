@@ -297,6 +297,7 @@ public class GameManager : Singleton<GameManager>
     /// <returns></returns>
     IEnumerator LoadAsyncScene(string sceneName)
     {
+        loading = true;
         //étape 1 : On fait un fondu au noir
         GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen"); //load le prefab de l'écran de chargement
         loadingScreen = Instantiate(loadingScreen, gameObject.transform); //l'affiche
@@ -329,6 +330,7 @@ public class GameManager : Singleton<GameManager>
         //étape 4 : On enlève l'écran de chargement
         loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true); //on fade out le loading screen
         DiscordController.Instance.SetActivity();
+        loading = false;
     }
     #endregion
 

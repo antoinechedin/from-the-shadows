@@ -32,6 +32,7 @@ public class LookAt : MonoBehaviour
                 if(lockYAxis)
                     targetDirection.y = 0;
 
+                if(targetDirection == Vector3.zero) targetDirection = Vector3.forward;
                 transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(targetDirection), 8 * Time.deltaTime);
             }
         }

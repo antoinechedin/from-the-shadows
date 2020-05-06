@@ -7,19 +7,15 @@ public class PressurePlate : Activator
 {
     public List<AudioClip> soundsOn;
     public List<AudioClip> soundsOff;
-    public Material activeMat;
-    public Material inactiveMat;
     public string tagInteractObject;
 
-    private GameObject child;
     private AudioSource audioSource;
     private int nbObjectsOnPlate;
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();       
-        child = transform.Find("Child").gameObject;
-        Off();
+        audioSource = GetComponent<AudioSource>();
+        active = false;
     }
 
     /// <summary>
@@ -55,8 +51,8 @@ public class PressurePlate : Activator
             TryActivate();            
             if (audioSource != null  && soundsOn.Count > 0)
                 audioSource.PlayOneShot(soundsOn[Random.Range(0, soundsOn.Count-1)]);
-            if (child != null)
-                child.GetComponent<MeshRenderer>().material = activeMat;
+
+            GetComponent<Animator>().SetTrigger("On");
 
         }
     }
@@ -70,10 +66,9 @@ public class PressurePlate : Activator
         {
             active = false;
             TryDeactivate();
-            if (audioSource != null  && soundsOff.Count > 0)
-                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count-1)]);
-            if (child != null)            
-                child.GetComponent<MeshRenderer>().material = inactiveMat;            
+            if (audioSource != null && soundsOff.Count > 0)
+                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count - 1)]);
+            GetComponent<Animator>().SetTrigger("Off");
         }
     }
 

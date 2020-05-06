@@ -67,10 +67,11 @@ public class ChapterManager : MonoBehaviour
 
         // Position moyenne des deux joueurs
         //if (Input.GetButtonDown("Start_G"))
-        if (InputManager.GetActionPressed(0, InputAction.Pause))
+        if (!GameManager.Instance.Loading && InputManager.GetActionPressed(0, InputAction.Pause))
         {
             pauseMenu.gameObject.SetActive(true);
             pauseMenu.OpenPauseMenu();
+            pauseMenu.StopAllSounds(musicManager, levels[currentLevel]);
         }
 
         //if (Input.GetButtonDown("Select_G"))
@@ -277,7 +278,7 @@ public class ChapterManager : MonoBehaviour
         GameManager.Instance.AddMetaFloat(MetaTag.TOTAL_TIME_PLAYED, timeSinceBegin); //collecte du temps de jeu
         timeSinceBegin = 0;
     }
-
+    
     /// <summary>
     /// The player died : displays all deaths animations (player, screen, etc...) and reset all Resetable Objects
     /// </summary>
