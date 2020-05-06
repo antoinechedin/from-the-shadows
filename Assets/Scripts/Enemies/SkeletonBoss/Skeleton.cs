@@ -122,12 +122,6 @@ public class Skeleton : MonoBehaviour, IResetable
                 targetZone.StopParticles(targetZone.particle);
             }
         }
-
-        //TODO A SUPPRIMER
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            Invoke("GetHurt", 0);
-        }
     }
 
     public void Appear()
