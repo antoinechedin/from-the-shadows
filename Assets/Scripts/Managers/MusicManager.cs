@@ -180,14 +180,14 @@ public class MusicManager : MonoBehaviour
         currentPlayingTheme = null;
     }
 
-    public void PauseTheme(SongManager songManager)
+    public void PauseTheme()
     {
-        songManager.GetTheme().setPaused(true);
+        currentPlayingTheme.GetTheme().setPaused(true);
     }
 
-    public void ResumeTheme(SongManager songManager)
+    public void ResumeTheme()
     {
-        songManager.GetTheme().setPaused(false);
+        currentPlayingTheme.GetTheme().setPaused(false);
     }
 
     void OnDisable()

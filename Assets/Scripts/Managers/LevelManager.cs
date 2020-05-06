@@ -137,6 +137,12 @@ public class LevelManager : MonoBehaviour
             gameObject.SetActive(true);
         this.SetObjectToDisable(true);
 
+        foreach (AudioSource audioSource in this.transform.GetComponentsInChildren<AudioSource>())
+        {
+            audioSource.mute = false;
+        }
+
+
         foreach (LevelManager level in roomsToEnable)
         {
             if (level != null)
@@ -146,6 +152,11 @@ public class LevelManager : MonoBehaviour
                 level.SetObjectToDisable(false);
 
                 // MUTE AUDIOSOURCE
+                foreach (AudioSource audioSource in level.transform.GetComponentsInChildren<AudioSource>())
+                {
+                    if(!audioSource.bypassEffects)
+                        audioSource.mute = true;
+                }
             }
         }
     }

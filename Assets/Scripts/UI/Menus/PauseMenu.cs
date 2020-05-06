@@ -26,6 +26,9 @@ public class PauseMenu : MonoBehaviour
 
     private bool optionsOpened;
 
+    private MusicManager musicManager;
+    private LevelManager currentLevel;
+
     private void Awake()
     {
         optionsOpened = false;
@@ -35,7 +38,31 @@ public class PauseMenu : MonoBehaviour
     {
         EventSystem.current.SetSelectedGameObject(mainPauseMenu.resumeButton.gameObject);
         Time.timeScale = 0;
+
         InitRestartScreenButton();
+    }
+
+    public void StopAllSounds(MusicManager _musicManager, LevelManager _currentLevel)
+    {
+        musicManager = _musicManager;
+        currentLevel = _currentLevel;
+
+        musicManager.PauseTheme();
+        
+        foreach(AudioSource audioSource in _currentLevel.GetComponentsInChildren<AudioSource>())
+        {
+            audioSource.Pause();
+        }
+    }
+
+    private void ResumeAllSounds()
+    {
+        musicManager.ResumeTheme();
+        foreach (AudioSource audioSource in currentLevel.GetComponentsInChildren<AudioSource>())
+        {
+            audioSource.UnPause();
+        }
+
     }
 
     private void InitRestartScreenButton()
@@ -93,7 +120,10 @@ public class PauseMenu : MonoBehaviour
         gameObject.SetActive(false);
         Input.ResetInputAxes();
         Time.timeScale = 1;
-        GetComponent<AudioSource>().PlayOneShot(uiPress);
+
+        ResumeAllSounds();
+
+        //GetComponent<AudioSource>().PlayOneShot(uiPress);
     }
 
     public void Home()
