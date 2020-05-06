@@ -67,7 +67,7 @@ public class ChapterManager : MonoBehaviour
 
         // Position moyenne des deux joueurs
         //if (Input.GetButtonDown("Start_G"))
-        if (InputManager.GetActionPressed(0, InputAction.Pause))
+        if (!GameManager.Instance.Loading && InputManager.GetActionPressed(0, InputAction.Pause))
         {
             pauseMenu.gameObject.SetActive(true);
             pauseMenu.OpenPauseMenu();
