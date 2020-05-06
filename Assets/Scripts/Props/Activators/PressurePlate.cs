@@ -14,8 +14,8 @@ public class PressurePlate : Activator
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();       
-        Off();
+        audioSource = GetComponent<AudioSource>();
+        active = false;
     }
 
     /// <summary>
@@ -66,8 +66,8 @@ public class PressurePlate : Activator
         {
             active = false;
             TryDeactivate();
-            if (audioSource != null  && soundsOff.Count > 0)
-                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count-1)]);
+            if (audioSource != null && soundsOff.Count > 0)
+                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count - 1)]);
             GetComponent<Animator>().SetTrigger("Off");
         }
     }

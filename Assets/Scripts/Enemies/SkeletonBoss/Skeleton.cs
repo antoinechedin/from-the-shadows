@@ -7,6 +7,8 @@ public class Skeleton : MonoBehaviour, IResetable
     // public Transform[] points;  old system
     public GameObject[] targetZones;
 
+    private bool dead = false;
+
     public bool isSolo = false;
 
     public float timeBeforeFirstAttack = 10;
@@ -180,7 +182,9 @@ public class Skeleton : MonoBehaviour, IResetable
     IEnumerator PlaySoundRandomly(int timer)
     {
         yield return new WaitForSeconds(timer);
-        audioSource.PlayOneShot(randomlyPlayedSound[Random.Range(0, randomlyPlayedSound.Count)]);
+
+        if(!dead)
+            audioSource.PlayOneShot(randomlyPlayedSound[Random.Range(0, randomlyPlayedSound.Count)]);
 
         StartCoroutine(PlaySoundRandomly(Random.Range(5, 13)));
     }
@@ -306,7 +310,7 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Die()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
-
+        dead = true;
         audioSource.PlayOneShot(soundHit[2]);
         audioSource.PlayOneShot(soundDeath);
 

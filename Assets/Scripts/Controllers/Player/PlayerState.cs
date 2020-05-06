@@ -142,7 +142,6 @@ public class PlayerAirborne : IPlayerState
                 canDoubleJump = false;
                 canStopJump = true;
                 player.animator.SetTrigger("flip");
-                player.PlayDoubleJumpSound();
             }
         }
 

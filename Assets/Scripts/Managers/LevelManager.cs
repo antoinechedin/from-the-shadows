@@ -144,6 +144,8 @@ public class LevelManager : MonoBehaviour
                 if (!level.gameObject.activeSelf)
                     level.gameObject.SetActive(true);
                 level.SetObjectToDisable(false);
+
+                // MUTE AUDIOSOURCE
             }
         }
     }
