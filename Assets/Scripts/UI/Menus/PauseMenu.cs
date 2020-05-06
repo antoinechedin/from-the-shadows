@@ -152,7 +152,7 @@ public class PauseMenu : MonoBehaviour
     private IEnumerator Fade()
     {
         float timer = 0;
-        float DURATION = 3f;
+        float DURATION = 1f;
 
         while (timer < DURATION)
         {
