@@ -200,13 +200,10 @@ public class Skeleton : MonoBehaviour, IResetable
     {
         AudioClip randomPlayedClip = handCollision.soundHandStart[Random.Range(0, 1)];
 
-        handCollision.audioSource.PlayOneShot(handCollision.soundHandPrepare[Random.Range(0, 1)]);
         handCollision.audioSource.PlayOneShot(randomPlayedClip);
-
-        yield return new WaitForSeconds(randomPlayedClip.length - 0.5f);
-
         handCollision.audioSource.PlayOneShot(handCollision.soundVerticalDestruction);
-        handCollision.audioSource.PlayOneShot(handCollision.soundHandEnd);
+
+        yield return new WaitForSeconds(1f);
     }
 
 
@@ -223,9 +220,8 @@ public class Skeleton : MonoBehaviour, IResetable
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
 
-        hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
-        hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
-        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().soundVerticalDestruction);
+        StartCoroutine(PlayHandAttackSound(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>()));
+        //StartCoroutine(PlayHandAttackSound(hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>()));
 
 
         Invoke("PrepareDoubleAttack", 6);

@@ -7,6 +7,8 @@ public class DestructiblePlatform : MonoBehaviour, IResetable
     [SerializeField]
     private bool destructible = true;
 
+    public bool mustPlaySound = true;
+
     public void Destruct()
     {
         if(destructible)
