@@ -241,15 +241,18 @@ public class GameManager : Singleton<GameManager>
 
     public void SaveCollectibleTaken(int chap, int lvl, Collectible.Type type, int index)
     {
+        Debug.Log("SaveCollectibleTaken");
         if (CurrentChapter != -1)
         {
             if (type == Collectible.Type.Light)
             {
                 saves[currentSave].Chapters[chap].GetLevels()[lvl].LightCollectibles[index] = true;
+                Debug.Log("light saved");
             }
             else if (type == Collectible.Type.Shadow)
             {
                 saves[currentSave].Chapters[chap].GetLevels()[lvl].ShadowCollectibles[index] = true;
+                Debug.Log("shadow saved");
             }
         }
     }
@@ -294,6 +297,7 @@ public class GameManager : Singleton<GameManager>
     /// <returns></returns>
     IEnumerator LoadAsyncScene(string sceneName)
     {
+        loading = true;
         //étape 1 : On fait un fondu au noir
         GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen"); //load le prefab de l'écran de chargement
         loadingScreen = Instantiate(loadingScreen, gameObject.transform); //l'affiche
@@ -326,6 +330,7 @@ public class GameManager : Singleton<GameManager>
         //étape 4 : On enlève l'écran de chargement
         loadingScreen.GetComponent<Animator>().SetBool("finishedFadingIn", true); //on fade out le loading screen
         DiscordController.Instance.SetActivity();
+        loading = false;
     }
     #endregion
 

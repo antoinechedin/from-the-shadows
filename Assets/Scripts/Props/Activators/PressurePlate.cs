@@ -1,24 +1,21 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class PressurePlate : Activator
 {
-    public AudioClip sound;
-    public Material activeMat;
-    public Material inactiveMat;
+    public List<AudioClip> soundsOn;
+    public List<AudioClip> soundsOff;
     public string tagInteractObject;
 
-    private GameObject child;
     private AudioSource audioSource;
     private int nbObjectsOnPlate;
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();       
-        child = transform.Find("Child").gameObject;
-        Off();
+        audioSource = GetComponent<AudioSource>();
+        active = false;
     }
 
     /// <summary>
@@ -52,10 +49,10 @@ public class PressurePlate : Activator
         {
             active = true;
             TryActivate();            
-            if (audioSource != null)
-                audioSource.PlayOneShot(sound);
-            if (child != null)
-                child.GetComponent<MeshRenderer>().material = activeMat;
+            if (audioSource != null  && soundsOn.Count > 0)
+                audioSource.PlayOneShot(soundsOn[Random.Range(0, soundsOn.Count-1)]);
+
+            GetComponent<Animator>().SetTrigger("On");
 
         }
     }
@@ -68,9 +65,10 @@ public class PressurePlate : Activator
         if (TryDeactivate != null)
         {
             active = false;
-            TryDeactivate();            
-            if (child != null)            
-                child.GetComponent<MeshRenderer>().material = inactiveMat;            
+            TryDeactivate();
+            if (audioSource != null && soundsOff.Count > 0)
+                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count - 1)]);
+            GetComponent<Animator>().SetTrigger("Off");
         }
     }
 

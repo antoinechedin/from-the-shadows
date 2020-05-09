@@ -8,6 +8,8 @@ public class FallingPlatform : MonoBehaviour, IResetable
     public float timerBeforeSpawning;
     public AudioClip fallSound;
 
+    private AudioSource audioSource;
+
     private float shakeIntensity = 0.02f;
     private float shakeSpeed = 50;
     private Vector3 startingPosition;
@@ -23,6 +25,8 @@ public class FallingPlatform : MonoBehaviour, IResetable
     // Start is called before the first frame update
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         if (transform.childCount < 2)
         {
             Debug.LogWarning("WARN FallingPlatform.Start: " + Utils.GetFullName(transform)
@@ -69,6 +73,8 @@ public class FallingPlatform : MonoBehaviour, IResetable
     {
         if (collision.gameObject.CompareTag("Player") && !isFalling)
         {
+            audioSource.PlayOneShot(fallSound);
+
             isShaking = true;
             isFalling = true;
             Invoke("Fall", timerBeforeFalling);
@@ -77,6 +83,7 @@ public class FallingPlatform : MonoBehaviour, IResetable
 
     public void Fall()
     {
+
         isShaking = false;
         if (platformCollider != null)
             platformCollider.enabled = false;
@@ -90,6 +97,9 @@ public class FallingPlatform : MonoBehaviour, IResetable
     {
         isShaking = true;
         isFalling = true;
+
+        audioSource.PlayOneShot(fallSound);
+
         Invoke("Fall", timerBeforeFalling);
     }
 

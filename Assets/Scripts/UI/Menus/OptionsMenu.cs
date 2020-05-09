@@ -66,6 +66,15 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                 || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
+                if (menuManager == null)
+                {
+                    PauseMenu pauseMenu = GetComponentInParent<PauseMenu>();
+                    GetComponentInParent<AudioSource>().PlayOneShot(pauseMenu.uiPress);
+                }
+                else
+                {
+                    GetComponentInParent<AudioSource>().PlayOneShot(menuManager.uiPress);
+                }
             }
         }
 
@@ -86,6 +95,15 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                     PressAKeyCanvasGroup.alpha = 0f;
                     StartCoroutine(StopListeningKeyCoroutine());
                     GameManager.Instance.OnOptionUpdate();
+                    if (menuManager == null)
+                    {
+                        PauseMenu pauseMenu = GetComponentInParent<PauseMenu>();
+                        GetComponentInParent<AudioSource>().PlayOneShot(pauseMenu.uiPress);
+                    }
+                    else
+                    {
+                        GetComponentInParent<AudioSource>().PlayOneShot(menuManager.uiPress);
+                    }
                 }
             }
         }
@@ -148,7 +166,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     public IEnumerator DissolveInCoroutine()
     {
         currentIndex = -1;
-        if(menuManager != null) menuManager.menuCamera.SetReturnToStartMenu(true);
+        if (menuManager != null) menuManager.menuCamera.SetReturnToStartMenu(true);
         gameObject.SetActive(true);
         EventSystem.current.SetSelectedGameObject(selectables[0].gameObject);
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
@@ -176,6 +194,6 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
 
         yield return StartCoroutine(dissolves[dissolves.Length - 1].DissolveOutCoroutine(MenuManager.dissolveDuration));
         gameObject.SetActive(false);
-        if(menuManager != null) menuManager.menuCamera.SetReturnToStartMenu(false);
+        if (menuManager != null) menuManager.menuCamera.SetReturnToStartMenu(false);
     }
 }

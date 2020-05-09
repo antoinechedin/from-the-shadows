@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public ActorController actor;
     [HideInInspector] public PlayerInput input;
     [HideInInspector] public Animator animator;
+    [HideInInspector] public PlayerSounds playerSounds;
     public ParticleSystem particles;
     public IPlayerState state;
     public IPlayerState attackState;
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
         state = new PlayerStanding();
         attackState = new MeleAttackState(this);
         animator = GetComponentInChildren<Animator>();
+        playerSounds = GetComponentInChildren<PlayerSounds>();
         xVelocitySign = 1;
     }
 
@@ -87,6 +89,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!dying)
         {
+            playerSounds.PlayRandomMort();
             input.active = false;
             dying = true;
             dead = true;
@@ -108,6 +111,7 @@ public class PlayerController : MonoBehaviour
     public void DisableJump()
     {
         input.noJump = true;
+        input.pressedJump = false;
     }
 
     public void EnableJump()
@@ -122,5 +126,20 @@ public class PlayerController : MonoBehaviour
     public void SetPosition(Transform t)
     {
         transform.position = t.position;
+    }
+
+    public void PlayJumpSound()
+    {
+        playerSounds.PlayRandomJump();
+    }
+
+    public void PlayDoubleJumpSound()
+    {
+        playerSounds.PlayRandomDoubleJump();
+    }
+
+    public void PlayLandSound()
+    {
+        playerSounds.PlayRandomAtterrissage();
     }
 }

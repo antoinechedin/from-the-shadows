@@ -7,12 +7,15 @@ public class DestructiblePlatform : MonoBehaviour, IResetable
     [SerializeField]
     private bool destructible = true;
 
+    public bool mustPlaySound = true;
+
     public void Destruct()
     {
         if(destructible)
         {
             FindObjectOfType<ChapterManager>().ShakeFor(1f, 1f, 2f);
             gameObject.SetActive(false);
+
 
             for (int i = 0; i < 5; i++)
             {

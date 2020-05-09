@@ -7,6 +7,8 @@ public class Skeleton : MonoBehaviour, IResetable
     // public Transform[] points;  old system
     public GameObject[] targetZones;
 
+    private bool dead = false;
+
     public bool isSolo = false;
 
     public float timeBeforeFirstAttack = 10;
@@ -29,6 +31,14 @@ public class Skeleton : MonoBehaviour, IResetable
 
     public GameObject targetForPlayer;
 
+    private AudioSource audioSource;
+
+    public List<AudioClip> randomlyPlayedSound;
+    public List<AudioClip> soundHit;
+    public List<AudioClip> soundPrepareAttack;
+    public AudioClip soundDeath;
+
+
     [HideInInspector]
     public int idTargetZone;
     [HideInInspector]
@@ -46,16 +56,21 @@ public class Skeleton : MonoBehaviour, IResetable
 
     void Start()
     {
-        // InvokeRepeating("TriggerAttack", timeBetweenAttacks, timeBetweenAttacks);    old system
         camera = Camera.main;
 
-        // Deactive all particles and initialise targetZones
+        audioSource = GetComponent<AudioSource>();
+
+        // Initialize targetZones
         foreach (GameObject zone in targetZones)
         {
             zone.GetComponent<TargetZone>().skeleton = this.gameObject;
-            //zone.transform.GetChild(0).gameObject.SetActive(false);
+
         }
+
+        // Deactivate particle system for target player
         targetForPlayer.SetActive(false);
+
+        StartCoroutine(PlaySoundRandomly(15));
     }
 
     void Update()
@@ -102,29 +117,12 @@ public class Skeleton : MonoBehaviour, IResetable
             targetForPlayer.SetActive(false);
             foreach (GameObject zone in targetZones)
             {
-                zone.transform.GetChild(0).gameObject.SetActive(false);
+                //zone.transform.GetChild(0).gameObject.SetActive(false);
+                TargetZone targetZone = zone.GetComponent<TargetZone>();
+                targetZone.StopParticles(targetZone.particle);
             }
         }
-
-        // A SUPPRIMER
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            Invoke("GetHurt", 0);
-        }
     }
-
-    /*public void OnGUI()
-    {
-        if (playerTarget != null && isTargetting)
-        {
-            Vector2 targetForPlayerPosition = new Vector2(camera.WorldToScreenPoint(playerTarget.transform.position).x,
-                Screen.height - camera.WorldToScreenPoint(playerTarget.transform.position).y);
-            targetForPlayerPosition.y -= iconSize * 0.8f;
-            targetForPlayerPosition.x -= iconSize / 2;
-            GUI.Box(new Rect(targetForPlayerPosition.x, targetForPlayerPosition.y, iconSize,iconSize),
-                    targetForPlayer, gui);
-        }
-    } */
 
     public void Appear()
     {
@@ -134,7 +132,6 @@ public class Skeleton : MonoBehaviour, IResetable
 
         // Make hands appear here
         Invoke("EnableHands", 6f);
-        // InvokeRepeating("PrepareAttack", timeBeforeFirstAttack, timeBetweenAttacks); old system
     }
 
     public void EnableHands()
@@ -148,18 +145,24 @@ public class Skeleton : MonoBehaviour, IResetable
     public void EnableHand1()
     {
         hands.transform.GetChild(0).gameObject.SetActive(true);
+        hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
     }
     public void EnableHand2()
     {
         hands.transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
+        hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
+
     }
     public void EnableHand3()
     {
         hands.transform.GetChild(2).GetChild(0).gameObject.SetActive(true);
+        hands.transform.GetChild(0).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(0).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
+
     }
     public void EnableHand4()
     {
         hands.transform.GetChild(1).gameObject.SetActive(true);
+        hands.transform.GetChild(1).GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.GetChild(1).GetComponent<HandCollision>().soundHandStart[Random.Range(0, 1)]);
     }
 
 
@@ -170,14 +173,37 @@ public class Skeleton : MonoBehaviour, IResetable
         Invoke("TriggerAttack", timeBeforeAttack);
     }
 
+    IEnumerator PlaySoundRandomly(int timer)
+    {
+        yield return new WaitForSeconds(timer);
+
+        if(!dead)
+            audioSource.PlayOneShot(randomlyPlayedSound[Random.Range(0, randomlyPlayedSound.Count)]);
+
+        StartCoroutine(PlaySoundRandomly(Random.Range(5, 13)));
+    }
+
     public void TriggerAttack()
     {
         isTargetting = false;
         string trigger = "Attack" + stringDirection + laneToAttack;
         hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<Animator>().SetTrigger(trigger);
+
+        StartCoroutine(PlayHandAttackSound(hands.transform.Find(stringDirection + "HandSkeleton").GetComponent<HandCollision>()));
         Invoke("PrepareAttack", 7);
         // timing may need adjustement
     }
+
+    IEnumerator PlayHandAttackSound(HandCollision handCollision)
+    {
+        AudioClip randomPlayedClip = handCollision.soundHandStart[Random.Range(0, 1)];
+
+        handCollision.audioSource.PlayOneShot(randomPlayedClip);
+        handCollision.audioSource.PlayOneShot(handCollision.soundVerticalDestruction);
+
+        yield return new WaitForSeconds(1f);
+    }
+
 
     public void PrepareDoubleAttack()
     {
@@ -191,54 +217,14 @@ public class Skeleton : MonoBehaviour, IResetable
         isTargetting = false;
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("AttackLeft" + laneToAttack);
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("AttackRight" + laneToAttack);
+
+        StartCoroutine(PlayHandAttackSound(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>()));
+        //StartCoroutine(PlayHandAttackSound(hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>()));
+
+
         Invoke("PrepareDoubleAttack", 6);
         // timing may need adjustement
     }
-
-    /*  Old system for choosing lane to attack and direction
-    public void FindDoubleTarget()
-    {
-        float minL = Mathf.Infinity;
-        float minR = Mathf.Infinity;
-        int laneR = -1;
-        int laneL = -1;
-        for (int i = 0; i < points.Length / 2; i++)
-        {
-            float minLeft = 0f;
-            float minRight = 0f;
-
-            if (isSolo)
-            {
-                minLeft = Vector3.Distance(player1.transform.position, points[i * 2].position);
-                minRight = Vector3.Distance(player1.transform.position, points[i * 2 + 1].position);
-            }
-            else
-            {
-                minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
-                          Vector3.Distance(player2.transform.position, points[i * 2].position));
-                minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
-                                           Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
-            }
-            if (minLeft < minL)
-            {
-                minL = minLeft;
-                laneL = i;
-            }
-            if (minRight < minR)
-            {
-                minR = minRight;
-                laneR = i;
-            }
-        }
-
-        if (laneR != 1)
-            laneToAttack = laneR;
-        else if (laneL != 1)
-            laneToAttack = laneL;
-        else
-            laneToAttack = 1;
-    }
-    */
 
     public void ChoosePlayerTarget()
     {
@@ -270,46 +256,10 @@ public class Skeleton : MonoBehaviour, IResetable
             }
         }
 
+        audioSource.PlayOneShot(soundPrepareAttack[Random.Range(0, soundPrepareAttack.Count - 1)]);
         // Debug.Log("The target is player "+ playerTarget.GetComponent<PlayerInput>().id);           
     }
 
-    /*  Old system for choosing nearest player
-    public void FindTarget()
-    {
-        float min = Mathf.Infinity;
-        for (int i = 0; i < points.Length / 2; i++) {
-
-            float minLeft = 0f;
-            float minRight = 0f;
-
-            if(isSolo)
-            {
-                minLeft = Vector3.Distance(player1.transform.position, points[i * 2].position);
-                minRight = Vector3.Distance(player1.transform.position, points[i * 2 + 1].position);
-            }
-            else
-            {
-                minLeft = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2].position),
-                          Vector3.Distance(player2.transform.position, points[i * 2].position));
-                minRight = Mathf.Min(Vector3.Distance(player1.transform.position, points[i * 2 + 1].position),
-                                           Vector3.Distance(player2.transform.position, points[i * 2 + 1].position));
-            }
-
-            if (minLeft < min && minLeft < minRight)
-            {
-                min = minLeft;
-                laneToAttack = i;
-                stringDirection = "Left";
-            } else if (minRight < min && minRight < minLeft)
-            {
-                min = minRight;
-                laneToAttack = i;
-                stringDirection = "Right";
-            }
-        }
-    }
-    */
-    
     public void GetHurt()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Battlecry");
@@ -317,6 +267,9 @@ public class Skeleton : MonoBehaviour, IResetable
         //hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("Die");
 
         hp--;
+
+        if(hp == 2)
+            audioSource.PlayOneShot(soundHit[0]);
 
         if (hp == 0)
         {
@@ -329,6 +282,9 @@ public class Skeleton : MonoBehaviour, IResetable
         {
             //Cancel Trigger simple attack and start double attack
             CancelInvoke();
+
+            audioSource.PlayOneShot(soundHit[1]);
+
             Invoke("ActiveMiddleZoneSpikesAnim", 1);
             Invoke("StartFallingPlatform", 1.8f);
             Invoke("ActiveMiddleZoneSpikes", 4);
@@ -348,6 +304,9 @@ public class Skeleton : MonoBehaviour, IResetable
     public void Die()
     {
         transform.Find("SkeletonFBX").GetComponent<Animator>().SetTrigger("Die");
+        dead = true;
+        audioSource.PlayOneShot(soundHit[2]);
+        audioSource.PlayOneShot(soundDeath);
 
         hands.transform.Find("RightHandSkeleton").gameObject.SetActive(false);
         hands.transform.Find("LeftHandSkeleton").gameObject.SetActive(false);
@@ -362,17 +321,13 @@ public class Skeleton : MonoBehaviour, IResetable
     
     public void Reset()
     {
-        hp = 3;        
+        hp = 3;
 
         // Cancel hand attack
-        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().StopHand();
-        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().StopHand();
+        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().Reset();
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().Reset();
 
-        hands.transform.Find("IdlingRightHand").gameObject.SetActive(true);
-        hands.transform.Find("IdlingRightHand").GetComponent<Animator>().SetTrigger("Reset");
-
-        hands.transform.Find("IdlingLeftHand").gameObject.SetActive(true);
-        hands.transform.Find("IdlingLeftHand").GetComponent<Animator>().SetTrigger("Reset");
+        audioSource.Stop();
 
 
         CancelInvoke();
@@ -411,7 +366,9 @@ public class Skeleton : MonoBehaviour, IResetable
         // Deactive all particles and initialise targetZones
         foreach (GameObject zone in targetZones)
         {
-            zone.transform.GetChild(0).gameObject.SetActive(false);
+            //zone.transform.GetChild(0).gameObject.SetActive(false);
+            TargetZone targetZone = zone.GetComponent<TargetZone>();
+            targetZone.StopParticles(targetZone.particle);
         }
         targetForPlayer.SetActive(false);
     }
@@ -421,6 +378,7 @@ public class Skeleton : MonoBehaviour, IResetable
         leftKillZone.SetActive(false);
         //hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().isDestructor = true;
         hands.transform.Find("LeftHandSkeleton").GetComponent<Animator>().SetTrigger("VerticalLeft");
+        hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.Find("LeftHandSkeleton").GetComponent<HandCollision>().soundVerticalDestruction);
         Invoke("ActiveLeftZoneBis", 4.5f);
     }
 
@@ -436,6 +394,7 @@ public class Skeleton : MonoBehaviour, IResetable
         rightKillZone.SetActive(false);
         //hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().isDestructor = true;
         hands.transform.Find("RightHandSkeleton").GetComponent<Animator>().SetTrigger("VerticalRight");
+        hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().audioSource.PlayOneShot(hands.transform.Find("RightHandSkeleton").GetComponent<HandCollision>().soundVerticalDestruction);
         Invoke("ActiveRightZoneBis", 4.5f);
     }
 

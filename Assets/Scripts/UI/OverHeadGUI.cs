@@ -183,12 +183,12 @@ public class OverHeadGUI : MonoBehaviour
             if (FindObjectOfType<CinematicPlayerSwitch>() != null && FindObjectOfType<CinematicPlayerSwitch>().playerState == "Shadow")
             {
                 transform.Find("Content/DialogueBoxBackground/SpeakerName").GetComponent<TextMeshProUGUI>().text = "Shadow";
-                transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().shadowDialogueIcon;
             }
             else
             {
                 transform.Find("Content/DialogueBoxBackground/SpeakerName").GetComponent<TextMeshProUGUI>().text = "Light";
-                transform.Find("Content/DialogueBoxBackground/SpeakerImage").GetComponent<Image>().overrideSprite = GetComponent<DialogueBox>().lightDialogueIcon;
+                transform.Find("Content/DialogueBoxBackground/SpeakerImage").gameObject.SetActive(false);
+                transform.Find("Content/DialogueBoxBackground/SpeakerImage_Light_Solo").gameObject.SetActive(true);
             }
         }
 

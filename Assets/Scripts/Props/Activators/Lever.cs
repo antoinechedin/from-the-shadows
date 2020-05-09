@@ -5,10 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Lever : Activator, IResetable
 {
-    public AudioClip soundOn;
-    public AudioClip soundOff;
-    public Material activeMat;
-    public Material inactiveMat;
+    public List<AudioClip> soundsOn;
+    public List<AudioClip> soundsOff;
+    public AudioClip soundTimer;
     public Material timerMat;
     public bool hasTimer;
     public float timer;
@@ -83,7 +82,7 @@ public class Lever : Activator, IResetable
             if (!active)
                 On(false);
             else
-                Off();                
+                Off();
         }
         if (canPlayer2Activate && InputManager.GetActionPressed(2, InputAction.Interact))//Input.GetButtonDown("X_2"))
         {
@@ -109,15 +108,19 @@ public class Lever : Activator, IResetable
 
             active = true;
             TryActivate();
-            if (audioSource != null && !isMute)
-                audioSource.PlayOneShot(soundOn);
-            if (child != null)
-                child.GetComponent<MeshRenderer>().material = activeMat;
+            if (audioSource != null && !isMute && soundsOn.Count > 0)
+                audioSource.PlayOneShot(soundsOn[Random.Range(0, soundsOn.Count - 1)]);
 
             CancelInvoke();
             StopCoroutine("Flash");
             if (hasTimer && !ignoreTimer)
             {
+                if (audioSource != null && !isMute && soundTimer != null)
+                {
+                    audioSource.clip = soundTimer;
+                    audioSource.loop = true;
+                    audioSource.Play();
+                }
                 Invoke("Off", timer);
                 StartCoroutine("Flash");
             }
@@ -139,14 +142,16 @@ public class Lever : Activator, IResetable
 
             active = false;
             StopCoroutine("Flash");
-            TryDeactivate();            
-            if (audioSource != null && !isMute)
-                audioSource.PlayOneShot(soundOff);
-            if (child != null)
+            TryDeactivate();
+            if (audioSource != null)
             {
-                child.GetComponent<MeshRenderer>().material = inactiveMat;
+                audioSource.Stop();
+                audioSource.loop = false;
+                audioSource.clip = null;
             }
-                
+            if (audioSource != null && !isMute && soundsOff.Count > 0)
+                audioSource.PlayOneShot(soundsOff[Random.Range(0, soundsOff.Count - 1)]);
+
         }
     }
 
@@ -163,20 +168,6 @@ public class Lever : Activator, IResetable
 
             canPlayer1Activate = false;
             canPlayer2Activate = false;
-        }
-    }
-
-    private IEnumerator Flash()
-    {
-        if (child != null)
-        {
-            while (true)
-            {
-                child.GetComponent<MeshRenderer>().material = activeMat;
-                yield return new WaitForSeconds(0.2f);
-                child.GetComponent<MeshRenderer>().material = timerMat;
-                yield return new WaitForSeconds(0.2f);
-            }
         }
     }
 }

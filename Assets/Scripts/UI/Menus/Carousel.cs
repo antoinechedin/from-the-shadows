@@ -8,6 +8,7 @@ using TMPro;
 [RequireComponent(typeof(Animator))]
 public class Carousel : MonoBehaviour
 {
+    public MenuManager menuManager;
     public GridLayoutGroup buttonsGroup;
     public LevelButton levelButtonPrefab;
     public GameObject collectibleLight, collectibleShadow, collectibleMissing; // Prefabs
@@ -48,6 +49,7 @@ public class Carousel : MonoBehaviour
 
     private void Awake()
     {
+        pressed = false;
         animator = GetComponent<Animator>();
     }
 
@@ -122,6 +124,7 @@ public class Carousel : MonoBehaviour
     public void SelectCheckpoint(int index)
     {
         Animator animator = GetComponent<Animator>();
+        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiSelect);
 
         foreach (LevelScreenshot go in screenshots)
         {
@@ -208,18 +211,23 @@ public class Carousel : MonoBehaviour
 
     private void LevelButtonClicked(LoadingChapterInfo loadingChapterInfo, LevelScreenshot screenshot)
     {
-        int currentSave = GameManager.Instance.CurrentSave;
+        if(!pressed)
+        {
+            GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(menuManager.uiPress);
 
-        if (GameManager.Instance.Saves[currentSave].NbPlayer == 1)
-            GameManager.Instance.LoadChapter("ChapterSolo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
-        else
-            GameManager.Instance.LoadChapter("ChapterDuo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
-        //animation
-        StartCoroutine(screenshot.PressedAnimation());
+            int currentSave = GameManager.Instance.CurrentSave;
 
-        GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
-        //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
-        pressed = true;
-        EventSystem.current.SetSelectedGameObject(null);
+            if (GameManager.Instance.Saves[currentSave].NbPlayer == 1)
+                GameManager.Instance.LoadChapter("ChapterSolo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+            else
+                GameManager.Instance.LoadChapter("ChapterDuo_0" + GameManager.Instance.CurrentChapter, loadingChapterInfo);
+            //animation
+            StartCoroutine(screenshot.PressedAnimation());
+
+            GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
+            //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
+            pressed = true;
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 }
