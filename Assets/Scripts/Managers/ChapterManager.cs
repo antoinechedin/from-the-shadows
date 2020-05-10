@@ -34,7 +34,11 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        totalTimePlayed = GameManager.Instance.GetMetaFloat(MetaTag.TOTAL_TIME_PLAYED);
+        if (PlayerPrefs.GetInt("SpeedRun") == 1)
+        {
+            totalTimePlayed = GameManager.Instance.GetMetaFloat(MetaTag.TOTAL_TIME_PLAYED);
+            Instantiate(Resources.Load("SpeedRunCanvas"));
+        }
 
         if (GameObject.Find("MusicManager") != null)
             musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
@@ -71,14 +75,14 @@ public class ChapterManager : MonoBehaviour
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
-        TextMeshProUGUI timeText = GameObject.Find("SpeedRunTime").GetComponent<TextMeshProUGUI>();
-        if (timeText != null && PlayerPrefs.GetInt("SpeedRun") == 1)
+        GameObject timeText = GameObject.Find("SpeedRunTime");
+        if (timeText != null)
         {
             float time = totalTimePlayed + timeSinceBegin;
             int secondes = Mathf.FloorToInt(time) % 60;
             int minutes = Mathf.FloorToInt(time) / 60;
             int mili = Mathf.FloorToInt(time * 1000) % 1000;
-            timeText.text = minutes.ToString() + ":" + secondes.ToString() + ":" + mili.ToString();
+            timeText.GetComponent<TextMeshProUGUI>().text = minutes.ToString() + ":" + secondes.ToString() + ":" + mili.ToString();
         }
 
         // Position moyenne des deux joueurs
