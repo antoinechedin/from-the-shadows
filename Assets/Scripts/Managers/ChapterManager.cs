@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.Diagnostics;
+using TMPro;
+using System;
 
 public class ChapterManager : MonoBehaviour
 {
@@ -16,6 +19,8 @@ public class ChapterManager : MonoBehaviour
 
     private bool resetingLevel = false;
 
+    private float totalTimePlayed = 0;
+
     public GameObject CurrentSpawns
     {
         get { return currentSpawns; }
@@ -29,6 +34,8 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
+        totalTimePlayed = GameManager.Instance.GetMetaFloat(MetaTag.TOTAL_TIME_PLAYED);
+
         if (GameObject.Find("MusicManager") != null)
             musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
 
@@ -64,6 +71,15 @@ public class ChapterManager : MonoBehaviour
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
+        TextMeshProUGUI timeText = GameObject.Find("SpeedRunTime").GetComponent<TextMeshProUGUI>();
+        if (timeText != null && PlayerPrefs.GetInt("SpeedRun") == 1)
+        {
+            float time = totalTimePlayed + timeSinceBegin;
+            int secondes = Mathf.FloorToInt(time) % 60;
+            int minutes = Mathf.FloorToInt(time) / 60;
+            int mili = Mathf.FloorToInt(time * 1000) % 1000;
+            timeText.text = minutes.ToString() + ":" + secondes.ToString() + ":" + mili.ToString();
+        }
 
         // Position moyenne des deux joueurs
         //if (Input.GetButtonDown("Start_G"))
@@ -277,6 +293,7 @@ public class ChapterManager : MonoBehaviour
     {
         GameManager.Instance.AddMetaFloat(MetaTag.TOTAL_TIME_PLAYED, timeSinceBegin); //collecte du temps de jeu
         timeSinceBegin = 0;
+        totalTimePlayed = GameManager.Instance.GetMetaFloat(MetaTag.TOTAL_TIME_PLAYED);
     }
     
     /// <summary>
