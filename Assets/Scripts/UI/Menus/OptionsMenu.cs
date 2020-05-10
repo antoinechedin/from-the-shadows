@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using System.Runtime.InteropServices;
 
 public class OptionsMenu : MonoBehaviour, IDissolveMenu
 {
@@ -17,6 +18,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     [HideInInspector] public MenuManager menuManager;
     public MenuSlider musicSlider;
     public MenuSlider soundsSlider;
+    public MenuSlider speedrunSlider;
     public MenuControlsButton[] controlsButtons;
     public OptionsButton saveButton;
     public OptionsButton resetButton;
@@ -26,14 +28,15 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     private void Awake()
     {
         currentIndex = -1;
-        selectables = new Selectable[4 + controlsButtons.Length];
+        selectables = new Selectable[5 + controlsButtons.Length];
 
-        selectables[0] = musicSlider.GetComponent<Selectable>();
-        selectables[1] = soundsSlider.GetComponent<Selectable>();
+        selectables[0] = speedrunSlider.GetComponent<Selectable>();
+        selectables[1] = musicSlider.GetComponent<Selectable>();
+        selectables[2] = soundsSlider.GetComponent<Selectable>();
 
         for (int i = 0; i < controlsButtons.Length; i++)
         {
-            selectables[2 + i] = controlsButtons[i].GetComponent<Selectable>();
+            selectables[3 + i] = controlsButtons[i].GetComponent<Selectable>();
         }
 
         selectables[selectables.Length - 2] = saveButton.GetComponent<Selectable>();
@@ -46,9 +49,11 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     {
         int musicVolume = PlayerPrefs.GetInt("MusicVolume", 10);
         int soundsVolume = PlayerPrefs.GetInt("SoundsVolume", 10);
+        int speedrunValue = PlayerPrefs.GetInt("SpeedRun", 0);
 
         musicSlider.Init(musicVolume, this);
         soundsSlider.Init(soundsVolume, this);
+        speedrunSlider.Init(speedrunValue, this);
         foreach (MenuControlsButton controlsButton in controlsButtons)
         {
             controlsButton.Init(this);
