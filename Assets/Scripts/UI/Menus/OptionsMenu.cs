@@ -18,7 +18,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     [HideInInspector] public MenuManager menuManager;
     public MenuSlider musicSlider;
     public MenuSlider soundsSlider;
-    public MenuSlider speedrunSlider;
+    public MenuOnOff speedRunOnOff;
     public MenuControlsButton[] controlsButtons;
     public OptionsButton saveButton;
     public OptionsButton resetButton;
@@ -30,15 +30,15 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         currentIndex = -1;
         selectables = new Selectable[5 + controlsButtons.Length];
 
-        selectables[0] = speedrunSlider.GetComponent<Selectable>();
-        selectables[1] = musicSlider.GetComponent<Selectable>();
-        selectables[2] = soundsSlider.GetComponent<Selectable>();
+        selectables[0] = musicSlider.GetComponent<Selectable>();
+        selectables[1] = soundsSlider.GetComponent<Selectable>();
 
         for (int i = 0; i < controlsButtons.Length; i++)
         {
-            selectables[3 + i] = controlsButtons[i].GetComponent<Selectable>();
+            selectables[2 + i] = controlsButtons[i].GetComponent<Selectable>();
         }
 
+        selectables[selectables.Length - 3] = speedRunOnOff.GetComponent<Selectable>();
         selectables[selectables.Length - 2] = saveButton.GetComponent<Selectable>();
         selectables[selectables.Length - 1] = resetButton.GetComponent<Selectable>();
 
@@ -53,7 +53,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
 
         musicSlider.Init(musicVolume, this);
         soundsSlider.Init(soundsVolume, this);
-        speedrunSlider.Init(speedrunValue, this);
+        speedRunOnOff.Init(speedrunValue, this);
         foreach (MenuControlsButton controlsButton in controlsButtons)
         {
             controlsButton.Init(this);
