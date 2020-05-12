@@ -8,6 +8,7 @@ public class FallingPlatform : MonoBehaviour, IResetable
     public float timerBeforeSpawning;
     public AudioClip fallSound;
 
+    public bool hasSpikes = false;
     private AudioSource audioSource;
 
     private float shakeIntensity = 0.02f;
@@ -22,9 +23,15 @@ public class FallingPlatform : MonoBehaviour, IResetable
     private Transform mesh;
     private Collider2D platformCollider;
 
+    private GameObject spikes;
+
     // Start is called before the first frame update
     private void Start()
     {
+        if(hasSpikes)
+        {
+            spikes = transform.GetComponentInChildren<PlayerKillZone>().gameObject;
+        }
         audioSource = GetComponent<AudioSource>();
 
         if (transform.childCount < 2)
@@ -83,10 +90,13 @@ public class FallingPlatform : MonoBehaviour, IResetable
 
     public void Fall()
     {
-
         isShaking = false;
         if (platformCollider != null)
             platformCollider.enabled = false;
+
+        if (hasSpikes)
+            spikes.SetActive(false);
+
         targetColor = new Color(startingColor.r, startingColor.g, startingColor.b, 0);
         fallingPosition = mesh.position - new Vector3(0, 15, 0);
         Invoke("DeactivateChilds", 0.4f);
@@ -112,6 +122,10 @@ public class FallingPlatform : MonoBehaviour, IResetable
         {
             mesh.position = startingPosition;
         }
+
+        if (hasSpikes)
+            spikes.SetActive(true);
+
         fallingPosition = startingPosition;
         if(platformCollider != null)
             platformCollider.enabled = true;        
