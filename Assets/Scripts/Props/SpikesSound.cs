@@ -17,10 +17,8 @@ public class SpikesSound : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            Debug.Log("collide");
             if (audioSource != null && sounds.Count > 0)
             {
-                Debug.Log("son");
                 audioSource.PlayOneShot(sounds[Random.Range(0, sounds.Count - 1)]);
             }
         }

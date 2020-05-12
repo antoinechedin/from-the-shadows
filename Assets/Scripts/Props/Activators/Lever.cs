@@ -8,7 +8,10 @@ public class Lever : Activator, IResetable
     public List<AudioClip> soundsOn;
     public List<AudioClip> soundsOff;
     public AudioClip soundTimer;
+
+    public Material baseMat;
     public Material timerMat;
+
     public bool hasTimer;
     public float timer;
     public bool activeAtStart;
@@ -22,6 +25,9 @@ public class Lever : Activator, IResetable
     private GameObject child;
     private bool isMute = true;
 
+    Material[] leverMaterials;
+    Material[] leverMaterialsTimer;
+
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -29,6 +35,10 @@ public class Lever : Activator, IResetable
         active = activeAtStart;
 
         isMute = true;
+
+        leverMaterials = child.transform.GetChild(0).GetComponent<MeshRenderer>().materials;
+        leverMaterialsTimer = child.transform.GetChild(0).GetComponent<MeshRenderer>().materials;
+        leverMaterialsTimer[1] = timerMat;
 
         if (activeAtStart)
         {
@@ -141,7 +151,15 @@ public class Lever : Activator, IResetable
             }
 
             active = false;
+
             StopCoroutine("Flash");
+
+            if(hasTimer)
+            {
+                child.transform.GetChild(1).GetComponent<MeshRenderer>().material = baseMat;
+                child.transform.GetChild(0).GetComponent<MeshRenderer>().materials = leverMaterials;
+            }
+
             TryDeactivate();
             if (audioSource != null)
             {
@@ -170,4 +188,24 @@ public class Lever : Activator, IResetable
             canPlayer2Activate = false;
         }
     }
+
+    private IEnumerator Flash()
+    {
+        if (child != null)
+        {
+            while (true)
+            {
+                child.transform.GetChild(1).GetComponent<MeshRenderer>().material = baseMat;
+                child.transform.GetChild(0).GetComponent<MeshRenderer>().materials = leverMaterials;
+
+                yield return new WaitForSeconds(0.2f);
+
+                child.transform.GetChild(1).GetComponent<MeshRenderer>().material = timerMat;
+                child.transform.GetChild(0).GetComponent<MeshRenderer>().materials = leverMaterialsTimer;
+
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
+    }
+
 }
