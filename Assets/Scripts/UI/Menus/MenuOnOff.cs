@@ -64,6 +64,7 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
                 offText.text = "OFF";
             }
 
+            GetComponentInParent<AudioSource>().PlayOneShot(optionsMenu.menuManager.uiSelect);
             PlayerPrefs.SetInt(playerPrefsId, activated ? 1 : 0);
             GameManager.Instance.OnOptionUpdate();
         }

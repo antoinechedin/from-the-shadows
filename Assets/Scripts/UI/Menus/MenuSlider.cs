@@ -50,6 +50,7 @@ public class MenuSlider : MonoBehaviour, ISelectHandler
             else rightArrowImage.color = Color.white;
 
 
+            GetComponentInParent<AudioSource>().PlayOneShot(optionsMenu.menuManager.uiSelect);
             sliderText.text = currentValue.ToString();
             PlayerPrefs.SetInt(playerPrefsId, currentValue);
             GameManager.Instance.OnOptionUpdate();
