@@ -35,6 +35,7 @@ public class ChapterManager : MonoBehaviour
     {
         SetLevelsId();
     }
+
     // Update is called once per frame
     void Start()
     {
@@ -89,14 +90,22 @@ public class ChapterManager : MonoBehaviour
     private void Update()
     {
         timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
-        GameObject timeText = GameObject.Find("SpeedRunTime");
-        if (timeText != null)
+        if (PlayerPrefs.GetInt("SpeedRun") == 1)
         {
-            float time = totalTimePlayed + timeSinceBegin;
-            int secondes = Mathf.FloorToInt(time) % 60;
-            int minutes = Mathf.FloorToInt(time) / 60;
-            int mili = Mathf.FloorToInt(time * 1000) % 1000;
-            timeText.GetComponent<TextMeshProUGUI>().text = minutes.ToString() + ":" + secondes.ToString() + ":" + mili.ToString();
+            var speedRunTimer = GameObject.Find(nameof(SpeedRunTimer))?.GetComponent<SpeedRunTimer>();
+            if (speedRunTimer != null)
+            {
+                float time = totalTimePlayed + timeSinceBegin;
+                int secondes = Mathf.FloorToInt(time) % 60;
+                int minutes = Mathf.FloorToInt(time) / 60 % 60;
+                int hours = Mathf.FloorToInt(time) / 3600;
+                int mili = Mathf.FloorToInt(time * 1000) % 1000;
+                speedRunTimer.SetText(
+                    hours.ToString("00") + ":"
+                                         + minutes.ToString("00") + ":"
+                                         + secondes.ToString("00") + "."
+                                         + mili.ToString("000"));
+            }
         }
 
         // Position moyenne des deux joueurs
@@ -115,6 +124,7 @@ public class ChapterManager : MonoBehaviour
         // }
 
         #region CheatCodes
+
         //next level
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
         {
@@ -126,6 +136,7 @@ public class ChapterManager : MonoBehaviour
                 SpawnPlayers();
             }
         }
+
         //previous level
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.B))
         {
@@ -137,11 +148,13 @@ public class ChapterManager : MonoBehaviour
                 SpawnPlayers();
             }
         }
+
         //kill players
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K) && !GameManager.Instance.IsInCutscene)
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }
+
         #endregion
     }
 
@@ -172,7 +185,7 @@ public class ChapterManager : MonoBehaviour
         {
             if (player.GetComponent<PlayerInput>().id == 1) //Light
                 player.GetComponent<PlayerController>().SpawnAt(lightSpawnPos);
-            else if (player.GetComponent<PlayerInput>().id == 2)//shadow
+            else if (player.GetComponent<PlayerInput>().id == 2) //shadow
                 player.GetComponent<PlayerController>().SpawnAt(shadowSpawnPos);
         }
     }
@@ -198,6 +211,7 @@ public class ChapterManager : MonoBehaviour
                 levelsToDisable.Add(lm);
             }
         }
+
         foreach (LevelManager lm in levelsToDisable)
         {
             lm.gameObject.SetActive(false);
@@ -240,7 +254,7 @@ public class ChapterManager : MonoBehaviour
     public IEnumerator TpPlayersWithTransitionScreen()
     {
         //on affiche l'écran de transition de mort
-        GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
+        GameObject transitionScreen = (GameObject) Resources.Load("SwipeTransition"); //load le prefab
         transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
 
         //tant que l'ecran n'a pas fini de fade au noir
@@ -295,6 +309,7 @@ public class ChapterManager : MonoBehaviour
                 GameManager.Instance.SaveCollectibleTaken(GameManager.Instance.CurrentChapter, currentLevel, Collectible.Type.Shadow, i);
             }
         }
+
         //Validate shadow collectibles
         /*foreach (GameObject go in levels[currentLevel].shadowCollectibles)
         {
@@ -313,7 +328,7 @@ public class ChapterManager : MonoBehaviour
         timeSinceBegin = 0;
         totalTimePlayed = GameManager.Instance.GetMetaFloat(MetaTag.TOTAL_TIME_PLAYED);
     }
-    
+
     /// <summary>
     /// The player died : displays all deaths animations (player, screen, etc...) and reset all Resetable Objects
     /// </summary>
@@ -351,7 +366,7 @@ public class ChapterManager : MonoBehaviour
         }
 
         //on affiche l'écran de transition de mort
-        GameObject transitionScreen = (GameObject)Resources.Load("SwipeTransition"); //load le prefab
+        GameObject transitionScreen = (GameObject) Resources.Load("SwipeTransition"); //load le prefab
         transitionScreen = Instantiate(transitionScreen, gameObject.transform); //l'affiche
 
         //tant que l'ecran n'a pas fini de fade au noir
