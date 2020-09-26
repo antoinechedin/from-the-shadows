@@ -7,6 +7,8 @@ public class LoadingScreen : MonoBehaviour
     public bool finishedFadingIn;
     public bool finished;
 
+    public GameObject loadingLabel;
+
     private void Update()
     {
         if (finished)
