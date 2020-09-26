@@ -18,12 +18,16 @@ public class ChapterManager : MonoBehaviour
 
     private MusicManager musicManager;
 
-    private float timeSinceBegin = 0;
+    public float timeSinceBegin = 0;
     private GameObject currentSpawns;
 
     private bool resetingLevel = false;
 
-    private float totalTimePlayed = 0;
+    public float totalTimePlayed = 0;
+
+    public EndScreen endScreen;
+
+    public bool isTimerStopped;
 
     public GameObject CurrentSpawns
     {
@@ -87,9 +91,15 @@ public class ChapterManager : MonoBehaviour
         levels[currentLevel].EnableLevel();
     }
 
+    public void StopTimer()
+    {
+        isTimerStopped = true;
+    }
+
     private void Update()
     {
-        timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
+        if(!isTimerStopped)
+            timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
         if (PlayerPrefs.GetInt("SpeedRun") == 1)
         {
             var speedRunTimer = GameObject.Find(nameof(SpeedRunTimer))?.GetComponent<SpeedRunTimer>();

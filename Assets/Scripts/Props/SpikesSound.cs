@@ -15,7 +15,7 @@ public class SpikesSound : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.CompareTag("Player"))
         {
             if (audioSource != null && sounds.Count > 0)
             {

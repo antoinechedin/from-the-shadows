@@ -75,6 +75,8 @@ public class Skeleton : MonoBehaviour, IResetable
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.I)) Die();
+        
         //Update laneToAttack and stringDirection to match the playerTarget actual position
         if(playerTarget != null && isTargetting)
         {
