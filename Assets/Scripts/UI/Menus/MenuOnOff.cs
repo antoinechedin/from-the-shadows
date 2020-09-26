@@ -15,7 +15,7 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
     public TextMeshProUGUI onText;
     public TextMeshProUGUI offText;
 
-    public GameObject optionalText;
+    public TextMeshProUGUI optionalText;
 
     [SerializeField] private TextMeshProUGUI label;
     [SerializeField] private GameObject onOffGameObject;
@@ -44,7 +44,7 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
                 animator.SetTrigger("On");
 
                 if (optionalText != null)
-                    optionalText.SetActive(true);
+                    optionalText.color = new Color(1f, 1f, 1f, 1f);
 
                 onText.text = "ON";
                 offText.text = "Off";
@@ -57,7 +57,7 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
                 animator.SetTrigger("Off");
 
                 if (optionalText != null)
-                    optionalText.SetActive(false);
+                    optionalText.color = new Color(1f, 1f, 1f, 0f);
 
                 onText.text = "On";
                 offText.text = "OFF";
@@ -77,7 +77,7 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
         onOffGameObject.SetActive(optionsMenu.menuManager != null);
         if (optionsMenu.menuManager == null)
         {
-            optionalText.SetActive(false);
+            optionalText.color = new Color(1f, 1f, 1f, 0f);
             return;
         }
 
@@ -88,7 +88,7 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
             offText.color = Color.gray;
 
             if (optionalText != null)
-                optionalText.SetActive(true);
+                optionalText.color = new Color(1f, 1f, 1f, 1f);
 
             onText.text = "ON";
             offText.text = "Off";
@@ -100,7 +100,7 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
             offText.color = Color.white;
 
             if (optionalText != null)
-                optionalText.SetActive(false);
+                optionalText.color = new Color(1f, 1f, 1f, 0f);
 
             onText.text = "On";
             offText.text = "OFF";
