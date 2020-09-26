@@ -102,7 +102,10 @@ public class PauseMenu : MonoBehaviour
                     if (InputManager.GetActionPressed(0, InputAction.Return)
                     || Input.GetKeyDown(KeyCode.Escape)
                     || Input.GetKeyDown(KeyCode.Backspace))
+                    {
+                        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(uiPress);
                         CloseOptions();
+                    }
                 }
                 else
                 {
@@ -159,7 +162,6 @@ public class PauseMenu : MonoBehaviour
 
     public void CloseOptions()
     {
-        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(uiPress);
         StartCoroutine(CloseOptionsCoroutine());
     }
 

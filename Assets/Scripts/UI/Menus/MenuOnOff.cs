@@ -17,6 +17,9 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
 
     public GameObject optionalText;
 
+    [SerializeField] private TextMeshProUGUI label;
+    [SerializeField] private GameObject onOffGameObject;
+
     private Animator animator;
     [HideInInspector] public OptionsMenu optionsMenu;
 
@@ -27,13 +30,9 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
 
     public void SetValue(bool _activated)
     {
-        bool changed = false;
+        if (optionsMenu.menuManager == null) return;
 
         if (activated != _activated)
-            changed = true;
-
-        
-        if(changed)
         {
             activated = _activated;
 
@@ -73,6 +72,14 @@ public class MenuOnOff : MonoBehaviour, ISelectHandler
     public void Init(int value, OptionsMenu optionsMenu)
     {
         this.optionsMenu = optionsMenu;
+
+        label.text = optionsMenu.menuManager == null ? "Option only available in the Main menu" : "Speed run mode";
+        onOffGameObject.SetActive(optionsMenu.menuManager != null);
+        if (optionsMenu.menuManager == null)
+        {
+            optionalText.SetActive(false);
+            return;
+        }
 
         if (value == 1)
         {

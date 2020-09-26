@@ -50,7 +50,18 @@ public class MenuSlider : MonoBehaviour, ISelectHandler
             else rightArrowImage.color = Color.white;
 
 
-            GetComponentInParent<AudioSource>().PlayOneShot(optionsMenu.menuManager.uiSelect);
+            
+            if (optionsMenu.menuManager != null)
+            {
+                GetComponentInParent<AudioSource>().PlayOneShot(optionsMenu.menuManager.uiSelect);
+            }
+            else
+            {
+                var pauseMenu = GetComponentInParent<PauseMenu>();
+                GetComponentInParent<AudioSource>().PlayOneShot(pauseMenu.uiSelect);
+            }
+
+
             sliderText.text = currentValue.ToString();
             PlayerPrefs.SetInt(playerPrefsId, currentValue);
             GameManager.Instance.OnOptionUpdate();

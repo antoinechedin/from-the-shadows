@@ -58,6 +58,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
         {
             controlsButton.Init(this);
         }
+
         saveButton.Init(this);
         resetButton.Init(this);
     }
@@ -71,15 +72,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                 || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
-                if (menuManager == null)
-                {
-                    PauseMenu pauseMenu = GetComponentInParent<PauseMenu>();
-                    GetComponentInParent<AudioSource>().PlayOneShot(pauseMenu.uiPress);
-                }
-                else
-                {
-                    GetComponentInParent<AudioSource>().PlayOneShot(menuManager.uiPress);
-                }
+                GetComponentInParent<AudioSource>().PlayOneShot(menuManager.uiPress);
             }
         }
 
@@ -90,7 +83,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                 if (Input.GetKeyDown(keyCode))
                 {
                     Debug.Log("OptionsMenu: " + keyCode.ToString() + " pressed");
-                    PlayerPrefs.SetInt(currentControlsButton.playerPrefsId, (int)keyCode);
+                    PlayerPrefs.SetInt(currentControlsButton.playerPrefsId, (int) keyCode);
 
                     InputManager.UpdateKeyMapping();
                     currentControlsButton.UpdateButton();
@@ -121,6 +114,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
             PlayerPrefs.DeleteKey("P1_" + action.ToString());
             PlayerPrefs.DeleteKey("P2_" + action.ToString());
         }
+
         InputManager.UpdateKeyMapping();
         foreach (MenuControlsButton button in controlsButtons)
         {
@@ -188,6 +182,8 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
 
     public IEnumerator DissolveOutCoroutine()
     {
+        PlayerPrefs.Save();
+
         EventSystem.current.sendNavigationEvents = false;
 
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();
