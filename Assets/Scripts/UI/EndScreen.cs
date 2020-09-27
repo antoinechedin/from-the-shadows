@@ -23,6 +23,9 @@ public class EndScreen : MonoBehaviour
         ChapterManager = chapterManager;
         animationPlayer.clip = animationIn;
         animationPlayer.Play();
+        
+        chapterManager.ValidateCollectibles();
+        GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, chapterManager.currentLevel);
 
         float time = chapterManager.totalTimePlayed + chapterManager.timeSinceBegin;
         int secondes = Mathf.FloorToInt(time) % 60;

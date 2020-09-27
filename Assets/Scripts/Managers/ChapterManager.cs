@@ -14,7 +14,7 @@ public class ChapterManager : MonoBehaviour
     public List<GameObject> enableInSpeedrun;
     public List<GameObject> disableInSpeedrun;
 
-    private int currentLevel = 0; // indice du niveau actuel
+    [HideInInspector] public int currentLevel = 0; // indice du niveau actuel
 
     private MusicManager musicManager;
 
@@ -44,9 +44,9 @@ public class ChapterManager : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
+        totalTimePlayed = GameManager.Instance.GetMetaFloat(MetaTag.TOTAL_TIME_PLAYED);
         if (PlayerPrefs.GetInt("SpeedRun") == 1)
         {
-            totalTimePlayed = GameManager.Instance.GetMetaFloat(MetaTag.TOTAL_TIME_PLAYED);
             Instantiate(Resources.Load("SpeedRunCanvas"));
 
             foreach (GameObject go in enableInSpeedrun)
