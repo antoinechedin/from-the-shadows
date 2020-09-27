@@ -29,6 +29,8 @@ public class PauseMenu : MonoBehaviour
     private MusicManager musicManager;
     private LevelManager currentLevel;
 
+    public ChapterManager ChapterManager { get; set; }
+
     private void Awake()
     {
         optionsOpened = false;
@@ -102,7 +104,10 @@ public class PauseMenu : MonoBehaviour
                     if (InputManager.GetActionPressed(0, InputAction.Return)
                     || Input.GetKeyDown(KeyCode.Escape)
                     || Input.GetKeyDown(KeyCode.Backspace))
+                    {
+                        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(uiPress);
                         CloseOptions();
+                    }
                 }
                 else
                 {
@@ -120,6 +125,8 @@ public class PauseMenu : MonoBehaviour
         gameObject.SetActive(false);
         Input.ResetInputAxes();
         Time.timeScale = 1;
+        
+        ChapterManager.hideOffScreenIndicator = false;
 
         ResumeAllSounds();
 
@@ -159,7 +166,6 @@ public class PauseMenu : MonoBehaviour
 
     public void CloseOptions()
     {
-        GetComponentInParent<Canvas>().GetComponent<AudioSource>().PlayOneShot(uiPress);
         StartCoroutine(CloseOptionsCoroutine());
     }
 

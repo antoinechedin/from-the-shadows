@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DebugCanvas : MonoBehaviour
 {
     private bool active = false;
 
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
     void Update()
     {
         if (GameManager.Instance.Debuging != active)
@@ -17,4 +16,5 @@ public class DebugCanvas : MonoBehaviour
             }
         }
     }
+#endif
 }

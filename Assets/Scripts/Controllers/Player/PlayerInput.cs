@@ -26,8 +26,12 @@ public class PlayerInput : MonoBehaviour
 
     public bool pressRight, pressLeft, pressUp, pressDown;
 
+    public PlayerSwitch playerSwitch;
+    private bool _isplayerSwitchNotNull;
+
     private void Awake()
     {
+        _isplayerSwitchNotNull = playerSwitch != null;
         if (attack && attackCollider == null)
         {
             attack = false;
@@ -73,6 +77,11 @@ public class PlayerInput : MonoBehaviour
 
             if (attack) pressedAttack = InputManager.GetActionPressed(id, InputAction.Attack);
             if (moveAxis.magnitude > 1) moveAxis.Normalize();
+
+            if (_isplayerSwitchNotNull && InputManager.GetActionPressed(0, InputAction.Switch))
+            {
+                playerSwitch.SwitchPlayer();
+            }
         }
 
         if (moveAxis.x > 0) xMoveAxisSign = 1;

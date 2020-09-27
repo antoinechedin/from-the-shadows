@@ -42,7 +42,7 @@ public class ChaptersMenu : MonoBehaviour, IDissolveMenu
 
     void Update()
     {
-        if (EventSystem.current.sendNavigationEvents)
+        if (EventSystem.current.sendNavigationEvents && !GameManager.Instance.Loading)
         {
             // Cancel
             if (InputManager.GetActionPressed(0, InputAction.Return)

@@ -38,7 +38,10 @@ public class Lever : Activator, IResetable
 
         leverMaterials = child.transform.GetChild(0).GetComponent<MeshRenderer>().materials;
         leverMaterialsTimer = child.transform.GetChild(0).GetComponent<MeshRenderer>().materials;
-        leverMaterialsTimer[1] = timerMat;
+        if(leverMaterialsTimer.Length > 1)
+            leverMaterialsTimer[1] = timerMat;
+        /*else
+            Debug.LogWarning(Utils.GetFullName(transform) + " material array is too small. Can't add timer material");*/
 
         if (activeAtStart)
         {
