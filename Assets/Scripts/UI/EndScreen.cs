@@ -11,6 +11,7 @@ public class EndScreen : MonoBehaviour
     public AnimationClip animationIn;
     public AnimationClip animationOut;
 
+    public TextMeshProUGUI completion;
     public TextMeshProUGUI timer;
 
     private bool _listeningKey;
@@ -27,6 +28,8 @@ public class EndScreen : MonoBehaviour
         chapterManager.ValidateCollectibles();
         GameManager.Instance.SetLevelCompleted(GameManager.Instance.CurrentChapter, chapterManager.currentLevel);
 
+        completion.text = (int)(GameManager.Instance.Saves[GameManager.Instance.CurrentSave].GetCompletion() * 100) + "%";
+        
         float time = chapterManager.totalTimePlayed + chapterManager.timeSinceBegin;
         int secondes = Mathf.FloorToInt(time) % 60;
         int minutes = Mathf.FloorToInt(time) / 60 % 60;
