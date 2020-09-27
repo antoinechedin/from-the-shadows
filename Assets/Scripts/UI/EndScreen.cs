@@ -17,29 +17,23 @@ public class EndScreen : MonoBehaviour
 
     public void StartAnimationIn(ChapterManager chapterManager)
     {
+        GameManager.Instance.Loading = true;
         gameObject.SetActive(true);
         _listeningKey = false;
         ChapterManager = chapterManager;
         animationPlayer.clip = animationIn;
         animationPlayer.Play();
 
-        if (PlayerPrefs.GetInt("SpeedRun") == 1)
-        {
-            float time = chapterManager.totalTimePlayed + chapterManager.timeSinceBegin;
-            int secondes = Mathf.FloorToInt(time) % 60;
-            int minutes = Mathf.FloorToInt(time) / 60 % 60;
-            int hours = Mathf.FloorToInt(time) / 3600;
-            int mili = Mathf.FloorToInt(time * 1000) % 1000;
-            timer.SetText(
-                hours.ToString("00") + ":"
-                                     + minutes.ToString("00") + ":"
-                                     + secondes.ToString("00") + "."
-                                     + mili.ToString("000"));
-        }
-        else
-        {
-            timer.color = new Color(0f,0f,0f,0f);
-        }
+        float time = chapterManager.totalTimePlayed + chapterManager.timeSinceBegin;
+        int secondes = Mathf.FloorToInt(time) % 60;
+        int minutes = Mathf.FloorToInt(time) / 60 % 60;
+        int hours = Mathf.FloorToInt(time) / 3600;
+        int mili = Mathf.FloorToInt(time * 1000) % 1000;
+        timer.SetText(
+            hours.ToString("00") + ":"
+                                 + minutes.ToString("00") + ":"
+                                 + secondes.ToString("00") + "."
+                                 + mili.ToString("000"));
     }
 
     public void StartListeningKey()
@@ -51,14 +45,16 @@ public class EndScreen : MonoBehaviour
     {
         if (!_listeningKey) return;
 
-        _listeningKey = false;
         if (InputManager.GetActionPressed(0, InputAction.Select)
             || Input.GetKeyDown(KeyCode.Escape)
-            || Input.GetKeyDown(KeyCode.Backspace))
+            || Input.GetKeyDown(KeyCode.Backspace)
+            || Input.GetKeyDown(KeyCode.Space))
         {
+            _listeningKey = false;
             animationPlayer.Stop();
             animationPlayer.clip = animationOut;
             animationPlayer.Play();
+            GetComponent<AudioSource>().PlayOneShot(ChapterManager.pauseMenu.uiPress);
         }
     }
 

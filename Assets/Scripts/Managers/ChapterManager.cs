@@ -98,7 +98,7 @@ public class ChapterManager : MonoBehaviour
 
     private void Update()
     {
-        if(!isTimerStopped)
+        if (!isTimerStopped)
             timeSinceBegin += Time.deltaTime; //Compter de temps pour la collecte de metadonnées
         if (PlayerPrefs.GetInt("SpeedRun") == 1)
         {
@@ -133,8 +133,7 @@ public class ChapterManager : MonoBehaviour
         //     GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         // }
 
-        #region CheatCodes
-
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
         //next level
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.N))
         {
@@ -165,7 +164,7 @@ public class ChapterManager : MonoBehaviour
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
         }
 
-        #endregion
+#endif
     }
 
     /// <summary>

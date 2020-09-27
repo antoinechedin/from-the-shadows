@@ -228,6 +228,7 @@ public class Carousel : MonoBehaviour
             //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
             pressed = true;
             EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.sendNavigationEvents = false;
         }
     }
 }
