@@ -29,6 +29,8 @@ public class PauseMenu : MonoBehaviour
     private MusicManager musicManager;
     private LevelManager currentLevel;
 
+    public ChapterManager ChapterManager { get; set; }
+
     private void Awake()
     {
         optionsOpened = false;
@@ -123,6 +125,8 @@ public class PauseMenu : MonoBehaviour
         gameObject.SetActive(false);
         Input.ResetInputAxes();
         Time.timeScale = 1;
+        
+        ChapterManager.hideOffScreenIndicator = false;
 
         ResumeAllSounds();
 

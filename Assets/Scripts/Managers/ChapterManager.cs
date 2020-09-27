@@ -28,6 +28,7 @@ public class ChapterManager : MonoBehaviour
     public EndScreen endScreen;
 
     public bool isTimerStopped;
+    public bool hideOffScreenIndicator;
 
     public GameObject CurrentSpawns
     {
@@ -94,6 +95,7 @@ public class ChapterManager : MonoBehaviour
     public void StopTimer()
     {
         isTimerStopped = true;
+        hideOffScreenIndicator = true;
     }
 
     private void Update()
@@ -123,8 +125,11 @@ public class ChapterManager : MonoBehaviour
         if (!GameManager.Instance.Loading && InputManager.GetActionPressed(0, InputAction.Pause))
         {
             pauseMenu.gameObject.SetActive(true);
+            pauseMenu.ChapterManager = this;
             pauseMenu.OpenPauseMenu();
             pauseMenu.StopAllSounds(musicManager, levels[currentLevel]);
+            
+            hideOffScreenIndicator = true;
         }
 
         //if (Input.GetButtonDown("Select_G"))
