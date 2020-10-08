@@ -52,10 +52,10 @@ public class DiscordController : Singleton<DiscordController>
         {
             State = state,
             Details = details,
-            Timestamps = new Discord.ActivityTimestamps
-            {
-                Start = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds / 1000
-            },
+            // Timestamps = new Discord.ActivityTimestamps
+            // {
+            //     Start = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds / 1000
+            // },
             Assets = new Discord.ActivityAssets
             {
                 LargeImage = "default",
