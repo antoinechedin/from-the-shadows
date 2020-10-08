@@ -197,9 +197,11 @@ public class MenuManager : MonoBehaviour
     public IEnumerator QuitCoroutine()
     {
         // yield return StartCoroutine(ButtonsDissolveOut());
+        EventSystem.current.sendNavigationEvents = false;
 
-        GameObject loadingScreen = (GameObject)Resources.Load("LoadingScreen");
-        loadingScreen = Instantiate(loadingScreen, gameObject.transform);
+        GameObject loadingScreenGO = (GameObject)Resources.Load("LoadingScreen");
+        var loadingScreen = Instantiate(loadingScreenGO, gameObject.transform).GetComponent<LoadingScreen>();
+        loadingScreen.loadingLabel.SetActive(false);
         StartCoroutine(Fade());
         yield return null;
     }

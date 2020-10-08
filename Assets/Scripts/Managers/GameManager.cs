@@ -56,6 +56,7 @@ public class GameManager : Singleton<GameManager>
     // Update is called once per frame
     void Update()
     {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
         if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.D))
         {
             debuging = !debuging;
@@ -66,7 +67,8 @@ public class GameManager : Singleton<GameManager>
             Instantiate((GameObject)Resources.Load("DebugCanvas"), Vector3.zero, Quaternion.identity, transform);
             debugCanvasExist = true;
         }
-
+        
+#endif
         bool controllerChange = false;
         if (
             Input.GetKeyDown(InputManager.Player1[(int)InputDevice.Keyboard][InputAction.Up]) ||

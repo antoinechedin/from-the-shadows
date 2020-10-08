@@ -75,7 +75,7 @@ public class SavesMenu : MonoBehaviour, IDissolveMenu
                 string saveName = "Save " + (i + 1).ToString();
                 string nbPlayers = GameManager.Instance.Saves[i].NbPlayer == 1 ? "(Solo)" : "(Duo)";
                 string completion = (int)(GameManager.Instance.Saves[i].GetCompletion() * 100) + "%";
-                string timePlayed = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm");
+                string timePlayed = TimeSpan.FromSeconds(GameManager.Instance.GetMetaFloat("totalTimePlayed", i)).ToString(@"hh\:mm\:ss");
 
                 buttonText.text = saveName + " " + nbPlayers + "  " + completion + " " + timePlayed;
             }
