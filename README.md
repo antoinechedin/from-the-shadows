@@ -13,7 +13,8 @@ From the Shadows is a cooperative puzzle platformer game where players have to w
 The two players will quickly realize that they are not welcome in this castle when they are struck by a mysterious curse. They will have to join forces to escape, despite the hostility of the occupants of the premises.
 
 A solo game mode is also available to venture alone in the castle, where you can only rely on yourself to make it out alive.
-About us
+
+## About us
 
 From the Shadows is a game created by our team of students at Lyon 2 University in France, for the 2020 Gamagora Game Show.
 
