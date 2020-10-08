@@ -78,7 +78,7 @@ public class Carousel : MonoBehaviour
         int nbLevelSpawned = 0;
         for (int i = 0; i < totalLevels; i++) // Create the levels buttons
         {
-            if (i == 0 || (levels[i].IsCheckpoint && levels[i - 1].Completed))
+            if (i == 0 || (levels[i].IsCheckpoint && levels[i].Completed) || (GameManager.Instance.CurrentChapter > 0 && i == levels.Count - 1 && levels[i - 1].Completed))
             {
                 int localLevelIndex = i;
                 LevelScreenshot spawnedScreenshot = Instantiate(levelScreenshotPrefab, levelScreenshotsParent.transform).GetComponent<LevelScreenshot>();
@@ -228,6 +228,7 @@ public class Carousel : MonoBehaviour
             //disable les controles pour ne pas pouvoir continuer alors qu'un bouton a déjà été pressed
             pressed = true;
             EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.sendNavigationEvents = false;
         }
     }
 }

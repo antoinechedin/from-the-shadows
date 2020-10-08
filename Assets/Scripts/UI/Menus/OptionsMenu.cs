@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using System.Runtime.InteropServices;
 
 public class OptionsMenu : MonoBehaviour, IDissolveMenu
 {
@@ -17,6 +18,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     [HideInInspector] public MenuManager menuManager;
     public MenuSlider musicSlider;
     public MenuSlider soundsSlider;
+    public MenuOnOff speedRunOnOff;
     public MenuControlsButton[] controlsButtons;
     public OptionsButton saveButton;
     public OptionsButton resetButton;
@@ -26,7 +28,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     private void Awake()
     {
         currentIndex = -1;
-        selectables = new Selectable[4 + controlsButtons.Length];
+        selectables = new Selectable[5 + controlsButtons.Length];
 
         selectables[0] = musicSlider.GetComponent<Selectable>();
         selectables[1] = soundsSlider.GetComponent<Selectable>();
@@ -36,6 +38,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
             selectables[2 + i] = controlsButtons[i].GetComponent<Selectable>();
         }
 
+        selectables[selectables.Length - 3] = speedRunOnOff.GetComponent<Selectable>();
         selectables[selectables.Length - 2] = saveButton.GetComponent<Selectable>();
         selectables[selectables.Length - 1] = resetButton.GetComponent<Selectable>();
 
@@ -46,13 +49,16 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
     {
         int musicVolume = PlayerPrefs.GetInt("MusicVolume", 10);
         int soundsVolume = PlayerPrefs.GetInt("SoundsVolume", 10);
+        int speedrunValue = PlayerPrefs.GetInt("SpeedRun", 0);
 
         musicSlider.Init(musicVolume, this);
         soundsSlider.Init(soundsVolume, this);
+        speedRunOnOff.Init(speedrunValue, this);
         foreach (MenuControlsButton controlsButton in controlsButtons)
         {
             controlsButton.Init(this);
         }
+
         saveButton.Init(this);
         resetButton.Init(this);
     }
@@ -66,15 +72,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                 || Input.GetKeyDown(KeyCode.Backspace))
             {
                 menuManager.DissolveFromMenuToMenu(this, menuManager.mainMenu);
-                if (menuManager == null)
-                {
-                    PauseMenu pauseMenu = GetComponentInParent<PauseMenu>();
-                    GetComponentInParent<AudioSource>().PlayOneShot(pauseMenu.uiPress);
-                }
-                else
-                {
-                    GetComponentInParent<AudioSource>().PlayOneShot(menuManager.uiPress);
-                }
+                GetComponentInParent<AudioSource>().PlayOneShot(menuManager.uiPress);
             }
         }
 
@@ -85,7 +83,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
                 if (Input.GetKeyDown(keyCode))
                 {
                     Debug.Log("OptionsMenu: " + keyCode.ToString() + " pressed");
-                    PlayerPrefs.SetInt(currentControlsButton.playerPrefsId, (int)keyCode);
+                    PlayerPrefs.SetInt(currentControlsButton.playerPrefsId, (int) keyCode);
 
                     InputManager.UpdateKeyMapping();
                     currentControlsButton.UpdateButton();
@@ -116,6 +114,7 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
             PlayerPrefs.DeleteKey("P1_" + action.ToString());
             PlayerPrefs.DeleteKey("P2_" + action.ToString());
         }
+
         InputManager.UpdateKeyMapping();
         foreach (MenuControlsButton button in controlsButtons)
         {
@@ -183,6 +182,8 @@ public class OptionsMenu : MonoBehaviour, IDissolveMenu
 
     public IEnumerator DissolveOutCoroutine()
     {
+        PlayerPrefs.Save();
+
         EventSystem.current.sendNavigationEvents = false;
 
         DissolveController[] dissolves = GetComponentsInChildren<DissolveController>();

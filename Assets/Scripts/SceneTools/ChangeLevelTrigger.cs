@@ -21,7 +21,7 @@ public class ChangeLevelTrigger : MonoBehaviour
         if (newPlayerSpawns == null && !finishChapter)
         {
             Debug.LogError(name + " : Aucun spawnPoint assigné à " + Utils.GetFullName(transform)
-                + ". Le spawn des joueurs n'a pas changé");
+                           + ". Le spawn des joueurs n'a pas changé");
         }
     }
 
@@ -38,7 +38,10 @@ public class ChangeLevelTrigger : MonoBehaviour
                 if (finishChapter)
                 {
                     GameObject.Find("MusicManager").GetComponent<MusicManager>().StopTheme();
-                    chapterManager.FinishChapter();
+                    if (chapterManager.endScreen != null)
+                        chapterManager.endScreen.StartAnimationIn(chapterManager);
+                    else
+                        chapterManager.FinishChapter();
                 }
                 //sinon on passe au niveau suivant
                 else

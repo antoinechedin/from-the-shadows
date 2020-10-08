@@ -4,6 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(SpriteRenderer))]
 public class OffscreenIndicator : MonoBehaviour
 {
+	public ChapterManager chapterManager;
 	public Texture2D playerIcon;
 	public Texture2D arrowIcon;
 	public float iconSize = 20f;
@@ -29,7 +30,11 @@ public class OffscreenIndicator : MonoBehaviour
 
 	void OnGUI()
 	{
-		if (!isVisible)
+		if (chapterManager == null)
+		{
+			chapterManager = FindObjectOfType<ChapterManager>();
+		}
+		if (!isVisible && !GameManager.Instance.Loading && (chapterManager == null || !chapterManager.hideOffScreenIndicator))
 		{
 			Vector3 playerPosition = transform.position;
 			playerPosition.y += offsetPlayerHeight;
